@@ -8,6 +8,7 @@ before_install:
   - sudo apt-get install ffmpeg gstreamer0.10-ffmpeg -y
 
 script:
+ - whereis ffmpeg
  - dotnet restore Xabe.FFMpeg.Test/
  - dotnet test Xabe.FFMpeg.Test/
  - dotnet restore Xabe.FFMpeg/
