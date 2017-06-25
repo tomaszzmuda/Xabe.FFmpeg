@@ -5,7 +5,7 @@ dist: trusty
 before_install:
   - sudo add-apt-repository ppa:mc3man/trusty-media -y
   - sudo apt-get -qq update
-  - sudo apt-get install ffmpeg gstreamer0.10-ffmpeg -y
+  - sudo apt-get install ffmpeg gstreamer0.10-ffmpeg libtheora-dev libav-tools -y
 
 script:
  - whereis ffmpeg
