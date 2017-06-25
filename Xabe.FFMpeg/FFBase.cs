@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Xabe.FFMpeg
 {
@@ -19,8 +20,15 @@ namespace Xabe.FFMpeg
 
         protected FFBase()
         {
+            var splitChar = ';';
+            bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+            if(isLinux)
+            {
+                splitChar = ':';
+            }
+
             var paths = Environment.GetEnvironmentVariable("PATH")
-                                   .Split(';');
+                                   .Split(splitChar);
 
             foreach(string path in paths)
             {

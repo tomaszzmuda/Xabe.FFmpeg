@@ -6,3 +6,4 @@
 /Xabe.FFMpeg/nuget
 /Xabe.FFMpeg/bin/Release/netstandard1.3
 /Xabe.FFMpeg.Test/obj
+/.vs/Xabe.FFMpeg/v15/sqlite3
