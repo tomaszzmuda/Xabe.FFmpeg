@@ -3,10 +3,9 @@ mono: none
 dotnet: 2.0.0
 dist: trusty
 before_install:
-  - sudo add-apt-repository ppa:jon-severinsson/ffmpeg
-  - sudo apt-get update
-  - sudo apt-get install ffmpeg
-  - sudo apt-get install frei0r-plugins
+  - sudo add-apt-repository ppa:mc3man/trusty-media -y
+  - sudo apt-get -qq update
+  - sudo apt-get install ffmpeg gstreamer0.10-ffmpeg -y
 
 script:
  - dotnet restore Xabe.FFMpeg.Test/
