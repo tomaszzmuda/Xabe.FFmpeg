@@ -7,3 +7,5 @@
 /Xabe.FFMpeg/bin/Release/netstandard1.3
 /Xabe.FFMpeg.Test/obj
 /.vs/Xabe.FFMpeg/v15/sqlite3
+/Xabe.FFMpeg.Test/bin/Debug/netcoreapp2.0
+/Xabe.FFMpeg/bin/Debug/netstandard2.0

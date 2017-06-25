@@ -62,7 +62,7 @@ namespace Xabe.FFMpeg.Test
         public void JoinWith()
         {
             var videoInfo = new VideoInfo(SampleVideoWithAudio);
-            var output = new FileInfo(Path.GetTempFileName());
+            var output = new FileInfo(Path.ChangeExtension(Path.GetTempFileName(), videoInfo.Extension));
 
             bool result = videoInfo.JoinWith(output, new VideoInfo(SampleVideo));
 
