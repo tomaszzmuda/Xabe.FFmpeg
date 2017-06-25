@@ -9,6 +9,7 @@ before_install:
 
 script:
  - whereis ffmpeg
+ - echo $PATH
  - dotnet restore Xabe.FFMpeg.Test/
  - dotnet test Xabe.FFMpeg.Test/
  - dotnet restore Xabe.FFMpeg/
