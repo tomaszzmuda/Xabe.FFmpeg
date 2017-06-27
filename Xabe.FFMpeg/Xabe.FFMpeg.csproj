@@ -4,6 +4,20 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Xabe.FFMpeg</AssemblyName>
     <RootNamespace>Xabe.FFMpeg</RootNamespace>
+    <Authors>Tomasz Żmuda</Authors>
+    <Company>Xabe</Company>
+    <Description>.NET Core wrapper for FFMpeg.</Description>
+    <Copyright>Copyright 2017 (c) Tomasz Zmuda.</Copyright>
+    <PackageLicenseUrl>https://github.com/tomaszzmuda/Xabe.FFMpeg/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
+    <RepositoryType>Dependency</RepositoryType>
+    <PackageTags>media converter audio ffmpeg wrapper</PackageTags>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\Xabe.FFMpeg.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
