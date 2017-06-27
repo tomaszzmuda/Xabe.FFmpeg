@@ -306,7 +306,7 @@ namespace Xabe.FFMpeg
 
             Bitmap result;
 
-            
+
             using(Image bmp = Image.FromFile(Path.ChangeExtension(output.FullName, ".png")))
             {
                 result = (Bitmap) bmp.Clone();

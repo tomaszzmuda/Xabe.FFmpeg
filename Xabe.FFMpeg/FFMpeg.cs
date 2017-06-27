@@ -249,9 +249,7 @@ namespace Xabe.FFMpeg
 
             if(uri.Scheme != "http" ||
                uri.Scheme != "https")
-            {
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
-            }
 
             string arguments = new ArgumentBuilder().SetInput(uri)
                                                     .SetOutput(output)
@@ -375,13 +373,9 @@ namespace Xabe.FFMpeg
                 Process.Close();
 
                 if(!output.Exists)
-                {
                     throw new InvalidOperationException(_errorData);
-                }
                 if(output.Length == 0)
-                {
                     throw new InvalidOperationException(_errorData);
-                }
             }
             return result;
         }

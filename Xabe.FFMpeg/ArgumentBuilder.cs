@@ -202,9 +202,7 @@ namespace Xabe.FFMpeg
         internal ArgumentBuilder UseShortest(bool useShortest)
         {
             if(!useShortest)
-            {
                 return this;
-            }
             _shortestInput = "-shortest ";
             return this;
         }

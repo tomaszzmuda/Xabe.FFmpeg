@@ -23,12 +23,10 @@ namespace Xabe.FFMpeg
             var splitChar = ';';
             bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
             if(isLinux)
-            {
                 splitChar = ':';
-            }
 
-            var paths = Environment.GetEnvironmentVariable("PATH")
-                                   .Split(splitChar);
+            string[] paths = Environment.GetEnvironmentVariable("PATH")
+                                        .Split(splitChar);
 
             foreach(string path in paths)
             {
@@ -36,9 +34,7 @@ namespace Xabe.FFMpeg
 
                 if(FFMpegPath != null &&
                    FFProbePath != null)
-                {
                     break;
-                }
             }
 
             if(FFMpegPath == null ||
