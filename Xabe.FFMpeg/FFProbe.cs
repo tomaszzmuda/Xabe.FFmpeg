@@ -23,8 +23,11 @@ namespace Xabe.FFMpeg
         /// <returns>VideoInfo object with details</returns>
         public void ProbeDetails(VideoInfo info)
         {
-            ProbeModel probe = ProbeFile(info);
+            string jsonOutput =
+                RunProcess($"-v quiet -print_format json -show_streams \"{info.FullName}\"");
 
+            var probe =
+                JsonConvert.DeserializeObject<ProbeModel>(jsonOutput);
             int vid = probe.streams[0].codec_type == "video" ? 0 : 1, aud = 1 - vid;
 
             double duration = GetDuration(info, probe, vid);
@@ -79,10 +82,15 @@ namespace Xabe.FFMpeg
 
         private double GetDuration(VideoInfo info, ProbeModel probe, int vid)
         {
-            if(probe.streams.Length <= vid)
+            if(info.Extension == ".mkv")
             {
-                info.Duration = TimeSpan.MinValue;
-                return 0;
+                string jsonOutput =
+                    RunProcess($"-v quiet -print_format json -show_format \"{info.FullName}\"");
+                FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonOutput)
+                                                       .format;
+
+                probe.streams[vid].duration = format.duration;
+                probe.streams[vid].bit_rate = format.bit_rate;
             }
 
             double duration = probe.streams[vid].duration;
@@ -90,28 +98,6 @@ namespace Xabe.FFMpeg
             info.Duration = info.Duration.Subtract(TimeSpan.FromMilliseconds(info.Duration.Milliseconds));
 
             return duration;
-        }
-
-        private ProbeModel ProbeFile(VideoInfo info)
-        {
-            string jsonOutput =
-                RunProcess($"-v quiet -print_format json -show_streams \"{info.FullName}\"");
-
-            var probe =
-                JsonConvert.DeserializeObject<ProbeModel>(jsonOutput);
-
-            if(info.Extension.Contains("mkv"))
-            {
-                jsonOutput =
-                    RunProcess($"-v quiet -print_format json -show_format \"{info.FullName}\"");
-                FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonOutput)
-                                                       .format;
-
-                probe.streams[0].duration = format.duration;
-                probe.streams[0].bit_rate = format.bit_rate;
-            }
-
-            return probe;
         }
 
         private int GetGcd(int width, int height)
