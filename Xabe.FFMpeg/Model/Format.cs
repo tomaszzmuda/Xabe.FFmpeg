@@ -8,28 +8,28 @@
 
         internal class Root
         {
-            public Format Format { get; set; }
+            public Format format { get; set; }
         }
 
         internal class Format
         {
-            public string Filename { get; set; }
-            public int NbStreams { get; set; }
-            public int NbPrograms { get; set; }
-            public string FormatName { get; set; }
-            public string FormatLongName { get; set; }
-            public string StartTime { get; set; }
-            public double Duration { get; set; }
-            public string Size { get; set; }
-            public double BitRate { get; set; }
-            public int ProbeScore { get; set; }
-            public Tags Tags { get; set; }
+            public string filename { get; set; }
+            public int nbStreams { get; set; }
+            public int nbPrograms { get; set; }
+            public string formatName { get; set; }
+            public string formatLongName { get; set; }
+            public string startTime { get; set; }
+            public double duration { get; set; }
+            public string size { get; set; }
+            public double bitRate { get; set; }
+            public int probeScore { get; set; }
+            public Tags tags { get; set; }
         }
 
         internal class Tags
         {
-            public string Encoder { get; set; }
-            public string CreationTime { get; set; }
+            public string encoder { get; set; }
+            public string creationTime { get; set; }
         }
     }
 }

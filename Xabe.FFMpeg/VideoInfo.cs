@@ -58,7 +58,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <summary>
-        ///     Duration of video
+        ///     duration of video
         /// </summary>
         public TimeSpan Duration { get; internal set; }
 
@@ -93,17 +93,17 @@ namespace Xabe.FFMpeg
         public int Width { get; internal set; }
 
         /// <summary>
-        ///     Size
+        ///     size
         /// </summary>
         public double Size { get; internal set; }
 
         /// <summary>
-        ///     Filename
+        ///     filename
         /// </summary>
         public string Name => _file.Name;
 
         /// <summary>
-        ///     Fullname (Path + Filename)
+        ///     Fullname (Path + filename)
         /// </summary>
         public string FullName => _file.FullName;
 
@@ -175,13 +175,13 @@ namespace Xabe.FFMpeg
                    "Video Root : " + Directory.FullName + Environment.NewLine +
                    "Video Name: " + Name + Environment.NewLine +
                    "Video Extension : " + Extension + Environment.NewLine +
-                   "Video Duration : " + Duration + Environment.NewLine +
-                   "Audio Format : " + AudioFormat + Environment.NewLine +
-                   "Video Format : " + VideoFormat + Environment.NewLine +
+                   "Video duration : " + Duration + Environment.NewLine +
+                   "Audio format : " + AudioFormat + Environment.NewLine +
+                   "Video format : " + VideoFormat + Environment.NewLine +
                    "Aspect Ratio : " + Ratio + Environment.NewLine +
                    "Framerate : " + FrameRate + "fps" + Environment.NewLine +
                    "Resolution : " + Width + "x" + Height + Environment.NewLine +
-                   "Size : " + Size + " MB";
+                   "size : " + Size + " MB";
         }
 
         /// <summary>
