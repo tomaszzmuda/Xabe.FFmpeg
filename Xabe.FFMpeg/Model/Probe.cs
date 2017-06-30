@@ -2,57 +2,57 @@
 {
     internal class ProbeModel
     {
-        public Stream[] streams { get; set; }
+        public Stream[] Streams { get; set; }
 
         public class Stream
         {
-            public int index { get; set; }
-            public string codec_name { get; set; }
-            public string codec_long_name { get; set; }
-            public string profile { get; set; }
-            public string codec_type { get; set; }
-            public string codec_time_base { get; set; }
-            public string codec_tag_string { get; set; }
-            public string codec_tag { get; set; }
-            public int width { get; set; }
-            public int height { get; set; }
-            public int coded_width { get; set; }
-            public int coded_height { get; set; }
-            public int has_b_frames { get; set; }
-            public string sample_aspect_ratio { get; set; }
-            public string display_aspect_ratio { get; set; }
-            public string pix_fmt { get; set; }
-            public int level { get; set; }
-            public string chroma_location { get; set; }
-            public int refs { get; set; }
-            public string quarter_sample { get; set; }
-            public string divx_packed { get; set; }
-            public string r_frame_rate { get; set; }
-            public string avg_frame_rate { get; set; }
-            public string time_base { get; set; }
-            public int start_pts { get; set; }
-            public string start_time { get; set; }
-            public int duration_ts { get; set; }
-            public double duration { get; set; }
-            public double bit_rate { get; set; }
-            public string nb_frames { get; set; }
-            public Disposition disposition { get; set; }
+            public int Index { get; set; }
+            public string CodecName { get; set; }
+            public string CodecLongName { get; set; }
+            public string Profile { get; set; }
+            public string CodecType { get; set; }
+            public string CodecTimeBase { get; set; }
+            public string CodecTagString { get; set; }
+            public string CodecTag { get; set; }
+            public int Width { get; set; }
+            public int Height { get; set; }
+            public int CodedWidth { get; set; }
+            public int CodedHeight { get; set; }
+            public int HasBFrames { get; set; }
+            public string SampleAspectRatio { get; set; }
+            public string DisplayAspectRatio { get; set; }
+            public string PixFmt { get; set; }
+            public int Level { get; set; }
+            public string ChromaLocation { get; set; }
+            public int Refs { get; set; }
+            public string QuarterSample { get; set; }
+            public string DivxPacked { get; set; }
+            public string RFrameRate { get; set; }
+            public string AvgFrameRate { get; set; }
+            public string TimeBase { get; set; }
+            public int StartPts { get; set; }
+            public string StartTime { get; set; }
+            public int DurationTs { get; set; }
+            public double Duration { get; set; }
+            public double BitRate { get; set; }
+            public string NbFrames { get; set; }
+            public Disposition Disposition { get; set; }
         }
 
         public class Disposition
         {
-            public int _default { get; set; }
-            public int dub { get; set; }
-            public int original { get; set; }
-            public int comment { get; set; }
-            public int lyrics { get; set; }
-            public int karaoke { get; set; }
-            public int forced { get; set; }
-            public int hearing_impaired { get; set; }
-            public int visual_impaired { get; set; }
-            public int clean_effects { get; set; }
-            public int attached_pic { get; set; }
-            public int timed_thumbnails { get; set; }
+            public int Default { get; set; }
+            public int Dub { get; set; }
+            public int Original { get; set; }
+            public int Comment { get; set; }
+            public int Lyrics { get; set; }
+            public int Karaoke { get; set; }
+            public int Forced { get; set; }
+            public int HearingImpaired { get; set; }
+            public int VisualImpaired { get; set; }
+            public int CleanEffects { get; set; }
+            public int AttachedPic { get; set; }
+            public int TimedThumbnails { get; set; }
         }
     }
 }

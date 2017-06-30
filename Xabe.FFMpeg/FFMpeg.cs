@@ -11,11 +11,17 @@ namespace Xabe.FFMpeg
     public delegate void ConversionHandler(TimeSpan duration, TimeSpan totalLength);
 
     // ReSharper disable once InconsistentNaming
+    /// <summary>
+    ///     Wrapper for FFMpeg
+    /// </summary>
     public class FFMpeg: FFBase
     {
         private volatile string _errorData = string.Empty;
         private TimeSpan _totalTime;
 
+        /// <summary>
+        ///     Fires when ffmpeg progress changes
+        /// </summary>
         public event ConversionHandler OnProgress;
 
         /// <summary>
@@ -180,7 +186,7 @@ namespace Xabe.FFMpeg
             string arguments = new ArgumentBuilder()
                 .SetInput(source)
                 .SetChannels(Channel.Both)
-                .SetFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
+                .SetFilter(Channel.Video, Filter.H264Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
                 .SetOutput(output)
                 .Build();
@@ -230,7 +236,7 @@ namespace Xabe.FFMpeg
 
             string arguments = new ArgumentBuilder().Concat(pathList)
                                                     .SetChannels(Channel.Both)
-                                                    .SetFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                                                    .SetFilter(Channel.Audio, Filter.AacAdtstoAsc)
                                                     .SetOutput(output)
                                                     .Build();
 

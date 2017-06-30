@@ -28,16 +28,16 @@ namespace Xabe.FFMpeg
 
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonOutput);
-            int vid = probe.streams[0].codec_type == "video" ? 0 : 1, aud = 1 - vid;
+            int vid = probe.Streams[0].CodecType == "video" ? 0 : 1, aud = 1 - vid;
 
             double duration = GetDuration(info, probe, vid);
             double videoSize = GetSize(info, probe, vid, duration);
             double audioSize = GetAudioSize(info, probe, aud);
 
-            if(probe.streams.Length > vid)
+            if(probe.Streams.Length > vid)
             {
-                info.Width = probe.streams[vid].width;
-                info.Height = probe.streams[vid].height;
+                info.Width = probe.Streams[vid].Width;
+                info.Height = probe.Streams[vid].Height;
                 info.FrameRate = GetVideoFramerate(probe, vid);
                 info.Ratio = GetVideoAspectRatio(info);
             }
@@ -46,7 +46,7 @@ namespace Xabe.FFMpeg
 
         private double GetVideoFramerate(ProbeModel probe, int vid)
         {
-            string[] fr = probe.streams[vid].r_frame_rate.Split('/');
+            string[] fr = probe.Streams[vid].RFrameRate.Split('/');
             return Math.Round(double.Parse(fr[0]) / double.Parse(fr[1]), 3);
         }
 
@@ -58,26 +58,26 @@ namespace Xabe.FFMpeg
 
         private double GetAudioSize(VideoInfo info, ProbeModel probe, int aud)
         {
-            if(probe.streams.Length <= aud)
+            if(probe.Streams.Length <= aud)
             {
                 info.AudioFormat = "none";
                 return 0;
             }
 
-            info.AudioFormat = probe.streams[aud].codec_name;
-            return probe.streams[aud].bit_rate * probe.streams[aud].duration / 8388608;
+            info.AudioFormat = probe.Streams[aud].CodecName;
+            return probe.Streams[aud].BitRate * probe.Streams[aud].Duration / 8388608;
         }
 
         private double GetSize(VideoInfo info, ProbeModel probe, int vid, double duration)
         {
-            if(probe.streams.Length <= vid)
+            if(probe.Streams.Length <= vid)
             {
                 info.VideoFormat = "none";
                 return 0;
             }
 
-            info.VideoFormat = probe.streams[vid].codec_name;
-            return probe.streams[vid].bit_rate * duration / 8388608;
+            info.VideoFormat = probe.Streams[vid].CodecName;
+            return probe.Streams[vid].BitRate * duration / 8388608;
         }
 
         private double GetDuration(VideoInfo info, ProbeModel probe, int vid)
@@ -87,13 +87,13 @@ namespace Xabe.FFMpeg
                 string jsonOutput =
                     RunProcess($"-v quiet -print_format json -show_format \"{info.FullName}\"");
                 FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonOutput)
-                                                       .format;
+                                                       .Format;
 
-                probe.streams[vid].duration = format.duration;
-                probe.streams[vid].bit_rate = format.bit_rate;
+                probe.Streams[vid].Duration = format.Duration;
+                probe.Streams[vid].BitRate = format.BitRate;
             }
 
-            double duration = probe.streams[vid].duration;
+            double duration = probe.Streams[vid].Duration;
             info.Duration = TimeSpan.FromSeconds(duration);
             info.Duration = info.Duration.Subtract(TimeSpan.FromMilliseconds(info.Duration.Milliseconds));
 

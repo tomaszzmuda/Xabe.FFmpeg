@@ -17,8 +17,8 @@
 
     internal enum Filter
     {
-        H264_Mp4ToAnnexB,
-        Aac_AdtstoAsc
+        H264Mp4ToAnnexB,
+        AacAdtstoAsc
     }
 
     internal enum Channel

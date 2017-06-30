@@ -13,7 +13,7 @@
     <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
     <RepositoryType>Dependency</RepositoryType>
     <PackageTags>media converter audio ffmpeg wrapper</PackageTags>
-    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -157,11 +157,15 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="fileInfo">File</param>
         /// <returns>VideoInfo</returns>
-        public static VideoInfo FromFileInfo(FileInfo fileInfo)
+        public static VideoInfo FromFile(FileInfo fileInfo)
         {
             return new VideoInfo(fileInfo);
         }
 
+        /// <summary>
+        ///     Get formated info about video
+        /// </summary>
+        /// <returns>Formated info about vidoe</returns>
         public override string ToString()
         {
             return "Video Path : " + FullName + Environment.NewLine +
@@ -221,7 +225,7 @@ namespace Xabe.FFMpeg
 
             FFmpeg.OnProgress -= OnConversionProgress;
 
-            return FromFileInfo(output);
+            return FromFile(output);
         }
 
         /// <summary>

@@ -6,30 +6,30 @@
         {
         }
 
-        public class Root
+        internal class Root
         {
-            public Format format { get; set; }
+            public Format Format { get; set; }
         }
 
-        public class Format
+        internal class Format
         {
-            public string filename { get; set; }
-            public int nb_streams { get; set; }
-            public int nb_programs { get; set; }
-            public string format_name { get; set; }
-            public string format_long_name { get; set; }
-            public string start_time { get; set; }
-            public double duration { get; set; }
-            public string size { get; set; }
-            public double bit_rate { get; set; }
-            public int probe_score { get; set; }
-            public Tags tags { get; set; }
+            public string Filename { get; set; }
+            public int NbStreams { get; set; }
+            public int NbPrograms { get; set; }
+            public string FormatName { get; set; }
+            public string FormatLongName { get; set; }
+            public string StartTime { get; set; }
+            public double Duration { get; set; }
+            public string Size { get; set; }
+            public double BitRate { get; set; }
+            public int ProbeScore { get; set; }
+            public Tags Tags { get; set; }
         }
 
-        public class Tags
+        internal class Tags
         {
-            public string encoder { get; set; }
-            public string creation_time { get; set; }
+            public string Encoder { get; set; }
+            public string CreationTime { get; set; }
         }
     }
 }
