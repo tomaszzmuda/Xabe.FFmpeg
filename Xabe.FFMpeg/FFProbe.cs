@@ -5,6 +5,9 @@ using Xabe.FFMpeg.Model;
 namespace Xabe.FFMpeg
 {
     // ReSharper disable once InconsistentNaming
+    /// <summary>
+    ///     Get info about media file
+    /// </summary>
     public sealed class FFProbe: FFBase
     {
         /// <summary>
@@ -27,7 +30,7 @@ namespace Xabe.FFMpeg
                 RunProcess($"-v quiet -print_format json -show_streams \"{info.FullName}\"");
 
             var probe =
-                JsonConvert.DeserializeObject<ProbeModel>(jsonOutput);
+                JsonConvert.DeserializeObject<ProbeModel>(jsonOutput, new JsonSerializerSettings());
             int vid = probe.Streams[0].CodecType == "video" ? 0 : 1, aud = 1 - vid;
 
             double duration = GetDuration(info, probe, vid);

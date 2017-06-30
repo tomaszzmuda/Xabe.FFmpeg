@@ -8,6 +8,9 @@ using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
 {
+    /// <summary>
+    ///     Information about media file
+    /// </summary>
     public class VideoInfo
     {
         private readonly FileInfo _file;

@@ -8,6 +8,11 @@ using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
 {
+    /// <summary>
+    ///     Info about conversion progress
+    /// </summary>
+    /// <param name="duration">Current processing time</param>
+    /// <param name="totalLength">Movie length</param>
     public delegate void ConversionHandler(TimeSpan duration, TimeSpan totalLength);
 
     // ReSharper disable once InconsistentNaming
