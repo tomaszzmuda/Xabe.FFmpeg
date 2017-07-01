@@ -235,8 +235,9 @@ namespace Xabe.FFMpeg
 
             foreach(VideoInfo video in videos)
             {
-                pathList.Add(video.FullName.Replace(video.Extension, Extensions.Ts));
-                ToTs(video, new FileInfo(video.FullName.Replace(Extensions.Mp4, Extensions.Ts)));
+                string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+                pathList.Add(tempFileName);
+                ToTs(video, new FileInfo(tempFileName));
             }
 
             string arguments = new ArgumentBuilder().Concat(pathList)
