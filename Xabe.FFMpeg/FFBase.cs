@@ -8,16 +8,31 @@ using System.Runtime.InteropServices;
 namespace Xabe.FFMpeg
 {
     // ReSharper disable once InconsistentNaming
+    /// <summary>
+    ///     Base FFMpeg class
+    /// </summary>
     public abstract class FFBase: IDisposable
     {
         // ReSharper disable once InconsistentNaming
+        /// <summary>
+        ///     Path to FFMpeg
+        /// </summary>
         protected string FFMpegPath;
 
         // ReSharper disable once InconsistentNaming
+        /// <summary>
+        ///     Path to FFProbe
+        /// </summary>
         protected string FFProbePath;
 
+        /// <summary>
+        ///     FFMpeg process
+        /// </summary>
         protected Process Process;
 
+        /// <summary>
+        ///     Initalize new FFMpeg. Search ffmpeg and ffprobe in PATH
+        /// </summary>
         protected FFBase()
         {
             var splitChar = ';';
@@ -71,6 +86,14 @@ namespace Xabe.FFMpeg
             }
         }
 
+        /// <summary>
+        ///     Run conversion
+        /// </summary>
+        /// <param name="args">Arguments</param>
+        /// <param name="processPath">Path to executable (ffmpeg, ffprobe)</param>
+        /// <param name="rStandardInput">Should redirect standard input</param>
+        /// <param name="rStandardOutput">Should redirect standard output</param>
+        /// <param name="rStandardError">Should redirect standard error</param>
         protected void RunProcess(string args, string processPath, bool rStandardInput = false,
             bool rStandardOutput = false, bool rStandardError = false)
         {
