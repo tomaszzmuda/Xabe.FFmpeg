@@ -191,7 +191,7 @@ namespace Xabe.FFMpeg
             string arguments = new ArgumentBuilder()
                 .SetInput(source)
                 .SetChannels(Channel.Both)
-                .SetFilter(Channel.Video, Filter.H264Mp4ToAnnexB)
+                .SetFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
                 .SetOutput(output)
                 .Build();
@@ -241,7 +241,7 @@ namespace Xabe.FFMpeg
 
             string arguments = new ArgumentBuilder().Concat(pathList)
                                                     .SetChannels(Channel.Both)
-                                                    .SetFilter(Channel.Audio, Filter.AacAdtstoAsc)
+                                                    .SetFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                                                     .SetOutput(output)
                                                     .Build();
 
