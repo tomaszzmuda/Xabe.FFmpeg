@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using Xabe.FFMpeg.Model;
 
@@ -31,25 +32,27 @@ namespace Xabe.FFMpeg
 
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonOutput, new JsonSerializerSettings());
-            int vid = probe.streams[0].codec_type == "video" ? 0 : 1, aud = 1 - vid;
 
-            double duration = GetDuration(info, probe, vid);
-            double videoSize = GetSize(info, probe, vid, duration);
-            double audioSize = GetAudioSize(info, probe, aud);
+            ProbeModel.Stream vid = probe.streams.FirstOrDefault(x => x.codec_type == "video");
+            ProbeModel.Stream aud = probe.streams.FirstOrDefault(x => x.codec_type == "audio");
 
-            if(probe.streams.Length > vid)
+            double duration = GetDuration(info, vid);
+            double videoSize = GetSize(info, vid, duration);
+            double audioSize = GetAudioSize(info, aud);
+
+            if(vid != null)
             {
-                info.Width = probe.streams[vid].width;
-                info.Height = probe.streams[vid].height;
-                info.FrameRate = GetVideoFramerate(probe, vid);
+                info.Width = vid.width;
+                info.Height = vid.height;
+                info.FrameRate = GetVideoFramerate(vid);
                 info.Ratio = GetVideoAspectRatio(info);
             }
             info.Size = Math.Round(videoSize + audioSize, 2);
         }
 
-        private double GetVideoFramerate(ProbeModel probe, int vid)
+        private double GetVideoFramerate(ProbeModel.Stream vid)
         {
-            string[] fr = probe.streams[vid].r_frame_rate.Split('/');
+            string[] fr = vid.r_frame_rate.Split('/');
             return Math.Round(double.Parse(fr[0]) / double.Parse(fr[1]), 3);
         }
 
@@ -59,31 +62,31 @@ namespace Xabe.FFMpeg
             return info.Width / cd + ":" + info.Height / cd;
         }
 
-        private double GetAudioSize(VideoInfo info, ProbeModel probe, int aud)
+        private double GetAudioSize(VideoInfo info, ProbeModel.Stream aud)
         {
-            if(probe.streams.Length <= aud)
+            if(aud == null)
             {
                 info.AudioFormat = "none";
                 return 0;
             }
 
-            info.AudioFormat = probe.streams[aud].codec_name;
-            return probe.streams[aud].bit_rate * probe.streams[aud].duration / 8388608;
+            info.AudioFormat = aud.codec_name;
+            return aud.bit_rate * aud.duration / 8388608;
         }
 
-        private double GetSize(VideoInfo info, ProbeModel probe, int vid, double duration)
+        private double GetSize(VideoInfo info, ProbeModel.Stream vid, double duration)
         {
-            if(probe.streams.Length <= vid)
+            if(vid == null)
             {
                 info.VideoFormat = "none";
                 return 0;
             }
 
-            info.VideoFormat = probe.streams[vid].codec_name;
-            return probe.streams[vid].bit_rate * duration / 8388608;
+            info.VideoFormat = vid.codec_name;
+            return vid.bit_rate * duration / 8388608;
         }
 
-        private double GetDuration(VideoInfo info, ProbeModel probe, int vid)
+        private double GetDuration(VideoInfo info, ProbeModel.Stream video)
         {
             if(info.Extension == ".mkv")
             {
@@ -92,11 +95,11 @@ namespace Xabe.FFMpeg
                 FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonOutput)
                                                        .format;
 
-                probe.streams[vid].duration = format.duration;
-                probe.streams[vid].bit_rate = format.bitRate;
+                video.duration = format.duration;
+                video.bit_rate = format.bitRate;
             }
 
-            double duration = probe.streams[vid].duration;
+            double duration = video.duration;
             info.Duration = TimeSpan.FromSeconds(duration);
             info.Duration = info.Duration.Subtract(TimeSpan.FromMilliseconds(info.Duration.Milliseconds));
 
