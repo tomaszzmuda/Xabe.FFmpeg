@@ -13,6 +13,12 @@ namespace Xabe.FFMpeg
     /// </summary>
     public abstract class FFBase: IDisposable
     {
+        /// <summary>
+        ///     Directory contains FFMpeg and FFProbe
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        public static string FFMpegDir;
+
         // ReSharper disable once InconsistentNaming
         /// <summary>
         ///     Path to FFMpeg
@@ -35,6 +41,17 @@ namespace Xabe.FFMpeg
         /// </summary>
         protected FFBase()
         {
+            if(!string.IsNullOrWhiteSpace(FFMpegDir))
+            {
+                FFProbePath = new DirectoryInfo(FFMpegDir).GetFiles()
+                                                          .First(x => x.Name.Contains("ffprobe"))
+                                                          .FullName;
+                FFMpegPath = new DirectoryInfo(FFMpegDir).GetFiles()
+                                                         .First(x => x.Name.Contains("ffmpeg"))
+                                                         .FullName;
+                return;
+            }
+            
             var splitChar = ';';
             bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
             if(isLinux)
