@@ -36,4 +36,4 @@ If file already has lock file, and it time haven't expired, method returns null.
 	
 ## Lincence ## 
 
-Xabe.FFMpeg is licensed under MIT - see [License](License.md) for details.
+Xabe.FFMpeg is licensed under MIT - see [License](LICENSE.md) for details.
