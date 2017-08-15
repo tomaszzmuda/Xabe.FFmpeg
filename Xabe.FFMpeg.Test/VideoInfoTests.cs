@@ -14,18 +14,49 @@ namespace Xabe.FFMpeg.Test
         private static readonly FileInfo SampleVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "mute.mp4"));
         private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sampleMkv.mkv"));
 
-        [Theory]
-        //[InlineData(VideoType.Ogv, ".ogv")] Commented due to lack encoder in CI environment
-        [InlineData(VideoType.Ts, ".ts")]
-        [InlineData(VideoType.Mp4, ".mp4")]
-        public void Convert(VideoType videoType, string extension)
+
+        [Fact]
+        public void ToTs()
         {
             FileInfo fileInfo = SampleVideoWithAudio;
-            var output = Path.ChangeExtension(Path.GetTempFileName(), extension);
+            var output = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
 
-            VideoInfo outputVideo = new VideoInfo(fileInfo).ConvertTo(videoType, output, Speed.UltraFast);
-            Assert.True(File.Exists(outputVideo.Path));
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToTs(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
             Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
+        }
+
+        [Fact]
+        public void ToWebM()
+        {
+            FileInfo fileInfo = SampleVideoWithAudio;
+            var output = Path.ChangeExtension(Path.GetTempFileName(), ".webm");
+
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToWebM(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
+            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
+        }
+
+        [Fact]
+        public void ToOGV()
+        {
+            FileInfo fileInfo = SampleVideoWithAudio;
+            var output = Path.ChangeExtension(Path.GetTempFileName(), ".ogv");
+
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToOgv(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
+            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
+        }
+
+        [Fact]
+        public void ToMp4()
+        {
+            FileInfo fileInfo = SampleMkvVideo;
+            var output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToMp4(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
+            Assert.Equal(TimeSpan.FromSeconds(30), outputVideo.Duration);
         }
 
         [Fact]
@@ -77,12 +108,12 @@ namespace Xabe.FFMpeg.Test
 
             Assert.Equal("none", videoInfo.AudioFormat);
             Assert.Equal(TimeSpan.FromSeconds(30), videoInfo.Duration);
-            Assert.True(File.Exists(videoInfo.Path));
+            Assert.True(File.Exists(videoInfo.FilePath));
             Assert.Equal(".mkv", videoInfo.Extension);
             Assert.Equal(29.97, videoInfo.FrameRate);
             Assert.Equal(1080, videoInfo.Height);
             Assert.Equal(1920, videoInfo.Width);
-            Assert.Equal("sampleMkv.mkv", Path.GetFileName(videoInfo.Path));
+            Assert.Equal("sampleMkv.mkv", Path.GetFileName(videoInfo.FilePath));
             Assert.False(videoInfo.IsRunning);
             Assert.Equal("16:9", videoInfo.Ratio);
         }
@@ -94,12 +125,12 @@ namespace Xabe.FFMpeg.Test
 
             Assert.Equal("aac", videoInfo.AudioFormat);
             Assert.Equal(TimeSpan.FromSeconds(13), videoInfo.Duration);
-            Assert.True(File.Exists(videoInfo.Path));
+            Assert.True(File.Exists(videoInfo.FilePath));
             Assert.Equal(".mp4", videoInfo.Extension);
             Assert.Equal(25, videoInfo.FrameRate);
             Assert.Equal(720, videoInfo.Height);
             Assert.Equal(1280, videoInfo.Width);
-            Assert.Equal("input.mp4", Path.GetFileName(videoInfo.Path));
+            Assert.Equal("input.mp4", Path.GetFileName(videoInfo.FilePath));
             Assert.False(videoInfo.IsRunning);
             Assert.Equal("16:9", videoInfo.Ratio);
         }
@@ -117,7 +148,7 @@ namespace Xabe.FFMpeg.Test
         public void SnapshotWithOutput()
         {
             var videoInfo = new VideoInfo(SampleVideoWithAudio);
-            var output = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + Extensions.Png); 
+            var output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Png); 
             Image snapshot = videoInfo.Snapshot(output);
 
             Assert.Equal(snapshot.Width, videoInfo.Width);

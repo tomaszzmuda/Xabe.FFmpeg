@@ -108,7 +108,7 @@ namespace Xabe.FFMpeg
 
         internal ArgumentBuilder SetInput(VideoInfo input)
         {
-            _input = $"-i \"{input.Path}\" ";
+            _input = $"-i \"{input.FilePath}\" ";
             return this;
         }
 

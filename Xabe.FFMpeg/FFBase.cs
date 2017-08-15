@@ -21,13 +21,13 @@ namespace Xabe.FFMpeg
 
         // ReSharper disable once InconsistentNaming
         /// <summary>
-        ///     Path to FFMpeg
+        ///     FilePath to FFMpeg
         /// </summary>
         protected string FFMpegPath;
 
         // ReSharper disable once InconsistentNaming
         /// <summary>
-        ///     Path to FFProbe
+        ///     FilePath to FFProbe
         /// </summary>
         protected string FFProbePath;
 
@@ -107,7 +107,7 @@ namespace Xabe.FFMpeg
         ///     Run conversion
         /// </summary>
         /// <param name="args">Arguments</param>
-        /// <param name="processPath">Path to executable (ffmpeg, ffprobe)</param>
+        /// <param name="processPath">FilePath to executable (ffmpeg, ffprobe)</param>
         /// <param name="rStandardInput">Should redirect standard input</param>
         /// <param name="rStandardOutput">Should redirect standard output</param>
         /// <param name="rStandardError">Should redirect standard error</param>

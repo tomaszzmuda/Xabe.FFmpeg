@@ -28,7 +28,7 @@ namespace Xabe.FFMpeg
         public void ProbeDetails(VideoInfo info)
         {
             string jsonOutput =
-                RunProcess($"-v quiet -print_format json -show_streams \"{info.Path}\"");
+                RunProcess($"-v quiet -print_format json -show_streams \"{info.FilePath}\"");
 
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonOutput, new JsonSerializerSettings());
@@ -88,10 +88,10 @@ namespace Xabe.FFMpeg
 
         private double GetDuration(VideoInfo info, ProbeModel.Stream video)
         {
-            if(info.Extension == ".mkv")
+            if(info.Extension == ".mkv" || info.Extension == ".webm")
             {
                 string jsonOutput =
-                    RunProcess($"-v quiet -print_format json -show_format \"{info.Path}\"");
+                    RunProcess($"-v quiet -print_format json -show_format \"{info.FilePath}\"");
                 FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonOutput)
                                                        .format;
 

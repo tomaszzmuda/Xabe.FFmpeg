@@ -16,14 +16,13 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     _sourceFile info
         /// </summary>
-        private readonly FileInfo _sourceFile;
 
-        public readonly string Path;
+        public readonly string FilePath;
 
         /// <summary>
         ///     Return extension of file
         /// </summary>
-        public string Extension { get { return System.IO.Path.GetExtension(Path); } }
+        public string Extension => Path.GetExtension(FilePath);
 
         private FFMpeg _ffmpeg;
 
@@ -43,14 +42,14 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Get VideoInfo from file
         /// </summary>
-        /// <param name="path">Path to file</param>
-        public VideoInfo(string path)
+        /// <param name="filePath">FilePath to file</param>
+        public VideoInfo(string filePath)
         {
-            if(!File.Exists(path))
+            if(!File.Exists(filePath))
             {
-                throw new ArgumentException($"Input file {path} doesn't exists.");
+                throw new ArgumentException($"Input file {filePath} doesn't exists.");
             }
-            Path = path;
+            FilePath = filePath;
             new FFProbe().ProbeDetails(this);
         }
 
@@ -113,22 +112,6 @@ namespace Xabe.FFMpeg
         public bool IsRunning => FFmpeg.IsRunning;
 
         /// <summary>
-        ///     Convert file to specified format. Output file will be in the same directory as source with changed extension.
-        /// </summary>
-        /// <param name="type">Destination format</param>
-        /// <param name="speed">Conversion speed</param>
-        /// <param name="size">Dimension</param>
-        /// <param name="audioQuality">Audio quality</param>
-        /// <param name="multithread">Use multithread</param>
-        /// <returns>Output VideoInfo</returns>
-        public VideoInfo ConvertTo(VideoType type, Speed speed = Speed.Medium, VideoSize size = VideoSize.Original,
-            AudioQuality audioQuality = AudioQuality.Normal, bool multithread = true)
-        {
-            string outputPath = _sourceFile.FullName.Replace(_sourceFile.Extension, $".{type.ToString() .ToLower()}");
-            return ConvertTo(type, outputPath, speed, size, audioQuality, multithread);
-        }
-
-        /// <summary>
         ///     Create VideoInfo from file
         /// </summary>
         /// <param name="fileInfo">_sourceFile</param>
@@ -144,10 +127,10 @@ namespace Xabe.FFMpeg
         /// <returns>Formated info about vidoe</returns>
         public override string ToString()
         {
-            return "Video Path : " + _sourceFile.FullName + Environment.NewLine +
-                   "Video Root : " + _sourceFile.Directory.FullName + Environment.NewLine +
-                   "Video Name: " + _sourceFile.Name + Environment.NewLine +
-                   "Video Extension : " + _sourceFile.Extension + Environment.NewLine +
+            return "Video FilePath : " + FilePath + Environment.NewLine +
+                   "Video Root : " + Path.GetDirectoryName(FilePath)+ Environment.NewLine +
+                   "Video Name: " + Path.GetFileName(FilePath) + Environment.NewLine +
+                   "Video Extension : " + Extension + Environment.NewLine +
                    "Video duration : " + Duration + Environment.NewLine +
                    "Audio format : " + AudioFormat + Environment.NewLine +
                    "Video format : " + VideoFormat + Environment.NewLine +
@@ -158,43 +141,72 @@ namespace Xabe.FFMpeg
         }
 
         /// <summary>
-        ///     Convert file to specified format
+        ///     Convert file to TS
         /// </summary>
-        /// <param name="type">Destination format</param>
+        /// <param name="outputPath">Destination file</param>
+        /// <returns>Output VideoInfo</returns>
+        public VideoInfo ToTs(string outputPath)
+        {
+            FFmpeg.OnProgress += OnConversionProgress;
+            var success = FFmpeg.ToTs(this, outputPath);
+            if (!success)
+                throw new OperationCanceledException("The conversion process could not be completed.");
+            FFmpeg.OnProgress -= OnConversionProgress;
+            return new VideoInfo(outputPath);
+        }
+
+        /// <summary>
+        ///     Convert file to WebM
+        /// </summary>
+        /// <param name="outputPath">Destination file</param>
+        /// <param name="size">Dimension</param>
+        /// <param name="audioQuality">Audio quality</param>
+        /// <returns>Output VideoInfo</returns>
+        public VideoInfo ToWebM(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal)
+        {
+            FFmpeg.OnProgress += OnConversionProgress;
+            var success = FFmpeg.ToWebM(this, outputPath, size, audioQuality);
+            if (!success)
+                throw new OperationCanceledException("The conversion process could not be completed.");
+            FFmpeg.OnProgress -= OnConversionProgress;
+            return new VideoInfo(outputPath);
+        }
+
+        /// <summary>
+        ///     Convert file to OGV
+        /// </summary>
+        /// <param name="outputPath">Destination file</param>
+        /// <param name="size">Dimension</param>
+        /// <param name="audioQuality">Audio quality</param>
+        /// <param name="multithread">Use multithread</param>
+        /// <returns>Output VideoInfo</returns>
+        public VideoInfo ToOgv(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        {
+            FFmpeg.OnProgress += OnConversionProgress;
+            var success = FFmpeg.ToOgv(this, outputPath, size, audioQuality, multithread);
+            if (!success)
+                throw new OperationCanceledException("The conversion process could not be completed.");
+            FFmpeg.OnProgress -= OnConversionProgress;
+            return new VideoInfo(outputPath);
+        }
+
+        /// <summary>
+        ///     Convert file to MP4
+        /// </summary>
         /// <param name="outputPath">Destination file</param>
         /// <param name="speed">Conversion speed</param>
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Output VideoInfo</returns>
-        public VideoInfo ConvertTo(VideoType type, string outputPath, Speed speed = Speed.SuperFast,
+        public VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            bool success;
             FFmpeg.OnProgress += OnConversionProgress;
-            switch(type)
-            {
-                case VideoType.Mp4:
-                    success = FFmpeg.ToMp4(this, outputPath, speed, size, audioQuality, multithread);
-                    break;
-                case VideoType.Ogv:
-                    success = FFmpeg.ToOgv(this, outputPath, size, audioQuality, multithread);
-                    break;
-                case VideoType.WebM:
-                    success = FFmpeg.ToWebM(this, outputPath, size, audioQuality);
-                    break;
-                case VideoType.Ts:
-                    success = FFmpeg.ToTs(this, outputPath);
-                    break;
-                default:
-                    throw new ArgumentException("VideoType not recognized");
-            }
-
-            if(!success)
+            var success = FFmpeg.ToMp4(this, outputPath, speed, size, audioQuality, multithread);
+            if (!success)
                 throw new OperationCanceledException("The conversion process could not be completed.");
-
             FFmpeg.OnProgress -= OnConversionProgress;
-
             return new VideoInfo(outputPath);
         }
 

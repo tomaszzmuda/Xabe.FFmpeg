@@ -311,8 +311,8 @@ namespace Xabe.FFMpeg
             if(File.Exists(outputPath))
                 throw new IOException($"The output file: {outputPath} already exists!");
 
-            if(!File.Exists(originalVideo.Path))
-                throw new IOException($"Input {originalVideo.Path} does not exist!");
+            if(!File.Exists(originalVideo.FilePath))
+                throw new IOException($"Input {originalVideo.FilePath} does not exist!");
         }
 
         private void CheckIfFilesExists(params FileInfo[] paths)
@@ -342,7 +342,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(audio);
             CheckExtension(outputPath, source.Extension);
 
-            string arguments = new ArgumentBuilder().SetInput(new FileInfo(source.Path), audio)
+            string arguments = new ArgumentBuilder().SetInput(new FileInfo(source.FilePath), audio)
                                                     .SetChannels(Channel.Video)
                                                     .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
                                                     .UseShortest(stopAtShortest)
