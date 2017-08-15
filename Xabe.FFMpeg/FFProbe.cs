@@ -9,7 +9,7 @@ namespace Xabe.FFMpeg
     /// <summary>
     ///     Get info about media file
     /// </summary>
-    public sealed class FFProbe: FFBase
+    internal sealed class FFProbe: FFBase
     {
         /// <summary>
         ///     Retrieve details from video file
@@ -28,7 +28,7 @@ namespace Xabe.FFMpeg
         public void ProbeDetails(VideoInfo info)
         {
             string jsonOutput =
-                RunProcess($"-v quiet -print_format json -show_streams \"{info.FullName}\"");
+                RunProcess($"-v quiet -print_format json -show_streams \"{info.Path}\"");
 
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonOutput, new JsonSerializerSettings());
@@ -91,7 +91,7 @@ namespace Xabe.FFMpeg
             if(info.Extension == ".mkv")
             {
                 string jsonOutput =
-                    RunProcess($"-v quiet -print_format json -show_format \"{info.FullName}\"");
+                    RunProcess($"-v quiet -print_format json -show_format \"{info.Path}\"");
                 FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonOutput)
                                                        .format;
 

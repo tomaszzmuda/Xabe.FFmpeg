@@ -11,9 +11,20 @@ namespace Xabe.FFMpeg
     /// <summary>
     ///     Information about media file
     /// </summary>
-    public class VideoInfo
+    public class VideoInfo : IDisposable
     {
-        private readonly FileInfo _file;
+        /// <summary>
+        ///     _sourceFile info
+        /// </summary>
+        private readonly FileInfo _sourceFile;
+
+        public readonly string Path;
+
+        /// <summary>
+        ///     Return extension of file
+        /// </summary>
+        public string Extension { get { return System.IO.Path.GetExtension(Path); } }
+
         private FFMpeg _ffmpeg;
 
         /// <summary>
@@ -24,24 +35,23 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Get VideoInfo from file
         /// </summary>
-        /// <param name="fileInfo">File</param>
-        public VideoInfo(FileInfo fileInfo)
+        /// <param name="sourceFileInfo">_sourceFile</param>
+        public VideoInfo(FileInfo sourceFileInfo) : this(sourceFileInfo.FullName)
         {
-            fileInfo.Refresh();
-
-            if(!fileInfo.Exists)
-                throw new ArgumentException($"Input file {fileInfo.FullName} does not exist!");
-
-            _file = fileInfo;
-            new FFProbe().ProbeDetails(this);
         }
 
         /// <summary>
         ///     Get VideoInfo from file
         /// </summary>
         /// <param name="path">Path to file</param>
-        public VideoInfo(string path): this(new FileInfo(path))
+        public VideoInfo(string path)
         {
+            if(!File.Exists(path))
+            {
+                throw new ArgumentException($"Input file {path} doesn't exists.");
+            }
+            Path = path;
+            new FFProbe().ProbeDetails(this);
         }
 
         private FFMpeg FFmpeg
@@ -98,41 +108,6 @@ namespace Xabe.FFMpeg
         public double Size { get; internal set; }
 
         /// <summary>
-        ///     filename
-        /// </summary>
-        public string Name => _file.Name;
-
-        /// <summary>
-        ///     Fullname (Path + filename)
-        /// </summary>
-        public string FullName => _file.FullName;
-
-        /// <summary>
-        ///     Extension
-        /// </summary>
-        public string Extension => _file.Extension;
-
-        /// <summary>
-        ///     Is readonly
-        /// </summary>
-        public bool IsReadOnly => _file.IsReadOnly;
-
-        /// <summary>
-        ///     Gets a value indicating whether a file exists
-        /// </summary>
-        public bool Exists => _file.Exists;
-
-        /// <summary>
-        ///     Creation time
-        /// </summary>
-        public DateTime CreationTime => _file.CreationTime;
-
-        /// <summary>
-        ///     Directory
-        /// </summary>
-        public DirectoryInfo Directory => _file.Directory;
-
-        /// <summary>
         ///     Get the ffmpeg process status
         /// </summary>
         public bool IsRunning => FFmpeg.IsRunning;
@@ -145,20 +120,18 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
-        /// <param name="deleteSource"></param>
         /// <returns>Output VideoInfo</returns>
         public VideoInfo ConvertTo(VideoType type, Speed speed = Speed.Medium, VideoSize size = VideoSize.Original,
-            AudioQuality audioQuality = AudioQuality.Normal, bool multithread = true, bool deleteSource = false)
+            AudioQuality audioQuality = AudioQuality.Normal, bool multithread = true)
         {
-            string outputPath = FullName.Replace(Extension, $".{type.ToString() .ToLower()}");
-            var output = new FileInfo(outputPath);
-            return ConvertTo(type, output, speed, size, audioQuality, multithread, deleteSource);
+            string outputPath = _sourceFile.FullName.Replace(_sourceFile.Extension, $".{type.ToString() .ToLower()}");
+            return ConvertTo(type, outputPath, speed, size, audioQuality, multithread);
         }
 
         /// <summary>
         ///     Create VideoInfo from file
         /// </summary>
-        /// <param name="fileInfo">File</param>
+        /// <param name="fileInfo">_sourceFile</param>
         /// <returns>VideoInfo</returns>
         public static VideoInfo FromFile(FileInfo fileInfo)
         {
@@ -171,49 +144,47 @@ namespace Xabe.FFMpeg
         /// <returns>Formated info about vidoe</returns>
         public override string ToString()
         {
-            return "Video Path : " + FullName + Environment.NewLine +
-                   "Video Root : " + Directory.FullName + Environment.NewLine +
-                   "Video Name: " + Name + Environment.NewLine +
-                   "Video Extension : " + Extension + Environment.NewLine +
+            return "Video Path : " + _sourceFile.FullName + Environment.NewLine +
+                   "Video Root : " + _sourceFile.Directory.FullName + Environment.NewLine +
+                   "Video Name: " + _sourceFile.Name + Environment.NewLine +
+                   "Video Extension : " + _sourceFile.Extension + Environment.NewLine +
                    "Video duration : " + Duration + Environment.NewLine +
                    "Audio format : " + AudioFormat + Environment.NewLine +
                    "Video format : " + VideoFormat + Environment.NewLine +
                    "Aspect Ratio : " + Ratio + Environment.NewLine +
                    "Framerate : " + FrameRate + "fps" + Environment.NewLine +
                    "Resolution : " + Width + "x" + Height + Environment.NewLine +
-                   "size : " + Size + " MB";
+                   "Size : " + Size + " MB";
         }
 
         /// <summary>
         ///     Convert file to specified format
         /// </summary>
         /// <param name="type">Destination format</param>
-        /// <param name="output">Destination file</param>
+        /// <param name="outputPath">Destination file</param>
         /// <param name="speed">Conversion speed</param>
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
-        /// <param name="deleteSource"></param>
         /// <returns>Output VideoInfo</returns>
-        public VideoInfo ConvertTo(VideoType type, FileInfo output, Speed speed = Speed.SuperFast,
-            VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false,
-            bool deleteSource = false)
+        public VideoInfo ConvertTo(VideoType type, string outputPath, Speed speed = Speed.SuperFast,
+            VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             bool success;
             FFmpeg.OnProgress += OnConversionProgress;
             switch(type)
             {
                 case VideoType.Mp4:
-                    success = FFmpeg.ToMp4(this, output, speed, size, audioQuality, multithread);
+                    success = FFmpeg.ToMp4(this, outputPath, speed, size, audioQuality, multithread);
                     break;
                 case VideoType.Ogv:
-                    success = FFmpeg.ToOgv(this, output, size, audioQuality, multithread);
+                    success = FFmpeg.ToOgv(this, outputPath, size, audioQuality, multithread);
                     break;
                 case VideoType.WebM:
-                    success = FFmpeg.ToWebM(this, output, size, audioQuality);
+                    success = FFmpeg.ToWebM(this, outputPath, size, audioQuality);
                     break;
                 case VideoType.Ts:
-                    success = FFmpeg.ToTs(this, output);
+                    success = FFmpeg.ToTs(this, outputPath);
                     break;
                 default:
                     throw new ArgumentException("VideoType not recognized");
@@ -222,13 +193,9 @@ namespace Xabe.FFMpeg
             if(!success)
                 throw new OperationCanceledException("The conversion process could not be completed.");
 
-            if(deleteSource)
-                if(Exists)
-                    _file.Delete();
-
             FFmpeg.OnProgress -= OnConversionProgress;
 
-            return FromFile(output);
+            return new VideoInfo(outputPath);
         }
 
         /// <summary>
@@ -236,7 +203,7 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="output">Output audio stream</param>
         /// <returns>Conversion result</returns>
-        public bool ExtractVideo(FileInfo output)
+        public bool ExtractVideo(string output)
         {
             return FFmpeg.ExtractVideo(this, output);
         }
@@ -246,7 +213,7 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="output">Output video stream</param>
         /// <returns>Conversion result</returns>
-        public bool ExtractAudio(FileInfo output)
+        public bool ExtractAudio(string output)
         {
             return FFmpeg.ExtractAudio(this, output);
         }
@@ -257,7 +224,7 @@ namespace Xabe.FFMpeg
         /// <param name="audio">Audio file</param>
         /// <param name="output">Output file</param>
         /// <returns>Conversion result</returns>
-        public bool AddAudio(FileInfo audio, FileInfo output)
+        public bool AddAudio(FileInfo audio, string output)
         {
             return FFmpeg.AddAudio(this, audio, output);
         }
@@ -270,18 +237,16 @@ namespace Xabe.FFMpeg
         /// <returns>Snapshot</returns>
         public Bitmap Snapshot(Size? size = null, TimeSpan? captureTime = null)
         {
-            var output = new FileInfo($"{Environment.TickCount}.png");
+            var output = $"{Environment.TickCount}.png";
 
             bool success = FFmpeg.Snapshot(this, output, size, captureTime);
 
             if(!success)
                 throw new OperationCanceledException("Could not take snapshot!");
 
-            output.Refresh();
-
             Bitmap result;
 
-            using(Image bmp = Image.FromFile(output.FullName))
+            using(Image bmp = Image.FromFile(output))
             {
                 using(var ms = new MemoryStream())
                 {
@@ -291,8 +256,8 @@ namespace Xabe.FFMpeg
                 }
             }
 
-            if(output.Exists)
-                output.Delete();
+            if(File.Exists(output))
+                File.Delete(output);
 
             return result;
         }
@@ -304,7 +269,7 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Snapshot</returns>
-        public Bitmap Snapshot(FileInfo output, Size? size = null, TimeSpan? captureTime = null)
+        public Bitmap Snapshot(string output, Size? size = null, TimeSpan? captureTime = null)
         {
             bool success = FFmpeg.Snapshot(this, output, size, captureTime);
 
@@ -314,7 +279,7 @@ namespace Xabe.FFMpeg
             Bitmap result;
 
 
-            using(Image bmp = Image.FromFile(Path.ChangeExtension(output.FullName, ".png")))
+            using(Image bmp = Image.FromFile(System.IO.Path.ChangeExtension(output, ".png")))
             {
                 result = (Bitmap) bmp.Clone();
             }
@@ -328,7 +293,7 @@ namespace Xabe.FFMpeg
         /// <param name="output">Concatenated videos</param>
         /// <param name="videos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        public bool JoinWith(FileInfo output, params VideoInfo[] videos)
+        public bool JoinWith(string output, params VideoInfo[] videos)
         {
             List<VideoInfo> queuedVideos = videos.ToList();
 
@@ -337,20 +302,11 @@ namespace Xabe.FFMpeg
             return FFmpeg.Join(output, queuedVideos.ToArray());
         }
 
-        /// <summary>
-        ///     Delete file
-        /// </summary>
-        private void Delete()
-        {
-            _file.Delete();
-        }
-
-        /// <summary>
-        ///     Stop conversion
-        /// </summary>
-        public void CancelOperation()
+        /// <inheritdoc />
+        public void Dispose()
         {
             FFmpeg.Stop();
+            _ffmpeg?.Dispose();
         }
     }
 }

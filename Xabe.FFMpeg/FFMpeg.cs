@@ -19,7 +19,7 @@ namespace Xabe.FFMpeg
     /// <summary>
     ///     Wrapper for FFMpeg
     /// </summary>
-    public class FFMpeg: FFBase
+    internal class FFMpeg: FFBase
     {
         private volatile string _errorData = string.Empty;
         private TimeSpan _totalTime;
@@ -33,21 +33,18 @@ namespace Xabe.FFMpeg
         ///     Saves snapshot of video
         /// </summary>
         /// <param name="source">Video</param>
-        /// <param name="output">Output file</param>
+        /// <param name="outputPath">Output file</param>
         /// <param name="size">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Conversion result</returns>
-        public bool Snapshot(VideoInfo source, FileInfo output, Size? size = null, TimeSpan? captureTime = null)
+        public bool Snapshot(VideoInfo source, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
             if(captureTime == null)
                 captureTime = TimeSpan.FromSeconds(source.Duration.TotalSeconds / 3);
 
-            if(output.Extension.ToLower() != Extensions.Png)
-                output = new FileInfo(output.FullName.Replace(output.Extension, Extensions.Png));
-
             size = GetSize(source, size);
 
-            CheckIfFilesExists(source, output);
+            CheckIfFilesExists(source, outputPath);
 
             string arguments = new ArgumentBuilder()
                 .SetInput(source)
@@ -55,10 +52,10 @@ namespace Xabe.FFMpeg
                 .SetOutputFramesCount(1)
                 .SetSeek(captureTime)
                 .SetSize(size)
-                .SetOutput(output)
+                .SetOutput(outputPath)
                 .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         private static Size? GetSize(VideoInfo source, Size? size)
@@ -91,19 +88,19 @@ namespace Xabe.FFMpeg
         ///     Converts a source video to MP4 format.
         /// </summary>
         /// <param name="source">Source video file.</param>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <param name="speed">Conversion speed preset.</param>
         /// <param name="size">Output video size.</param>
         /// <param name="aQuality">Output audio quality.</param>
         /// <param name="multithread">Use multithreading for conversion.</param>
         /// <returns>Conversion result</returns>
-        public bool ToMp4(VideoInfo source, FileInfo output, Speed speed = Speed.SuperFast,
+        public bool ToMp4(VideoInfo source, string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = VideoSize.Original, AudioQuality aQuality = AudioQuality.Normal, bool multithread = false)
         {
             _totalTime = source.Duration;
 
-            CheckIfFilesExists(source, output);
-            CheckExtension(output, Extensions.Mp4);
+            CheckIfFilesExists(source, outputPath);
+            CheckExtension(outputPath, Extensions.Mp4);
 
             string arguments = new ArgumentBuilder()
                 .SetInput(source)
@@ -112,27 +109,27 @@ namespace Xabe.FFMpeg
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetSpeed(speed)
                 .SetAudio(AudioCodec.Aac, aQuality)
-                .SetOutput(output)
+                .SetOutput(outputPath)
                 .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
         ///     Converts a source video to WebM format.
         /// </summary>
         /// <param name="source">Source video file.</param>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <param name="size">Output video size.</param>
         /// <param name="aQuality">Output audio quality.</param>
         /// <returns>Conversion result</returns>
-        public bool ToWebM(VideoInfo source, FileInfo output, VideoSize size = VideoSize.Original,
+        public bool ToWebM(VideoInfo source, string outputPath, VideoSize size = VideoSize.Original,
             AudioQuality aQuality = AudioQuality.Normal)
         {
             _totalTime = source.Duration;
 
-            CheckIfFilesExists(source, output);
-            CheckExtension(output, Extensions.WebM);
+            CheckIfFilesExists(source, outputPath);
+            CheckExtension(outputPath, Extensions.WebM);
 
             string arguments = new ArgumentBuilder()
                 .SetInput(source)
@@ -140,28 +137,28 @@ namespace Xabe.FFMpeg
                 .SetVideo(VideoCodec.LibVpx, 2400)
                 .SetSpeed(16)
                 .SetAudio(AudioCodec.LibVorbis, aQuality)
-                .SetOutput(output)
+                .SetOutput(outputPath)
                 .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
         ///     Converts a source video to OGV format.
         /// </summary>
         /// <param name="source">Source video file.</param>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <param name="size">Output video size.</param>
         /// <param name="aQuality">Output audio quality.</param>
         /// <param name="multithread">Use multithreading for conversion.</param>
         /// <returns>Conversion result</returns>
-        public bool ToOgv(VideoInfo source, FileInfo output, VideoSize size = VideoSize.Original,
+        public bool ToOgv(VideoInfo source, string outputPath, VideoSize size = VideoSize.Original,
             AudioQuality aQuality = AudioQuality.Normal, bool multithread = false)
         {
             _totalTime = source.Duration;
 
-            CheckIfFilesExists(source, output);
-            CheckExtension(output, Extensions.Ogv);
+            CheckIfFilesExists(source, outputPath);
+            CheckExtension(outputPath, Extensions.Ogv);
 
             string arguments = new ArgumentBuilder()
                 .SetInput(source)
@@ -169,34 +166,34 @@ namespace Xabe.FFMpeg
                 .SetVideo(VideoCodec.LibTheora, 2400)
                 .SetSpeed(16)
                 .SetAudio(AudioCodec.LibVorbis, aQuality)
-                .SetOutput(output)
+                .SetOutput(outputPath)
                 .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
         ///     Converts a source video to TS format.
         /// </summary>
         /// <param name="source">Source video file.</param>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <returns>Conversion result</returns>
-        public bool ToTs(VideoInfo source, FileInfo output)
+        public bool ToTs(VideoInfo source, string outputPath)
         {
             _totalTime = source.Duration;
 
-            CheckIfFilesExists(source, output);
-            CheckExtension(output, Extensions.Ts);
+            CheckIfFilesExists(source, outputPath);
+            CheckExtension(outputPath, Extensions.Ts);
 
             string arguments = new ArgumentBuilder()
                 .SetInput(source)
                 .SetChannels(Channel.Both)
                 .SetFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
-                .SetOutput(output)
+                .SetOutput(outputPath)
                 .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
@@ -204,12 +201,12 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="image">Source image file.</param>
         /// <param name="audio">Source audio file.</param>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <returns>Conversion result</returns>
-        public bool PosterWithAudio(FileInfo image, FileInfo audio, FileInfo output)
+        public bool PosterWithAudio(FileInfo image, FileInfo audio, string outputPath)
         {
             CheckIfFilesExists(image, audio);
-            CheckExtension(output, Extensions.Mp4);
+            CheckExtension(outputPath, Extensions.Mp4);
 
             string arguments = new ArgumentBuilder()
                 .SetInput(image, audio)
@@ -217,19 +214,19 @@ namespace Xabe.FFMpeg
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Normal)
                 .UseShortest(true)
-                .SetOutput(output)
+                .SetOutput(outputPath)
                 .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
         ///     Joins a list of video files.
         /// </summary>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <param name="videos">List of vides that need to be joined together.</param>
         /// <returns>Conversion result</returns>
-        public bool Join(FileInfo output, params VideoInfo[] videos)
+        public bool Join(string outputPath, params VideoInfo[] videos)
         {
             var pathList = new List<string>();
 
@@ -237,85 +234,85 @@ namespace Xabe.FFMpeg
             {
                 string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
                 pathList.Add(tempFileName);
-                ToTs(video, new FileInfo(tempFileName));
+                ToTs(video, tempFileName);
             }
 
             string arguments = new ArgumentBuilder().Concat(pathList)
                                                     .SetChannels(Channel.Both)
                                                     .SetFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                                                    .SetOutput(output)
+                                                    .SetOutput(outputPath)
                                                     .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
         ///     Records M3U8 streams to the specified output.
         /// </summary>
         /// <param name="uri">URI to stream.</param>
-        /// <param name="output">Output file</param>
+        /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
-        public bool SaveM3U8Stream(Uri uri, FileInfo output)
+        public bool SaveM3U8Stream(Uri uri, string outputPath)
         {
-            CheckExtension(output, Extensions.Mp4);
+            CheckExtension(outputPath, Extensions.Mp4);
 
             if(uri.Scheme != "http" ||
                uri.Scheme != "https")
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
             string arguments = new ArgumentBuilder().SetInput(uri)
-                                                    .SetOutput(output)
+                                                    .SetOutput(outputPath)
                                                     .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
         ///     Saves a video stream file.
         /// </summary>
         /// <param name="source">Source video file.</param>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <returns>Conversion result</returns>
-        public bool ExtractVideo(VideoInfo source, FileInfo output)
+        public bool ExtractVideo(VideoInfo source, string outputPath)
         {
-            CheckIfFilesExists(source, output);
-            CheckExtension(output, source.Extension);
+            CheckIfFilesExists(source, outputPath);
+            CheckExtension(outputPath, source.Extension);
 
             string arguments = new ArgumentBuilder().SetInput(source)
                                                     .SetChannels(Channel.Both)
                                                     .DisableChannel(Channel.Audio)
-                                                    .SetOutput(output)
+                                                    .SetOutput(outputPath)
                                                     .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
         ///     Saves audio from a video file to disk.
         /// </summary>
         /// <param name="source">Source video file.</param>
-        /// <param name="output">Output audio file.</param>
+        /// <param name="outputPath">Output audio file.</param>
         /// <returns>Conversion result</returns>
-        public bool ExtractAudio(VideoInfo source, FileInfo output)
+        public bool ExtractAudio(VideoInfo source, string outputPath)
         {
-            CheckIfFilesExists(source, output);
-            CheckExtension(output, Extensions.Mp3);
+            CheckIfFilesExists(source, outputPath);
+            CheckExtension(outputPath, Extensions.Mp3);
 
             string arguments = new ArgumentBuilder().SetInput(source)
                                                     .DisableChannel(Channel.Video)
-                                                    .SetOutput(output)
+                                                    .SetOutput(outputPath)
                                                     .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
-        private void CheckIfFilesExists(VideoInfo originalVideo, FileInfo convertedPath)
+        private void CheckIfFilesExists(VideoInfo originalVideo, string outputPath)
         {
-            if(File.Exists(convertedPath.FullName))
-                throw new IOException($"The output file: {convertedPath} already exists!");
+            if(File.Exists(outputPath))
+                throw new IOException($"The output file: {outputPath} already exists!");
 
-            if(!File.Exists(originalVideo.FullName))
-                throw new IOException($"Input {originalVideo.FullName} does not exist!");
+            if(!File.Exists(originalVideo.Path))
+                throw new IOException($"Input {originalVideo.Path} does not exist!");
         }
 
         private void CheckIfFilesExists(params FileInfo[] paths)
@@ -325,10 +322,10 @@ namespace Xabe.FFMpeg
                     throw new IOException($"Input {path} does not exist!");
         }
 
-        private void CheckExtension(FileInfo output, string expected)
+        private void CheckExtension(string output, string expected)
         {
-            if(!expected.Equals(new FileInfo(output.FullName).Extension, StringComparison.OrdinalIgnoreCase))
-                throw new IOException($"Invalid output file. File extension should be '{expected}' required.");
+//            if(!expected.Equals(new FileInfo(output).Extension, StringComparison.OrdinalIgnoreCase))
+//                throw new IOException($"Invalid output file. SourceFile extension should be '{expected}' required.");
         }
 
         /// <summary>
@@ -336,23 +333,23 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="source">Source video file.</param>
         /// <param name="audio">Source audio file.</param>
-        /// <param name="output">Output video file.</param>
+        /// <param name="outputPath">Output video file.</param>
         /// <param name="stopAtShortest">Stop at the shortest input file.</param>
         /// <returns>Conversion result</returns>
-        public bool AddAudio(VideoInfo source, FileInfo audio, FileInfo output, bool stopAtShortest = false)
+        public bool AddAudio(VideoInfo source, FileInfo audio, string outputPath, bool stopAtShortest = false)
         {
-            CheckIfFilesExists(source, output);
+            CheckIfFilesExists(source, outputPath);
             CheckIfFilesExists(audio);
-            CheckExtension(output, source.Extension);
+            CheckExtension(outputPath, source.Extension);
 
-            string arguments = new ArgumentBuilder().SetInput(new FileInfo(source.FullName), audio)
+            string arguments = new ArgumentBuilder().SetInput(new FileInfo(source.Path), audio)
                                                     .SetChannels(Channel.Video)
                                                     .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
                                                     .UseShortest(stopAtShortest)
-                                                    .SetOutput(output)
+                                                    .SetOutput(outputPath)
                                                     .Build();
 
-            return RunProcess(arguments, output);
+            return RunProcess(arguments, outputPath);
         }
 
         /// <summary>
@@ -364,7 +361,7 @@ namespace Xabe.FFMpeg
                 Process.StandardInput.Write('q');
         }
 
-        private bool RunProcess(string args, FileInfo output)
+        private bool RunProcess(string args, string outputPath)
         {
             var result = true;
 
@@ -384,9 +381,9 @@ namespace Xabe.FFMpeg
             {
                 Process.Close();
 
-                if(!output.Exists)
+                if(!File.Exists(outputPath))
                     throw new InvalidOperationException(_errorData);
-                if(output.Length == 0)
+                if(new FileInfo(outputPath).Length == 0)
                     throw new InvalidOperationException(_errorData);
             }
             return result;

@@ -11,7 +11,7 @@ namespace Xabe.FFMpeg
     /// <summary>
     ///     Base FFMpeg class
     /// </summary>
-    public abstract class FFBase: IDisposable
+    internal abstract class FFBase: IDisposable
     {
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
