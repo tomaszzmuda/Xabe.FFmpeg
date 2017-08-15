@@ -11,18 +11,12 @@ Install the [Xabe.FFMpeg NuGet package](https://www.nuget.org/packages/Xabe.FFMp
 	
 Creating video info:
 
+	string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 	var videoInfo = new VideoInfo("videofile.mp");
-	videoInfo.ConvertTo(VideoType.Ts, new FileInfo("output.ts"));
+	VideoInfo outputVideo = videoInfo.ToMp4(output);
 	
-This will video info object contains information about video. 
-You can use wrapper for FFMpeg too:
-
-	var ffmpeg = new FFMpeg();
-	ffmpeg.ToTs(new VideoInfo("video.mp4"), new FileInfo("output.ts"));
-
-Last parameter is optional and defines if lock should be automatically refreshing before expired.
-
-If file already has lock file, and it time haven't expired, method returns null.
+Video info contains information about video like 
+You can use wrapper for FFMpeg too: duration, audio format, video format, radio, frame rate, height, width, size.
 
 ## Features ##
 
