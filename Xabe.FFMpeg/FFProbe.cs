@@ -88,7 +88,8 @@ namespace Xabe.FFMpeg
 
         private double GetDuration(VideoInfo info, ProbeModel.Stream video)
         {
-            if(info.Extension == ".mkv" || info.Extension == ".webm")
+            if(info.Extension == ".mkv" ||
+               info.Extension == ".webm")
             {
                 string jsonOutput =
                     RunProcess($"-v quiet -print_format json -show_format \"{info.FilePath}\"");

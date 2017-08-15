@@ -11,18 +11,12 @@ namespace Xabe.FFMpeg
     /// <summary>
     ///     Information about media file
     /// </summary>
-    public class VideoInfo : IDisposable
+    public class VideoInfo: IDisposable
     {
         /// <summary>
         ///     _sourceFile info
         /// </summary>
-
         public readonly string FilePath;
-
-        /// <summary>
-        ///     Return extension of file
-        /// </summary>
-        public string Extension => Path.GetExtension(FilePath);
 
         private FFMpeg _ffmpeg;
 
@@ -35,7 +29,7 @@ namespace Xabe.FFMpeg
         ///     Get VideoInfo from file
         /// </summary>
         /// <param name="sourceFileInfo">_sourceFile</param>
-        public VideoInfo(FileInfo sourceFileInfo) : this(sourceFileInfo.FullName)
+        public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
         {
         }
 
@@ -46,12 +40,15 @@ namespace Xabe.FFMpeg
         public VideoInfo(string filePath)
         {
             if(!File.Exists(filePath))
-            {
                 throw new ArgumentException($"Input file {filePath} doesn't exists.");
-            }
             FilePath = filePath;
             new FFProbe().ProbeDetails(this);
         }
+
+        /// <summary>
+        ///     Return extension of file
+        /// </summary>
+        public string Extension => Path.GetExtension(FilePath);
 
         private FFMpeg FFmpeg
         {
@@ -111,6 +108,13 @@ namespace Xabe.FFMpeg
         /// </summary>
         public bool IsRunning => FFmpeg.IsRunning;
 
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            FFmpeg.Stop();
+            _ffmpeg?.Dispose();
+        }
+
         /// <summary>
         ///     Create VideoInfo from file
         /// </summary>
@@ -128,7 +132,7 @@ namespace Xabe.FFMpeg
         public override string ToString()
         {
             return "Video FilePath : " + FilePath + Environment.NewLine +
-                   "Video Root : " + Path.GetDirectoryName(FilePath)+ Environment.NewLine +
+                   "Video Root : " + Path.GetDirectoryName(FilePath) + Environment.NewLine +
                    "Video Name: " + Path.GetFileName(FilePath) + Environment.NewLine +
                    "Video Extension : " + Extension + Environment.NewLine +
                    "Video duration : " + Duration + Environment.NewLine +
@@ -148,8 +152,8 @@ namespace Xabe.FFMpeg
         public VideoInfo ToTs(string outputPath)
         {
             FFmpeg.OnProgress += OnConversionProgress;
-            var success = FFmpeg.ToTs(this, outputPath);
-            if (!success)
+            bool success = FFmpeg.ToTs(this, outputPath);
+            if(!success)
                 throw new OperationCanceledException("The conversion process could not be completed.");
             FFmpeg.OnProgress -= OnConversionProgress;
             return new VideoInfo(outputPath);
@@ -165,8 +169,8 @@ namespace Xabe.FFMpeg
         public VideoInfo ToWebM(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal)
         {
             FFmpeg.OnProgress += OnConversionProgress;
-            var success = FFmpeg.ToWebM(this, outputPath, size, audioQuality);
-            if (!success)
+            bool success = FFmpeg.ToWebM(this, outputPath, size, audioQuality);
+            if(!success)
                 throw new OperationCanceledException("The conversion process could not be completed.");
             FFmpeg.OnProgress -= OnConversionProgress;
             return new VideoInfo(outputPath);
@@ -183,8 +187,8 @@ namespace Xabe.FFMpeg
         public VideoInfo ToOgv(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             FFmpeg.OnProgress += OnConversionProgress;
-            var success = FFmpeg.ToOgv(this, outputPath, size, audioQuality, multithread);
-            if (!success)
+            bool success = FFmpeg.ToOgv(this, outputPath, size, audioQuality, multithread);
+            if(!success)
                 throw new OperationCanceledException("The conversion process could not be completed.");
             FFmpeg.OnProgress -= OnConversionProgress;
             return new VideoInfo(outputPath);
@@ -203,8 +207,8 @@ namespace Xabe.FFMpeg
             VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             FFmpeg.OnProgress += OnConversionProgress;
-            var success = FFmpeg.ToMp4(this, outputPath, speed, size, audioQuality, multithread);
-            if (!success)
+            bool success = FFmpeg.ToMp4(this, outputPath, speed, size, audioQuality, multithread);
+            if(!success)
                 throw new OperationCanceledException("The conversion process could not be completed.");
             FFmpeg.OnProgress -= OnConversionProgress;
             return new VideoInfo(outputPath);
@@ -249,7 +253,7 @@ namespace Xabe.FFMpeg
         /// <returns>Snapshot</returns>
         public Bitmap Snapshot(Size? size = null, TimeSpan? captureTime = null)
         {
-            var output = $"{Environment.TickCount}.png";
+            string output = $"{Environment.TickCount}.png";
 
             bool success = FFmpeg.Snapshot(this, output, size, captureTime);
 
@@ -291,7 +295,7 @@ namespace Xabe.FFMpeg
             Bitmap result;
 
 
-            using(Image bmp = Image.FromFile(System.IO.Path.ChangeExtension(output, ".png")))
+            using(Image bmp = Image.FromFile(Path.ChangeExtension(output, ".png")))
             {
                 result = (Bitmap) bmp.Clone();
             }
@@ -312,13 +316,6 @@ namespace Xabe.FFMpeg
             queuedVideos.Insert(0, this);
 
             return FFmpeg.Join(output, queuedVideos.ToArray());
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            FFmpeg.Stop();
-            _ffmpeg?.Dispose();
         }
     }
 }

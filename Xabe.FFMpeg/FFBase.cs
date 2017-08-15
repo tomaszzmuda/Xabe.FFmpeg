@@ -51,7 +51,7 @@ namespace Xabe.FFMpeg
                                                          .FullName;
                 return;
             }
-            
+
             var splitChar = ';';
             bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
             if(isLinux)

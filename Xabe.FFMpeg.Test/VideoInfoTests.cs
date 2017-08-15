@@ -14,56 +14,11 @@ namespace Xabe.FFMpeg.Test
         private static readonly FileInfo SampleVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "mute.mp4"));
         private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sampleMkv.mkv"));
 
-
-        [Fact]
-        public void ToTs()
-        {
-            FileInfo fileInfo = SampleVideoWithAudio;
-            var output = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
-
-            VideoInfo outputVideo = new VideoInfo(fileInfo).ToTs(output);
-            Assert.True(File.Exists(outputVideo.FilePath));
-            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
-        }
-
-        [Fact]
-        public void ToWebM()
-        {
-            FileInfo fileInfo = SampleVideoWithAudio;
-            var output = Path.ChangeExtension(Path.GetTempFileName(), ".webm");
-
-            VideoInfo outputVideo = new VideoInfo(fileInfo).ToWebM(output);
-            Assert.True(File.Exists(outputVideo.FilePath));
-            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
-        }
-
-        [Fact]
-        public void ToOGV()
-        {
-            FileInfo fileInfo = SampleVideoWithAudio;
-            var output = Path.ChangeExtension(Path.GetTempFileName(), ".ogv");
-
-            VideoInfo outputVideo = new VideoInfo(fileInfo).ToOgv(output);
-            Assert.True(File.Exists(outputVideo.FilePath));
-            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
-        }
-
-        [Fact]
-        public void ToMp4()
-        {
-            FileInfo fileInfo = SampleMkvVideo;
-            var output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-
-            VideoInfo outputVideo = new VideoInfo(fileInfo).ToMp4(output);
-            Assert.True(File.Exists(outputVideo.FilePath));
-            Assert.Equal(TimeSpan.FromSeconds(30), outputVideo.Duration);
-        }
-
         [Fact]
         public void AddAudio()
         {
             var videoInfo = new VideoInfo(SampleVideo);
-            var output = Path.ChangeExtension(Path.GetTempFileName(), videoInfo.Extension);
+            string output = Path.ChangeExtension(Path.GetTempFileName(), videoInfo.Extension);
 
             bool result = videoInfo.AddAudio(SampleAudio, output);
             Assert.True(result);
@@ -74,7 +29,7 @@ namespace Xabe.FFMpeg.Test
         public void ExtractAudio()
         {
             FileInfo fileInfo = SampleVideoWithAudio;
-            var output = Path.ChangeExtension(Path.GetTempFileName(), ".mp3");
+            string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp3");
 
             bool result = new VideoInfo(fileInfo).ExtractAudio(output);
             Assert.True(result);
@@ -84,7 +39,7 @@ namespace Xabe.FFMpeg.Test
         public void ExtractVideo()
         {
             FileInfo fileInfo = SampleVideoWithAudio;
-            var output = Path.ChangeExtension(Path.GetTempFileName(), fileInfo.Extension);
+            string output = Path.ChangeExtension(Path.GetTempFileName(), fileInfo.Extension);
 
             bool result = new VideoInfo(fileInfo).ExtractVideo(output);
             Assert.True(result);
@@ -94,7 +49,7 @@ namespace Xabe.FFMpeg.Test
         public void JoinWith()
         {
             var videoInfo = new VideoInfo(SampleVideoWithAudio);
-            var output = Path.ChangeExtension(Path.GetTempFileName(), videoInfo.Extension);
+            string output = Path.ChangeExtension(Path.GetTempFileName(), videoInfo.Extension);
 
             bool result = videoInfo.JoinWith(output, new VideoInfo(SampleVideo));
 
@@ -148,11 +103,56 @@ namespace Xabe.FFMpeg.Test
         public void SnapshotWithOutput()
         {
             var videoInfo = new VideoInfo(SampleVideoWithAudio);
-            var output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Png); 
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Png);
             Image snapshot = videoInfo.Snapshot(output);
 
             Assert.Equal(snapshot.Width, videoInfo.Width);
             Assert.True(File.Exists(output));
+        }
+
+        [Fact]
+        public void ToMp4()
+        {
+            FileInfo fileInfo = SampleMkvVideo;
+            string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToMp4(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
+            Assert.Equal(TimeSpan.FromSeconds(30), outputVideo.Duration);
+        }
+
+        [Fact]
+        public void ToOGV()
+        {
+            FileInfo fileInfo = SampleVideoWithAudio;
+            string output = Path.ChangeExtension(Path.GetTempFileName(), ".ogv");
+
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToOgv(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
+            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
+        }
+
+
+        [Fact]
+        public void ToTs()
+        {
+            FileInfo fileInfo = SampleVideoWithAudio;
+            string output = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
+
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToTs(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
+            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
+        }
+
+        [Fact]
+        public void ToWebM()
+        {
+            FileInfo fileInfo = SampleVideoWithAudio;
+            string output = Path.ChangeExtension(Path.GetTempFileName(), ".webm");
+
+            VideoInfo outputVideo = new VideoInfo(fileInfo).ToWebM(output);
+            Assert.True(File.Exists(outputVideo.FilePath));
+            Assert.Equal(TimeSpan.FromSeconds(13), outputVideo.Duration);
         }
     }
 }
