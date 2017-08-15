@@ -15,8 +15,7 @@ Creating video info:
 	var videoInfo = new VideoInfo("videofile.mp");
 	VideoInfo outputVideo = videoInfo.ToMp4(output);
 	
-Video info contains information about video like 
-You can use wrapper for FFMpeg too: duration, audio format, video format, radio, frame rate, height, width, size.
+Video info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size.
 
 ## Features ##
 
