@@ -5,6 +5,8 @@ Require installed ffmpeg and added in your PATH variable.
 
 ## Using ##
 
+You have to have installed FFMpeg and added it to your PATH variable or specify directory where FFMpeg executables are before run conversion in variable FFBase.FFMpegDir.
+
 Install the [Xabe.FFMpeg NuGet package](https://www.nuget.org/packages/Xabe.FFMpeg "") via nuget:
 
 	PM> Install-Package Xabe.FFMpeg
