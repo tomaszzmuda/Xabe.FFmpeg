@@ -95,7 +95,7 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="fileInfo">_sourceFile</param>
         /// <returns>VideoInfo</returns>
-        public static VideoInfo FromFile(FileInfo fileInfo)
+        public static IVideoInfo FromFile(FileInfo fileInfo)
         {
             return new VideoInfo(fileInfo);
         }
