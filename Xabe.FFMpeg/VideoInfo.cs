@@ -8,10 +8,8 @@ using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
 {
-    /// <summary>
-    ///     Information about media file
-    /// </summary>
-    public class VideoInfo: IDisposable
+    /// <inheritdoc />
+    public class VideoInfo : IDisposable, IVideoInfo
     {
         /// <summary>
         ///     _sourceFile info
@@ -20,15 +18,10 @@ namespace Xabe.FFMpeg
 
         private FFMpeg _ffmpeg;
 
-        /// <summary>
-        ///     Fires when conversion progress changed
-        /// </summary>
-        public ConversionHandler OnConversionProgress;
+        /// <inheritdoc />
+        public ConversionHandler OnConversionProgress { get; internal set; }
 
-        /// <summary>
-        ///     Get VideoInfo from file
-        /// </summary>
-        /// <param name="sourceFileInfo">_sourceFile</param>
+        /// <inheritdoc />
         public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
         {
         }
@@ -45,9 +38,8 @@ namespace Xabe.FFMpeg
             new FFProbe().ProbeDetails(this);
         }
 
-        /// <summary>
-        ///     Return extension of file
-        /// </summary>
+
+        /// <inheritdoc />
         public string Extension => Path.GetExtension(FilePath);
 
         private FFMpeg FFmpeg
@@ -63,49 +55,34 @@ namespace Xabe.FFMpeg
             }
         }
 
-        /// <summary>
-        ///     duration of video
-        /// </summary>
+
+        /// <inheritdoc />
         public TimeSpan Duration { get; internal set; }
 
-        /// <summary>
-        ///     Audio format
-        /// </summary>
+        /// <inheritdoc />
         public string AudioFormat { get; internal set; }
 
-        /// <summary>
-        ///     Video format
-        /// </summary>
+
+        /// <inheritdoc />
         public string VideoFormat { get; internal set; }
 
-        /// <summary>
-        ///     Screen ratio
-        /// </summary>
+
+        /// <inheritdoc />
         public string Ratio { get; internal set; }
 
-        /// <summary>
-        ///     Frame rate
-        /// </summary>
+        /// <inheritdoc />
         public double FrameRate { get; internal set; }
 
-        /// <summary>
-        ///     Height
-        /// </summary>
+        /// <inheritdoc />
         public int Height { get; internal set; }
 
-        /// <summary>
-        ///     Width
-        /// </summary>
+        /// <inheritdoc />
         public int Width { get; internal set; }
 
-        /// <summary>
-        ///     size
-        /// </summary>
+        /// <inheritdoc />
         public double Size { get; internal set; }
 
-        /// <summary>
-        ///     Get the ffmpeg process status
-        /// </summary>
+        /// <inheritdoc />
         public bool IsRunning => FFmpeg.IsRunning;
 
         /// <inheritdoc />
@@ -125,10 +102,8 @@ namespace Xabe.FFMpeg
             return new VideoInfo(fileInfo);
         }
 
-        /// <summary>
-        ///     Get formated info about video
-        /// </summary>
-        /// <returns>Formated info about vidoe</returns>
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return "Video FilePath : " + FilePath + Environment.NewLine +
@@ -144,11 +119,8 @@ namespace Xabe.FFMpeg
                    "Size : " + Size + " MB";
         }
 
-        /// <summary>
-        ///     Convert file to TS
-        /// </summary>
-        /// <param name="outputPath">Destination file</param>
-        /// <returns>Output VideoInfo</returns>
+
+        /// <inheritdoc />
         public VideoInfo ToTs(string outputPath)
         {
             FFmpeg.OnProgress += OnConversionProgress;
@@ -159,13 +131,8 @@ namespace Xabe.FFMpeg
             return new VideoInfo(outputPath);
         }
 
-        /// <summary>
-        ///     Convert file to WebM
-        /// </summary>
-        /// <param name="outputPath">Destination file</param>
-        /// <param name="size">Dimension</param>
-        /// <param name="audioQuality">Audio quality</param>
-        /// <returns>Output VideoInfo</returns>
+
+        /// <inheritdoc />
         public VideoInfo ToWebM(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal)
         {
             FFmpeg.OnProgress += OnConversionProgress;
@@ -176,14 +143,8 @@ namespace Xabe.FFMpeg
             return new VideoInfo(outputPath);
         }
 
-        /// <summary>
-        ///     Convert file to OGV
-        /// </summary>
-        /// <param name="outputPath">Destination file</param>
-        /// <param name="size">Dimension</param>
-        /// <param name="audioQuality">Audio quality</param>
-        /// <param name="multithread">Use multithread</param>
-        /// <returns>Output VideoInfo</returns>
+
+        /// <inheritdoc />
         public VideoInfo ToOgv(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             FFmpeg.OnProgress += OnConversionProgress;
@@ -194,15 +155,8 @@ namespace Xabe.FFMpeg
             return new VideoInfo(outputPath);
         }
 
-        /// <summary>
-        ///     Convert file to MP4
-        /// </summary>
-        /// <param name="outputPath">Destination file</param>
-        /// <param name="speed">Conversion speed</param>
-        /// <param name="size">Dimension</param>
-        /// <param name="audioQuality">Audio quality</param>
-        /// <param name="multithread">Use multithread</param>
-        /// <returns>Output VideoInfo</returns>
+
+        /// <inheritdoc />
         public VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
@@ -214,43 +168,28 @@ namespace Xabe.FFMpeg
             return new VideoInfo(outputPath);
         }
 
-        /// <summary>
-        ///     Extract video from file
-        /// </summary>
-        /// <param name="output">Output audio stream</param>
-        /// <returns>Conversion result</returns>
+
+        /// <inheritdoc />
         public bool ExtractVideo(string output)
         {
             return FFmpeg.ExtractVideo(this, output);
         }
 
-        /// <summary>
-        ///     Extract audio from file
-        /// </summary>
-        /// <param name="output">Output video stream</param>
-        /// <returns>Conversion result</returns>
+        /// <inheritdoc />
         public bool ExtractAudio(string output)
         {
             return FFmpeg.ExtractAudio(this, output);
         }
 
-        /// <summary>
-        ///     Add audio to file
-        /// </summary>
-        /// <param name="audio">Audio file</param>
-        /// <param name="output">Output file</param>
-        /// <returns>Conversion result</returns>
+
+        /// <inheritdoc />
         public bool AddAudio(FileInfo audio, string output)
         {
             return FFmpeg.AddAudio(this, audio, output);
         }
 
-        /// <summary>
-        ///     Get snapshot of video
-        /// </summary>
-        /// <param name="size">Dimension of snapshot</param>
-        /// <param name="captureTime"></param>
-        /// <returns>Snapshot</returns>
+
+        /// <inheritdoc />
         public Bitmap Snapshot(Size? size = null, TimeSpan? captureTime = null)
         {
             string output = $"{Environment.TickCount}.png";
@@ -278,13 +217,8 @@ namespace Xabe.FFMpeg
             return result;
         }
 
-        /// <summary>
-        ///     Saves snapshot of video
-        /// </summary>
-        /// <param name="output">Output file</param>
-        /// <param name="size">Dimension of snapshot</param>
-        /// <param name="captureTime"></param>
-        /// <returns>Snapshot</returns>
+
+        /// <inheritdoc />
         public Bitmap Snapshot(string output, Size? size = null, TimeSpan? captureTime = null)
         {
             bool success = FFmpeg.Snapshot(this, output, size, captureTime);
@@ -303,12 +237,8 @@ namespace Xabe.FFMpeg
             return result;
         }
 
-        /// <summary>
-        ///     Concat multiple videos
-        /// </summary>
-        /// <param name="output">Concatenated videos</param>
-        /// <param name="videos">Videos to add</param>
-        /// <returns>Conversion result</returns>
+
+        /// <inheritdoc />
         public bool JoinWith(string output, params VideoInfo[] videos)
         {
             List<VideoInfo> queuedVideos = videos.ToList();

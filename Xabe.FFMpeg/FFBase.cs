@@ -74,9 +74,7 @@ namespace Xabe.FFMpeg
                 throw new ArgumentException("Cannot find FFMpeg.");
         }
 
-        /// <summary>
-        ///     Returns true if the associated process is still alive/running.
-        /// </summary>
+
         public bool IsRunning { get; private set; }
 
         /// <summary>
