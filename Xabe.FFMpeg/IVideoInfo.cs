@@ -66,6 +66,11 @@ namespace Xabe.FFMpeg
         int Width { get; }
 
         /// <summary>
+        ///     Source file path
+        /// </summary>
+        string FilePath { get; }
+
+        /// <summary>
         ///     Add audio to file
         /// </summary>
         /// <param name="audio">Audio file</param>
@@ -74,7 +79,7 @@ namespace Xabe.FFMpeg
         bool AddAudio(FileInfo audio, string output);
 
         /// <summary>
-        ///     Dispose process
+        ///     Stop FFMpeg process
         /// </summary>
         void Dispose();
 

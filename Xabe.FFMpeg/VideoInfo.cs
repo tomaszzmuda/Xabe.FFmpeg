@@ -11,10 +11,8 @@ namespace Xabe.FFMpeg
     /// <inheritdoc />
     public class VideoInfo : IDisposable, IVideoInfo
     {
-        /// <summary>
-        ///     _sourceFile info
-        /// </summary>
-        public readonly string FilePath;
+        /// <inheritdoc />
+        public string FilePath { get; private set; }
 
         private FFMpeg _ffmpeg;
 
@@ -85,7 +83,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public bool IsRunning => FFmpeg.IsRunning;
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IVideoInfo.Dispose" />
         public void Dispose()
         {
             FFmpeg.Stop();

@@ -14,8 +14,8 @@ Install the [Xabe.FFMpeg NuGet package](https://www.nuget.org/packages/Xabe.FFMp
 Creating video info:
 
 	string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-	var videoInfo = new VideoInfo("videofile.mp");
-	VideoInfo outputVideo = videoInfo.ToMp4(output);
+	IVideoInfo videoInfo = new VideoInfo("videofile.mp");
+	IVideoInfo outputVideo = videoInfo.ToMp4(output);
 	
 Video info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size.
 
