@@ -7,10 +7,8 @@ using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
 {
-    /// <summary>
-    ///     Allows to prepare and start conversion. Only for advanced users.
-    /// </summary>
-    public class Conversion
+    /// <inheritdoc />
+    public class Conversion : IConversion
     {
         private string _audio;
         private string _codec;
@@ -29,7 +27,8 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
 
-        internal string Build()
+    /// <inheritdoc />
+        public string Build()
         {
             var builder = new StringBuilder();
             builder.Append(_input);
@@ -52,78 +51,48 @@ namespace Xabe.FFMpeg
             return builder.ToString();
         }
 
-        /// <summary>
-        ///     Start conversion
-        /// </summary>
+        /// <inheritdoc />
         public bool Start()
         {
             return new FFMpeg().StartConversion(Build());
 
         }
 
-        /// <summary>
-        ///     Set speed of conversion. Slower speed equals better compression and quality.
-        /// </summary>
-        /// <param name="speed">Speed</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetSpeed(Speed speed)
+        /// <inheritdoc />
+        public IConversion SetSpeed(Speed speed)
         {
             _speed = $"-preset {speed.ToString() .ToLower()} ";
             return this;
         }
 
-        /// <summary>
-        ///     Set max cpu threads
-        /// </summary>
-        /// <param name="cpu">Threads</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetSpeed(int cpu)
+        /// <inheritdoc />
+        public IConversion SetSpeed(int cpu)
         {
             _speed = $"-quality good -cpu-used {cpu} -deadline realtime ";
             return this;
         }
 
-        /// <summary>
-        ///     Set audio codec and bitrate
-        /// </summary>
-        /// <param name="codec">Audio odec</param>
-        /// <param name="bitrate">Audio bitrade</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetAudio(AudioCodec codec, AudioQuality bitrate)
+        /// <inheritdoc />
+        public IConversion SetAudio(AudioCodec codec, AudioQuality bitrate)
         {
             return this.SetAudio(codec.ToString(), bitrate);
         }
 
-        /// <summary>
-        ///     Set audio codec and bitrate
-        /// </summary>
-        /// <param name="codec">Audio odec</param>
-        /// <param name="bitrate">Audio bitrade</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetAudio(string codec, AudioQuality bitrate)
+        /// <inheritdoc />
+        public IConversion SetAudio(string codec, AudioQuality bitrate)
         {
             _audio = $"-codec:a {codec.ToLower()} -b:a {(int)bitrate}k -strict experimental ";
             return this;
         }
 
-        /// <summary>
-        ///     Set video codec and bitrate
-        /// </summary>
-        /// <param name="codec">Video codec</param>
-        /// <param name="bitrate">Video bitrate</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetVideo(VideoCodec codec, int bitrate = 0)
+        /// <inheritdoc />
+        public IConversion SetVideo(VideoCodec codec, int bitrate = 0)
         {
             return this.SetVideo(codec.ToString(), bitrate);
         }
 
-        /// <summary>
-        ///     Set video codec and bitrate
-        /// </summary>
-        /// <param name="codec">Video codec</param>
-        /// <param name="bitrate">Video bitrate</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetVideo(string codec, int bitrate = 0)
+        /// <inheritdoc />
+        public IConversion SetVideo(string codec, int bitrate = 0)
         {
             _video = $"-codec:v {codec.ToLower()} ";
 
@@ -132,12 +101,8 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Defines if converter should use all CPU cores
-        /// </summary>
-        /// <param name="multiThread">Use all CPU cores</param>
-        /// <returns>Conversion object</returns>
-        public Conversion UseMultiThread(bool multiThread)
+        /// <inheritdoc />
+        public IConversion UseMultiThread(bool multiThread)
         {
             string threadCount = multiThread
                 ? Environment.ProcessorCount.ToString()
@@ -147,23 +112,15 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Set URI of stream
-        /// </summary>
-        /// <param name="uri">URI</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetInput(Uri uri)
+        /// <inheritdoc />
+        public IConversion SetInput(Uri uri)
         {
             _input = $"-i \"{uri.AbsoluteUri}\" ";
             return this;
         }
 
-        /// <summary>
-        ///     Disable channel. Can remove audio or video from media file.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns>Conversion object</returns>
-        public Conversion DisableChannel(Channel type)
+        /// <inheritdoc />
+        public IConversion DisableChannel(Channel type)
         {
             switch(type)
             {
@@ -177,23 +134,15 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Set input file
-        /// </summary>
-        /// <param name="input">Media file to convert</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetInput(VideoInfo input)
+        /// <inheritdoc />
+        public IConversion SetInput(VideoInfo input)
         {
             _input = $"-i \"{input.FilePath}\" ";
             return this;
         }
 
-        /// <summary>
-        ///     Set input files
-        /// </summary>
-        /// <param name="inputs">Media files to convert</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetInput(params FileInfo[] inputs)
+        /// <inheritdoc />
+        public IConversion SetInput(params FileInfo[] inputs)
         {
             _input = "";
             foreach(FileInfo file in inputs)
@@ -201,23 +150,15 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Set output path
-        /// </summary>
-        /// <param name="outputPath">Output media file</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetOutput(string outputPath)
+        /// <inheritdoc />
+        public IConversion SetOutput(string outputPath)
         {
             _output = $"\"{outputPath}\"";
             return this;
         }
 
-        /// <summary>
-        ///     Set size of video
-        /// </summary>
-        /// <param name="size">VideoSize</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetScale(VideoSize size)
+        /// <inheritdoc />
+        public IConversion SetScale(VideoSize size)
         {
             if(VideoSize.Original == size)
                 return this;
@@ -225,12 +166,8 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Set size of video
-        /// </summary>
-        /// <param name="size">VideoSize</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetSize(Size? size)
+        /// <inheritdoc />
+        public IConversion SetSize(Size? size)
         {
             if(size.HasValue)
                 _size = $"-s {size.Value.Width}x{size.Value.Height} ";
@@ -238,45 +175,27 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Set video codec
-        /// </summary>
-        /// <param name="codec">Video codec</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetCodec(VideoCodec codec)
+        /// <inheritdoc />
+        public IConversion SetCodec(VideoCodec codec)
         {
             return this.SetCodec(codec.ToString());
         }
 
-        /// <summary>
-        ///     Set video codec
-        /// </summary>
-        /// <param name="codec">Video codec</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetCodec(string codec)
+        /// <inheritdoc />
+        public IConversion SetCodec(string codec)
         {
             _codec = $"-f {codec.ToLower()} ";
             return this;
         }
 
-        /// <summary>
-        ///     Set filter
-        /// </summary>
-        /// <param name="type">Channel type</param>
-        /// <param name="filter">Filter</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetFilter(Channel type, Filter filter)
+        /// <inheritdoc />
+        public IConversion SetFilter(Channel type, Filter filter)
         {
             return this.SetFilter(type, filter.ToString());
         }
 
-        /// <summary>
-        ///     Set filter
-        /// </summary>
-        /// <param name="type">Channel type</param>
-        /// <param name="filter">Filter</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetFilter(Channel type, string filter)
+        /// <inheritdoc />
+        public IConversion SetFilter(Channel type, string filter)
         {
             switch (type)
             {
@@ -290,12 +209,8 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Set channels
-        /// </summary>
-        /// <param name="type">Channel type</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetChannels(Channel type)
+        /// <inheritdoc />
+        public IConversion SetChannels(Channel type)
         {
             switch(type)
             {
@@ -312,12 +227,8 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Seeks in input file to position. (-ss argument)
-        /// </summary>
-        /// <param name="seek">Position</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetSeek(TimeSpan? seek)
+        /// <inheritdoc />
+        public IConversion SetSeek(TimeSpan? seek)
         {
             if(seek.HasValue)
                 _seek = $"-ss {seek} ";
@@ -325,34 +236,22 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Set output frames count
-        /// </summary>
-        /// <param name="number">Number of frames</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetOutputFramesCount(int number)
+        /// <inheritdoc />
+        public IConversion SetOutputFramesCount(int number)
         {
             _frameCount = $"-vframes {number} ";
             return this;
         }
 
-        /// <summary>
-        ///     Loop over the input stream. Currently it works only for image streams. (-loop)
-        /// </summary>
-        /// <param name="count">Number of repeats</param>
-        /// <returns>Conversion object</returns>
-        public Conversion SetLoop(int count)
+        /// <inheritdoc />
+        public IConversion SetLoop(int count)
         {
             _loop = $"-loop {count} ";
             return this;
         }
 
-        /// <summary>
-        ///     Finish encoding when the shortest input stream ends. (-shortest)
-        /// </summary>
-        /// <param name="useShortest"></param>
-        /// <returns>Conversion object</returns>
-        public Conversion UseShortest(bool useShortest)
+        /// <inheritdoc />
+        public IConversion UseShortest(bool useShortest)
         {
             if(!useShortest)
                 return this;
@@ -360,12 +259,8 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <summary>
-        ///     Concat multiple media files
-        /// </summary>
-        /// <param name="paths">Media files</param>
-        /// <returns>Conversion object</returns>
-        public Conversion Concat(IEnumerable<string> paths)
+        /// <inheritdoc />
+        public IConversion Concat(IEnumerable<string> paths)
         {
             _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
             return this;
