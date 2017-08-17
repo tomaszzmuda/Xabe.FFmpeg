@@ -19,6 +19,19 @@ Creating video info:
 	
 Video info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size.
 
+It is possible to have more elastic way to convert media. **Conversion** class is builder for FFMpeg command. You can specify all implemented FFMpeg options and run process:
+	
+	bool conversionResult = new Conversion()
+		.SetInput(SampleMkvVideo)
+		.SetSpeed(Speed.UltraFast)
+		.UseMultiThread(true)
+		.SetOutput(outputPath)
+		.SetChannels(Channel.Both)
+		.SetScale(VideoSize.Original)
+		.SetVideo(VideoCodec.LibX264, 2400)
+		.SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+		.Start();
+
 ## Features ##
 
 	* Convert media (.ts, .mp4, .ogv, .webm)
