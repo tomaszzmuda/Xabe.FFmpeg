@@ -137,8 +137,9 @@ namespace Xabe.FFMpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Output VideoInfo</returns>
-        VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
-        
+        VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal,
+            bool multithread = false);
+
         /// <summary>
         ///     Convert file to OGV
         /// </summary>

@@ -9,15 +9,9 @@ using Xabe.FFMpeg.Enums;
 namespace Xabe.FFMpeg
 {
     /// <inheritdoc />
-    public class VideoInfo : IDisposable, IVideoInfo
+    public class VideoInfo: IDisposable, IVideoInfo
     {
-        /// <inheritdoc />
-        public string FilePath { get; private set; }
-
         private FFMpeg _ffmpeg;
-
-        /// <inheritdoc />
-        public ConversionHandler OnConversionProgress { get; set; }
 
         /// <inheritdoc />
         public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
@@ -36,10 +30,6 @@ namespace Xabe.FFMpeg
             new FFProbe().ProbeDetails(this);
         }
 
-
-        /// <inheritdoc />
-        public string Extension => Path.GetExtension(FilePath);
-
         private FFMpeg FFmpeg
         {
             get
@@ -52,6 +42,23 @@ namespace Xabe.FFMpeg
                 return _ffmpeg ?? (_ffmpeg = new FFMpeg());
             }
         }
+
+        /// <inheritdoc cref="IVideoInfo.Dispose" />
+        public void Dispose()
+        {
+            FFmpeg.Stop();
+            _ffmpeg?.Dispose();
+        }
+
+        /// <inheritdoc />
+        public string FilePath { get; }
+
+        /// <inheritdoc />
+        public ConversionHandler OnConversionProgress { get; set; }
+
+
+        /// <inheritdoc />
+        public string Extension => Path.GetExtension(FilePath);
 
 
         /// <inheritdoc />
@@ -82,23 +89,6 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         public bool IsRunning => FFmpeg.IsRunning;
-
-        /// <inheritdoc cref="IVideoInfo.Dispose" />
-        public void Dispose()
-        {
-            FFmpeg.Stop();
-            _ffmpeg?.Dispose();
-        }
-
-        /// <summary>
-        ///     Create VideoInfo from file
-        /// </summary>
-        /// <param name="fileInfo">_sourceFile</param>
-        /// <returns>VideoInfo</returns>
-        public static IVideoInfo FromFile(FileInfo fileInfo)
-        {
-            return new VideoInfo(fileInfo);
-        }
 
 
         /// <inheritdoc />
@@ -244,6 +234,16 @@ namespace Xabe.FFMpeg
             queuedVideos.Insert(0, this);
 
             return FFmpeg.Join(output, queuedVideos.ToArray());
+        }
+
+        /// <summary>
+        ///     Create VideoInfo from file
+        /// </summary>
+        /// <param name="fileInfo">_sourceFile</param>
+        /// <returns>VideoInfo</returns>
+        public static IVideoInfo FromFile(FileInfo fileInfo)
+        {
+            return new VideoInfo(fileInfo);
         }
     }
 }
