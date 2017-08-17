@@ -8,7 +8,7 @@ using Xabe.FFMpeg.Enums;
 namespace Xabe.FFMpeg
 {
     /// <inheritdoc />
-    public class Conversion : IConversion
+    public class Conversion: IConversion
     {
         private string _audio;
         private string _codec;
@@ -27,7 +27,7 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
 
-    /// <inheritdoc />
+        /// <inheritdoc />
         public string Build()
         {
             var builder = new StringBuilder();
@@ -55,7 +55,6 @@ namespace Xabe.FFMpeg
         public bool Start()
         {
             return new FFMpeg().StartConversion(Build());
-
         }
 
         /// <inheritdoc />
@@ -75,20 +74,20 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetAudio(AudioCodec codec, AudioQuality bitrate)
         {
-            return this.SetAudio(codec.ToString(), bitrate);
+            return SetAudio(codec.ToString(), bitrate);
         }
 
         /// <inheritdoc />
         public IConversion SetAudio(string codec, AudioQuality bitrate)
         {
-            _audio = $"-codec:a {codec.ToLower()} -b:a {(int)bitrate}k -strict experimental ";
+            _audio = $"-codec:a {codec.ToLower()} -b:a {(int) bitrate}k -strict experimental ";
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetVideo(VideoCodec codec, int bitrate = 0)
         {
-            return this.SetVideo(codec.ToString(), bitrate);
+            return SetVideo(codec.ToString(), bitrate);
         }
 
         /// <inheritdoc />
@@ -96,7 +95,7 @@ namespace Xabe.FFMpeg
         {
             _video = $"-codec:v {codec.ToLower()} ";
 
-            if (bitrate > 0)
+            if(bitrate > 0)
                 _video += $"-b:v {bitrate}k ";
             return this;
         }
@@ -178,7 +177,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetCodec(VideoCodec codec)
         {
-            return this.SetCodec(codec.ToString());
+            return SetCodec(codec.ToString());
         }
 
         /// <inheritdoc />
@@ -191,13 +190,13 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetFilter(Channel type, Filter filter)
         {
-            return this.SetFilter(type, filter.ToString());
+            return SetFilter(type, filter.ToString());
         }
 
         /// <inheritdoc />
         public IConversion SetFilter(Channel type, string filter)
         {
-            switch (type)
+            switch(type)
             {
                 case Channel.Audio:
                     _filter = $"-bsf:a {filter.ToLower()} ";

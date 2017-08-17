@@ -243,10 +243,10 @@ namespace Xabe.FFMpeg
             }
 
             string arguments = new Conversion().Concat(pathList)
-                                                    .SetChannels(Channel.Both)
-                                                    .SetFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                                                    .SetOutput(outputPath)
-                                                    .Build();
+                                               .SetChannels(Channel.Both)
+                                               .SetFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                                               .SetOutput(outputPath)
+                                               .Build();
 
             return RunProcess(arguments, outputPath);
         }
@@ -266,8 +266,8 @@ namespace Xabe.FFMpeg
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
             string arguments = new Conversion().SetInput(uri)
-                                                    .SetOutput(outputPath)
-                                                    .Build();
+                                               .SetOutput(outputPath)
+                                               .Build();
 
             return RunProcess(arguments, outputPath);
         }
@@ -284,10 +284,10 @@ namespace Xabe.FFMpeg
             CheckExtension(outputPath, source.Extension);
 
             string arguments = new Conversion().SetInput(source)
-                                                    .SetChannels(Channel.Both)
-                                                    .DisableChannel(Channel.Audio)
-                                                    .SetOutput(outputPath)
-                                                    .Build();
+                                               .SetChannels(Channel.Both)
+                                               .DisableChannel(Channel.Audio)
+                                               .SetOutput(outputPath)
+                                               .Build();
 
             return RunProcess(arguments, outputPath);
         }
@@ -304,9 +304,9 @@ namespace Xabe.FFMpeg
             CheckExtension(outputPath, Extensions.Mp3);
 
             string arguments = new Conversion().SetInput(source)
-                                                    .DisableChannel(Channel.Video)
-                                                    .SetOutput(outputPath)
-                                                    .Build();
+                                               .DisableChannel(Channel.Video)
+                                               .SetOutput(outputPath)
+                                               .Build();
 
             return RunProcess(arguments, outputPath);
         }
@@ -348,11 +348,11 @@ namespace Xabe.FFMpeg
             CheckExtension(outputPath, source.Extension);
 
             string arguments = new Conversion().SetInput(new FileInfo(source.FilePath), audio)
-                                                    .SetChannels(Channel.Video)
-                                                    .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
-                                                    .UseShortest(stopAtShortest)
-                                                    .SetOutput(outputPath)
-                                                    .Build();
+                                               .SetChannels(Channel.Video)
+                                               .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
+                                               .UseShortest(stopAtShortest)
+                                               .SetOutput(outputPath)
+                                               .Build();
 
             return RunProcess(arguments, outputPath);
         }
