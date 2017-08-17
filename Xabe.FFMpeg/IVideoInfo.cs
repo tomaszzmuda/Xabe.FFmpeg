@@ -13,7 +13,7 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Fires when conversion progress changed
         /// </summary>
-        ConversionHandler OnConversionProgress { get; }
+        ConversionHandler OnConversionProgress { get; set; }
 
         /// <summary>
         ///     Audio format

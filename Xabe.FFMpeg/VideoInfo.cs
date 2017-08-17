@@ -17,7 +17,7 @@ namespace Xabe.FFMpeg
         private FFMpeg _ffmpeg;
 
         /// <inheritdoc />
-        public ConversionHandler OnConversionProgress { get; internal set; }
+        public ConversionHandler OnConversionProgress { get; set; }
 
         /// <inheritdoc />
         public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
