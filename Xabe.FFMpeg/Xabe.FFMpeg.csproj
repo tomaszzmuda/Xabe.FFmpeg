@@ -12,7 +12,7 @@
     <PackageProjectUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
     <RepositoryType>Dependency</RepositoryType>
-    <PackageTags>media converter audio ffmpeg wrapper</PackageTags>
+    <PackageTags>media converter audio ffmpeg wrapper core video encode decode</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
