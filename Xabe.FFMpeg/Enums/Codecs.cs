@@ -1,6 +1,9 @@
 ﻿namespace Xabe.FFMpeg.Enums
 {
-    internal enum VideoCodec
+    /// <summary>
+    ///     Video codec
+    /// </summary>
+    public enum VideoCodec
     {
         LibX264,
         LibVpx,
@@ -9,19 +12,28 @@
         MpegTs
     }
 
-    internal enum AudioCodec
+    /// <summary>
+    ///     Audio codec
+    /// </summary>
+    public enum AudioCodec
     {
         Aac,
         LibVorbis
     }
 
-    internal enum Filter
+    /// <summary>
+    ///     Filter
+    /// </summary>
+    public enum Filter
     {
         H264_Mp4ToAnnexB,
         Aac_AdtstoAsc
     }
 
-    internal enum Channel
+    /// <summary>
+    ///     Channel
+    /// </summary>
+    public enum Channel
     {
         Audio,
         Video,

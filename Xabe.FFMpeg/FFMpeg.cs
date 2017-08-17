@@ -46,7 +46,7 @@ namespace Xabe.FFMpeg
 
             CheckIfFilesExists(source, outputPath);
 
-            string arguments = new ArgumentBuilder()
+            string arguments = new Conversion()
                 .SetInput(source)
                 .SetVideo(VideoCodec.Png)
                 .SetOutputFramesCount(1)
@@ -56,6 +56,11 @@ namespace Xabe.FFMpeg
                 .Build();
 
             return RunProcess(arguments, outputPath);
+        }
+
+        public bool StartConversion(string arguments)
+        {
+            return RunProcess(arguments, null);
         }
 
         private static Size? GetSize(VideoInfo source, Size? size)
@@ -102,7 +107,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(source, outputPath);
             CheckExtension(outputPath, Extensions.Mp4);
 
-            string arguments = new ArgumentBuilder()
+            string arguments = new Conversion()
                 .SetInput(source)
                 .UseMultiThread(multithread)
                 .SetScale(size)
@@ -131,7 +136,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(source, outputPath);
             CheckExtension(outputPath, Extensions.WebM);
 
-            string arguments = new ArgumentBuilder()
+            string arguments = new Conversion()
                 .SetInput(source)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibVpx, 2400)
@@ -160,7 +165,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(source, outputPath);
             CheckExtension(outputPath, Extensions.Ogv);
 
-            string arguments = new ArgumentBuilder()
+            string arguments = new Conversion()
                 .SetInput(source)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibTheora, 2400)
@@ -185,7 +190,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(source, outputPath);
             CheckExtension(outputPath, Extensions.Ts);
 
-            string arguments = new ArgumentBuilder()
+            string arguments = new Conversion()
                 .SetInput(source)
                 .SetChannels(Channel.Both)
                 .SetFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
@@ -208,7 +213,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(image, audio);
             CheckExtension(outputPath, Extensions.Mp4);
 
-            string arguments = new ArgumentBuilder()
+            string arguments = new Conversion()
                 .SetInput(image, audio)
                 .SetLoop(1)
                 .SetVideo(VideoCodec.LibX264, 2400)
@@ -237,7 +242,7 @@ namespace Xabe.FFMpeg
                 ToTs(video, tempFileName);
             }
 
-            string arguments = new ArgumentBuilder().Concat(pathList)
+            string arguments = new Conversion().Concat(pathList)
                                                     .SetChannels(Channel.Both)
                                                     .SetFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                                                     .SetOutput(outputPath)
@@ -260,7 +265,7 @@ namespace Xabe.FFMpeg
                uri.Scheme != "https")
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
-            string arguments = new ArgumentBuilder().SetInput(uri)
+            string arguments = new Conversion().SetInput(uri)
                                                     .SetOutput(outputPath)
                                                     .Build();
 
@@ -278,7 +283,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(source, outputPath);
             CheckExtension(outputPath, source.Extension);
 
-            string arguments = new ArgumentBuilder().SetInput(source)
+            string arguments = new Conversion().SetInput(source)
                                                     .SetChannels(Channel.Both)
                                                     .DisableChannel(Channel.Audio)
                                                     .SetOutput(outputPath)
@@ -298,7 +303,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(source, outputPath);
             CheckExtension(outputPath, Extensions.Mp3);
 
-            string arguments = new ArgumentBuilder().SetInput(source)
+            string arguments = new Conversion().SetInput(source)
                                                     .DisableChannel(Channel.Video)
                                                     .SetOutput(outputPath)
                                                     .Build();
@@ -342,7 +347,7 @@ namespace Xabe.FFMpeg
             CheckIfFilesExists(audio);
             CheckExtension(outputPath, source.Extension);
 
-            string arguments = new ArgumentBuilder().SetInput(new FileInfo(source.FilePath), audio)
+            string arguments = new Conversion().SetInput(new FileInfo(source.FilePath), audio)
                                                     .SetChannels(Channel.Video)
                                                     .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
                                                     .UseShortest(stopAtShortest)
@@ -381,10 +386,13 @@ namespace Xabe.FFMpeg
             {
                 Process.Close();
 
-                if(!File.Exists(outputPath))
-                    throw new InvalidOperationException(_errorData);
-                if(new FileInfo(outputPath).Length == 0)
-                    throw new InvalidOperationException(_errorData);
+                if(!string.IsNullOrWhiteSpace(outputPath))
+                {
+                    if(!File.Exists(outputPath))
+                        throw new InvalidOperationException(_errorData);
+                    if(new FileInfo(outputPath).Length == 0)
+                        throw new InvalidOperationException(_errorData);
+                }
             }
             return result;
         }
