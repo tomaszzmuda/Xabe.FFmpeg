@@ -34,14 +34,23 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 
 ## Features ##
 
-	* Convert media (.ts, .mp4, .ogv, .webm)
+	* Convert media
 	* Create snapshot
 	* Add audio to vidoe
 	* Extract audio
 	* Extract video
 	* Concatenate multiple videos
 	* Get information about video by FFProbe
-	
+
+## Planned features ##
+
+	* Change speed
+	* Reverse
+	* Split 
+	* Rotate video
+	* Watermarks
+	* Chroma key
+
 ## Lincence ## 
 
 Xabe.FFMpeg is licensed under MIT - see [License](LICENSE.md) for details.
