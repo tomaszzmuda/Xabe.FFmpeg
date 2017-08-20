@@ -140,7 +140,7 @@ namespace Xabe.FFMpeg
         /// <param name="type">Channel type</param>
         /// <param name="filter">Filter</param>
         /// <returns>IConversion object</returns>
-        IConversion SetFilter(Channel type, Filter filter);
+        IConversion SetBitstreamFilter(Channel type, Filter filter);
 
         /// <summary>
         ///     Set filter
@@ -148,7 +148,7 @@ namespace Xabe.FFMpeg
         /// <param name="type">Channel type</param>
         /// <param name="filter">Filter</param>
         /// <returns>IConversion object</returns>
-        IConversion SetFilter(Channel type, string filter);
+        IConversion SetBitstreamFilter(Channel type, string filter);
 
         /// <summary>
         ///     Set channels
@@ -156,6 +156,20 @@ namespace Xabe.FFMpeg
         /// <param name="type">Channel type</param>
         /// <returns>IConversion object</returns>
         IConversion SetChannels(Channel type);
+
+        /// <summary>
+        ///     Change video speed
+        /// </summary>
+        /// <param name="multiplication">Speed value. To double the speed of the video set this to 0.5.</param>
+        /// <returns>IConversion object</returns>
+        IConversion ChangeVideoSpeed(double multiplication);
+
+        /// <summary>
+        ///     Change video speed
+        /// </summary>
+        /// <param name="multiplication">Speed value. (0.5 - 2.0). To double the speed of the audio set this to 2.0</param>
+        /// <returns>IConversion object</returns>
+        IConversion ChangeAudioSpeed(double multiplication);
 
         /// <summary>
         ///     Seeks in input file to position. (-ss argument)

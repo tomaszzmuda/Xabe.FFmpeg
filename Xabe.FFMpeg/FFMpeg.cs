@@ -193,7 +193,7 @@ namespace Xabe.FFMpeg
             string arguments = new Conversion()
                 .SetInput(source)
                 .SetChannels(Channel.Both)
-                .SetFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
+                .SetBitstreamFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
                 .SetOutput(outputPath)
                 .Build();
@@ -244,7 +244,7 @@ namespace Xabe.FFMpeg
 
             string arguments = new Conversion().Concat(pathList)
                                                .SetChannels(Channel.Both)
-                                               .SetFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                                               .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                                                .SetOutput(outputPath)
                                                .Build();
 

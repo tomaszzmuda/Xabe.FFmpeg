@@ -14,7 +14,7 @@ namespace Xabe.FFMpeg
         private string _codec;
         private string _copy;
         private string _disabled;
-        private string _filter;
+        private string _bitsreamFilter;
         private string _frameCount;
         private string _input;
         private string _loop;
@@ -28,6 +28,8 @@ namespace Xabe.FFMpeg
         private string _speed;
         private string _threads;
         private string _video;
+        private string _videoSpeed;
+        private string _audioSpeed;
 
         /// <inheritdoc />
         public string Build()
@@ -42,16 +44,46 @@ namespace Xabe.FFMpeg
             builder.Append(_disabled);
             builder.Append(_size);
             builder.Append(_codec);
-            builder.Append(_filter);
+            builder.Append(_bitsreamFilter);
             builder.Append(_copy);
             builder.Append(_seek);
             builder.Append(_frameCount);
             builder.Append(_loop);
             builder.Append(_reverse);
             builder.Append(_shortestInput);
+            builder.Append(BuildVideoFilter());
+            builder.Append(BuildAudioFilter());
             builder.Append(_output);
 
             return builder.ToString();
+        }
+
+        private string BuildVideoFilter()
+        {
+            var builder = new StringBuilder();
+            builder.Append("-filter:v ");
+            builder.Append(_videoSpeed);
+
+            var filter = builder.ToString();
+            if(filter == "-filter:v ")
+            {
+                return "";
+            }
+            return filter;
+        }
+
+        private string BuildAudioFilter()
+        {
+            var builder = new StringBuilder();
+            builder.Append("-filter:a ");
+            builder.Append(_audioSpeed);
+
+            var filter = builder.ToString();
+            if (filter == "-filter:a ")
+            {
+                return "";
+            }
+            return filter;
         }
 
         /// <inheritdoc />
@@ -192,21 +224,21 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetFilter(Channel type, Filter filter)
+        public IConversion SetBitstreamFilter(Channel type, Filter filter)
         {
-            return SetFilter(type, filter.ToString());
+            return SetBitstreamFilter(type, filter.ToString());
         }
 
         /// <inheritdoc />
-        public IConversion SetFilter(Channel type, string filter)
+        public IConversion SetBitstreamFilter(Channel type, string filter)
         {
             switch(type)
             {
                 case Channel.Audio:
-                    _filter = $"-bsf:a {filter.ToLower()} ";
+                    _bitsreamFilter = $"-bsf:a {filter.ToLower()} ";
                     break;
                 case Channel.Video:
-                    _filter = $"-bsf:v {filter.ToLower()} ";
+                    _bitsreamFilter = $"-bsf:v {filter.ToLower()} ";
                     break;
             }
             return this;
@@ -227,6 +259,20 @@ namespace Xabe.FFMpeg
                     _copy = "-c copy ";
                     break;
             }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion ChangeVideoSpeed(double multiplication)
+        {
+            _videoSpeed = $"setpts={string.Format(System.Globalization.CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)}*PTS ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion ChangeAudioSpeed(double multiplication)
+        {
+            _audioSpeed = $"atempo={string.Format(System.Globalization.CultureInfo.GetCultureInfo("en-US"), "{0:N1}",multiplication)} ";
             return this;
         }
 
