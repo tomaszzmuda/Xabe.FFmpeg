@@ -10,6 +10,24 @@ namespace Xabe.FFMpeg.Test
         private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sampleMkv.mkv"));
 
         [Fact]
+        public void DoubleVideoSpeedTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetSpeed(Speed.UltraFast)
+                .UseMultiThread(true)
+                .SetOutput(outputPath)
+                .SetScale(VideoSize.Original)
+                .SetVideo(VideoCodec.LibX264, 2400)
+                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                .ChangeVideoSpeed(2)
+                .ChangeAudioSpeed(0.5)
+                .Start();
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
         public void IncompatibleParametersTest()
         {
             Assert.Throws<InvalidOperationException>(() =>
@@ -39,24 +57,6 @@ namespace Xabe.FFMpeg.Test
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                 .Reverse(Channel.Both)
-                .Start();
-            Assert.True(conversionResult);
-        }
-
-        [Fact]
-        public void DoubleVideoSpeedTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-            bool conversionResult = new Conversion()
-                .SetInput(SampleMkvVideo)
-                .SetSpeed(Speed.UltraFast)
-                .UseMultiThread(true)
-                .SetOutput(outputPath)
-                .SetScale(VideoSize.Original)
-                .SetVideo(VideoCodec.LibX264, 2400)
-                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
-                .ChangeVideoSpeed(2)
-                .ChangeAudioSpeed(0.5)
                 .Start();
             Assert.True(conversionResult);
         }

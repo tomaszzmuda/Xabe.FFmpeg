@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using Xabe.FFMpeg.Enums;
@@ -11,10 +12,11 @@ namespace Xabe.FFMpeg
     public class Conversion: IConversion
     {
         private string _audio;
+        private string _audioSpeed;
+        private string _bitsreamFilter;
         private string _codec;
         private string _copy;
         private string _disabled;
-        private string _bitsreamFilter;
         private string _frameCount;
         private string _input;
         private string _loop;
@@ -29,7 +31,6 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
         private string _videoSpeed;
-        private string _audioSpeed;
 
         /// <inheritdoc />
         public string Build()
@@ -56,34 +57,6 @@ namespace Xabe.FFMpeg
             builder.Append(_output);
 
             return builder.ToString();
-        }
-
-        private string BuildVideoFilter()
-        {
-            var builder = new StringBuilder();
-            builder.Append("-filter:v ");
-            builder.Append(_videoSpeed);
-
-            var filter = builder.ToString();
-            if(filter == "-filter:v ")
-            {
-                return "";
-            }
-            return filter;
-        }
-
-        private string BuildAudioFilter()
-        {
-            var builder = new StringBuilder();
-            builder.Append("-filter:a ");
-            builder.Append(_audioSpeed);
-
-            var filter = builder.ToString();
-            if (filter == "-filter:a ")
-            {
-                return "";
-            }
-            return filter;
         }
 
         /// <inheritdoc />
@@ -265,14 +238,14 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion ChangeVideoSpeed(double multiplication)
         {
-            _videoSpeed = $"setpts={string.Format(System.Globalization.CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)}*PTS ";
+            _videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)}*PTS ";
             return this;
         }
 
         /// <inheritdoc />
         public IConversion ChangeAudioSpeed(double multiplication)
         {
-            _audioSpeed = $"atempo={string.Format(System.Globalization.CultureInfo.GetCultureInfo("en-US"), "{0:N1}",multiplication)} ";
+            _audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
             return this;
         }
 
@@ -331,6 +304,30 @@ namespace Xabe.FFMpeg
         {
             _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
             return this;
+        }
+
+        private string BuildVideoFilter()
+        {
+            var builder = new StringBuilder();
+            builder.Append("-filter:v ");
+            builder.Append(_videoSpeed);
+
+            string filter = builder.ToString();
+            if(filter == "-filter:v ")
+                return "";
+            return filter;
+        }
+
+        private string BuildAudioFilter()
+        {
+            var builder = new StringBuilder();
+            builder.Append("-filter:a ");
+            builder.Append(_audioSpeed);
+
+            string filter = builder.ToString();
+            if(filter == "-filter:a ")
+                return "";
+            return filter;
         }
     }
 }
