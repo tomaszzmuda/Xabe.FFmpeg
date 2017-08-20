@@ -42,5 +42,22 @@ namespace Xabe.FFMpeg.Test
                 .Start();
             Assert.True(conversionResult);
         }
+
+        [Fact]
+        public void IncompatibleParametersTest()
+        {
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+                bool conversionResult = new Conversion()
+                    .SetInput(SampleMkvVideo)
+                    .SetOutput(outputPath)
+                    .SetVideo(VideoCodec.LibX264, 2400)
+                    .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                    .Reverse(Channel.Both)
+                    .SetChannels(Channel.Both)
+                    .Start();
+            });
+        }
     }
 }

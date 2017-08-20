@@ -27,6 +27,7 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
         private string _reverse;
+        private string _outputPath;
 
         /// <inheritdoc />
         public string Build()
@@ -56,7 +57,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public bool Start()
         {
-            return new FFMpeg().StartConversion(Build());
+            return new FFMpeg().StartConversion(Build(), _outputPath);
         }
 
         /// <inheritdoc />
@@ -154,6 +155,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetOutput(string outputPath)
         {
+            _outputPath = outputPath;
             _output = $"\"{outputPath}\"";
             return this;
         }

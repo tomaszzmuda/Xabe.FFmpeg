@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Xabe.FFMpeg.Enums;
 
@@ -21,7 +22,7 @@ namespace Xabe.FFMpeg
     /// </summary>
     internal class FFMpeg: FFBase
     {
-        private volatile string _errorData = string.Empty;
+        private List<string> _errorData;
         private TimeSpan _totalTime;
 
         /// <summary>
@@ -58,9 +59,9 @@ namespace Xabe.FFMpeg
             return RunProcess(arguments, outputPath);
         }
 
-        public bool StartConversion(string arguments)
+        public bool StartConversion(string arguments, string outputPath)
         {
-            return RunProcess(arguments, null);
+            return RunProcess(arguments, outputPath);
         }
 
         private static Size? GetSize(VideoInfo source, Size? size)
@@ -369,8 +370,9 @@ namespace Xabe.FFMpeg
         private bool RunProcess(string args, string outputPath)
         {
             var result = true;
+            _errorData = new List<string>();
 
-            RunProcess(args, FFMpegPath, true, rStandardError: true);
+            RunProcess(args, FFMpegPath, true, false, true);
 
             try
             {
@@ -378,20 +380,21 @@ namespace Xabe.FFMpeg
                 Process.BeginErrorReadLine();
                 Process.WaitForExit();
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 result = false;
+                throw e;
             }
             finally
             {
                 Process.Close();
 
-                if(!string.IsNullOrWhiteSpace(outputPath))
+                if(string.IsNullOrWhiteSpace(outputPath) || !File.Exists(outputPath))
                 {
                     if(!File.Exists(outputPath))
-                        throw new InvalidOperationException(_errorData);
+                        throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
                     if(new FileInfo(outputPath).Length == 0)
-                        throw new InvalidOperationException(_errorData);
+                        throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
                 }
             }
             return result;
@@ -402,7 +405,7 @@ namespace Xabe.FFMpeg
             if(e.Data == null)
                 return;
 
-            _errorData = e.Data;
+            _errorData.Add(e.Data);
 
             if(OnProgress == null ||
                !IsRunning)
