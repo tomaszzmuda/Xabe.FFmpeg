@@ -19,6 +19,8 @@ namespace Xabe.FFMpeg
         private string _input;
         private string _loop;
         private string _output;
+        private string _outputPath;
+        private string _reverse;
         private string _scale;
         private string _seek;
         private string _shortestInput;
@@ -26,8 +28,6 @@ namespace Xabe.FFMpeg
         private string _speed;
         private string _threads;
         private string _video;
-        private string _reverse;
-        private string _outputPath;
 
         /// <inheritdoc />
         public string Build()
@@ -233,7 +233,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion Reverse(Channel type)
         {
-            switch (type)
+            switch(type)
             {
                 case Channel.Audio:
                     _reverse = "-af areverse ";

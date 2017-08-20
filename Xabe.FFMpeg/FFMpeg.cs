@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Xabe.FFMpeg.Enums;
 
@@ -389,7 +388,8 @@ namespace Xabe.FFMpeg
             {
                 Process.Close();
 
-                if(string.IsNullOrWhiteSpace(outputPath) || !File.Exists(outputPath))
+                if(string.IsNullOrWhiteSpace(outputPath) ||
+                   !File.Exists(outputPath))
                 {
                     if(!File.Exists(outputPath))
                         throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
