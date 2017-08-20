@@ -41,11 +41,11 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 	* Extract video
 	* Concatenate multiple videos
 	* Get information about video by FFProbe
+	* Reverse
 
 ## Planned features ##
 
 	* Change speed
-	* Reverse
 	* Split 
 	* Rotate video
 	* Watermarks

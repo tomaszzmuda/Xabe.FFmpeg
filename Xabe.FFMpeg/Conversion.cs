@@ -26,6 +26,7 @@ namespace Xabe.FFMpeg
         private string _speed;
         private string _threads;
         private string _video;
+        private string _reverse;
 
         /// <inheritdoc />
         public string Build()
@@ -45,6 +46,7 @@ namespace Xabe.FFMpeg
             builder.Append(_seek);
             builder.Append(_frameCount);
             builder.Append(_loop);
+            builder.Append(_reverse);
             builder.Append(_shortestInput);
             builder.Append(_output);
 
@@ -221,6 +223,24 @@ namespace Xabe.FFMpeg
                     break;
                 default:
                     _copy = "-c copy ";
+                    break;
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion Reverse(Channel type)
+        {
+            switch (type)
+            {
+                case Channel.Audio:
+                    _reverse = "-af areverse ";
+                    break;
+                case Channel.Video:
+                    _reverse = "-vf reverse ";
+                    break;
+                case Channel.Both:
+                    _reverse = "-vf reverse -af areverse ";
                     break;
             }
             return this;

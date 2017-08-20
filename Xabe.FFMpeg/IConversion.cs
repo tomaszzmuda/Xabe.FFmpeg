@@ -12,6 +12,13 @@ namespace Xabe.FFMpeg
     public interface IConversion
     {
         /// <summary>
+        ///     Reverse media
+        /// </summary>
+        /// <param name="type">Channel type</param>
+        /// <returns>IConversion object</returns>
+        IConversion Reverse(Channel type);
+
+        /// <summary>
         ///     Set speed of IConversion. Slower speed equals better compression and quality.
         /// </summary>
         /// <param name="speed">Speed</param>

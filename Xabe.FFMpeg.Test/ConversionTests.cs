@@ -25,5 +25,22 @@ namespace Xabe.FFMpeg.Test
                 .Start();
             Assert.True(conversionResult);
         }
+
+        [Fact]
+        public void ReverseTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetSpeed(Speed.UltraFast)
+                .UseMultiThread(true)
+                .SetOutput(outputPath)
+                .SetScale(VideoSize.Original)
+                .SetVideo(VideoCodec.LibX264, 2400)
+                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                .Reverse(Channel.Both)
+                .Start();
+            Assert.True(conversionResult);
+        }
     }
 }
