@@ -42,10 +42,10 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 	* Concatenate multiple videos
 	* Get information about video by FFProbe
 	* Reverse
+	* Change speed
 
 ## Planned features ##
 
-	* Change speed
 	* Split 
 	* Rotate video
 	* Watermarks
