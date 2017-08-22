@@ -218,7 +218,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetChannels(Channel type)
+        public IConversion StreamCopy(Channel type)
         {
             switch(type)
             {

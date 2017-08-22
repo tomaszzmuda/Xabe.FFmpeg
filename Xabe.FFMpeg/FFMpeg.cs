@@ -192,7 +192,7 @@ namespace Xabe.FFMpeg
 
             string arguments = new Conversion()
                 .SetInput(source)
-                .SetChannels(Channel.Both)
+                .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
                 .SetOutput(outputPath)
@@ -243,7 +243,7 @@ namespace Xabe.FFMpeg
             }
 
             string arguments = new Conversion().Concat(pathList)
-                                               .SetChannels(Channel.Both)
+                                               .StreamCopy(Channel.Both)
                                                .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                                                .SetOutput(outputPath)
                                                .Build();
@@ -284,7 +284,7 @@ namespace Xabe.FFMpeg
             CheckExtension(outputPath, source.Extension);
 
             string arguments = new Conversion().SetInput(source)
-                                               .SetChannels(Channel.Both)
+                                               .StreamCopy(Channel.Both)
                                                .DisableChannel(Channel.Audio)
                                                .SetOutput(outputPath)
                                                .Build();
@@ -348,7 +348,7 @@ namespace Xabe.FFMpeg
             CheckExtension(outputPath, source.Extension);
 
             string arguments = new Conversion().SetInput(new FileInfo(source.FilePath), audio)
-                                               .SetChannels(Channel.Video)
+                                               .StreamCopy(Channel.Video)
                                                .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
                                                .UseShortest(stopAtShortest)
                                                .SetOutput(outputPath)

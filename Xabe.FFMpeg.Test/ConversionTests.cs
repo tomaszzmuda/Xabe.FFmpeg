@@ -39,7 +39,7 @@ namespace Xabe.FFMpeg.Test
                     .SetVideo(VideoCodec.LibX264, 2400)
                     .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                     .Reverse(Channel.Both)
-                    .SetChannels(Channel.Both)
+                    .StreamCopy(Channel.Both)
                     .Start();
             });
         }
@@ -70,7 +70,7 @@ namespace Xabe.FFMpeg.Test
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
-                .SetChannels(Channel.Both)
+                .StreamCopy(Channel.Both)
                 .SetScale(VideoSize.Original)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
