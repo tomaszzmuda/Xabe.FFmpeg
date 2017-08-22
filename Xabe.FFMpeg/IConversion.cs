@@ -116,6 +116,13 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Set size of video
         /// </summary>
+        /// <param name="size">Size in ffmpeg format</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetScale(string size);
+
+        /// <summary>
+        ///     Set size of video
+        /// </summary>
         /// <param name="size">VideoSize</param>
         /// <returns>IConversion object</returns>
         IConversion SetSize(Size? size);
@@ -151,11 +158,13 @@ namespace Xabe.FFMpeg
         IConversion SetBitstreamFilter(Channel type, string filter);
 
         /// <summary>
-        ///     Set channels
+        ///     It makes ffmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing.
+        ///     It is useful for changing the container format or modifying container-level metadata.
+        ///     Cannot be used with operations which require encoding and decoding video (scaling, changing codecs etc.)
         /// </summary>
         /// <param name="type">Channel type</param>
         /// <returns>IConversion object</returns>
-        IConversion SetChannels(Channel type);
+        IConversion StreamCopy(Channel type);
 
         /// <summary>
         ///     Change video speed

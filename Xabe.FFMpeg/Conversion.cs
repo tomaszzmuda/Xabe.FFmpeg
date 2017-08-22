@@ -168,9 +168,14 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetScale(VideoSize size)
         {
-            if(VideoSize.Original == size)
-                return this;
-            _scale = $"-vf scale={(int) size} ";
+            return SetScale(size.Resolution);
+        }
+
+        /// <inheritdoc />
+        public IConversion SetScale(string size)
+        {
+            if(!string.IsNullOrWhiteSpace(size))
+                _scale = $"-vf scale={size} ";
             return this;
         }
 
@@ -218,7 +223,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetChannels(Channel type)
+        public IConversion StreamCopy(Channel type)
         {
             switch(type)
             {

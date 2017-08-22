@@ -121,7 +121,7 @@ namespace Xabe.FFMpeg
 
 
         /// <inheritdoc />
-        public VideoInfo ToWebM(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal)
+        public VideoInfo ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal)
         {
             FFmpeg.OnProgress += OnConversionProgress;
             bool success = FFmpeg.ToWebM(this, outputPath, size, audioQuality);
@@ -133,7 +133,7 @@ namespace Xabe.FFMpeg
 
 
         /// <inheritdoc />
-        public VideoInfo ToOgv(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public VideoInfo ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             FFmpeg.OnProgress += OnConversionProgress;
             bool success = FFmpeg.ToOgv(this, outputPath, size, audioQuality, multithread);
@@ -146,7 +146,7 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         public VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast,
-            VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+            string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             FFmpeg.OnProgress += OnConversionProgress;
             bool success = FFmpeg.ToMp4(this, outputPath, speed, size, audioQuality, multithread);

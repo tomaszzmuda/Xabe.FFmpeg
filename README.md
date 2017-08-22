@@ -50,6 +50,7 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 	* Rotate video
 	* Watermarks
 	* Chroma key
+	* Validate ffmpeg parameters
 
 ## Lincence ## 
 
