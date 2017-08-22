@@ -175,9 +175,7 @@ namespace Xabe.FFMpeg
         public IConversion SetScale(string size)
         {
             if(!string.IsNullOrWhiteSpace(size))
-            {
                 _scale = $"-vf scale={size} ";
-            }
             return this;
         }
 

@@ -158,7 +158,7 @@ namespace Xabe.FFMpeg
         IConversion SetBitstreamFilter(Channel type, string filter);
 
         /// <summary>
-        ///     It makes ffmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing. 
+        ///     It makes ffmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing.
         ///     It is useful for changing the container format or modifying container-level metadata.
         ///     Cannot be used with operations which require encoding and decoding video (scaling, changing codecs etc.)
         /// </summary>
