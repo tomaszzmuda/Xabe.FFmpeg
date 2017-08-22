@@ -116,6 +116,13 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Set size of video
         /// </summary>
+        /// <param name="size">Size in ffmpeg format</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetScale(string size);
+
+        /// <summary>
+        ///     Set size of video
+        /// </summary>
         /// <param name="size">VideoSize</param>
         /// <returns>IConversion object</returns>
         IConversion SetSize(Size? size);

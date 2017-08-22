@@ -137,7 +137,7 @@ namespace Xabe.FFMpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Output VideoInfo</returns>
-        VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal,
+        VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast, string size = "", AudioQuality audioQuality = AudioQuality.Normal,
             bool multithread = false);
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Xabe.FFMpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Output VideoInfo</returns>
-        VideoInfo ToOgv(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
+        VideoInfo ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
 
         /// <summary>
         ///     Convert file to TS
@@ -164,6 +164,6 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <returns>Output VideoInfo</returns>
-        VideoInfo ToWebM(string outputPath, VideoSize size = VideoSize.Original, AudioQuality audioQuality = AudioQuality.Normal);
+        VideoInfo ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal);
     }
 }

@@ -100,7 +100,7 @@ namespace Xabe.FFMpeg
         /// <param name="multithread">Use multithreading for conversion.</param>
         /// <returns>Conversion result</returns>
         public bool ToMp4(VideoInfo source, string outputPath, Speed speed = Speed.SuperFast,
-            VideoSize size = VideoSize.Original, AudioQuality aQuality = AudioQuality.Normal, bool multithread = false)
+            string size = "", AudioQuality aQuality = AudioQuality.Normal, bool multithread = false)
         {
             _totalTime = source.Duration;
 
@@ -128,7 +128,7 @@ namespace Xabe.FFMpeg
         /// <param name="size">Output video size.</param>
         /// <param name="aQuality">Output audio quality.</param>
         /// <returns>Conversion result</returns>
-        public bool ToWebM(VideoInfo source, string outputPath, VideoSize size = VideoSize.Original,
+        public bool ToWebM(VideoInfo source, string outputPath, string size = "",
             AudioQuality aQuality = AudioQuality.Normal)
         {
             _totalTime = source.Duration;
@@ -157,7 +157,7 @@ namespace Xabe.FFMpeg
         /// <param name="aQuality">Output audio quality.</param>
         /// <param name="multithread">Use multithreading for conversion.</param>
         /// <returns>Conversion result</returns>
-        public bool ToOgv(VideoInfo source, string outputPath, VideoSize size = VideoSize.Original,
+        public bool ToOgv(VideoInfo source, string outputPath, string size = "",
             AudioQuality aQuality = AudioQuality.Normal, bool multithread = false)
         {
             _totalTime = source.Duration;

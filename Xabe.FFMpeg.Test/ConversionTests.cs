@@ -18,7 +18,6 @@ namespace Xabe.FFMpeg.Test
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
-                .SetScale(VideoSize.Original)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                 .ChangeVideoSpeed(2)
@@ -53,11 +52,30 @@ namespace Xabe.FFMpeg.Test
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
-                .SetScale(VideoSize.Original)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                 .Reverse(Channel.Both)
                 .Start();
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
+        public void ScaleTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetSpeed(Speed.UltraFast)
+                .UseMultiThread(true)
+                .SetOutput(outputPath)
+                .SetScale(VideoSize.sqcif)
+                .SetVideo(VideoCodec.LibX264, 2400)
+                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(128, videoInfo.Width);
+            Assert.Equal(96, videoInfo.Height);
             Assert.True(conversionResult);
         }
 
@@ -71,7 +89,6 @@ namespace Xabe.FFMpeg.Test
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
                 .StreamCopy(Channel.Both)
-                .SetScale(VideoSize.Original)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                 .Start();
