@@ -118,5 +118,20 @@ namespace Xabe.FFMpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
             Assert.True(conversionResult);
         }
+
+        [Fact]
+        public void DisableVideoChannelTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .DisableChannel(Channel.Video)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal("none", videoInfo.VideoFormat);
+            Assert.True(conversionResult);
+        }
     }
 }
