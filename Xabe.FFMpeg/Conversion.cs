@@ -305,7 +305,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion Concat(IEnumerable<string> paths)
+        public IConversion Concat(params string[] paths)
         {
             _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
             return this;

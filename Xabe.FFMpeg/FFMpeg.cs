@@ -233,13 +233,15 @@ namespace Xabe.FFMpeg
         /// <returns>Conversion result</returns>
         public bool Join(string outputPath, params VideoInfo[] videos)
         {
-            var pathList = new List<string>();
+            var pathList = new string[videos.Length];
+            int i = 0;
 
             foreach(VideoInfo video in videos)
             {
                 string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-                pathList.Add(tempFileName);
+                pathList[i] = tempFileName;
                 ToTs(video, tempFileName);
+                i++;
             }
 
             string arguments = new Conversion().Concat(pathList)

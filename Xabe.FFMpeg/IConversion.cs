@@ -213,7 +213,7 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="paths">Media files</param>
         /// <returns>IConversion object</returns>
-        IConversion Concat(IEnumerable<string> paths);
+        IConversion Concat(params string[] paths);
 
         /// <summary>
         ///     Build command
