@@ -165,5 +165,20 @@ namespace Xabe.FFMpeg.Test
             Assert.Equal(480, videoInfo.Height);
             Assert.True(conversionResult);
         }
+
+        [Fact]
+        public void VideoCodecTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .SetCodec(VideoCodec.MpegTs)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal("mpeg2video", videoInfo.VideoFormat);
+            Assert.True(conversionResult);
+        }
     }
 }
