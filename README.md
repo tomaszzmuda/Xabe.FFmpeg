@@ -33,7 +33,7 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 		.Start();
 
 ## Features ##
-* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-information-about-video "")
+* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-an-information-about-video)
 * [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Extracting-audio-or-video)
 * Convert media
 * Create snapshot
