@@ -180,5 +180,21 @@ namespace Xabe.FFMpeg.Test
             Assert.Equal("mpeg2video", videoInfo.VideoFormat);
             Assert.True(conversionResult);
         }
+
+        [Fact]
+        public void ChangeOutputFramesCountTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .SetOutputFramesCount(50)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(TimeSpan.FromSeconds(2), videoInfo.Duration);
+            Assert.Equal(50, videoInfo.Duration.TotalSeconds*videoInfo.FrameRate);
+            Assert.True(conversionResult);
+        }
     }
 }

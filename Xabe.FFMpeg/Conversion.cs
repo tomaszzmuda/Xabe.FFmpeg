@@ -284,7 +284,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetOutputFramesCount(int number)
         {
-            _frameCount = $"-vframes {number} ";
+            _frameCount = $"-frames:v {number} ";
             return this;
         }
 
