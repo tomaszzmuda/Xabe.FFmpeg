@@ -5,6 +5,8 @@ Change Log / Release Notes
 
 * More unit tests
 * Fix issue when trying to process media with disabled video channel
+* Change obsolete alias "vframes" to "frames:v"
+* Change input parameter type to Conversion.Concat method from IEnumerable<string> to params string[]
 
 ## Xabe.FFMpeg 1.4.0
 
