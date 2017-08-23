@@ -7,7 +7,7 @@ namespace Xabe.FFMpeg.Test
 {
     public class ConversionTests
     {
-        private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sampleMkv.mkv"));
+        private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv"));
 
         [Fact]
         public void DoubleSlowVideoSpeedTest()
@@ -25,7 +25,7 @@ namespace Xabe.FFMpeg.Test
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
 
-            Assert.Equal(TimeSpan.FromSeconds(15), videoInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(5), videoInfo.Duration);
             Assert.True(conversionResult);
         }
 
@@ -45,7 +45,7 @@ namespace Xabe.FFMpeg.Test
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
 
-            Assert.Equal(TimeSpan.FromSeconds(60), videoInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(19), videoInfo.Duration);
             Assert.True(conversionResult);
         }
 
@@ -81,7 +81,7 @@ namespace Xabe.FFMpeg.Test
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
 
-            Assert.Equal(TimeSpan.FromSeconds(30), videoInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
             Assert.True(conversionResult);
         }
 
@@ -106,21 +106,16 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        public void Test()
+        public void MinumumOptionsTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
-                .SetSpeed(Speed.UltraFast)
-                .UseMultiThread(true)
                 .SetOutput(outputPath)
-                .StreamCopy(Channel.Both)
-                .SetVideo(VideoCodec.LibX264, 2400)
-                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
 
-            Assert.Equal(TimeSpan.FromSeconds(30), videoInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
             Assert.True(conversionResult);
         }
     }

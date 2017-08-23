@@ -12,7 +12,7 @@ namespace Xabe.FFMpeg.Test
         private static readonly FileInfo SampleVideoWithAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "input.mp4"));
         private static readonly FileInfo SampleAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "audio.mp3"));
         private static readonly FileInfo SampleVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "mute.mp4"));
-        private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sampleMkv.mkv"));
+        private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv"));
 
         [Fact]
         public void AddAudio()
@@ -61,16 +61,16 @@ namespace Xabe.FFMpeg.Test
         {
             IVideoInfo videoInfo = new VideoInfo(SampleMkvVideo);
 
-            Assert.Equal("none", videoInfo.AudioFormat);
-            Assert.Equal(TimeSpan.FromSeconds(30), videoInfo.Duration);
+            Assert.Equal("aac", videoInfo.AudioFormat);
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
             Assert.True(File.Exists(videoInfo.FilePath));
             Assert.Equal(".mkv", videoInfo.Extension);
-            Assert.Equal(29.97, videoInfo.FrameRate);
-            Assert.Equal(1080, videoInfo.Height);
-            Assert.Equal(1920, videoInfo.Width);
-            Assert.Equal("sampleMkv.mkv", Path.GetFileName(videoInfo.FilePath));
+            Assert.Equal(25, videoInfo.FrameRate);
+            Assert.Equal(240, videoInfo.Height);
+            Assert.Equal(320, videoInfo.Width);
+            Assert.Equal("SampleVideo_360x240_1mb.mkv", Path.GetFileName(videoInfo.FilePath));
             Assert.False(videoInfo.IsRunning);
-            Assert.Equal("16:9", videoInfo.Ratio);
+            Assert.Equal("4:3", videoInfo.Ratio);
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace Xabe.FFMpeg.Test
 
             IVideoInfo outputVideo = new VideoInfo(fileInfo).ToMp4(output);
             Assert.True(File.Exists(outputVideo.FilePath));
-            Assert.Equal(TimeSpan.FromSeconds(30), outputVideo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(9), outputVideo.Duration);
         }
 
         [Fact]
