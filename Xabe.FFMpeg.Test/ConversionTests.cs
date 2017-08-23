@@ -133,5 +133,20 @@ namespace Xabe.FFMpeg.Test
             Assert.Equal("none", videoInfo.VideoFormat);
             Assert.True(conversionResult);
         }
+
+        [Fact]
+        public void DisableAudioChannelTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .DisableChannel(Channel.Audio)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal("none", videoInfo.AudioFormat);
+            Assert.True(conversionResult);
+        }
     }
 }
