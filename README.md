@@ -33,24 +33,22 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 		.Start();
 
 ## Features ##
-
-	* Convert media
-	* Create snapshot
-	* Add audio to vidoe
-	* Extract audio
-	* Extract video
-	* Concatenate multiple videos
-	* Get information about video by FFProbe
-	* Reverse
-	* Change speed
+* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-information-about-video "")
+* Convert media
+* Create snapshot
+* Add audio to video
+* Extract audio
+* Extract video
+* Concatenate multiple videos
+* Reverse
+* Change speed
 
 ## Planned features ##
-
-	* Split 
-	* Rotate video
-	* Watermarks
-	* Chroma key
-	* Validate ffmpeg parameters
+* Split 
+* Rotate video
+* Watermarks
+* Chroma key
+* Validate ffmpeg parameters
 
 ## Lincence ## 
 
