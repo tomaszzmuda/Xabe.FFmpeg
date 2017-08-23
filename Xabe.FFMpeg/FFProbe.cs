@@ -88,6 +88,11 @@ namespace Xabe.FFMpeg
 
         private double GetDuration(VideoInfo info, ProbeModel.Stream video)
         {
+            if(video == null)
+            {
+                return 0;
+            }
+
             if(info.Extension == ".mkv" ||
                info.Extension == ".webm")
             {
