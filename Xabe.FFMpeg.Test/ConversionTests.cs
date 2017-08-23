@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using Xabe.FFMpeg.Enums;
 using Xunit;
@@ -146,6 +147,22 @@ namespace Xabe.FFMpeg.Test
             var videoInfo = new VideoInfo(outputPath);
 
             Assert.Equal("none", videoInfo.AudioFormat);
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
+        public void SizeTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .SetSize(new Size(640, 480))
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(640, videoInfo.Width);
+            Assert.Equal(480, videoInfo.Height);
             Assert.True(conversionResult);
         }
     }
