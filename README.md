@@ -34,11 +34,10 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 
 ## Features ##
 * [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-information-about-video "")
+* [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Extracting-audio-or-video)
 * Convert media
 * Create snapshot
 * Add audio to video
-* Extract audio
-* Extract video
 * Concatenate multiple videos
 * Reverse
 * Change speed
