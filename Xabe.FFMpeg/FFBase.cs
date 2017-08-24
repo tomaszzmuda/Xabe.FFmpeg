@@ -13,23 +13,58 @@ namespace Xabe.FFMpeg
     /// </summary>
     public abstract class FFBase: IDisposable
     {
+        private readonly object _ffmpegPathLock = new object();
+        private readonly object _ffprobePathLock = new object();
+        private static string _ffmpegPath;
+        private static string _ffprobePath;
+
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
         /// </summary>
         // ReSharper disable once InconsistentNaming
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnassignedField.Global
         public static string FFMpegDir;
 
         // ReSharper disable once InconsistentNaming
         /// <summary>
         ///     FilePath to FFMpeg
         /// </summary>
-        protected string FFMpegPath;
+        protected string FFMpegPath
+        {
+            get
+            {
+                lock(_ffmpegPathLock)
+                    return _ffmpegPath;
+            }
+            private set
+            {
+                lock(_ffmpegPathLock)
+                {
+                    _ffmpegPath = value;
+                }
+            }
+        }
 
         // ReSharper disable once InconsistentNaming
         /// <summary>
         ///     FilePath to FFProbe
         /// </summary>
-        protected string FFProbePath;
+        protected string FFProbePath
+        {
+            get
+            {
+                lock (_ffprobePathLock)
+                    return _ffprobePath;
+            }
+            private set
+            {
+                lock (_ffprobePathLock)
+                {
+                    _ffprobePath = value;
+                }
+            }
+        }
 
         /// <summary>
         ///     FFMpeg process
@@ -41,6 +76,12 @@ namespace Xabe.FFMpeg
         /// </summary>
         protected FFBase()
         {
+            if(!string.IsNullOrWhiteSpace(FFProbePath) &&
+               !string.IsNullOrWhiteSpace(FFMpegPath))
+            {
+                return;
+            }
+
             if(!string.IsNullOrWhiteSpace(FFMpegDir))
             {
                 FFProbePath = new DirectoryInfo(FFMpegDir).GetFiles()
