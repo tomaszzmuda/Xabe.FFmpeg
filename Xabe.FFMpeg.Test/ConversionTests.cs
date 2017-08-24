@@ -9,11 +9,13 @@ namespace Xabe.FFMpeg.Test
     public class ConversionTests
     {
         private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv"));
+        private static readonly FileInfo SampleVideoWithAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "input.mp4"));
+        private static readonly FileInfo SampleTsWithAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sample.ts"));
 
         [Fact]
         public void DoubleSlowVideoSpeedTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
@@ -33,7 +35,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void DoubleVideoSpeedTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
@@ -55,7 +57,7 @@ namespace Xabe.FFMpeg.Test
         {
             Assert.Throws<InvalidOperationException>(() =>
             {
-                string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+                string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
                 new Conversion()
                     .SetInput(SampleMkvVideo)
                     .SetOutput(outputPath)
@@ -70,7 +72,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void ReverseTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
@@ -89,7 +91,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void ScaleTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
@@ -109,7 +111,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void MinumumOptionsTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetOutput(outputPath)
@@ -123,7 +125,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void DisableVideoChannelTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetOutput(outputPath)
@@ -138,7 +140,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void DisableAudioChannelTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetOutput(outputPath)
@@ -153,7 +155,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void SizeTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetOutput(outputPath)
@@ -184,7 +186,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void ChangeOutputFramesCountTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetOutput(outputPath)
@@ -195,6 +197,23 @@ namespace Xabe.FFMpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(2), videoInfo.Duration);
             Assert.Equal(50, videoInfo.Duration.TotalSeconds*videoInfo.FrameRate);
             Assert.True(conversionResult);
+        }
+
+        [Fact]
+        public void ConcatVideosTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            var conversionResult = new Conversion().Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName)
+                            .StreamCopy(Channel.Both)
+                            .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                            .SetOutput(outputPath)
+                            .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(TimeSpan.FromSeconds(26), videoInfo.Duration);
+            Assert.True(conversionResult);
+
+
         }
     }
 }
