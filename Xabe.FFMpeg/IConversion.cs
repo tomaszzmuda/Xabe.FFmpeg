@@ -234,13 +234,8 @@ namespace Xabe.FFMpeg
         bool IsRunning { get; }
 
         /// <summary>
-        ///     Dispose process
+        ///     Kill ffmpeg process
         /// </summary>
         void Dispose();
-
-        /// <summary>
-        ///     Kill ffmpeg process.
-        /// </summary>
-        void Kill();
     }
 }

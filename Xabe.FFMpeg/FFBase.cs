@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Xabe.FFMpeg
 {
@@ -121,11 +122,14 @@ namespace Xabe.FFMpeg
         public bool IsRunning { get; private set; }
 
         /// <summary>
-        ///     Dispose process
+        ///     Kill process
         /// </summary>
         public void Dispose()
         {
-            Process?.Dispose();
+            if (IsRunning)
+                Process.Kill();
+            while (!Process.HasExited)
+                Thread.Sleep(10);
         }
 
         private void FindProgramsFromPath(string path)
@@ -183,15 +187,6 @@ namespace Xabe.FFMpeg
         private void OnProcessExit(object sender, EventArgs e)
         {
             IsRunning = false;
-        }
-
-        /// <summary>
-        ///     Kill ffmpeg process.
-        /// </summary>
-        public void Kill()
-        {
-            if(IsRunning)
-                Process.Kill();
         }
     }
 }
