@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 using Xunit;
 
@@ -9,7 +11,6 @@ namespace Xabe.FFMpeg.Test
     public class ConversionTests
     {
         private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv"));
-        private static readonly FileInfo SampleVideoWithAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "input.mp4"));
         private static readonly FileInfo SampleTsWithAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sample.ts"));
 
         [Fact]
@@ -203,17 +204,43 @@ namespace Xabe.FFMpeg.Test
         public void ConcatVideosTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-            var conversionResult = new Conversion().Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName)
+            var conversionResult = new Conversion()
                             .StreamCopy(Channel.Both)
                             .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                             .SetOutput(outputPath)
+                            .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName)
                             .Start();
             var videoInfo = new VideoInfo(outputPath);
 
             Assert.Equal(TimeSpan.FromSeconds(26), videoInfo.Duration);
             Assert.True(conversionResult);
+        }
+
+        [Fact]
+        // ReSharper disable once InconsistentNaming
+        public void KillFFMpegProcessTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            IConversion conversion = new Conversion();
+            var conversionResult = false;
+            Task.Run(() => 
+            conversionResult = conversion
+                .SetInput(SampleMkvVideo)
+                .SetScale(VideoSize.uhd4320)
+                .SetVideo(VideoCodec.LibTheora, 2400)
+                .SetSpeed(16)
+                .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
+                .SetOutput(outputPath)
+                .Start());
 
 
+            Thread.Sleep(1000);
+
+            Assert.True(conversion.IsRunning);
+            conversion.Kill();
+            Thread.Sleep(1000);
+            Assert.False(conversion.IsRunning);
+            Assert.False(conversionResult);
         }
     }
 }

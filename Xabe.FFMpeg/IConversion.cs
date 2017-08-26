@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -226,5 +227,20 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <returns>Conversion result</returns>
         bool Start();
+
+        /// <summary>
+        ///     Returns true if the associated process is still alive/running.
+        /// </summary>
+        bool IsRunning { get; }
+
+        /// <summary>
+        ///     Dispose process
+        /// </summary>
+        void Dispose();
+
+        /// <summary>
+        ///     Kill ffmpeg process.
+        /// </summary>
+        void Kill();
     }
 }

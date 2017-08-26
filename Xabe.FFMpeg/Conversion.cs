@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -31,6 +32,7 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
         private string _videoSpeed;
+        private FFMpeg _ffmpeg;
 
         /// <inheritdoc />
         public string Build()
@@ -62,7 +64,23 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public bool Start()
         {
-            return new FFMpeg().StartConversion(Build(), _outputPath);
+            _ffmpeg = new FFMpeg();
+            return _ffmpeg.StartConversion(Build(), _outputPath);
+        }
+
+        /// <inheritdoc />
+        public bool IsRunning  => _ffmpeg == null ? false : _ffmpeg.IsRunning;
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _ffmpeg?.Dispose();
+        }
+
+        /// <inheritdoc />
+        public void Kill()
+        {
+            _ffmpeg.Kill();
         }
 
         /// <inheritdoc />
