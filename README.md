@@ -23,13 +23,8 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 	
 	bool conversionResult = new Conversion()
 		.SetInput(SampleMkvVideo)
-		.SetSpeed(Speed.UltraFast)
-		.UseMultiThread(true)
 		.SetOutput(outputPath)
-		.SetChannels(Channel.Both)
-		.SetScale(VideoSize.Original)
-		.SetVideo(VideoCodec.LibX264, 2400)
-		.SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+		.SetCodec(VideoCodec.MpegTs)
 		.Start();
 
 ## Features ##
