@@ -370,7 +370,7 @@ namespace Xabe.FFMpeg
 
         private bool RunProcess(string args, string outputPath)
         {
-            var result = true;
+            var result = false;
             _errorData = new List<string>();
 
             RunProcess(args, FFMpegPath, true, false, true);
@@ -380,18 +380,18 @@ namespace Xabe.FFMpeg
                 Process.ErrorDataReceived += OutputData;
                 Process.BeginErrorReadLine();
                 Process.WaitForExit();
+                result = Process.ExitCode == 0;
             }
             catch(Exception e)
             {
-                result = false;
                 throw e;
             }
             finally
             {
                 Process.Close();
 
-                if(string.IsNullOrWhiteSpace(outputPath) ||
-                   !File.Exists(outputPath))
+                if(!result && (string.IsNullOrWhiteSpace(outputPath) ||
+                   !File.Exists(outputPath)))
                 {
                     if(!File.Exists(outputPath))
                         throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
