@@ -1,6 +1,15 @@
 Change Log / Release Notes
 ==========================
 
+## Xabe.FFMpeg 1.4.2
+
+* Even more unit tests
+* Optimize creating VideoInfo and Conversion object. FFMpeg executables pathes is saved after found
+* Better result of conversion state
+* Remove Kill method from FFBase but move functionality to Dispose
+* Add Resharper annotations and configuration
+* Add Conversion.Stop method which send exit signal to FFMpeg process
+
 ## Xabe.FFMpeg 1.4.1
 
 * More unit tests
