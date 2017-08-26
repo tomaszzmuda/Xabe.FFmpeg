@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -18,6 +16,7 @@ namespace Xabe.FFMpeg
         private string _codec;
         private string _copy;
         private string _disabled;
+        private FFMpeg _ffmpeg;
         private string _frameCount;
         private string _input;
         private string _loop;
@@ -32,7 +31,6 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
         private string _videoSpeed;
-        private FFMpeg _ffmpeg;
 
         /// <inheritdoc />
         public string Build()
@@ -69,7 +67,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public bool IsRunning  => _ffmpeg == null ? false : _ffmpeg.IsRunning;
+        public bool IsRunning => _ffmpeg == null ? false : _ffmpeg.IsRunning;
 
         /// <inheritdoc />
         public void Dispose()

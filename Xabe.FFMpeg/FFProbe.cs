@@ -5,10 +5,10 @@ using Xabe.FFMpeg.Model;
 
 namespace Xabe.FFMpeg
 {
-    // ReSharper disable once InconsistentNaming
     /// <summary>
     ///     Get info about media file
     /// </summary>
+    // ReSharper disable once InheritdocConsiderUsage
     internal sealed class FFProbe: FFBase
     {
         /// <summary>
@@ -89,9 +89,7 @@ namespace Xabe.FFMpeg
         private double GetDuration(VideoInfo info, ProbeModel.Stream video)
         {
             if(video == null)
-            {
                 return 0;
-            }
 
             if(info.Extension == ".mkv" ||
                info.Extension == ".webm")

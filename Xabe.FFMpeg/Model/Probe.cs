@@ -1,9 +1,15 @@
-﻿namespace Xabe.FFMpeg.Model
+﻿using JetBrains.Annotations;
+
+// ReSharper disable InconsistentNaming
+
+namespace Xabe.FFMpeg.Model
 {
+    [UsedImplicitly]
     internal class ProbeModel
     {
         public Stream[] streams { get; set; }
 
+        [UsedImplicitly]
         public class Stream
         {
             public int index { get; set; }
@@ -39,6 +45,7 @@
             public Disposition disposition { get; set; }
         }
 
+        [UsedImplicitly]
         public class Disposition
         {
             public int _default { get; set; }

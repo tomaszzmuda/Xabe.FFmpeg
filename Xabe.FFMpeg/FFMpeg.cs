@@ -234,7 +234,7 @@ namespace Xabe.FFMpeg
         public bool Join(string outputPath, params VideoInfo[] videos)
         {
             var pathList = new string[videos.Length];
-            int i = 0;
+            var i = 0;
 
             foreach(VideoInfo video in videos)
             {
@@ -331,8 +331,8 @@ namespace Xabe.FFMpeg
 
         private void CheckExtension(string output, string expected)
         {
-//            if(!expected.Equals(new FileInfo(output).Extension, StringComparison.OrdinalIgnoreCase))
-//                throw new IOException($"Invalid output file. SourceFile extension should be '{expected}' required.");
+            if(!expected.Equals(new FileInfo(output).Extension, StringComparison.OrdinalIgnoreCase))
+                throw new IOException($"Invalid output file. SourceFile extension should be '{expected}' required.");
         }
 
         /// <summary>
@@ -375,30 +375,22 @@ namespace Xabe.FFMpeg
 
             RunProcess(args, FFMpegPath, true, false, true);
 
-            try
+            using(Process)
             {
                 Process.ErrorDataReceived += OutputData;
                 Process.BeginErrorReadLine();
                 Process.WaitForExit();
                 result = Process.ExitCode == 0;
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
-            finally
-            {
-                Process.Close();
 
-                if(!result && (string.IsNullOrWhiteSpace(outputPath) ||
-                   !File.Exists(outputPath)))
+                if(!result &&
+                   (string.IsNullOrWhiteSpace(outputPath) 
+                   || !File.Exists(outputPath) 
+                    || new FileInfo(outputPath).Length == 0))
                 {
-                    if(!File.Exists(outputPath))
-                        throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
-                    if(new FileInfo(outputPath).Length == 0)
                         throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
                 }
             }
+
             return result;
         }
 

@@ -1,16 +1,23 @@
-﻿namespace Xabe.FFMpeg.Model
+﻿// ReSharper disable InconsistentNaming
+
+using JetBrains.Annotations;
+
+namespace Xabe.FFMpeg.Model
 {
+    [UsedImplicitly]
     internal class FormatModel
     {
         private FormatModel()
         {
         }
 
+        [UsedImplicitly]
         internal class Root
         {
             public Format format { get; set; }
         }
 
+        [UsedImplicitly]
         internal class Format
         {
             public string filename { get; set; }
@@ -26,6 +33,7 @@
             public Tags tags { get; set; }
         }
 
+        [UsedImplicitly]
         internal class Tags
         {
             public string encoder { get; set; }

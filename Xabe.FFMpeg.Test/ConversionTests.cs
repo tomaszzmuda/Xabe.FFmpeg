@@ -14,9 +14,97 @@ namespace Xabe.FFMpeg.Test
         private static readonly FileInfo SampleTsWithAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sample.ts"));
 
         [Fact]
+        public void ChangeOutputFramesCountTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .SetOutputFramesCount(50)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(TimeSpan.FromSeconds(2), videoInfo.Duration);
+            Assert.Equal(50, videoInfo.Duration.TotalSeconds * videoInfo.FrameRate);
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
+        public void ConcatVideosTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            bool conversionResult = new Conversion()
+                .StreamCopy(Channel.Both)
+                .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                .SetOutput(outputPath)
+                .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(TimeSpan.FromSeconds(26), videoInfo.Duration);
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
+        public void DisableAudioChannelTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .DisableChannel(Channel.Audio)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal("none", videoInfo.AudioFormat);
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
+        public void DisableVideoChannelTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .DisableChannel(Channel.Video)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal("none", videoInfo.VideoFormat);
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
+        // ReSharper disable once InconsistentNaming
+        public void DisposeFFMpegProcessTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            IConversion conversion = new Conversion();
+            var conversionResult = false;
+            Task.Run(() =>
+                conversionResult = conversion
+                    .SetInput(SampleMkvVideo)
+                    .SetScale(VideoSize.Uhd4320)
+                    .SetVideo(VideoCodec.LibTheora, 2400)
+                    .SetSpeed(16)
+                    .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
+                    .SetOutput(outputPath)
+                    .Start());
+
+
+            Thread.Sleep(1000);
+
+            Assert.True(conversion.IsRunning);
+            conversion.Dispose();
+            Assert.False(conversion.IsRunning);
+            Assert.False(conversionResult);
+        }
+
+        [Fact]
         public void DoubleSlowVideoSpeedTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
@@ -36,7 +124,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void DoubleVideoSpeedTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
@@ -58,7 +146,7 @@ namespace Xabe.FFMpeg.Test
         {
             Assert.Throws<InvalidOperationException>(() =>
             {
-                string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
+                string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
                 new Conversion()
                     .SetInput(SampleMkvVideo)
                     .SetOutput(outputPath)
@@ -71,9 +159,23 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
+        public void MinumumOptionsTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetOutput(outputPath)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
+            Assert.True(conversionResult);
+        }
+
+        [Fact]
         public void ReverseTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
@@ -92,13 +194,13 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void ScaleTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
-                .SetScale(VideoSize.sqcif)
+                .SetScale(VideoSize.Sqcif)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                 .Start();
@@ -110,53 +212,9 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        public void MinumumOptionsTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
-            bool conversionResult = new Conversion()
-                .SetInput(SampleMkvVideo)
-                .SetOutput(outputPath)
-                .Start();
-            var videoInfo = new VideoInfo(outputPath);
-
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
-            Assert.True(conversionResult);
-        }
-
-        [Fact]
-        public void DisableVideoChannelTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
-            bool conversionResult = new Conversion()
-                .SetInput(SampleMkvVideo)
-                .SetOutput(outputPath)
-                .DisableChannel(Channel.Video)
-                .Start();
-            var videoInfo = new VideoInfo(outputPath);
-
-            Assert.Equal("none", videoInfo.VideoFormat);
-            Assert.True(conversionResult);
-        }
-
-        [Fact]
-        public void DisableAudioChannelTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
-            bool conversionResult = new Conversion()
-                .SetInput(SampleMkvVideo)
-                .SetOutput(outputPath)
-                .DisableChannel(Channel.Audio)
-                .Start();
-            var videoInfo = new VideoInfo(outputPath);
-
-            Assert.Equal("none", videoInfo.AudioFormat);
-            Assert.True(conversionResult);
-        }
-
-        [Fact]
         public void SizeTest()
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = new Conversion()
                 .SetInput(SampleMkvVideo)
                 .SetOutput(outputPath)
@@ -182,64 +240,6 @@ namespace Xabe.FFMpeg.Test
 
             Assert.Equal("mpeg2video", videoInfo.VideoFormat);
             Assert.True(conversionResult);
-        }
-
-        [Fact]
-        public void ChangeOutputFramesCountTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(),Extensions.Mp4);
-            bool conversionResult = new Conversion()
-                .SetInput(SampleMkvVideo)
-                .SetOutput(outputPath)
-                .SetOutputFramesCount(50)
-                .Start();
-            var videoInfo = new VideoInfo(outputPath);
-
-            Assert.Equal(TimeSpan.FromSeconds(2), videoInfo.Duration);
-            Assert.Equal(50, videoInfo.Duration.TotalSeconds*videoInfo.FrameRate);
-            Assert.True(conversionResult);
-        }
-
-        [Fact]
-        public void ConcatVideosTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-            var conversionResult = new Conversion()
-                            .StreamCopy(Channel.Both)
-                            .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                            .SetOutput(outputPath)
-                            .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName)
-                            .Start();
-            var videoInfo = new VideoInfo(outputPath);
-
-            Assert.Equal(TimeSpan.FromSeconds(26), videoInfo.Duration);
-            Assert.True(conversionResult);
-        }
-
-        [Fact]
-        // ReSharper disable once InconsistentNaming
-        public void DisposeFFMpegProcessTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-            IConversion conversion = new Conversion();
-            var conversionResult = false;
-            Task.Run(() =>
-                conversionResult = conversion
-                    .SetInput(SampleMkvVideo)
-                    .SetScale(VideoSize.uhd4320)
-                    .SetVideo(VideoCodec.LibTheora, 2400)
-                    .SetSpeed(16)
-                    .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
-                    .SetOutput(outputPath)
-                    .Start());
-
-
-            Thread.Sleep(1000);
-
-            Assert.True(conversion.IsRunning);
-            conversion.Dispose();
-            Assert.False(conversion.IsRunning);
-            Assert.False(conversionResult);
         }
     }
 }

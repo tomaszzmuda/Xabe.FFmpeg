@@ -8,7 +8,7 @@ using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IVideoInfo" />
     public class VideoInfo: IDisposable, IVideoInfo
     {
         private FFMpeg _ffmpeg;
@@ -91,7 +91,7 @@ namespace Xabe.FFMpeg
         public bool IsRunning => FFmpeg.IsRunning;
 
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IVideoInfo.ToString" />
         public override string ToString()
         {
             return "Video FilePath : " + FilePath + Environment.NewLine +

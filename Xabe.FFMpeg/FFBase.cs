@@ -5,67 +5,26 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using JetBrains.Annotations;
 
 namespace Xabe.FFMpeg
 {
-    // ReSharper disable once InconsistentNaming
     /// <summary>
     ///     Base FFMpeg class
     /// </summary>
+    // ReSharper disable once InheritdocConsiderUsage
     public abstract class FFBase: IDisposable
     {
-        private readonly object _ffmpegPathLock = new object();
-        private readonly object _ffprobePathLock = new object();
         private static string _ffmpegPath;
         private static string _ffprobePath;
 
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
         /// </summary>
-        // ReSharper disable once InconsistentNaming
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnassignedField.Global
-        public static string FFMpegDir;
+        [CanBeNull] [UsedImplicitly] public static string FFMpegDir;
 
-        // ReSharper disable once InconsistentNaming
-        /// <summary>
-        ///     FilePath to FFMpeg
-        /// </summary>
-        protected string FFMpegPath
-        {
-            get
-            {
-                lock(_ffmpegPathLock)
-                    return _ffmpegPath;
-            }
-            private set
-            {
-                lock(_ffmpegPathLock)
-                {
-                    _ffmpegPath = value;
-                }
-            }
-        }
-
-        // ReSharper disable once InconsistentNaming
-        /// <summary>
-        ///     FilePath to FFProbe
-        /// </summary>
-        protected string FFProbePath
-        {
-            get
-            {
-                lock (_ffprobePathLock)
-                    return _ffprobePath;
-            }
-            private set
-            {
-                lock (_ffprobePathLock)
-                {
-                    _ffprobePath = value;
-                }
-            }
-        }
+        private readonly object _ffmpegPathLock = new object();
+        private readonly object _ffprobePathLock = new object();
 
         /// <summary>
         ///     FFMpeg process
@@ -79,9 +38,7 @@ namespace Xabe.FFMpeg
         {
             if(!string.IsNullOrWhiteSpace(FFProbePath) &&
                !string.IsNullOrWhiteSpace(FFMpegPath))
-            {
                 return;
-            }
 
             if(!string.IsNullOrWhiteSpace(FFMpegDir))
             {
@@ -117,6 +74,48 @@ namespace Xabe.FFMpeg
         }
 
         /// <summary>
+        ///     FilePath to FFMpeg
+        /// </summary>
+        protected string FFMpegPath
+        {
+            get
+            {
+                lock(_ffmpegPathLock)
+                {
+                    return _ffmpegPath;
+                }
+            }
+            private set
+            {
+                lock(_ffmpegPathLock)
+                {
+                    _ffmpegPath = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     FilePath to FFProbe
+        /// </summary>
+        protected string FFProbePath
+        {
+            get
+            {
+                lock(_ffprobePathLock)
+                {
+                    return _ffprobePath;
+                }
+            }
+            private set
+            {
+                lock(_ffprobePathLock)
+                {
+                    _ffprobePath = value;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Returns true if the associated process is still alive/running.
         /// </summary>
         public bool IsRunning { get; private set; }
@@ -126,9 +125,9 @@ namespace Xabe.FFMpeg
         /// </summary>
         public void Dispose()
         {
-            if (IsRunning)
+            if(IsRunning)
                 Process.Kill();
-            while (!Process.HasExited)
+            while(!Process.HasExited)
                 Thread.Sleep(10);
         }
 
@@ -143,6 +142,7 @@ namespace Xabe.FFMpeg
                                                     .FirstOrDefault(x => x.Name.StartsWith("ffmpeg", true, CultureInfo.InvariantCulture))
                                                     ?.FullName;
             }
+                // ReSharper disable once EmptyGeneralCatchClause
             catch(Exception)
             {
             }
