@@ -76,13 +76,12 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        // ReSharper disable once InconsistentNaming
         public void DisposeFFMpegProcessTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
             IConversion conversion = new Conversion();
             var conversionResult = false;
-            Task.Run(() =>
+            var task = Task.Run(() =>
                 conversionResult = conversion
                     .SetInput(SampleMkvVideo)
                     .SetScale(VideoSize.Uhd4320)
@@ -98,7 +97,34 @@ namespace Xabe.FFMpeg.Test
             Assert.True(conversion.IsRunning);
             conversion.Dispose();
             Assert.False(conversion.IsRunning);
+            Task.WhenAll(task);
             Assert.False(conversionResult);
+        }
+
+        [Fact]
+        public void StopFFMpegProcessTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            IConversion conversion = new Conversion();
+            var conversionResult = false;
+            var task = Task.Run(() =>
+                conversionResult = conversion
+                    .SetInput(SampleMkvVideo)
+                    .SetScale(VideoSize.Uhd4320)
+                    .SetVideo(VideoCodec.LibTheora, 2400)
+                    .SetSpeed(16)
+                    .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
+                    .SetOutput(outputPath)
+                    .Start());
+
+
+            Thread.Sleep(1000);
+
+            Assert.True(conversion.IsRunning);
+            conversion.Stop();
+            Assert.False(conversion.IsRunning);
+            Task.WhenAll(task);
+            Assert.True(conversionResult);
         }
 
         [Fact]

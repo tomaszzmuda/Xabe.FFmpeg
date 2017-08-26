@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -360,12 +361,14 @@ namespace Xabe.FFMpeg
         }
 
         /// <summary>
-        ///     Stops the ffmpeg process.
+        ///     Send exit signal to the ffmpeg process.
         /// </summary>
         public void Stop()
         {
             if(IsRunning)
                 Process.StandardInput.Write('q');
+            while(IsRunning)
+                Thread.Sleep(10);
         }
 
         private bool RunProcess(string args, string outputPath)
