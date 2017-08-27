@@ -136,8 +136,8 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast, string size = "", AudioQuality audioQuality = AudioQuality.Normal,
+        /// <returns>Conversion result</returns>
+        bool ToMp4(string outputPath, Speed speed = Speed.SuperFast, string size = "", AudioQuality audioQuality = AudioQuality.Normal,
             bool multithread = false);
 
         /// <summary>
@@ -147,15 +147,15 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
+        /// <returns>Conversion result</returns>
+        bool ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
 
         /// <summary>
         ///     Convert file to TS
         /// </summary>
         /// <param name="outputPath">Destination file</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToTs(string outputPath);
+        /// <returns>Conversion result</returns>
+        bool ToTs(string outputPath);
 
         /// <summary>
         ///     Convert file to WebM
@@ -163,7 +163,7 @@ namespace Xabe.FFMpeg
         /// <param name="outputPath">Destination file</param>
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal);
+        /// <returns>Conversion result</returns>
+        bool ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal);
     }
 }

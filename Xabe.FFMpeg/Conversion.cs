@@ -158,9 +158,9 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetInput(VideoInfo input)
+        public IConversion SetInput(string input)
         {
-            _input = $"-i \"{input.FilePath}\" ";
+            _input = $"-i \"{input}\" ";
             return this;
         }
 
