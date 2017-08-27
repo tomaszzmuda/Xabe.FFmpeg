@@ -54,12 +54,20 @@ namespace Xabe.FFMpeg.Test
                 .SetOutput(outputPath)
                 .SetCodec(VideoCodec.MpegTs);
 
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+
             conversion.OnProgress += (duration, length) =>
             {
-                Assert.True(duration <= length);
-                Assert.True(length == TimeSpan.FromSeconds(9));
+                currentProgress = duration;
+                videoLength = length;
             };
-            conversion.Start();
+            bool conversionResult = conversion.Start();
+
+            Assert.True(conversionResult);
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(9));
         }
 
         [Fact]

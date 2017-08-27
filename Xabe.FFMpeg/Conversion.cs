@@ -173,6 +173,12 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
+        public IConversion SetInput(FileInfo input)
+        {
+            return SetInput(input.FullName);
+        }
+
+        /// <inheritdoc />
         public IConversion SetInput(params FileInfo[] inputs)
         {
             _input = "";
