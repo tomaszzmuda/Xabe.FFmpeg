@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -17,8 +19,10 @@ namespace Xabe.FFMpeg
         private string _codec;
         private string _copy;
         private string _disabled;
+        private FFMpeg _ffmpeg;
         private string _frameCount;
         private string _input;
+        private VideoInfo[] _inputFiles;
         private string _loop;
         private string _output;
         private string _outputPath;
@@ -59,10 +63,31 @@ namespace Xabe.FFMpeg
             return builder.ToString();
         }
 
+        /// <inheritdoc cref="IConversion.OnProgress" />
+        [UsedImplicitly]
+        public event ConversionHandler OnProgress;
+
         /// <inheritdoc />
         public bool Start()
         {
-            return new FFMpeg().StartConversion(Build(), _outputPath);
+            _ffmpeg = new FFMpeg();
+            _ffmpeg.OnProgress += OnProgress;
+            return _ffmpeg.StartConversion(Build(), _outputPath, _inputFiles);
+        }
+
+        /// <inheritdoc />
+        public bool IsRunning => _ffmpeg?.IsRunning ?? false;
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _ffmpeg?.Dispose();
+        }
+
+        /// <inheritdoc />
+        public void Stop()
+        {
+            _ffmpeg.Stop();
         }
 
         /// <inheritdoc />
@@ -142,15 +167,28 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetInput(VideoInfo input)
+        public IConversion SetInput(string input)
         {
-            _input = $"-i \"{input.FilePath}\" ";
+            _inputFiles = new[] {new VideoInfo(input)};
+            _input = $"-i \"{input}\" ";
             return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetInput(FileInfo input)
+        {
+            return SetInput(input.FullName);
         }
 
         /// <inheritdoc />
         public IConversion SetInput(params FileInfo[] inputs)
         {
+            var inputList = new List<VideoInfo>();
+            foreach(var input in inputs)
+            {
+                inputList.Add(new VideoInfo(input));
+            }
+            _inputFiles = inputList.ToArray();
             _input = "";
             foreach(FileInfo file in inputs)
                 _input += $"-i \"{file.FullName}\" ";
@@ -284,7 +322,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetOutputFramesCount(int number)
         {
-            _frameCount = $"-vframes {number} ";
+            _frameCount = $"-frames:v {number} ";
             return this;
         }
 
@@ -305,8 +343,14 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion Concat(IEnumerable<string> paths)
+        public IConversion Concat(params string[] paths)
         {
+            var inputList = new List<VideoInfo>();
+            foreach (var input in paths)
+            {
+                inputList.Add(new VideoInfo(input));
+            }
+            _inputFiles = inputList.ToArray();
             _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
             return this;
         }

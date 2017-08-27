@@ -136,8 +136,8 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToMp4(string outputPath, Speed speed = Speed.SuperFast, string size = "", AudioQuality audioQuality = AudioQuality.Normal,
+        /// <returns>Conversion result</returns>
+        bool ToMp4(string outputPath, Speed speed = Speed.SuperFast, string size = "", AudioQuality audioQuality = AudioQuality.Normal,
             bool multithread = false);
 
         /// <summary>
@@ -147,15 +147,15 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
+        /// <returns>Conversion result</returns>
+        bool ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
 
         /// <summary>
         ///     Convert file to TS
         /// </summary>
         /// <param name="outputPath">Destination file</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToTs(string outputPath);
+        /// <returns>Conversion result</returns>
+        bool ToTs(string outputPath);
 
         /// <summary>
         ///     Convert file to WebM
@@ -163,7 +163,34 @@ namespace Xabe.FFMpeg
         /// <param name="outputPath">Destination file</param>
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
-        /// <returns>Output VideoInfo</returns>
-        VideoInfo ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal);
+        /// <returns>Conversion result</returns>
+        bool ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal);
+
+        /// <summary>
+        ///     Records M3U8 streams to the specified output.
+        /// </summary>
+        /// <param name="uri">URI to stream.</param>
+        /// <param name="outputPath">Output file</param>
+        /// <returns>Conversion result</returns>
+        bool SaveM3U8Stream(Uri uri, string outputPath);
+
+        /// <summary>
+        ///     Adds a poster image to an audio file.
+        /// </summary>
+        /// <param name="image">Source image file.</param>
+        /// <param name="audio">Source audio file.</param>
+        /// <param name="outputPath">Output video file.</param>
+        /// <returns>Conversion result</returns>
+        bool PosterWithAudio(FileInfo image, FileInfo audio, string outputPath);
+
+        /// <summary>
+        ///     Saves snapshot of video
+        /// </summary>
+        /// <param name="source">Video</param>
+        /// <param name="outputPath">Output file</param>
+        /// <param name="size">Dimension of snapshot</param>
+        /// <param name="captureTime"></param>
+        /// <returns>Conversion result</returns>
+        bool Snapshot(VideoInfo source, string outputPath, Size? size = null, TimeSpan? captureTime = null);
     }
 }

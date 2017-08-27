@@ -23,34 +23,26 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 	
 	bool conversionResult = new Conversion()
 		.SetInput(SampleMkvVideo)
-		.SetSpeed(Speed.UltraFast)
-		.UseMultiThread(true)
 		.SetOutput(outputPath)
-		.SetChannels(Channel.Both)
-		.SetScale(VideoSize.Original)
-		.SetVideo(VideoCodec.LibX264, 2400)
-		.SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+		.SetCodec(VideoCodec.MpegTs)
 		.Start();
 
 ## Features ##
-
-	* Convert media
-	* Create snapshot
-	* Add audio to vidoe
-	* Extract audio
-	* Extract video
-	* Concatenate multiple videos
-	* Get information about video by FFProbe
-	* Reverse
-	* Change speed
+* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-an-information-about-video)
+* [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Extracting-audio-or-video)
+* Convert media
+* Create snapshot
+* Add audio to video
+* Concatenate multiple videos
+* Reverse
+* Change speed
 
 ## Planned features ##
-
-	* Split 
-	* Rotate video
-	* Watermarks
-	* Chroma key
-	* Validate ffmpeg parameters
+* Split 
+* Rotate video
+* Watermarks
+* Chroma key
+* Validate ffmpeg parameters
 
 ## Lincence ## 
 

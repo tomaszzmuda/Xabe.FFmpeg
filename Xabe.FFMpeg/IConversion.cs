@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using Xabe.FFMpeg.Enums;
@@ -12,11 +11,21 @@ namespace Xabe.FFMpeg
     public interface IConversion
     {
         /// <summary>
+        ///     Returns true if the associated process is still alive/running.
+        /// </summary>
+        bool IsRunning { get; }
+
+        /// <summary>
         ///     Reverse media
         /// </summary>
         /// <param name="type">Channel type</param>
         /// <returns>IConversion object</returns>
         IConversion Reverse(Channel type);
+
+        /// <summary>
+        ///     Send exit signal to FFMpeg process
+        /// </summary>
+        void Stop();
 
         /// <summary>
         ///     Set speed of IConversion. Slower speed equals better compression and quality.
@@ -90,7 +99,7 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="input">Media file to convert</param>
         /// <returns>IConversion object</returns>
-        IConversion SetInput(VideoInfo input);
+        IConversion SetInput(string input);
 
         /// <summary>
         ///     Set input files
@@ -126,6 +135,11 @@ namespace Xabe.FFMpeg
         /// <param name="size">VideoSize</param>
         /// <returns>IConversion object</returns>
         IConversion SetSize(Size? size);
+
+        /// <summary>
+        ///     Fires when ffmpeg progress changes
+        /// </summary>
+        event ConversionHandler OnProgress;
 
         /// <summary>
         ///     Set video codec
@@ -213,7 +227,7 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="paths">Media files</param>
         /// <returns>IConversion object</returns>
-        IConversion Concat(IEnumerable<string> paths);
+        IConversion Concat(params string[] paths);
 
         /// <summary>
         ///     Build command
@@ -226,5 +240,10 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <returns>Conversion result</returns>
         bool Start();
+
+        /// <summary>
+        ///     Kill ffmpeg process
+        /// </summary>
+        void Dispose();
     }
 }

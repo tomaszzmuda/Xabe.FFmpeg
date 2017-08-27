@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\sampleMkv.mkv" />
+    <None Remove="Resources\sample.ts" />
+    <None Remove="Resources\SampleVideo_360x240_1mb.mkv" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +21,10 @@
     <Content Include="Resources\mute.mp4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\sampleMkv.mkv">
+    <Content Include="Resources\sample.ts">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\SampleVideo_360x240_1mb.mkv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
