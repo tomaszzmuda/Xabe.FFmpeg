@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 using Xunit;
 
@@ -32,7 +34,9 @@ namespace Xabe.FFMpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp3");
 
             bool result = new VideoInfo(fileInfo).ExtractAudio(output);
+
             Assert.True(result);
+            Assert.Equal("none", new VideoInfo(output).VideoFormat);
         }
 
         [Fact]
@@ -108,6 +112,81 @@ namespace Xabe.FFMpeg.Test
 
             Assert.Equal(snapshot.Width, videoInfo.Width);
             Assert.True(File.Exists(output));
+        }
+
+        [Fact]
+        public void ToWebMTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.WebM);
+
+            videoInfo.ToWebM(output);
+            
+            Assert.True(File.Exists(output));
+            Assert.Equal(TimeSpan.FromSeconds(13), new VideoInfo(output).Duration);
+        }
+
+        [Fact]
+        public void ToOgvTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
+
+            videoInfo.ToOgv(output);
+
+            Assert.True(File.Exists(output));
+            Assert.Equal(TimeSpan.FromSeconds(13), new VideoInfo(output).Duration);
+        }
+
+        [Fact]
+        public void ToTsTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
+
+            videoInfo.ToTs(output);
+
+            Assert.True(File.Exists(output));
+            Assert.Equal(TimeSpan.FromSeconds(13), new VideoInfo(output).Duration);
+        }
+
+        [Fact]
+        public void ToMp4Test()
+        {
+            IVideoInfo videoInfo = new VideoInfo(SampleMkvVideo);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+
+            videoInfo.ToMp4(output);
+
+            Assert.True(File.Exists(output));
+            Assert.Equal(TimeSpan.FromSeconds(9), new VideoInfo(output).Duration);
+        }
+
+        [Fact]
+        public void ToStringTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
+            var output = videoInfo.ToString();
+            Assert.EndsWith("Video Name: input.mp4\r\nVideo Extension : .mp4\r\nVideo duration : 00:00:13\r\nAudio format : aac\r\nVideo format : h264\r\nAspect Ratio : 16:9\r\nFramerate : 25fps\r\nResolution : 1280x720\r\nSize : 2 MB", output);
+        }
+
+        [Fact]
+        public void DisposeTest()
+        {
+            IVideoInfo sampleMkv = new VideoInfo(SampleMkvVideo);
+            string concatOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+            sampleMkv.JoinWith(concatOutput, sampleMkv, sampleMkv, sampleMkv, sampleMkv, sampleMkv, sampleMkv);
+
+            IVideoInfo videoInfo = new VideoInfo(concatOutput);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+            Task<bool> task = Task.Run(() => videoInfo.ToMp4(output, Speed.VerySlow, "", AudioQuality.Ultra, false));
+
+            Thread.Sleep(1000);
+
+            Assert.True(videoInfo.IsRunning);
+            sampleMkv.Dispose();
+            Assert.False(videoInfo.IsRunning);
+            Assert.False(task.Result);
         }
     }
 }

@@ -103,7 +103,7 @@ namespace Xabe.FFMpeg
         /// <param name="output">Concatenated videos</param>
         /// <param name="videos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        bool JoinWith(string output, params VideoInfo[] videos);
+        bool JoinWith(string output, params IVideoInfo[] videos);
 
         /// <summary>
         ///     Get formated info about video
@@ -173,15 +173,6 @@ namespace Xabe.FFMpeg
         /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
         bool SaveM3U8Stream(Uri uri, string outputPath);
-
-        /// <summary>
-        ///     Adds a poster image to an audio file.
-        /// </summary>
-        /// <param name="image">Source image file.</param>
-        /// <param name="audio">Source audio file.</param>
-        /// <param name="outputPath">Output video file.</param>
-        /// <returns>Conversion result</returns>
-        bool PosterWithAudio(FileInfo image, FileInfo audio, string outputPath);
 
         /// <summary>
         ///     Saves snapshot of video

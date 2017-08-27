@@ -49,8 +49,7 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public void Dispose()
         {
-            FFmpeg.Stop();
-            _ffmpeg?.Dispose();
+            FFmpeg.Dispose();
         }
 
         /// <inheritdoc />
@@ -294,22 +293,6 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool PosterWithAudio(FileInfo image, FileInfo audio, string outputPath)
-        {
-            IConversion conversion = new Conversion()
-                .SetInput(image, audio)
-                .SetLoop(1)
-                .SetVideo(VideoCodec.LibX264, 2400)
-                .SetAudio(AudioCodec.Aac, AudioQuality.Normal)
-                .UseShortest(true)
-                .SetOutput(outputPath);
-
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
-        }
-
-        /// <inheritdoc />
-        [UsedImplicitly]
         public bool SaveM3U8Stream(Uri uri, string outputPath)
         {
             if(uri.Scheme != "http" ||
@@ -323,9 +306,9 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool JoinWith(string output, params VideoInfo[] videos)
+        public bool JoinWith(string output, params IVideoInfo[] videos)
         {
-            List<VideoInfo> queuedVideos = videos.ToList();
+            List<IVideoInfo> queuedVideos = videos.ToList();
 
             queuedVideos.Insert(0, this);
 
