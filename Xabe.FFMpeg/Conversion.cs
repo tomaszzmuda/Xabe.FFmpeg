@@ -61,7 +61,7 @@ namespace Xabe.FFMpeg
             return builder.ToString();
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IConversion.OnProgress" />
         [UsedImplicitly]
         public event ConversionHandler OnProgress;
 

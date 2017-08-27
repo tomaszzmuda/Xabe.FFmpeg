@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
 {
@@ -63,12 +61,10 @@ namespace Xabe.FFMpeg
                 result = Process.ExitCode == 0;
 
                 if(!result &&
-                   (string.IsNullOrWhiteSpace(outputPath) 
-                   || !File.Exists(outputPath) 
+                   (string.IsNullOrWhiteSpace(outputPath)
+                    || !File.Exists(outputPath)
                     || new FileInfo(outputPath).Length == 0))
-                {
-                        throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
-                }
+                    throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
             }
 
             return result;
