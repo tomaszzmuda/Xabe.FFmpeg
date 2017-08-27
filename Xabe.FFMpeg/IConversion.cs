@@ -102,6 +102,13 @@ namespace Xabe.FFMpeg
         IConversion SetInput(string input);
 
         /// <summary>
+        ///     Set input file
+        /// </summary>
+        /// <param name="input">Media file to convert</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetInput(FileInfo input);
+
+        /// <summary>
         ///     Set input files
         /// </summary>
         /// <param name="inputs">Media files to convert</param>

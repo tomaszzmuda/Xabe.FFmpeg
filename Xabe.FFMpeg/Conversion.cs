@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using Xabe.FFMpeg.Enums;
@@ -174,7 +173,7 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="" />
         public IConversion SetInput(FileInfo input)
         {
             return SetInput(input.FullName);
