@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 using Xabe.FFMpeg.Enums;
@@ -20,7 +22,7 @@ namespace Xabe.FFMpeg
         private FFMpeg _ffmpeg;
         private string _frameCount;
         private string _input;
-        private string _inputPath;
+        private VideoInfo[] _inputFiles;
         private string _loop;
         private string _output;
         private string _outputPath;
@@ -70,7 +72,7 @@ namespace Xabe.FFMpeg
         {
             _ffmpeg = new FFMpeg();
             _ffmpeg.OnProgress += OnProgress;
-            return _ffmpeg.StartConversion(Build(), _outputPath, _inputPath);
+            return _ffmpeg.StartConversion(Build(), _outputPath, _inputFiles);
         }
 
         /// <inheritdoc />
@@ -167,7 +169,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetInput(string input)
         {
-            _inputPath = input;
+            _inputFiles = new[] {new VideoInfo(input)};
             _input = $"-i \"{input}\" ";
             return this;
         }
@@ -181,6 +183,12 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetInput(params FileInfo[] inputs)
         {
+            var inputList = new List<VideoInfo>();
+            foreach(var input in inputs)
+            {
+                inputList.Add(new VideoInfo(input));
+            }
+            _inputFiles = inputList.ToArray();
             _input = "";
             foreach(FileInfo file in inputs)
                 _input += $"-i \"{file.FullName}\" ";
@@ -337,6 +345,12 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion Concat(params string[] paths)
         {
+            var inputList = new List<VideoInfo>();
+            foreach (var input in paths)
+            {
+                inputList.Add(new VideoInfo(input));
+            }
+            _inputFiles = inputList.ToArray();
             _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
             return this;
         }

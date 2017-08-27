@@ -70,6 +70,33 @@ namespace Xabe.FFMpeg.Test
             Assert.True(videoLength == TimeSpan.FromSeconds(9));
         }
 
+
+        [Fact]
+        public void ConcatConversionStatusTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
+            IConversion conversion = new Conversion()
+                .StreamCopy(Channel.Both)
+                .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                .SetOutput(outputPath)
+                .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName);
+
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+
+            conversion.OnProgress += (duration, length) =>
+            {
+                currentProgress = duration;
+                videoLength = length;
+            };
+            bool conversionResult = conversion.Start();
+
+            Assert.True(conversionResult);
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(26));
+        }
+
         [Fact]
         public void DisableAudioChannelTest()
         {

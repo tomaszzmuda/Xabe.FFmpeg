@@ -28,10 +28,12 @@ namespace Xabe.FFMpeg
         /// </summary>
         public event ConversionHandler OnProgress;
 
-        public bool StartConversion(string arguments, string outputPath, string inputPath = "")
+        public bool StartConversion(string arguments, string outputPath, VideoInfo[] inputFiles)
         {
-            if(!string.IsNullOrWhiteSpace(inputPath))
-                _totalTime = new VideoInfo(inputPath).Duration;
+            _totalTime = TimeSpan.Zero;
+            if(inputFiles != null && inputFiles.Length > 0)
+                foreach(var video in inputFiles)
+                    _totalTime += video.Duration;
             return RunProcess(arguments, outputPath);
         }
 
