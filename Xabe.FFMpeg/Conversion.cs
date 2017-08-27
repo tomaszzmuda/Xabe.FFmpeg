@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using JetBrains.Annotations;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -19,6 +20,7 @@ namespace Xabe.FFMpeg
         private FFMpeg _ffmpeg;
         private string _frameCount;
         private string _input;
+        private string _inputPath;
         private string _loop;
         private string _output;
         private string _outputPath;
@@ -60,14 +62,19 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
+        [UsedImplicitly]
+        public event ConversionHandler OnProgress;
+
+        /// <inheritdoc />
         public bool Start()
         {
             _ffmpeg = new FFMpeg();
-            return _ffmpeg.StartConversion(Build(), _outputPath);
+            _ffmpeg.OnProgress += OnProgress;
+            return _ffmpeg.StartConversion(Build(), _outputPath, _inputPath);
         }
 
         /// <inheritdoc />
-        public bool IsRunning => _ffmpeg == null ? false : _ffmpeg.IsRunning;
+        public bool IsRunning => _ffmpeg?.IsRunning ?? false;
 
         /// <inheritdoc />
         public void Dispose()
@@ -160,6 +167,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetInput(string input)
         {
+            _inputPath = input;
             _input = $"-i \"{input}\" ";
             return this;
         }

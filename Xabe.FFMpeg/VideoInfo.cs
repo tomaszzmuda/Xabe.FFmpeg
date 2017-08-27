@@ -23,6 +23,7 @@ namespace Xabe.FFMpeg
         ///     Get VideoInfo from file
         /// </summary>
         /// <param name="filePath">FilePath to file</param>
+        [UsedImplicitly]
         public VideoInfo(string filePath)
         {
             if(!File.Exists(filePath))
@@ -45,6 +46,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc cref="IVideoInfo.Dispose" />
+        [UsedImplicitly]
         public void Dispose()
         {
             FFmpeg.Stop();
@@ -93,6 +95,7 @@ namespace Xabe.FFMpeg
 
 
         /// <inheritdoc cref="IVideoInfo.ToString" />
+        [UsedImplicitly]
         public override string ToString()
         {
             return "Video FilePath : " + FilePath + Environment.NewLine +
@@ -110,94 +113,116 @@ namespace Xabe.FFMpeg
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool ToTs(string outputPath)
         {
-            return new Conversion()
+            var conversion = new Conversion()
                 .SetInput(FilePath)
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
-                .SetOutput(outputPath)
-                .Start();
+                .SetOutput(outputPath);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal)
         {
-            return new Conversion()
+            var conversion = new Conversion()
                 .SetInput(FilePath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibVpx, 2400)
                 .SetSpeed(16)
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
-                .SetOutput(outputPath)
-                .Start();
+                .SetOutput(outputPath);
+                
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            return new Conversion()
+            var conversion = new Conversion()
                 .SetInput(FilePath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibTheora, 2400)
                 .SetSpeed(16)
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
-                .SetOutput(outputPath)
-                .Start();
+                .SetOutput(outputPath);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool ToMp4(string outputPath, Speed speed = Speed.SuperFast,
             string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            return new Conversion()
+            var conversion = new Conversion()
                 .SetInput(FilePath)
                 .UseMultiThread(multithread)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetSpeed(speed)
                 .SetAudio(AudioCodec.Aac, audioQuality)
-                .SetOutput(outputPath)
-                .Start();
+                .SetOutput(outputPath);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool ExtractVideo(string output)
         {
-            return new Conversion().SetInput(this.FilePath)
-                                   .StreamCopy(Channel.Both)
-                                   .DisableChannel(Channel.Audio)
-                                   .SetOutput(output)
-                                   .Start();
+            var conversion = new Conversion().SetInput(this.FilePath)
+                                             .StreamCopy(Channel.Both)
+                                             .DisableChannel(Channel.Audio)
+                                             .SetOutput(output);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool ExtractAudio(string output)
         {
-            return new Conversion().SetInput(FilePath)
-                                               .DisableChannel(Channel.Video)
-                                               .SetOutput(output)
-                                               .Start();
+            var conversion = new Conversion().SetInput(FilePath)
+                                             .DisableChannel(Channel.Video)
+                                             .SetOutput(output);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool AddAudio(FileInfo audio, string output)
         {
-            return new Conversion().SetInput(new FileInfo(this.FilePath), audio)
-                                   .StreamCopy(Channel.Video)
-                                   .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
-                                   .SetOutput(output)
-                                   .Start();
+            var conversion = new Conversion().SetInput(new FileInfo(this.FilePath), audio)
+                                             .StreamCopy(Channel.Video)
+                                             .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
+                                             .SetOutput(output);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public Bitmap Snapshot(Size? size = null, TimeSpan? captureTime = null)
         {
             string output = $"{Environment.TickCount}.png";
@@ -227,6 +252,7 @@ namespace Xabe.FFMpeg
 
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public Bitmap Snapshot(string output, Size? size = null, TimeSpan? captureTime = null)
         {
             bool success = Snapshot(this, output, size, captureTime);
@@ -245,14 +271,7 @@ namespace Xabe.FFMpeg
             return result;
         }
 
-        /// <summary>
-        ///     Saves snapshot of video
-        /// </summary>
-        /// <param name="source">Video</param>
-        /// <param name="outputPath">Output file</param>
-        /// <param name="size">Dimension of snapshot</param>
-        /// <param name="captureTime"></param>
-        /// <returns>Conversion result</returns>
+        /// <inheritdoc />
         [UsedImplicitly]
         public bool Snapshot(VideoInfo source, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
@@ -261,14 +280,16 @@ namespace Xabe.FFMpeg
 
             size = GetSize(source, size);
 
-            return new Conversion()
+            var conversion = new Conversion()
                 .SetInput(source.FilePath)
                 .SetVideo(VideoCodec.Png)
                 .SetOutputFramesCount(1)
                 .SetSeek(captureTime)
                 .SetSize(size)
-                .SetOutput(outputPath)
-                .Start();
+                .SetOutput(outputPath);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
         private static Size? GetSize(VideoInfo source, Size? size)
@@ -297,31 +318,24 @@ namespace Xabe.FFMpeg
             return size;
         }
 
-        /// <summary>
-        ///     Adds a poster image to an audio file.
-        /// </summary>
-        /// <param name="image">Source image file.</param>
-        /// <param name="audio">Source audio file.</param>
-        /// <param name="outputPath">Output video file.</param>
-        /// <returns>Conversion result</returns>
+        /// <inheritdoc />
+        [UsedImplicitly]
         public bool PosterWithAudio(FileInfo image, FileInfo audio, string outputPath)
         {
-            return new Conversion()
+            var conversion = new Conversion()
                 .SetInput(image, audio)
                 .SetLoop(1)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Normal)
                 .UseShortest(true)
-                .SetOutput(outputPath)
-                .Start();
+                .SetOutput(outputPath);
+
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
 
-        /// <summary>
-        ///     Records M3U8 streams to the specified output.
-        /// </summary>
-        /// <param name="uri">URI to stream.</param>
-        /// <param name="outputPath">Output file</param>
-        /// <returns>Conversion result</returns>
+        /// <inheritdoc />
+        [UsedImplicitly]
         public bool SaveM3U8Stream(Uri uri, string outputPath)
         {
             if (uri.Scheme != "http" ||
@@ -334,6 +348,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
+        [UsedImplicitly]
         public bool JoinWith(string output, params VideoInfo[] videos)
         {
             List<VideoInfo> queuedVideos = videos.ToList();
@@ -349,21 +364,14 @@ namespace Xabe.FFMpeg
                 video.ToTs(tempFileName);
             }
 
-            return new Conversion().Concat(pathList.ToArray())
-                                               .StreamCopy(Channel.Both)
-                                               .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                                               .SetOutput(output)
-                                               .Start();
-        }
+            var conversion = new Conversion().
+                Concat(pathList.ToArray())
+                                   .StreamCopy(Channel.Both)
+                                   .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                                   .SetOutput(output);
 
-        /// <summary>
-        ///     Create VideoInfo from file
-        /// </summary>
-        /// <param name="fileInfo">_sourceFile</param>
-        /// <returns>VideoInfo</returns>
-        public static IVideoInfo FromFile(FileInfo fileInfo)
-        {
-            return new VideoInfo(fileInfo);
+            conversion.OnProgress += OnConversionProgress;
+            return conversion.Start();
         }
     }
 }

@@ -137,6 +137,11 @@ namespace Xabe.FFMpeg
         IConversion SetSize(Size? size);
 
         /// <summary>
+        ///     Fires when ffmpeg progress changes
+        /// </summary>
+        event ConversionHandler OnProgress;
+
+        /// <summary>
         ///     Set video codec
         /// </summary>
         /// <param name="codec">Video codec</param>
