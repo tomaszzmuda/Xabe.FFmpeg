@@ -84,12 +84,6 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public void Stop()
-        {
-            _ffmpeg.Stop();
-        }
-
-        /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
         {
             _speed = $"-preset {speed.ToString() .ToLower()} ";

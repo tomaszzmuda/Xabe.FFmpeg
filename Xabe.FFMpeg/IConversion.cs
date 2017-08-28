@@ -23,11 +23,6 @@ namespace Xabe.FFMpeg
         IConversion Reverse(Channel type);
 
         /// <summary>
-        ///     Send exit signal to FFMpeg process
-        /// </summary>
-        void Stop();
-
-        /// <summary>
         ///     Set speed of IConversion. Slower speed equals better compression and quality.
         /// </summary>
         /// <param name="speed">Speed</param>

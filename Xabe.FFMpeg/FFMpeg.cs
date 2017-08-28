@@ -37,17 +37,6 @@ namespace Xabe.FFMpeg
             return RunProcess(arguments, outputPath);
         }
 
-        /// <summary>
-        ///     Send exit signal to the ffmpeg process.
-        /// </summary>
-        public void Stop()
-        {
-            if(IsRunning)
-                Process.StandardInput.Write('q');
-            while(IsRunning)
-                Thread.Sleep(1);
-        }
-
         private bool RunProcess(string args, string outputPath)
         {
             var result = false;
