@@ -18,11 +18,6 @@ namespace Xabe.FFMpeg
         private static string _ffmpegPath;
         private static string _ffprobePath;
 
-        /// <summary>
-        ///     Check if FFMpeg process was killed
-        /// </summary>
-        protected bool WasKilled { get; private set; }
-
 
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
@@ -78,6 +73,11 @@ namespace Xabe.FFMpeg
                FFMpegPath == null)
                 throw new ArgumentException("Cannot find FFMpeg.");
         }
+
+        /// <summary>
+        ///     Check if FFMpeg process was killed
+        /// </summary>
+        protected bool WasKilled { get; private set; }
 
         /// <summary>
         ///     FilePath to FFMpeg

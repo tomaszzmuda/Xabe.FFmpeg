@@ -62,7 +62,7 @@ namespace Xabe.FFMpeg
             return builder.ToString();
         }
 
-        /// <inheritdoc cref="IConversion.OnProgress" />
+        /// <inheritdoc />
         [UsedImplicitly]
         public event ConversionHandler OnProgress;
 
@@ -167,7 +167,7 @@ namespace Xabe.FFMpeg
             return this;
         }
 
-        /// <inheritdoc cref="" />
+        /// <inheritdoc />
         public IConversion SetInput(FileInfo input)
         {
             return SetInput(input.FullName);
@@ -177,10 +177,8 @@ namespace Xabe.FFMpeg
         public IConversion SetInput(params FileInfo[] inputs)
         {
             var inputList = new List<VideoInfo>();
-            foreach(var input in inputs)
-            {
+            foreach(FileInfo input in inputs)
                 inputList.Add(new VideoInfo(input));
-            }
             _inputFiles = inputList.ToArray();
             _input = "";
             foreach(FileInfo file in inputs)
@@ -339,10 +337,8 @@ namespace Xabe.FFMpeg
         public IConversion Concat(params string[] paths)
         {
             var inputList = new List<VideoInfo>();
-            foreach (var input in paths)
-            {
+            foreach(string input in paths)
                 inputList.Add(new VideoInfo(input));
-            }
             _inputFiles = inputList.ToArray();
             _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
             return this;

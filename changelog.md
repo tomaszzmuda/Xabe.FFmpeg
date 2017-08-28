@@ -1,6 +1,14 @@
 Change Log / Release Notes
 ==========================
 
+## Xabe.FFMpeg 1.5.0
+
+* Code refactor
+* Some new unit tests
+* Change way of working VideoInfo conversions
+* Properly calculate output media file for joining multiple files
+* Dispose ffmpeg process now kill process not send stop signal
+
 ## Xabe.FFMpeg 1.4.2
 
 * Even more unit tests

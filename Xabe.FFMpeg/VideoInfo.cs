@@ -172,9 +172,9 @@ namespace Xabe.FFMpeg
         public bool ExtractVideo(string output)
         {
             _conversion = new Conversion().SetInput(FilePath)
-                                                     .StreamCopy(Channel.Both)
-                                                     .DisableChannel(Channel.Audio)
-                                                     .SetOutput(output);
+                                          .StreamCopy(Channel.Both)
+                                          .DisableChannel(Channel.Audio)
+                                          .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
             return _conversion.Start();
@@ -185,8 +185,8 @@ namespace Xabe.FFMpeg
         public bool ExtractAudio(string output)
         {
             _conversion = new Conversion().SetInput(FilePath)
-                                                     .DisableChannel(Channel.Video)
-                                                     .SetOutput(output);
+                                          .DisableChannel(Channel.Video)
+                                          .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
             return _conversion.Start();
@@ -198,9 +198,9 @@ namespace Xabe.FFMpeg
         public bool AddAudio(FileInfo audio, string output)
         {
             _conversion = new Conversion().SetInput(new FileInfo(FilePath), audio)
-                                                     .StreamCopy(Channel.Video)
-                                                     .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
-                                                     .SetOutput(output);
+                                          .StreamCopy(Channel.Video)
+                                          .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
+                                          .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
             return _conversion.Start();
@@ -301,8 +301,9 @@ namespace Xabe.FFMpeg
 
             var pathList = new List<string>();
 
-            foreach(VideoInfo video in videos)
+            foreach(IVideoInfo videoInfo in videos)
             {
+                var video = (VideoInfo) videoInfo;
                 string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
                 pathList.Add(tempFileName);
                 video.ToTs(tempFileName);
@@ -310,9 +311,9 @@ namespace Xabe.FFMpeg
 
             _conversion = new Conversion().
                 Concat(pathList.ToArray())
-                                                     .StreamCopy(Channel.Both)
-                                                     .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                                                     .SetOutput(output);
+                                          .StreamCopy(Channel.Both)
+                                          .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                                          .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
             return _conversion.Start();

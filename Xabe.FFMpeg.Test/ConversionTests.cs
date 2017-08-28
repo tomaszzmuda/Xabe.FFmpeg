@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 using Xunit;
@@ -27,6 +26,33 @@ namespace Xabe.FFMpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(2), videoInfo.Duration);
             Assert.Equal(50, videoInfo.Duration.TotalSeconds * videoInfo.FrameRate);
             Assert.True(conversionResult);
+        }
+
+
+        [Fact]
+        public void ConcatConversionStatusTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
+            IConversion conversion = new Conversion()
+                .StreamCopy(Channel.Both)
+                .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                .SetOutput(outputPath)
+                .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName);
+
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+
+            conversion.OnProgress += (duration, length) =>
+            {
+                currentProgress = duration;
+                videoLength = length;
+            };
+            bool conversionResult = conversion.Start();
+
+            Assert.True(conversionResult);
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(26));
         }
 
         [Fact]
@@ -68,33 +94,6 @@ namespace Xabe.FFMpeg.Test
             Assert.True(currentProgress > TimeSpan.Zero);
             Assert.True(currentProgress <= videoLength);
             Assert.True(videoLength == TimeSpan.FromSeconds(9));
-        }
-
-
-        [Fact]
-        public void ConcatConversionStatusTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
-            IConversion conversion = new Conversion()
-                .StreamCopy(Channel.Both)
-                .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                .SetOutput(outputPath)
-                .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName);
-
-            TimeSpan currentProgress;
-            TimeSpan videoLength;
-
-            conversion.OnProgress += (duration, length) =>
-            {
-                currentProgress = duration;
-                videoLength = length;
-            };
-            bool conversionResult = conversion.Start();
-
-            Assert.True(conversionResult);
-            Assert.True(currentProgress > TimeSpan.Zero);
-            Assert.True(currentProgress <= videoLength);
-            Assert.True(videoLength == TimeSpan.FromSeconds(26));
         }
 
         [Fact]
@@ -144,7 +143,9 @@ namespace Xabe.FFMpeg.Test
                     .UseMultiThread(false)
                     .Start());
 
-            while(!conversion.IsRunning) { }
+            while(!conversion.IsRunning)
+            {
+            }
 
             Assert.True(conversion.IsRunning);
             conversion.Dispose();

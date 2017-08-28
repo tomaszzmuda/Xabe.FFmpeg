@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace Xabe.FFMpeg
 {
@@ -31,8 +30,9 @@ namespace Xabe.FFMpeg
         public bool StartConversion(string arguments, string outputPath, VideoInfo[] inputFiles)
         {
             _totalTime = TimeSpan.Zero;
-            if(inputFiles != null && inputFiles.Length > 0)
-                foreach(var video in inputFiles)
+            if(inputFiles != null &&
+               inputFiles.Length > 0)
+                foreach(VideoInfo video in inputFiles)
                     _totalTime += video.Duration;
             return RunProcess(arguments, outputPath);
         }
@@ -51,9 +51,10 @@ namespace Xabe.FFMpeg
                 Process.WaitForExit();
                 result = Process.ExitCode == 0;
 
-                if(!WasKilled 
-                    && (!result 
-                    ||string.IsNullOrWhiteSpace(outputPath)
+                if(!WasKilled
+                   &&
+                   (!result
+                    || string.IsNullOrWhiteSpace(outputPath)
                     || !File.Exists(outputPath)
                     || new FileInfo(outputPath).Length == 0))
                     throw new InvalidOperationException(string.Join(Environment.NewLine, _errorData.ToArray()));
