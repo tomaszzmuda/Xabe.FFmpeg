@@ -167,26 +167,22 @@ namespace Xabe.FFMpeg.Test
         {
             IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
             var output = videoInfo.ToString();
-            Assert.EndsWith("Video Name: input.mp4\r\nVideo Extension : .mp4\r\nVideo duration : 00:00:13\r\nAudio format : aac\r\nVideo format : h264\r\nAspect Ratio : 16:9\r\nFramerate : 25fps\r\nResolution : 1280x720\r\nSize : 2 MB", output);
+            Assert.EndsWith($"Video Name: input.mp4{Environment.NewLine}Video Extension : .mp4{Environment.NewLine}Video duration : 00:00:13{Environment.NewLine}Audio format : aac{Environment.NewLine}Video format : h264{Environment.NewLine}Aspect Ratio : 16:9{Environment.NewLine}Framerate : 25fps{Environment.NewLine}Resolution : 1280x720{Environment.NewLine}Size : 2 MB", output);
         }
 
         [Fact]
-        public void DisposeTest()
+        public async void DisposeTest()
         {
-            IVideoInfo sampleMkv = new VideoInfo(SampleMkvVideo);
-            string concatOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
-            sampleMkv.JoinWith(concatOutput, sampleMkv, sampleMkv, sampleMkv, sampleMkv, sampleMkv, sampleMkv);
+            IVideoInfo videoInfo = new VideoInfo(SampleMkvVideo);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
 
-            IVideoInfo videoInfo = new VideoInfo(concatOutput);
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
             Task<bool> task = Task.Run(() => videoInfo.ToMp4(output, Speed.VerySlow, "", AudioQuality.Ultra, false));
-
-            Thread.Sleep(1000);
+            while (!videoInfo.IsRunning) { }
 
             Assert.True(videoInfo.IsRunning);
-            sampleMkv.Dispose();
+            videoInfo.Dispose();
             Assert.False(videoInfo.IsRunning);
-            Assert.False(task.Result);
+            Assert.False(await task);
         }
     }
 }

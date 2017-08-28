@@ -19,6 +19,12 @@ namespace Xabe.FFMpeg
         private static string _ffprobePath;
 
         /// <summary>
+        ///     Check if FFMpeg process was killed
+        /// </summary>
+        protected bool WasKilled { get; private set; }
+
+
+        /// <summary>
         ///     Directory contains FFMpeg and FFProbe
         /// </summary>
         [CanBeNull] [UsedImplicitly] public static string FFMpegDir;
@@ -120,8 +126,9 @@ namespace Xabe.FFMpeg
         /// </summary>
         public bool IsRunning { get; private set; }
 
+        /// <inheritdoc />
         /// <summary>
-        ///     Kill process
+        ///     Kill ffmpeg process
         /// </summary>
         public void Dispose()
         {
@@ -129,6 +136,7 @@ namespace Xabe.FFMpeg
                 Process.Kill();
             while(!Process.HasExited)
                 Thread.Sleep(10);
+            WasKilled = true;
         }
 
         private void FindProgramsFromPath(string path)
@@ -163,6 +171,7 @@ namespace Xabe.FFMpeg
                 throw new InvalidOperationException(
                     "The current FFMpeg process is busy with another operation. Create a new object for parallel executions.");
 
+            WasKilled = false;
             Process = new Process
             {
                 StartInfo =
@@ -178,13 +187,13 @@ namespace Xabe.FFMpeg
                 EnableRaisingEvents = true
             };
 
-            Process.Exited += OnProcessExit;
             Process.Start();
 
             IsRunning = true;
+            Process.Exited += Process_Exited;
         }
 
-        private void OnProcessExit(object sender, EventArgs e)
+        private void Process_Exited(object sender, EventArgs e)
         {
             IsRunning = false;
         }

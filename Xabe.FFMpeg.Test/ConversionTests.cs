@@ -138,13 +138,13 @@ namespace Xabe.FFMpeg.Test
                     .SetInput(SampleMkvVideo)
                     .SetScale(VideoSize.Uhd4320)
                     .SetVideo(VideoCodec.LibTheora, 2400)
-                    .SetSpeed(16)
                     .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
                     .SetOutput(outputPath)
+                    .SetSpeed(Speed.VerySlow)
+                    .UseMultiThread(false)
                     .Start());
 
-
-            Thread.Sleep(1000);
+            while(!conversion.IsRunning) { }
 
             Assert.True(conversion.IsRunning);
             conversion.Dispose();

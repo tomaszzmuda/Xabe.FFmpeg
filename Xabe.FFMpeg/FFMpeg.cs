@@ -45,7 +45,7 @@ namespace Xabe.FFMpeg
             if(IsRunning)
                 Process.StandardInput.Write('q');
             while(IsRunning)
-                Thread.Sleep(10);
+                Thread.Sleep(1);
         }
 
         private bool RunProcess(string args, string outputPath)
@@ -62,11 +62,12 @@ namespace Xabe.FFMpeg
                 Process.WaitForExit();
                 result = Process.ExitCode == 0;
 
-                if(!result &&
-                   (string.IsNullOrWhiteSpace(outputPath)
+                if(!WasKilled 
+                    && (!result 
+                    ||string.IsNullOrWhiteSpace(outputPath)
                     || !File.Exists(outputPath)
                     || new FileInfo(outputPath).Length == 0))
-                    throw new InvalidOperationException(string.Join("\r\n", _errorData.ToArray()));
+                    throw new InvalidOperationException(string.Join(Environment.NewLine, _errorData.ToArray()));
             }
 
             return result;

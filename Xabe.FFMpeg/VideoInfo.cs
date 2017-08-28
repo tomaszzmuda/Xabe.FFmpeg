@@ -12,7 +12,7 @@ namespace Xabe.FFMpeg
     /// <inheritdoc cref="IVideoInfo" />
     public class VideoInfo: IDisposable, IVideoInfo
     {
-        private FFMpeg _ffmpeg;
+        private IConversion _conversion;
 
         /// <inheritdoc />
         public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
@@ -32,24 +32,11 @@ namespace Xabe.FFMpeg
             new FFProbe().ProbeDetails(this);
         }
 
-        private FFMpeg FFmpeg
-        {
-            get
-            {
-                if(_ffmpeg != null &&
-                   _ffmpeg.IsRunning)
-                    throw new InvalidOperationException(
-                        "Operation on this file is in progress.");
-
-                return _ffmpeg ?? (_ffmpeg = new FFMpeg());
-            }
-        }
-
         /// <inheritdoc cref="IVideoInfo.Dispose" />
         [UsedImplicitly]
         public void Dispose()
         {
-            FFmpeg.Dispose();
+            _conversion.Dispose();
         }
 
         /// <inheritdoc />
@@ -90,7 +77,7 @@ namespace Xabe.FFMpeg
         public double Size { get; internal set; }
 
         /// <inheritdoc />
-        public bool IsRunning => FFmpeg.IsRunning;
+        public bool IsRunning => _conversion?.IsRunning == true;
 
 
         /// <inheritdoc cref="IVideoInfo.ToString" />
@@ -115,15 +102,15 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public bool ToTs(string outputPath)
         {
-            IConversion conversion = new Conversion()
+            _conversion = new Conversion()
                 .SetInput(FilePath)
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
                 .SetOutput(outputPath);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
 
@@ -131,7 +118,7 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public bool ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal)
         {
-            IConversion conversion = new Conversion()
+            _conversion = new Conversion()
                 .SetInput(FilePath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibVpx, 2400)
@@ -139,8 +126,8 @@ namespace Xabe.FFMpeg
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
                 .SetOutput(outputPath);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
 
@@ -148,7 +135,7 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public bool ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            IConversion conversion = new Conversion()
+            _conversion = new Conversion()
                 .SetInput(FilePath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibTheora, 2400)
@@ -156,8 +143,8 @@ namespace Xabe.FFMpeg
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
                 .SetOutput(outputPath);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
 
@@ -166,7 +153,7 @@ namespace Xabe.FFMpeg
         public bool ToMp4(string outputPath, Speed speed = Speed.SuperFast,
             string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            IConversion conversion = new Conversion()
+            _conversion = new Conversion()
                 .SetInput(FilePath)
                 .UseMultiThread(multithread)
                 .SetScale(size)
@@ -175,8 +162,8 @@ namespace Xabe.FFMpeg
                 .SetAudio(AudioCodec.Aac, audioQuality)
                 .SetOutput(outputPath);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
 
@@ -184,25 +171,25 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public bool ExtractVideo(string output)
         {
-            IConversion conversion = new Conversion().SetInput(FilePath)
+            _conversion = new Conversion().SetInput(FilePath)
                                                      .StreamCopy(Channel.Both)
                                                      .DisableChannel(Channel.Audio)
                                                      .SetOutput(output);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
         /// <inheritdoc />
         [UsedImplicitly]
         public bool ExtractAudio(string output)
         {
-            IConversion conversion = new Conversion().SetInput(FilePath)
+            _conversion = new Conversion().SetInput(FilePath)
                                                      .DisableChannel(Channel.Video)
                                                      .SetOutput(output);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
 
@@ -210,13 +197,13 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public bool AddAudio(FileInfo audio, string output)
         {
-            IConversion conversion = new Conversion().SetInput(new FileInfo(FilePath), audio)
+            _conversion = new Conversion().SetInput(new FileInfo(FilePath), audio)
                                                      .StreamCopy(Channel.Video)
                                                      .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
                                                      .SetOutput(output);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
 
@@ -279,7 +266,7 @@ namespace Xabe.FFMpeg
 
             size = GetSize(source, size);
 
-            IConversion conversion = new Conversion()
+            _conversion = new Conversion()
                 .SetInput(source.FilePath)
                 .SetVideo(VideoCodec.Png)
                 .SetOutputFramesCount(1)
@@ -287,8 +274,8 @@ namespace Xabe.FFMpeg
                 .SetSize(size)
                 .SetOutput(outputPath);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
         /// <inheritdoc />
@@ -321,14 +308,14 @@ namespace Xabe.FFMpeg
                 video.ToTs(tempFileName);
             }
 
-            IConversion conversion = new Conversion().
+            _conversion = new Conversion().
                 Concat(pathList.ToArray())
                                                      .StreamCopy(Channel.Both)
                                                      .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                                                      .SetOutput(output);
 
-            conversion.OnProgress += OnConversionProgress;
-            return conversion.Start();
+            _conversion.OnProgress += OnConversionProgress;
+            return _conversion.Start();
         }
 
         private static Size? GetSize(VideoInfo source, Size? size)
