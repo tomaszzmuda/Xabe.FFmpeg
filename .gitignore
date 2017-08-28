@@ -10,3 +10,4 @@
 /Xabe.FFMpeg.Test/bin/Debug/netcoreapp2.0
 /Xabe.FFMpeg/bin/Debug/netstandard2.0
 /Xabe.FFMpeg/bin/Release/netstandard2.0
+/.vs/*
