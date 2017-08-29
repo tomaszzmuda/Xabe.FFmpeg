@@ -40,7 +40,6 @@ namespace Xabe.FFMpeg
 
         private bool RunProcess(string args, string outputPath)
         {
-            var result = false;
             _errorData = new List<string>();
 
             RunProcess(args, FFMpegPath, true, false, true);
@@ -50,20 +49,18 @@ namespace Xabe.FFMpeg
                 Process.ErrorDataReceived += OutputData;
                 Process.BeginErrorReadLine();
                 Process.WaitForExit();
-                var statusCode = ((FFMpegStatus) Process.ExitCode);
-                result = statusCode == FFMpegStatus.Correct;
+                var statusCode = (FFMpegStatus) Process.ExitCode;
 
-                if(statusCode != FFMpegStatus.Killed)
-                {
-                    if(!result
-                        || string.IsNullOrWhiteSpace(outputPath)
-                        || !File.Exists(outputPath)
-                        || new FileInfo(outputPath).Length == 0)
-                        throw new InvalidOperationException(string.Join(Environment.NewLine, _errorData.ToArray()));
-                }
+                if (statusCode == FFMpegStatus.Killed)
+                    return false;
+
+                if ((string.IsNullOrWhiteSpace(outputPath)
+                    || !File.Exists(outputPath)
+                    || new FileInfo(outputPath).Length == 0))
+                    throw new InvalidOperationException(string.Join(Environment.NewLine, _errorData.ToArray()));
             }
 
-            return result;
+            return true;
         }
 
         private void OutputData(object sender, DataReceivedEventArgs e)
