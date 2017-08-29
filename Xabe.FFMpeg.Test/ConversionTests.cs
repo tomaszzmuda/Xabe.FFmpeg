@@ -131,9 +131,8 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
             IConversion conversion = new Conversion();
-            var conversionResult = false;
             Task<bool> task = Task.Run(() =>
-                conversionResult = conversion
+                conversion
                     .SetInput(SampleMkvVideo)
                     .SetScale(VideoSize.Uhd4320)
                     .SetVideo(VideoCodec.LibTheora, 2400)
@@ -150,8 +149,7 @@ namespace Xabe.FFMpeg.Test
             Assert.True(conversion.IsRunning);
             conversion.Dispose();
             Assert.False(conversion.IsRunning);
-            Task.WhenAll(task);
-            Assert.False(conversionResult);
+            Assert.False(task.Result);
         }
 
         [Fact]
