@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
 {
@@ -49,15 +50,17 @@ namespace Xabe.FFMpeg
                 Process.ErrorDataReceived += OutputData;
                 Process.BeginErrorReadLine();
                 Process.WaitForExit();
-                result = Process.ExitCode == 0;
+                var statusCode = ((FFMpegStatus) Process.ExitCode);
+                result = statusCode == FFMpegStatus.Correct;
 
-                if(!WasKilled
-                   &&
-                   (!result
-                    || string.IsNullOrWhiteSpace(outputPath)
-                    || !File.Exists(outputPath)
-                    || new FileInfo(outputPath).Length == 0))
-                    throw new InvalidOperationException(string.Join(Environment.NewLine, _errorData.ToArray()));
+                if(statusCode != FFMpegStatus.Killed)
+                {
+                    if(!result
+                        || string.IsNullOrWhiteSpace(outputPath)
+                        || !File.Exists(outputPath)
+                        || new FileInfo(outputPath).Length == 0)
+                        throw new InvalidOperationException(string.Join(Environment.NewLine, _errorData.ToArray()));
+                }
             }
 
             return result;

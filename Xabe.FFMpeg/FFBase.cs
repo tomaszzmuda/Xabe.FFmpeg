@@ -52,10 +52,7 @@ namespace Xabe.FFMpeg
                 return;
             }
 
-            var splitChar = ';';
-            bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-            if(isLinux)
-                splitChar = ':';
+            var splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
 
             string[] paths = Environment.GetEnvironmentVariable("PATH")
                                         .Split(splitChar);
@@ -73,11 +70,6 @@ namespace Xabe.FFMpeg
                FFMpegPath == null)
                 throw new ArgumentException("Cannot find FFMpeg.");
         }
-
-        /// <summary>
-        ///     Check if FFMpeg process was killed
-        /// </summary>
-        protected bool WasKilled { get; private set; }
 
         /// <summary>
         ///     FilePath to FFMpeg
@@ -134,26 +126,24 @@ namespace Xabe.FFMpeg
         {
             if(IsRunning)
                 Process.Kill();
-            while(!Process.HasExited)
-                Thread.Sleep(10);
-            WasKilled = true;
+            while(IsRunning) 
+            {
+                Thread.Sleep(1);
+            }
         }
 
         private void FindProgramsFromPath(string path)
         {
-            try
-            {
-                FFProbePath = new DirectoryInfo(path).GetFiles()
-                                                     .FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
+                if (!Directory.Exists(path))
+                {
+                    return;
+                }
+                FileInfo[] files = new DirectoryInfo(path).GetFiles();
+
+                FFProbePath = files.FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
                                                      ?.FullName;
-                FFMpegPath = new DirectoryInfo(path).GetFiles()
-                                                    .FirstOrDefault(x => x.Name.StartsWith("ffmpeg", true, CultureInfo.InvariantCulture))
+                FFMpegPath = files.FirstOrDefault(x => x.Name.StartsWith("ffmpeg", true, CultureInfo.InvariantCulture))
                                                     ?.FullName;
-            }
-                // ReSharper disable once EmptyGeneralCatchClause
-            catch(Exception)
-            {
-            }
         }
 
         /// <summary>
@@ -171,7 +161,6 @@ namespace Xabe.FFMpeg
                 throw new InvalidOperationException(
                     "The current FFMpeg process is busy with another operation. Create a new object for parallel executions.");
 
-            WasKilled = false;
             Process = new Process
             {
                 StartInfo =
