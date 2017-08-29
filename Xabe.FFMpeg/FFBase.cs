@@ -23,8 +23,8 @@ namespace Xabe.FFMpeg
         /// </summary>
         [CanBeNull] [UsedImplicitly] public static string FFMpegDir;
 
-        private readonly object _ffmpegPathLock = new object();
-        private readonly object _ffprobePathLock = new object();
+        private static readonly object _ffmpegPathLock = new object();
+        private static readonly object _ffprobePathLock = new object();
 
         /// <summary>
         ///     FFMpeg process
