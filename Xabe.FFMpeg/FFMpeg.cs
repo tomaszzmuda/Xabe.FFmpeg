@@ -57,7 +57,7 @@ namespace Xabe.FFMpeg
                 if ((string.IsNullOrWhiteSpace(outputPath)
                     || !File.Exists(outputPath)
                     || new FileInfo(outputPath).Length == 0))
-                    throw new InvalidOperationException(string.Join(Environment.NewLine, _errorData.ToArray()));
+                    throw new ArgumentException(string.Join(Environment.NewLine, _errorData.ToArray()));
             }
 
             return true;

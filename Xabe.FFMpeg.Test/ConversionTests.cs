@@ -195,7 +195,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public void IncompatibleParametersTest()
         {
-            Assert.Throws<InvalidOperationException>(() =>
+            Assert.Throws<ArgumentException>(() =>
             {
                 string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
                 new Conversion()
