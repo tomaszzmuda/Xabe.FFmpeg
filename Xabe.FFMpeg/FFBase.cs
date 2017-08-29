@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using JetBrains.Annotations;
 
 namespace Xabe.FFMpeg
@@ -126,10 +125,7 @@ namespace Xabe.FFMpeg
         {
             if(IsRunning)
                 Process.Kill();
-            while(IsRunning) 
-            {
-                Thread.Sleep(1);
-            }
+            while(IsRunning) { }
         }
 
         private void FindProgramsFromPath(string path)
