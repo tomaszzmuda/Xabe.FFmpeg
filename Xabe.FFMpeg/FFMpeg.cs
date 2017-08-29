@@ -41,6 +41,7 @@ namespace Xabe.FFMpeg
         private bool RunProcess(string args, string outputPath)
         {
             _errorData = new List<string>();
+            _wasKilled = false;
 
             RunProcess(args, FFMpegPath, true, false, true);
 
@@ -49,9 +50,8 @@ namespace Xabe.FFMpeg
                 Process.ErrorDataReceived += OutputData;
                 Process.BeginErrorReadLine();
                 Process.WaitForExit();
-                var statusCode = (FFMpegStatus) Process.ExitCode;
 
-                if (statusCode == FFMpegStatus.Killed)
+                if (_wasKilled)
                     return false;
 
                 if ((string.IsNullOrWhiteSpace(outputPath)

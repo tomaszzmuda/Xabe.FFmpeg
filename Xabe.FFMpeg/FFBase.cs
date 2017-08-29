@@ -16,7 +16,7 @@ namespace Xabe.FFMpeg
     {
         private static string _ffmpegPath;
         private static string _ffprobePath;
-
+        protected bool _wasKilled;
 
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
@@ -124,7 +124,10 @@ namespace Xabe.FFMpeg
         public void Dispose()
         {
             if(IsRunning)
+            {
+                _wasKilled = true;
                 Process.Kill();
+            }
             while(IsRunning) { }
         }
 
