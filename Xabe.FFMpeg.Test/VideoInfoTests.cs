@@ -27,12 +27,13 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        public async void DisposeTest()
+        public void DisposeTest()
         {
             IVideoInfo videoInfo = new VideoInfo(SampleMkvVideo);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
+            var conversionResult = true;
 
-            Task<bool> task = Task.Run(() => videoInfo.ToMp4(output, Speed.VerySlow, "", AudioQuality.Ultra));
+            Task<bool> task = Task.Run(() => conversionResult = videoInfo.ToMp4(output, Speed.VerySlow, "", AudioQuality.Ultra));
             while(!videoInfo.IsRunning)
             {
             }
@@ -40,7 +41,8 @@ namespace Xabe.FFMpeg.Test
             Assert.True(videoInfo.IsRunning);
             videoInfo.Dispose();
             Assert.False(videoInfo.IsRunning);
-            Assert.False(await task);
+            Task.WhenAll(task);
+            Assert.False(conversionResult);
         }
 
         [Fact]
