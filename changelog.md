@@ -5,6 +5,7 @@ Change Log / Release Notes
 
 * Getting input video duration from FFMpeg header
 * Add ability to perform dynamic ffmpeg commands
+* Rotate video
 
 ## Xabe.FFMpeg 1.5.0
 

@@ -254,5 +254,12 @@ namespace Xabe.FFMpeg
         ///     Kill ffmpeg process
         /// </summary>
         void Dispose();
+
+        /// <summary>
+        ///     Rotate video
+        /// </summary>
+        /// <param name="rotateDegrees">Rotate type</param>
+        /// <returns>Conversion result</returns>
+        IConversion Rotate(RotateDegrees rotateDegrees);
     }
 }

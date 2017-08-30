@@ -304,5 +304,22 @@ namespace Xabe.FFMpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), new VideoInfo(outputPath).Duration);
             Assert.True(conversionResult);
         }
+
+        [Theory]
+        [InlineData(RotateDegrees.Clockwise)]
+        [InlineData(RotateDegrees.Invert)]
+        public void TransposeTest(RotateDegrees rotateDegrees)
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .Rotate(rotateDegrees)
+                .SetOutput(outputPath)
+                .Start();
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
+            Assert.True(conversionResult);
+        }
     }
 }

@@ -32,6 +32,7 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
         private string _videoSpeed;
+        private string _rotate;
 
         /// <inheritdoc />
         public string Build()
@@ -52,6 +53,7 @@ namespace Xabe.FFMpeg
             builder.Append(_frameCount);
             builder.Append(_loop);
             builder.Append(_reverse);
+            builder.Append(_rotate);
             builder.Append(_shortestInput);
             builder.Append(BuildVideoFilter());
             builder.Append(BuildAudioFilter());
@@ -85,6 +87,16 @@ namespace Xabe.FFMpeg
         public void Dispose()
         {
             _ffmpeg?.Dispose();
+        }
+
+        /// <inheritdoc />
+        public IConversion Rotate(RotateDegrees rotateDegrees)
+        {
+            if(rotateDegrees == RotateDegrees.Invert)
+                _rotate = "-vf \"transpose=2,transpose=2\" ";
+            else 
+                _rotate = $"-vf \"transpose={(int) rotateDegrees}\" ";
+            return this;
         }
 
         /// <inheritdoc />
