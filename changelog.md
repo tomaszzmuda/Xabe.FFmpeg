@@ -7,6 +7,7 @@ Change Log / Release Notes
 * Add ability to perform dynamic ffmpeg commands
 * Rotate video
 * Force user to use VideoSize in case to change video size
+* More unit tests
 
 ## Xabe.FFMpeg 1.5.0
 
