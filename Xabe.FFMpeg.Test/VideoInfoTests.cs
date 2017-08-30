@@ -143,6 +143,28 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
+        public void OnProgressChangedTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(SampleMkvVideo);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+
+            videoInfo.OnConversionProgress += (duration, length) =>
+            {
+                currentProgress = duration;
+                videoLength = length;
+            };
+            bool conversionResult = videoInfo.ToTs(output);
+
+            Assert.True(conversionResult);
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(9));
+        }
+
+        [Fact]
         public void ToOgvTest()
         {
             IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
