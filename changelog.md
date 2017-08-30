@@ -6,6 +6,7 @@ Change Log / Release Notes
 * Getting input video duration from FFMpeg header
 * Add ability to perform dynamic ffmpeg commands
 * Rotate video
+* Force user to use VideoSize in case to change video size
 
 ## Xabe.FFMpeg 1.5.0
 
