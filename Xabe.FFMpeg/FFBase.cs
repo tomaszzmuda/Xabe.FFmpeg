@@ -16,7 +16,6 @@ namespace Xabe.FFMpeg
     {
         private static string _ffmpegPath;
         private static string _ffprobePath;
-        protected bool _wasKilled;
 
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
@@ -25,6 +24,11 @@ namespace Xabe.FFMpeg
 
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
+
+        /// <summary>
+        ///     Defines if the ffmpeg was killed by application
+        /// </summary>
+        protected bool _wasKilled;
 
         /// <summary>
         ///     FFMpeg process
@@ -51,7 +55,7 @@ namespace Xabe.FFMpeg
                 return;
             }
 
-            var splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
+            char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
 
             string[] paths = Environment.GetEnvironmentVariable("PATH")
                                         .Split(splitChar);
@@ -128,21 +132,21 @@ namespace Xabe.FFMpeg
                 _wasKilled = true;
                 Process.Kill();
             }
-            while(IsRunning) { }
+            while(IsRunning)
+            {
+            }
         }
 
         private void FindProgramsFromPath(string path)
         {
-                if (!Directory.Exists(path))
-                {
-                    return;
-                }
-                FileInfo[] files = new DirectoryInfo(path).GetFiles();
+            if(!Directory.Exists(path))
+                return;
+            FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-                FFProbePath = files.FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
-                                                     ?.FullName;
-                FFMpegPath = files.FirstOrDefault(x => x.Name.StartsWith("ffmpeg", true, CultureInfo.InvariantCulture))
-                                                    ?.FullName;
+            FFProbePath = files.FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
+                               ?.FullName;
+            FFMpegPath = files.FirstOrDefault(x => x.Name.StartsWith("ffmpeg", true, CultureInfo.InvariantCulture))
+                              ?.FullName;
         }
 
         /// <summary>
@@ -172,7 +176,7 @@ namespace Xabe.FFMpeg
                     RedirectStandardOutput = rStandardOutput,
                     RedirectStandardError = rStandardError
                 },
-                EnableRaisingEvents = true,
+                EnableRaisingEvents = true
             };
 
             Process.Exited += Process_Exited;

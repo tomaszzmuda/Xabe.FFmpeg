@@ -43,6 +43,8 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 * Watermarks
 * Chroma key
 * Validate ffmpeg parameters
+* Make all time consumption operations async
+* Give user ability to process his own arguments (without any builder)
 
 ## Lincence ## 
 
