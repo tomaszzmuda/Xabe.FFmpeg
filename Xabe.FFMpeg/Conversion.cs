@@ -67,9 +67,15 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public bool Start()
         {
+            return Start(Build());
+        }
+
+        /// <inheritdoc />
+        public bool Start(string parameters)
+        {
             _ffmpeg = new FFMpeg();
             _ffmpeg.OnProgress += OnProgress;
-            return _ffmpeg.RunProcess(Build());
+            return _ffmpeg.RunProcess(parameters);
         }
 
         /// <inheritdoc />
