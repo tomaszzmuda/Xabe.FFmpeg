@@ -51,8 +51,7 @@ namespace Xabe.FFMpeg.Test
 
             Assert.True(conversionResult);
             Assert.True(currentProgress > TimeSpan.Zero);
-            Assert.True(currentProgress <= videoLength);
-            Assert.True(videoLength == TimeSpan.FromSeconds(26));
+            Assert.True(new VideoInfo(outputPath).Duration == TimeSpan.FromSeconds(26));
         }
 
         [Fact]

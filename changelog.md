@@ -1,6 +1,11 @@
 Change Log / Release Notes
 ==========================
 
+## Xabe.FFMpeg 1.5.1
+
+* Getting input video duration from FFMpeg header
+* Add ability to perform dynamic ffmpeg commands
+
 ## Xabe.FFMpeg 1.5.0
 
 * Code refactor

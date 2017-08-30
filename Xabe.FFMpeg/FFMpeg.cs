@@ -18,27 +18,18 @@ namespace Xabe.FFMpeg
     /// </summary>
     internal class FFMpeg: FFBase
     {
-        private List<string> _errorData;
+        private List<string> _outputLog;
         private TimeSpan _totalTime;
+        private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
 
         /// <summary>
         ///     Fires when ffmpeg progress changes
         /// </summary>
         public event ConversionHandler OnProgress;
 
-        public bool StartConversion(string arguments, string outputPath, VideoInfo[] inputFiles)
+        internal bool RunProcess(string args)
         {
-            _totalTime = TimeSpan.Zero;
-            if(inputFiles != null &&
-               inputFiles.Length > 0)
-                foreach(VideoInfo video in inputFiles)
-                    _totalTime += video.Duration;
-            return RunProcess(arguments, outputPath);
-        }
-
-        private bool RunProcess(string args, string outputPath)
-        {
-            _errorData = new List<string>();
+            _outputLog = new List<string>();
             _wasKilled = false;
 
             RunProcess(args, FFMpegPath, true, false, true);
@@ -53,7 +44,7 @@ namespace Xabe.FFMpeg
                     return false;
 
                 if(Process.ExitCode != 0)
-                    throw new ArgumentException(string.Join(Environment.NewLine, _errorData.ToArray()));
+                    throw new ArgumentException(string.Join(Environment.NewLine, _outputLog.ToArray()));
             }
 
             return true;
@@ -64,22 +55,27 @@ namespace Xabe.FFMpeg
             if(e.Data == null)
                 return;
 
-            _errorData.Add(e.Data);
+            _outputLog.Add(e.Data);
 
             if(OnProgress == null ||
                !IsRunning)
                 return;
 
-            var r = new Regex(@"\w\w:\w\w:\w\w");
-            Match m = r.Match(e.Data);
+            var regex = new Regex(TimeFormatRegex);
+            if (e.Data.Contains("Duration"))
+            {
+                Match match = regex.Match(e.Data);
+                _totalTime = TimeSpan.Parse(match.Value);
+            }
+            else if(e.Data.Contains("frame"))
+            {
+                Match match = regex.Match(e.Data);
+                if(match.Success)
+                {
+                    OnProgress(TimeSpan.Parse(match.Value), _totalTime);
+                }
 
-            if(!e.Data.Contains("frame"))
-                return;
-            if(!m.Success)
-                return;
-
-            TimeSpan t = TimeSpan.Parse(m.Value);
-            OnProgress(t, _totalTime);
+            }
         }
     }
 }
