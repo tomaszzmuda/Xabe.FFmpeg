@@ -116,7 +116,7 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ToWebM(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal)
+        public bool ToWebM(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal)
         {
             _conversion = new Conversion()
                 .SetInput(FilePath)
@@ -133,7 +133,7 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ToOgv(string outputPath, string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public bool ToOgv(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             _conversion = new Conversion()
                 .SetInput(FilePath)
@@ -151,7 +151,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         [UsedImplicitly]
         public bool ToMp4(string outputPath, Speed speed = Speed.SuperFast,
-            string size = "", AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+            VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             _conversion = new Conversion()
                 .SetInput(FilePath)

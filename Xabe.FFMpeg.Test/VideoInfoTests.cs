@@ -32,7 +32,7 @@ namespace Xabe.FFMpeg.Test
             IVideoInfo videoInfo = new VideoInfo(SampleMkvVideo);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
 
-            Task<bool> task = Task.Run(() => videoInfo.ToMp4(output, Speed.VerySlow, "", AudioQuality.Ultra));
+            Task<bool> task = Task.Run(() => videoInfo.ToMp4(output, Speed.VerySlow, null, AudioQuality.Ultra));
             while(!videoInfo.IsRunning)
             {
             }

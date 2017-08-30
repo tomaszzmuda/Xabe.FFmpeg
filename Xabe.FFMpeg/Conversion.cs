@@ -207,14 +207,8 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetScale(VideoSize size)
         {
-            return SetScale(size.Resolution);
-        }
-
-        /// <inheritdoc />
-        public IConversion SetScale(string size)
-        {
-            if(!string.IsNullOrWhiteSpace(size))
-                _scale = $"-vf scale={size} ";
+            if (!string.IsNullOrWhiteSpace(size?.Resolution))
+                _scale = $"-vf scale={size.Resolution} ";
             return this;
         }
 
