@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Xabe.FFMpeg.Enums;
 
@@ -33,51 +34,55 @@ namespace Xabe.FFMpeg
         private string _video;
         private string _videoSpeed;
         private string _rotate;
+        private readonly object _builderLock = new object();
 
         /// <inheritdoc />
         public string Build()
         {
-            var builder = new StringBuilder();
-            builder.Append(_input);
-            builder.Append(_scale);
-            builder.Append(_video);
-            builder.Append(_speed);
-            builder.Append(_audio);
-            builder.Append(_threads);
-            builder.Append(_disabled);
-            builder.Append(_size);
-            builder.Append(_codec);
-            builder.Append(_bitsreamFilter);
-            builder.Append(_copy);
-            builder.Append(_seek);
-            builder.Append(_frameCount);
-            builder.Append(_loop);
-            builder.Append(_reverse);
-            builder.Append(_rotate);
-            builder.Append(_shortestInput);
-            builder.Append(BuildVideoFilter());
-            builder.Append(BuildAudioFilter());
-            builder.Append(_output);
+            lock(_builderLock)
+            {
+                var builder = new StringBuilder();
+                builder.Append(_input);
+                builder.Append(_scale);
+                builder.Append(_video);
+                builder.Append(_speed);
+                builder.Append(_audio);
+                builder.Append(_threads);
+                builder.Append(_disabled);
+                builder.Append(_size);
+                builder.Append(_codec);
+                builder.Append(_bitsreamFilter);
+                builder.Append(_copy);
+                builder.Append(_seek);
+                builder.Append(_frameCount);
+                builder.Append(_loop);
+                builder.Append(_reverse);
+                builder.Append(_rotate);
+                builder.Append(_shortestInput);
+                builder.Append(BuildVideoFilter());
+                builder.Append(BuildAudioFilter());
+                builder.Append(_output);
 
             return builder.ToString();
         }
+    }
 
         /// <inheritdoc />
         [UsedImplicitly]
         public event ConversionHandler OnProgress;
 
         /// <inheritdoc />
-        public bool Start()
+        public async Task<bool> Start()
         {
-            return Start(Build());
+            return await Start(Build());
         }
 
         /// <inheritdoc />
-        public bool Start(string parameters)
+        public async Task<bool> Start(string parameters)
         {
             _ffmpeg = new FFMpeg();
             _ffmpeg.OnProgress += OnProgress;
-            return _ffmpeg.RunProcess(parameters);
+            return await _ffmpeg.RunProcess(parameters);
         }
 
         /// <inheritdoc />

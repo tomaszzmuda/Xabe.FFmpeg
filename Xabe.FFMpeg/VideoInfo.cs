@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Xabe.FFMpeg.Enums;
 
@@ -100,7 +101,7 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ToTs(string outputPath)
+        public async Task<bool> ToTs(string outputPath)
         {
             _conversion = new Conversion()
                 .SetInput(FilePath)
@@ -110,13 +111,13 @@ namespace Xabe.FFMpeg
                 .SetOutput(outputPath);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ToWebM(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal)
+        public async Task<bool> ToWebM(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal)
         {
             _conversion = new Conversion()
                 .SetInput(FilePath)
@@ -127,13 +128,13 @@ namespace Xabe.FFMpeg
                 .SetOutput(outputPath);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ToOgv(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public async Task<bool> ToOgv(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             _conversion = new Conversion()
                 .SetInput(FilePath)
@@ -144,13 +145,13 @@ namespace Xabe.FFMpeg
                 .SetOutput(outputPath);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ToMp4(string outputPath, Speed speed = Speed.SuperFast,
+        public async Task<bool> ToMp4(string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             _conversion = new Conversion()
@@ -163,13 +164,13 @@ namespace Xabe.FFMpeg
                 .SetOutput(outputPath);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ExtractVideo(string output)
+        public async Task<bool> ExtractVideo(string output)
         {
             _conversion = new Conversion().SetInput(FilePath)
                                           .StreamCopy(Channel.Both)
@@ -177,25 +178,25 @@ namespace Xabe.FFMpeg
                                           .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool ExtractAudio(string output)
+        public async Task<bool> ExtractAudio(string output)
         {
             _conversion = new Conversion().SetInput(FilePath)
                                           .DisableChannel(Channel.Video)
                                           .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool AddAudio(FileInfo audio, string output)
+        public async Task<bool> AddAudio(FileInfo audio, string output)
         {
             _conversion = new Conversion().SetInput(new FileInfo(FilePath), audio)
                                           .StreamCopy(Channel.Video)
@@ -203,17 +204,17 @@ namespace Xabe.FFMpeg
                                           .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public Bitmap Snapshot(Size? size = null, TimeSpan? captureTime = null)
+        public async Task<Bitmap> Snapshot(Size? size = null, TimeSpan? captureTime = null)
         {
             string output = $"{Environment.TickCount}.png";
 
-            bool success = Snapshot(this, output, size, captureTime);
+            bool success = await Snapshot(this, output, size, captureTime);
 
             if(!success)
                 throw new OperationCanceledException("Could not take snapshot!");
@@ -239,9 +240,9 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public Bitmap Snapshot(string output, Size? size = null, TimeSpan? captureTime = null)
+        public async Task<Bitmap> Snapshot(string output, Size? size = null, TimeSpan? captureTime = null)
         {
-            bool success = Snapshot(this, output, size, captureTime);
+            bool success = await Snapshot(this, output, size, captureTime);
 
             if(!success)
                 throw new OperationCanceledException("Could not take snapshot!");
@@ -259,7 +260,7 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool Snapshot(VideoInfo source, string outputPath, Size? size = null, TimeSpan? captureTime = null)
+        public async Task<bool> Snapshot(VideoInfo source, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
             if(captureTime == null)
                 captureTime = TimeSpan.FromSeconds(source.Duration.TotalSeconds / 3);
@@ -275,25 +276,25 @@ namespace Xabe.FFMpeg
                 .SetOutput(outputPath);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool SaveM3U8Stream(Uri uri, string outputPath)
+        public async Task<bool> SaveM3U8Stream(Uri uri, string outputPath)
         {
             if(uri.Scheme != "http" ||
                uri.Scheme != "https")
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
-            return new Conversion().SetInput(uri)
+            return await new Conversion().SetInput(uri)
                                    .SetOutput(outputPath)
                                    .Start();
         }
 
         /// <inheritdoc />
         [UsedImplicitly]
-        public bool JoinWith(string output, params IVideoInfo[] videos)
+        public async Task<bool> JoinWith(string output, params IVideoInfo[] videos)
         {
             List<IVideoInfo> queuedVideos = videos.ToList();
 
@@ -306,7 +307,7 @@ namespace Xabe.FFMpeg
                 var video = (VideoInfo) videoInfo;
                 string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
                 pathList.Add(tempFileName);
-                video.ToTs(tempFileName);
+                await video.ToTs(tempFileName);
             }
 
             _conversion = new Conversion().
@@ -316,7 +317,7 @@ namespace Xabe.FFMpeg
                                           .SetOutput(output);
 
             _conversion.OnProgress += OnConversionProgress;
-            return _conversion.Start();
+            return await _conversion.Start();
         }
 
         private static Size? GetSize(VideoInfo source, Size? size)

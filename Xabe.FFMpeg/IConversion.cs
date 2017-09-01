@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -234,14 +235,14 @@ namespace Xabe.FFMpeg
         ///     Start conversion
         /// </summary>
         /// <returns>Conversion result</returns>
-        bool Start();
+        Task<bool> Start();
 
         /// <summary>
         ///     Start an ffmpeg process with specified arguments
         /// </summary>
         /// <param name="parameters">FFMpeg parameters eg. "-i sample.mp4 -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000"</param>
         /// <returns>Conversion result</returns>
-        bool Start(string parameters);
+        Task<bool> Start(string parameters);
 
         /// <summary>
         ///     Kill ffmpeg process

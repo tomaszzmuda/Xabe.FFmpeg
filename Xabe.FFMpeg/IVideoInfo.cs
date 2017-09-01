@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
 
 namespace Xabe.FFMpeg
@@ -76,7 +77,7 @@ namespace Xabe.FFMpeg
         /// <param name="audio">Audio file</param>
         /// <param name="output">Output file</param>
         /// <returns>Conversion result</returns>
-        bool AddAudio(FileInfo audio, string output);
+        Task<bool> AddAudio(FileInfo audio, string output);
 
         /// <summary>
         ///     Stop FFMpeg process
@@ -88,14 +89,14 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="output">Output video stream</param>
         /// <returns>Conversion result</returns>
-        bool ExtractAudio(string output);
+        Task<bool> ExtractAudio(string output);
 
         /// <summary>
         ///     Extract video from file
         /// </summary>
         /// <param name="output">Output audio stream</param>
         /// <returns>Conversion result</returns>
-        bool ExtractVideo(string output);
+        Task<bool> ExtractVideo(string output);
 
         /// <summary>
         ///     Concat multiple videos
@@ -103,7 +104,7 @@ namespace Xabe.FFMpeg
         /// <param name="output">Concatenated videos</param>
         /// <param name="videos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        bool JoinWith(string output, params IVideoInfo[] videos);
+        Task<bool> JoinWith(string output, params IVideoInfo[] videos);
 
         /// <summary>
         ///     Get formated info about video
@@ -117,7 +118,7 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Snapshot</returns>
-        Bitmap Snapshot(Size? size = null, TimeSpan? captureTime = null);
+        Task<Bitmap> Snapshot(Size? size = null, TimeSpan? captureTime = null);
 
         /// <summary>
         ///     Saves snapshot of video
@@ -126,7 +127,7 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Snapshot</returns>
-        Bitmap Snapshot(string output, Size? size = null, TimeSpan? captureTime = null);
+        Task<Bitmap> Snapshot(string output, Size? size = null, TimeSpan? captureTime = null);
 
         /// <summary>
         ///     Convert file to MP4
@@ -137,7 +138,7 @@ namespace Xabe.FFMpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        bool ToMp4(string outputPath, Speed speed = Speed.SuperFast, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal,
+        Task<bool> ToMp4(string outputPath, Speed speed = Speed.SuperFast, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal,
             bool multithread = false);
 
         /// <summary>
@@ -148,14 +149,14 @@ namespace Xabe.FFMpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        bool ToOgv(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
+        Task<bool> ToOgv(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false);
 
         /// <summary>
         ///     Convert file to TS
         /// </summary>
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
-        bool ToTs(string outputPath);
+        Task<bool> ToTs(string outputPath);
 
         /// <summary>
         ///     Convert file to WebM
@@ -164,7 +165,7 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <returns>Conversion result</returns>
-        bool ToWebM(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal);
+        Task<bool> ToWebM(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal);
 
         /// <summary>
         ///     Records M3U8 streams to the specified output.
@@ -172,7 +173,7 @@ namespace Xabe.FFMpeg
         /// <param name="uri">URI to stream.</param>
         /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
-        bool SaveM3U8Stream(Uri uri, string outputPath);
+        Task<bool> SaveM3U8Stream(Uri uri, string outputPath);
 
         /// <summary>
         ///     Saves snapshot of video
@@ -182,6 +183,6 @@ namespace Xabe.FFMpeg
         /// <param name="size">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Conversion result</returns>
-        bool Snapshot(VideoInfo source, string outputPath, Size? size = null, TimeSpan? captureTime = null);
+        Task<bool> Snapshot(VideoInfo source, string outputPath, Size? size = null, TimeSpan? captureTime = null);
     }
 }

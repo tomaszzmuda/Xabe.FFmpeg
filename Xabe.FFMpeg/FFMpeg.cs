@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Xabe.FFMpeg
 {
@@ -27,7 +28,7 @@ namespace Xabe.FFMpeg
         /// </summary>
         public event ConversionHandler OnProgress;
 
-        internal bool RunProcess(string args)
+        internal async Task<bool> RunProcess(string args)
         {
             _outputLog = new List<string>();
             _wasKilled = false;
@@ -38,7 +39,7 @@ namespace Xabe.FFMpeg
             {
                 Process.ErrorDataReceived += OutputData;
                 Process.BeginErrorReadLine();
-                Process.WaitForExit();
+                await Task.Run(() => Process.WaitForExit());
 
                 if(_wasKilled)
                     return false;
