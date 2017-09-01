@@ -45,6 +45,7 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 * Chroma key
 * Validate ffmpeg parameters
 * Make all time consumption operations async
+* Make own more precise exceptions
 
 ## Lincence ## 
 
