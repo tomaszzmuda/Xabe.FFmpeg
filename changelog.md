@@ -3,7 +3,8 @@ Change Log / Release Notes
 
 ## Xabe.FFMpeg 1.6.0
 
-* Asynchronous
+* Time consumptions methods are now asynchronous
+* Only one conversion can be in progress at time per Conversion/VideoInfo object
 
 ## Xabe.FFMpeg 1.5.1
 
