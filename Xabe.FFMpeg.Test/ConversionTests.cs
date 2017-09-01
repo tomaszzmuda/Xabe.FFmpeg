@@ -222,6 +222,29 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
+        public async Task MultipleTaskTest()
+        {
+            string mp4Output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            string tsOutput = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+
+            IConversion conversion = new Conversion();
+            Task<bool> mp4Result = conversion
+                .SetInput(SampleMkvVideo)
+                .SetOutput(mp4Output)
+                .Start();
+
+            conversion.SetOutput(tsOutput);
+            Task<bool> tsResult = conversion.Start();
+
+            Assert.True(await tsResult);
+            Assert.True(await mp4Result);
+            Assert.True(File.Exists(mp4Output));
+            Assert.True(File.Exists(tsOutput));
+            Assert.Equal(TimeSpan.FromSeconds(9), new VideoInfo(mp4Output).Duration);
+            Assert.Equal(TimeSpan.FromSeconds(9), new VideoInfo(tsOutput).Duration);
+        }
+
+        [Fact]
         public async Task ReverseTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);

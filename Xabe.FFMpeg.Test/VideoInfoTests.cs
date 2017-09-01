@@ -181,7 +181,7 @@ namespace Xabe.FFMpeg.Test
         {
             IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
             string ogvOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
-            string tsOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
+            string tsOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
 
             Task<bool> ogvResult = videoInfo.ToOgv(ogvOutput);
             Task<bool> mp4Result = videoInfo.ToTs(tsOutput);
