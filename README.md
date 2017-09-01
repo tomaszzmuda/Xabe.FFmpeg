@@ -45,7 +45,6 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 * Chroma key
 * Validate ffmpeg parameters
 * Make all time consumption operations async
-* Remove dependency to Newtonsoft.Json
 
 ## Lincence ## 
 
