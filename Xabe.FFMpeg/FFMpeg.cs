@@ -31,7 +31,7 @@ namespace Xabe.FFMpeg
         internal async Task<bool> RunProcess(string args)
         {
             _outputLog = new List<string>();
-            _wasKilled = false;
+            WasKilled = false;
 
             RunProcess(args, FFMpegPath, true, false, true);
 
@@ -41,7 +41,7 @@ namespace Xabe.FFMpeg
                 Process.BeginErrorReadLine();
                 await Task.Run(() => Process.WaitForExit());
 
-                if(_wasKilled)
+                if(WasKilled)
                     return false;
 
                 if(Process.ExitCode != 0)

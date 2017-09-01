@@ -227,21 +227,19 @@ namespace Xabe.FFMpeg.Test
             string mp4Output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             string tsOutput = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
 
-            IConversion conversion = new Conversion();
-            Task<bool> mp4Result = conversion
-                .SetInput(SampleMkvVideo)
-                .SetOutput(mp4Output)
-                .Start();
+            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            {
+                IConversion conversion = new Conversion();
+#pragma warning disable 4014
+                conversion
+                    .SetInput(SampleMkvVideo)
+                    .SetOutput(mp4Output)
+                    .Start();
+#pragma warning restore 4014
 
-            conversion.SetOutput(tsOutput);
-            Task<bool> tsResult = conversion.Start();
-
-            Assert.True(await tsResult);
-            Assert.True(await mp4Result);
-            Assert.True(File.Exists(mp4Output));
-            Assert.True(File.Exists(tsOutput));
-            Assert.Equal(TimeSpan.FromSeconds(9), new VideoInfo(mp4Output).Duration);
-            Assert.Equal(TimeSpan.FromSeconds(9), new VideoInfo(tsOutput).Duration);
+                conversion.SetOutput(tsOutput);
+                await conversion.Start();
+            });
         }
 
         [Fact]

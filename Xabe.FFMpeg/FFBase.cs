@@ -24,11 +24,11 @@ namespace Xabe.FFMpeg
 
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
+        private readonly object _isRunningLock = new object();
+        private readonly object _wasKilledLock = new object();
 
-        /// <summary>
-        ///     Defines if the ffmpeg was killed by application
-        /// </summary>
-        protected bool _wasKilled;
+        private bool _isRunning;
+        private bool _wasKilled;
 
         /// <summary>
         ///     FFMpeg process
@@ -119,7 +119,44 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Returns true if the associated process is still alive/running.
         /// </summary>
-        public bool IsRunning { get; private set; }
+        public bool IsRunning
+        {
+            get
+            {
+                lock (_isRunningLock)
+                {
+                    return _isRunning;
+                }
+            }
+            private set
+            {
+                lock (_isRunningLock)
+                {
+                    _isRunning = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Defines if the ffmpeg was killed by application
+        /// </summary>
+        protected bool WasKilled
+        {
+            get
+            {
+                lock (_wasKilledLock)
+                {
+                    return _wasKilled;
+                }
+            }
+            set
+            {
+                lock (_wasKilledLock)
+                {
+                    _wasKilled = value;
+                }
+            }
+        }
 
         /// <inheritdoc />
         /// <summary>

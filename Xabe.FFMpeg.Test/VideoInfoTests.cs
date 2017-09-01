@@ -183,15 +183,10 @@ namespace Xabe.FFMpeg.Test
             string ogvOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
             string tsOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
 
-            Task<bool> ogvResult = videoInfo.ToOgv(ogvOutput);
-            Task<bool> mp4Result = videoInfo.ToTs(tsOutput);
-
-            Assert.True(await ogvResult);
-            Assert.True(await mp4Result);
-            Assert.True(File.Exists(ogvOutput));
-            Assert.True(File.Exists(tsOutput));
-            Assert.Equal(TimeSpan.FromSeconds(13), new VideoInfo(ogvOutput).Duration);
-            Assert.Equal(TimeSpan.FromSeconds(13), new VideoInfo(tsOutput).Duration);
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => { 
+                videoInfo.ToOgv(ogvOutput);
+                await videoInfo.ToTs(tsOutput);
+            });
         }
 
         [Fact]

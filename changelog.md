@@ -1,6 +1,10 @@
 Change Log / Release Notes
 ==========================
 
+## Xabe.FFMpeg 1.6.0
+
+* Asynchronous
+
 ## Xabe.FFMpeg 1.5.1
 
 * Getting input video duration from FFMpeg header

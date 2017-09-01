@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -20,6 +21,7 @@ namespace Xabe.FFMpeg
         private string _copy;
         private string _disabled;
         private FFMpeg _ffmpeg;
+        private readonly object _ffmpegLock = new object();
         private string _frameCount;
         private string _input;
         private string _loop;
@@ -35,6 +37,22 @@ namespace Xabe.FFMpeg
         private string _videoSpeed;
         private string _rotate;
         private readonly object _builderLock = new object();
+
+        private FFMpeg FFmpeg
+        {
+            get
+            {
+                lock(_ffmpegLock)
+                {
+                    if(_ffmpeg == null)
+                    {
+                        _ffmpeg = new FFMpeg();
+                        _ffmpeg.OnProgress += OnProgress;
+                    }
+                    return _ffmpeg;
+                }
+            }
+        }
 
         /// <inheritdoc />
         public string Build()
@@ -80,18 +98,17 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public async Task<bool> Start(string parameters)
         {
-            _ffmpeg = new FFMpeg();
-            _ffmpeg.OnProgress += OnProgress;
-            return await _ffmpeg.RunProcess(parameters);
+            var processing = await FFmpeg.RunProcess(parameters);
+            return processing;
         }
 
         /// <inheritdoc />
-        public bool IsRunning => _ffmpeg?.IsRunning ?? false;
+        public bool IsRunning => FFmpeg.IsRunning;
 
         /// <inheritdoc />
         public void Dispose()
         {
-            _ffmpeg?.Dispose();
+            FFmpeg.Dispose();
         }
 
         /// <inheritdoc />

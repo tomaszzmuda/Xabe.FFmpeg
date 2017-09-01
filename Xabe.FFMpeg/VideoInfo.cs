@@ -14,6 +14,7 @@ namespace Xabe.FFMpeg
     public class VideoInfo: IDisposable, IVideoInfo
     {
         private IConversion _conversion;
+        private readonly object _conversionLock = new object();
 
         /// <inheritdoc />
         public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
@@ -78,8 +79,23 @@ namespace Xabe.FFMpeg
         public double Size { get; internal set; }
 
         /// <inheritdoc />
-        public bool IsRunning => _conversion?.IsRunning == true;
+        public bool IsRunning => Conversion.IsRunning;
 
+        private IConversion Conversion
+        {
+            get
+            {
+                lock (_conversionLock)
+                {
+                    if (_conversion == null)
+                    {
+                        _conversion = new Conversion();
+                        _conversion.OnProgress += OnConversionProgress;
+                    }
+                    return _conversion;
+                }
+            }
+        }
 
         /// <inheritdoc cref="IVideoInfo.ToString" />
         [UsedImplicitly]
@@ -103,14 +119,13 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public async Task<bool> ToTs(string outputPath)
         {
-            _conversion = new Conversion()
+            Conversion
                 .SetInput(FilePath)
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
                 .SetCodec(VideoCodec.MpegTs)
                 .SetOutput(outputPath);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -119,7 +134,7 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public async Task<bool> ToWebM(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal)
         {
-            _conversion = new Conversion()
+            Conversion
                 .SetInput(FilePath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibVpx, 2400)
@@ -127,7 +142,6 @@ namespace Xabe.FFMpeg
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
                 .SetOutput(outputPath);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -136,7 +150,7 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public async Task<bool> ToOgv(string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            _conversion = new Conversion()
+            Conversion
                 .SetInput(FilePath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibTheora, 2400)
@@ -144,7 +158,6 @@ namespace Xabe.FFMpeg
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
                 .SetOutput(outputPath);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -154,7 +167,7 @@ namespace Xabe.FFMpeg
         public async Task<bool> ToMp4(string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            _conversion = new Conversion()
+            Conversion
                 .SetInput(FilePath)
                 .UseMultiThread(multithread)
                 .SetScale(size)
@@ -163,7 +176,6 @@ namespace Xabe.FFMpeg
                 .SetAudio(AudioCodec.Aac, audioQuality)
                 .SetOutput(outputPath);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -172,12 +184,11 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public async Task<bool> ExtractVideo(string output)
         {
-            _conversion = new Conversion().SetInput(FilePath)
+            Conversion.SetInput(FilePath)
                                           .StreamCopy(Channel.Both)
                                           .DisableChannel(Channel.Audio)
                                           .SetOutput(output);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -185,11 +196,10 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public async Task<bool> ExtractAudio(string output)
         {
-            _conversion = new Conversion().SetInput(FilePath)
+            Conversion.SetInput(FilePath)
                                           .DisableChannel(Channel.Video)
                                           .SetOutput(output);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -198,12 +208,11 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public async Task<bool> AddAudio(FileInfo audio, string output)
         {
-            _conversion = new Conversion().SetInput(new FileInfo(FilePath), audio)
+            Conversion.SetInput(new FileInfo(FilePath), audio)
                                           .StreamCopy(Channel.Video)
                                           .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
                                           .SetOutput(output);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -267,7 +276,7 @@ namespace Xabe.FFMpeg
 
             size = GetSize(source, size);
 
-            _conversion = new Conversion()
+            Conversion
                 .SetInput(source.FilePath)
                 .SetVideo(VideoCodec.Png)
                 .SetOutputFramesCount(1)
@@ -275,7 +284,6 @@ namespace Xabe.FFMpeg
                 .SetSize(size)
                 .SetOutput(outputPath);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
@@ -310,13 +318,12 @@ namespace Xabe.FFMpeg
                 await video.ToTs(tempFileName);
             }
 
-            _conversion = new Conversion().
+            Conversion.
                 Concat(pathList.ToArray())
                                           .StreamCopy(Channel.Both)
                                           .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                                           .SetOutput(output);
 
-            _conversion.OnProgress += OnConversionProgress;
             return await _conversion.Start();
         }
 
