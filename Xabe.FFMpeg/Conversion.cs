@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,6 +102,19 @@ namespace Xabe.FFMpeg
         {
             var processing = await FFmpeg.RunProcess(parameters);
             return processing;
+        }
+
+
+        /// <inheritdoc />
+        public void Clear()
+        {
+            var fields = GetType()
+                .GetFields(BindingFlags.NonPublic |
+                           BindingFlags.Instance).Where(x => x.FieldType == typeof(string));
+            foreach (FieldInfo fieldinfo in fields)
+            {
+                fieldinfo.SetValue(this, null);
+            }
         }
 
         /// <inheritdoc />

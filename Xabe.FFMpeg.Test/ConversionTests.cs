@@ -208,7 +208,7 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        public async Task MinumumOptionsTest()
+        public async Task MinimumOptionsTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
@@ -219,6 +219,30 @@ namespace Xabe.FFMpeg.Test
 
             Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
             Assert.True(conversionResult);
+        }
+
+        [Fact]
+        public async Task ClearparametersTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            var conversion = new Conversion()
+                .SetInput(SampleMkvVideo)
+                .SetCodec(VideoCodec.LibVpx)
+                .SetScale(VideoSize.Ega)
+                .StreamCopy(Channel.Both)
+                .Reverse(Channel.Both)
+                .SetOutput(outputPath);
+
+            conversion.Clear();
+
+            var result = await conversion.SetInput(SampleMkvVideo)
+                                             .SetOutput(outputPath)
+                                             .Start();
+
+            var videoInfo = new VideoInfo(outputPath);
+
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
+            Assert.True(result);
         }
 
         [Fact]

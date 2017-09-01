@@ -17,6 +17,9 @@ namespace Xabe.FFMpeg
         private static string _ffmpegPath;
         private static string _ffprobePath;
 
+        private const string TryMultipleConversion =
+            "Current FFMpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.";
+
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
         /// </summary>
@@ -194,12 +197,12 @@ namespace Xabe.FFMpeg
         /// <param name="rStandardInput">Should redirect standard input</param>
         /// <param name="rStandardOutput">Should redirect standard output</param>
         /// <param name="rStandardError">Should redirect standard error</param>
+        /// <exception cref="InvalidOperationException"></exception>
         protected void RunProcess(string args, string processPath, bool rStandardInput = false,
             bool rStandardOutput = false, bool rStandardError = false)
         {
             if(IsRunning)
-                throw new InvalidOperationException(
-                    "The current FFMpeg process is busy with another operation. Create a new object for parallel executions.");
+                throw new InvalidOperationException(TryMultipleConversion);
 
             Process = new Process
             {
