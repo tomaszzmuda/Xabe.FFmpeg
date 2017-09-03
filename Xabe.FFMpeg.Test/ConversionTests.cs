@@ -200,7 +200,7 @@ namespace Xabe.FFMpeg.Test
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
 
-            Assert.Equal(TimeSpan.FromSeconds(5), videoInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(6), videoInfo.Duration);
             Assert.True(conversionResult);
         }
 
@@ -220,7 +220,7 @@ namespace Xabe.FFMpeg.Test
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
 
-            Assert.Equal(TimeSpan.FromSeconds(19), videoInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(24), videoInfo.Duration);
             Assert.True(conversionResult);
         }
 

@@ -17,9 +17,19 @@ namespace Xabe.FFMpeg
         string AudioFormat { get; }
 
         /// <summary>
-        ///     duration of video
+        ///     Duration of media
         /// </summary>
         TimeSpan Duration { get; }
+
+        /// <summary>
+        ///     Duration of audio
+        /// </summary>
+        TimeSpan AudioDuration { get; }
+
+        /// <summary>
+        ///     Duration of video
+        /// </summary>
+        TimeSpan VideoDuration { get; }
 
         /// <summary>
         ///     Return extension of file
@@ -42,9 +52,19 @@ namespace Xabe.FFMpeg
         string Ratio { get; }
 
         /// <summary>
-        ///     size
+        ///     Size of file
         /// </summary>
         double Size { get; }
+
+        /// <summary>
+        ///     Video size
+        /// </summary>
+        double VideoSize { get; }
+
+        /// <summary>
+        ///     Audio size
+        /// </summary>
+        double AudioSize { get; }
 
         /// <summary>
         ///     Video format

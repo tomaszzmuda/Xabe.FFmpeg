@@ -14,15 +14,6 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Retrieve details from video file
         /// </summary>
-        /// <param name="source">Source video file.</param>
-        public void ProbeDetails(string source)
-        {
-            ProbeDetails(new VideoInfo(source));
-        }
-
-        /// <summary>
-        ///     Retrieve details from video file
-        /// </summary>
         /// <param name="info">Source video file.</param>
         /// <returns>VideoInfo object with details</returns>
         public void ProbeDetails(VideoInfo info)
@@ -33,25 +24,30 @@ namespace Xabe.FFMpeg
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonOutput, new JsonSerializerSettings());
 
-            ProbeModel.Stream vid = probe.streams.FirstOrDefault(x => x.codec_type == "video");
-            ProbeModel.Stream aud = probe.streams.FirstOrDefault(x => x.codec_type == "audio");
+            ProbeModel.Stream videoStream = probe.streams.FirstOrDefault(x => x.codec_type == "video");
+            ProbeModel.Stream audioStream = probe.streams.FirstOrDefault(x => x.codec_type == "audio");
 
-            double duration = GetDuration(info, vid);
-            double videoSize = GetSize(info, vid, duration);
-            double audioSize = GetAudioSize(info, aud);
 
-            if(vid != null)
+            if (videoStream != null)
             {
-                info.Width = vid.width;
-                info.Height = vid.height;
-                info.FrameRate = GetVideoFramerate(vid);
+                info.VideoFormat = videoStream.codec_name;
+                info.VideoDuration = GetVideoDuration(info, videoStream);
+                info.VideoSize = GetVideoSize(videoStream, info.VideoDuration);
+                info.Width = videoStream.width;
+                info.Height = videoStream.height;
+                info.FrameRate = GetVideoFramerate(videoStream);
                 info.Ratio = GetVideoAspectRatio(info);
             }
-            if(aud != null)
+            if(audioStream != null)
             {
-                
+                info.AudioFormat = audioStream.codec_name;
+                info.AudioSize = GetAudioSize(audioStream);
+                info.AudioDuration = GetAudioDuration(audioStream);
             }
-            info.Size = Math.Round(videoSize + audioSize, 2);
+
+
+            info.Size = Math.Round(info.AudioSize + info.VideoSize, 2);
+            info.Duration = TimeSpan.FromSeconds(Math.Max(info.VideoDuration.TotalSeconds, info.AudioDuration.TotalSeconds));
         }
 
         private double GetVideoFramerate(ProbeModel.Stream vid)
@@ -66,35 +62,18 @@ namespace Xabe.FFMpeg
             return info.Width / cd + ":" + info.Height / cd;
         }
 
-        private double GetAudioSize(VideoInfo info, ProbeModel.Stream aud)
+        private double GetAudioSize(ProbeModel.Stream aud)
         {
-            if(aud == null)
-            {
-                info.AudioFormat = "none";
-                return 0;
-            }
-
-            info.AudioFormat = aud.codec_name;
             return aud.bit_rate * aud.duration / 8388608;
         }
 
-        private double GetSize(VideoInfo info, ProbeModel.Stream vid, double duration)
+        private double GetVideoSize(ProbeModel.Stream vid, TimeSpan duration)
         {
-            if(vid == null)
-            {
-                info.VideoFormat = "none";
-                return 0;
-            }
-
-            info.VideoFormat = vid.codec_name;
-            return vid.bit_rate * duration / 8388608;
+            return vid.bit_rate * duration.TotalSeconds / 8388608;
         }
 
-        private double GetDuration(VideoInfo info, ProbeModel.Stream video)
+        private TimeSpan GetVideoDuration(VideoInfo info, ProbeModel.Stream video)
         {
-            if(video == null)
-                return 0;
-
             if(info.Extension == ".mkv" ||
                info.Extension == ".webm")
             {
@@ -108,10 +87,19 @@ namespace Xabe.FFMpeg
             }
 
             double duration = video.duration;
-            info.Duration = TimeSpan.FromSeconds(duration);
-            info.Duration = info.Duration.Subtract(TimeSpan.FromMilliseconds(info.Duration.Milliseconds));
+            TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
+            videoDuration = videoDuration.Subtract(TimeSpan.FromMilliseconds(videoDuration.Milliseconds));
 
-            return duration;
+            return videoDuration;
+        }
+
+        private TimeSpan GetAudioDuration(ProbeModel.Stream audio)
+        {
+            double duration = audio.duration;
+            TimeSpan audioDuration = TimeSpan.FromSeconds(duration);
+            audioDuration = audioDuration.Subtract(TimeSpan.FromMilliseconds(audioDuration.Milliseconds));
+
+            return audioDuration;
         }
 
         private int GetGcd(int width, int height)

@@ -161,7 +161,7 @@ namespace Xabe.FFMpeg
         {
             IVideoInfo source = new VideoInfo(inputPath);
             if (captureTime == null)
-                captureTime = TimeSpan.FromSeconds(source.Duration.TotalSeconds / 3);
+                captureTime = TimeSpan.FromSeconds(source.VideoDuration.TotalSeconds / 3);
 
             size = GetSize(source, size);
 

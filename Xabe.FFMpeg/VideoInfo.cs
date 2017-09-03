@@ -35,19 +35,25 @@ namespace Xabe.FFMpeg
         public string FilePath { get; }
 
         /// <inheritdoc />
-        public string Extension => Path.GetExtension(FilePath);
+        public TimeSpan VideoDuration { get; internal set; }
 
+        /// <inheritdoc />
+        public string Extension => Path.GetExtension(FilePath);
 
         /// <inheritdoc />
         public TimeSpan Duration { get; internal set; }
 
         /// <inheritdoc />
-        public string AudioFormat { get; internal set; }
-
+        public string AudioFormat { get; internal set; } = "none";
 
         /// <inheritdoc />
-        public string VideoFormat { get; internal set; }
+        public TimeSpan AudioDuration { get; internal set; }
 
+        /// <inheritdoc />
+        public double AudioSize { get; internal set; }
+
+        /// <inheritdoc />
+        public string VideoFormat { get; internal set; } = "none";
 
         /// <inheritdoc />
         public string Ratio { get; internal set; }
@@ -63,6 +69,9 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         public double Size { get; internal set; }
+
+        /// <inheritdoc />
+        public double VideoSize { get; internal set; }
 
         /// <inheritdoc cref="IVideoInfo.ToString" />
         [UsedImplicitly]
