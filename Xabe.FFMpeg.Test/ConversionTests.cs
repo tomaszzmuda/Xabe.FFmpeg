@@ -62,8 +62,8 @@ namespace Xabe.FFMpeg.Test
             conversion.Clear();
 
             bool conversionResult = await conversion.SetInput(Resources.MkvWithAudio)
-                                          .SetOutput(outputPath)
-                                          .Start();
+                                                    .SetOutput(outputPath)
+                                                    .Start();
 
             Assert.True(conversionResult);
             var videoInfo = new VideoInfo(outputPath);

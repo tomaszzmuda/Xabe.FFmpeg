@@ -35,7 +35,7 @@ namespace Xabe.FFMpeg
             FormatModel.Format format = GetFormat(info);
             info.Size = long.Parse(format.size);
 
-            if (videoStream != null)
+            if(videoStream != null)
             {
                 info.VideoFormat = videoStream.codec_name;
                 info.VideoDuration = GetVideoDuration(format, videoStream);
@@ -68,6 +68,7 @@ namespace Xabe.FFMpeg
         private TimeSpan GetVideoDuration(FormatModel.Format format, ProbeModel.Stream video)
         {
             video.duration = format.duration;
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             video.bit_rate = format.bitRate == 0 ? video.bit_rate : format.bitRate;
 
             double duration = video.duration;

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
-using Xabe.FFMpeg.Exceptions;
 using Xunit;
 
 namespace Xabe.FFMpeg.Test
@@ -11,6 +8,29 @@ namespace Xabe.FFMpeg.Test
     public class VideoInfoTests
 
     {
+        [Fact]
+        public void AudioPopertiesTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(Resources.Mp3);
+
+            Assert.True(File.Exists(videoInfo.FullName));
+            Assert.Equal(Extensions.Mp3, videoInfo.Extension);
+            Assert.Equal("audio.mp3", Path.GetFileName(videoInfo.FullName));
+
+            Assert.Equal("mp3", videoInfo.AudioFormat);
+            Assert.Equal(TimeSpan.FromSeconds(13), videoInfo.AudioDuration);
+
+            Assert.Equal(0, videoInfo.FrameRate);
+            Assert.Equal(0, videoInfo.Height);
+            Assert.Equal(0, videoInfo.Width);
+            Assert.Null(videoInfo.Ratio);
+            Assert.Null(videoInfo.VideoFormat);
+            Assert.Equal(TimeSpan.FromSeconds(0), videoInfo.VideoDuration);
+
+            Assert.Equal(TimeSpan.FromSeconds(13), videoInfo.Duration);
+            Assert.Equal(216916, videoInfo.Size);
+        }
+
         [Fact]
         public void MkvPropertiesTest()
         {
@@ -55,29 +75,6 @@ namespace Xabe.FFMpeg.Test
 
             Assert.Equal(TimeSpan.FromSeconds(13), videoInfo.Duration);
             Assert.Equal(2107842, videoInfo.Size);
-        }
-
-        [Fact]
-        public void AudioPopertiesTest()
-        {
-            IVideoInfo videoInfo = new VideoInfo(Resources.Mp3);
-
-            Assert.True(File.Exists(videoInfo.FullName));
-            Assert.Equal(Extensions.Mp3, videoInfo.Extension);
-            Assert.Equal("audio.mp3", Path.GetFileName(videoInfo.FullName));
-
-            Assert.Equal("mp3", videoInfo.AudioFormat);
-            Assert.Equal(TimeSpan.FromSeconds(13), videoInfo.AudioDuration);
-
-            Assert.Equal(0, videoInfo.FrameRate);
-            Assert.Equal(0, videoInfo.Height);
-            Assert.Equal(0, videoInfo.Width);
-            Assert.Null(videoInfo.Ratio);
-            Assert.Null(videoInfo.VideoFormat);
-            Assert.Equal(TimeSpan.FromSeconds(0), videoInfo.VideoDuration);
-
-            Assert.Equal(TimeSpan.FromSeconds(13), videoInfo.Duration);
-            Assert.Equal(216916, videoInfo.Size);
         }
 
         [Fact]

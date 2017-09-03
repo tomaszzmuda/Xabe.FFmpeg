@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Xabe.FFMpeg.Enums;
@@ -109,10 +107,10 @@ namespace Xabe.FFMpeg
         public static IConversion ExtractVideo(string inputPath, string output)
         {
             return new Conversion()
-                      .SetInput(inputPath)
-                      .StreamCopy(Channel.Both)
-                      .DisableChannel(Channel.Audio)
-                      .SetOutput(output);
+                .SetInput(inputPath)
+                .StreamCopy(Channel.Both)
+                .DisableChannel(Channel.Audio)
+                .SetOutput(output);
         }
 
         /// <summary>
@@ -125,9 +123,9 @@ namespace Xabe.FFMpeg
         public static IConversion ExtractAudio(string inputPath, string output)
         {
             return new Conversion()
-                      .SetInput(inputPath)
-                      .DisableChannel(Channel.Video)
-                      .SetOutput(output);
+                .SetInput(inputPath)
+                .DisableChannel(Channel.Video)
+                .SetOutput(output);
         }
 
 
@@ -143,9 +141,9 @@ namespace Xabe.FFMpeg
         {
             return new Conversion()
                 .SetInput(inputPath, audioFilePath)
-                      .StreamCopy(Channel.Video)
-                      .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
-                      .SetOutput(output);
+                .StreamCopy(Channel.Video)
+                .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
+                .SetOutput(output);
         }
 
         /// <summary>
@@ -160,7 +158,7 @@ namespace Xabe.FFMpeg
         public static IConversion Snapshot(string inputPath, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
             IVideoInfo source = new VideoInfo(inputPath);
-            if (captureTime == null)
+            if(captureTime == null)
                 captureTime = TimeSpan.FromSeconds(source.VideoDuration.TotalSeconds / 3);
 
             size = GetSize(source, size);
@@ -183,7 +181,7 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public static IConversion SaveM3U8Stream(Uri uri, string outputPath)
         {
-            if (uri.Scheme != "http" ||
+            if(uri.Scheme != "http" ||
                uri.Scheme != "https")
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
@@ -203,41 +201,42 @@ namespace Xabe.FFMpeg
         {
             var pathList = new List<string>();
 
-            foreach (string path in inputVideos)
+            foreach(string path in inputVideos)
             {
                 string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
                 pathList.Add(tempFileName);
-                await ToTs(path, tempFileName).Start();
+                await ToTs(path, tempFileName)
+                    .Start();
             }
 
             return await new Conversion().
                 Concat(pathList.ToArray())
-                      .StreamCopy(Channel.Both)
-                      .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                      .SetOutput(output)
-                      .Start();
+                                         .StreamCopy(Channel.Both)
+                                         .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                                         .SetOutput(output)
+                                         .Start();
         }
 
         private static Size? GetSize(IVideoInfo source, Size? size)
         {
-            if (size == null ||
-                size.Value.Height == 0 && size.Value.Width == 0)
+            if(size == null ||
+               size.Value.Height == 0 && size.Value.Width == 0)
                 size = new Size(source.Width, source.Height);
 
-            if (size.Value.Width != size.Value.Height)
+            if(size.Value.Width != size.Value.Height)
             {
-                if (size.Value.Width == 0)
+                if(size.Value.Width == 0)
                 {
-                    double ratio = source.Width / (double)size.Value.Width;
+                    double ratio = source.Width / (double) size.Value.Width;
 
-                    size = new Size((int)(source.Width * ratio), (int)(source.Height * ratio));
+                    size = new Size((int) (source.Width * ratio), (int) (source.Height * ratio));
                 }
 
-                if (size.Value.Height == 0)
+                if(size.Value.Height == 0)
                 {
-                    double ratio = source.Height / (double)size.Value.Height;
+                    double ratio = source.Height / (double) size.Value.Height;
 
-                    size = new Size((int)(source.Width * ratio), (int)(source.Height * ratio));
+                    size = new Size((int) (source.Width * ratio), (int) (source.Height * ratio));
                 }
             }
 

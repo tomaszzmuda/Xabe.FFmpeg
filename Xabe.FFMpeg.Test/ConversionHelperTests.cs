@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
-using Xabe.FFMpeg.Exceptions;
 using Xunit;
 
 namespace Xabe.FFMpeg.Test
@@ -16,7 +15,8 @@ namespace Xabe.FFMpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
 
-            bool result = await ConversionHelper.AddAudio(Resources.Mp4.FullName, Resources.Mp3.FullName, output).Start();
+            bool result = await ConversionHelper.AddAudio(Resources.Mp4.FullName, Resources.Mp3.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
@@ -28,7 +28,8 @@ namespace Xabe.FFMpeg.Test
         public async Task ExtractAudio()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp3);
-            bool result = await ConversionHelper.ExtractAudio(Resources.Mp4WithAudio.FullName, output).Start();
+            bool result = await ConversionHelper.ExtractAudio(Resources.Mp4WithAudio.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
@@ -42,7 +43,8 @@ namespace Xabe.FFMpeg.Test
             FileInfo fileInfo = Resources.Mp4WithAudio;
             string output = Path.ChangeExtension(Path.GetTempFileName(), fileInfo.Extension);
 
-            bool result = await ConversionHelper.ExtractVideo(fileInfo.FullName, output).Start();
+            bool result = await ConversionHelper.ExtractVideo(fileInfo.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
@@ -68,7 +70,8 @@ namespace Xabe.FFMpeg.Test
         public async Task SnapshotTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Png);
-            bool result = await ConversionHelper.Snapshot(Resources.Mp4WithAudio.FullName, output).Start();
+            bool result = await ConversionHelper.Snapshot(Resources.Mp4WithAudio.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             Assert.True(File.Exists(output));
@@ -81,7 +84,8 @@ namespace Xabe.FFMpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
 
-            bool result = await ConversionHelper.ToMp4(Resources.MkvWithAudio.FullName, output).Start();
+            bool result = await ConversionHelper.ToMp4(Resources.MkvWithAudio.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
@@ -95,7 +99,8 @@ namespace Xabe.FFMpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
 
-            bool result = await ConversionHelper.ToOgv(Resources.MkvWithAudio.FullName, output).Start();
+            bool result = await ConversionHelper.ToOgv(Resources.MkvWithAudio.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
@@ -109,7 +114,8 @@ namespace Xabe.FFMpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
 
-            bool result = await ConversionHelper.ToTs(Resources.Mp4WithAudio.FullName, output).Start();
+            bool result = await ConversionHelper.ToTs(Resources.Mp4WithAudio.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
@@ -123,7 +129,8 @@ namespace Xabe.FFMpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.WebM);
 
-            bool result = await ConversionHelper.ToWebM(Resources.Mp4WithAudio.FullName, output).Start();
+            bool result = await ConversionHelper.ToWebM(Resources.Mp4WithAudio.FullName, output)
+                                                .Start();
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
