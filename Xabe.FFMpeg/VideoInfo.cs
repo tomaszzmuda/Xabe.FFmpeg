@@ -50,9 +50,6 @@ namespace Xabe.FFMpeg
         public TimeSpan AudioDuration { get; internal set; }
 
         /// <inheritdoc />
-        public long AudioSize { get; internal set; }
-
-        /// <inheritdoc />
         public string VideoFormat { get; internal set; } = "none";
 
         /// <inheritdoc />
@@ -70,9 +67,6 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public long Size { get; internal set; }
 
-        /// <inheritdoc />
-        public long VideoSize { get; internal set; }
-
         /// <inheritdoc cref="IVideoInfo.ToString" />
         [UsedImplicitly]
         public override string ToString()
@@ -83,9 +77,7 @@ namespace Xabe.FFMpeg
                    $"Video extension : {Extension}{Environment.NewLine}" +
                    $"Video duration : {VideoDuration}{Environment.NewLine}" +
                    $"Video format : {VideoFormat}{Environment.NewLine}" +
-                   $"Video size : {VideoSize} b{Environment.NewLine}" +
                    $"Audio format : {AudioFormat}{Environment.NewLine}" +
-                   $"Audio size : {AudioSize} b{Environment.NewLine}" +
                    $"Audio duration : {AudioDuration}{Environment.NewLine}" +
                    $"Aspect Ratio : {Ratio}{Environment.NewLine}" +
                    $"Framerate : {Ratio} fps{Environment.NewLine}" +

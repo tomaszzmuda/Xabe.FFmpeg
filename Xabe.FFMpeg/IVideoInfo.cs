@@ -57,16 +57,6 @@ namespace Xabe.FFMpeg
         long Size { get; }
 
         /// <summary>
-        ///     Video size (in bytes)
-        /// </summary>
-        long VideoSize { get; }
-
-        /// <summary>
-        ///     Audio size
-        /// </summary>
-        long AudioSize { get; }
-
-        /// <summary>
         ///     Video format
         /// </summary>
         string VideoFormat { get; }

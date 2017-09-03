@@ -11,6 +11,17 @@ namespace Xabe.FFMpeg
     // ReSharper disable once InheritdocConsiderUsage
     internal sealed class FFProbe: FFBase
     {
+        private ProbeModel.Stream[] GetStream(VideoInfo videoInfo)
+        {
+            string jsonStreams =
+                RunProcess($"-v quiet -print_format json -show_streams \"{videoInfo.FilePath}\"");
+
+            var probe =
+                JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
+
+            return new[] {probe.streams.FirstOrDefault(x => x.codec_type == "video") ?? null, probe.streams.FirstOrDefault(x => x.codec_type == "audio") ?? null};
+        }
+
         /// <summary>
         ///     Retrieve details from video file
         /// </summary>
@@ -18,21 +29,16 @@ namespace Xabe.FFMpeg
         /// <returns>VideoInfo object with details</returns>
         public void ProbeDetails(VideoInfo info)
         {
-            string jsonOutput =
-                RunProcess($"-v quiet -print_format json -show_streams \"{info.FilePath}\"");
-
-            var probe =
-                JsonConvert.DeserializeObject<ProbeModel>(jsonOutput, new JsonSerializerSettings());
-
-            ProbeModel.Stream videoStream = probe.streams.FirstOrDefault(x => x.codec_type == "video");
-            ProbeModel.Stream audioStream = probe.streams.FirstOrDefault(x => x.codec_type == "audio");
-
+            ProbeModel.Stream[] streams = GetStream(info);
+            ProbeModel.Stream videoStream = streams[0];
+            ProbeModel.Stream audioStream = streams[1];
+            FormatModel.Format format = GetFormat(info);
+            info.Size = long.Parse(format.size);
 
             if (videoStream != null)
             {
                 info.VideoFormat = videoStream.codec_name;
-                info.VideoDuration = GetVideoDuration(info, videoStream);
-                info.VideoSize = GetVideoSize(videoStream, info.VideoDuration);
+                info.VideoDuration = GetVideoDuration(format, videoStream);
                 info.Width = videoStream.width;
                 info.Height = videoStream.height;
                 info.FrameRate = GetVideoFramerate(videoStream);
@@ -41,12 +47,9 @@ namespace Xabe.FFMpeg
             if(audioStream != null)
             {
                 info.AudioFormat = audioStream.codec_name;
-                info.AudioSize = GetAudioSize(audioStream);
                 info.AudioDuration = GetAudioDuration(audioStream);
             }
 
-
-            info.Size = info.AudioSize + info.VideoSize;
             info.Duration = TimeSpan.FromSeconds(Math.Max(info.VideoDuration.TotalSeconds, info.AudioDuration.TotalSeconds));
         }
 
@@ -62,35 +65,25 @@ namespace Xabe.FFMpeg
             return info.Width / cd + ":" + info.Height / cd;
         }
 
-        private long GetAudioSize(ProbeModel.Stream aud)
+        private TimeSpan GetVideoDuration(FormatModel.Format format, ProbeModel.Stream video)
         {
-            return (long) (aud.bit_rate * aud.duration);
-        }
-
-        private long GetVideoSize(ProbeModel.Stream vid, TimeSpan duration)
-        {
-            return (long) (vid.bit_rate * duration.TotalSeconds);
-        }
-
-        private TimeSpan GetVideoDuration(VideoInfo info, ProbeModel.Stream video)
-        {
-            if(info.Extension == ".mkv" ||
-               info.Extension == ".webm")
-            {
-                string jsonOutput =
-                    RunProcess($"-v quiet -print_format json -show_format \"{info.FilePath}\"");
-                FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonOutput)
-                                                       .format;
-
-                video.duration = format.duration;
-                video.bit_rate = format.bitRate;
-            }
+            video.duration = format.duration;
+            video.bit_rate = format.bitRate == 0 ? video.bit_rate : format.bitRate;
 
             double duration = video.duration;
             TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
             videoDuration = videoDuration.Subtract(TimeSpan.FromMilliseconds(videoDuration.Milliseconds));
 
             return videoDuration;
+        }
+
+        private FormatModel.Format GetFormat(VideoInfo info)
+        {
+            string jsonFormat =
+                RunProcess($"-v quiet -print_format json -show_format \"{info.FilePath}\"");
+            FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonFormat)
+                                                   .format;
+            return format;
         }
 
         private TimeSpan GetAudioDuration(ProbeModel.Stream audio)
