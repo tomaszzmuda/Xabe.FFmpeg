@@ -90,6 +90,57 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
+        public async Task MultipleTaskTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(Resources.Mp4WithAudio);
+            string ogvOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
+            string tsOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
+
+            await Assert.ThrowsAsync<MultipleConversionException>(async () =>
+            {
+                try
+                {
+                    Task<bool> toOgv = videoInfo.ToOgv(ogvOutput);
+                    await videoInfo.ToTs(tsOutput);
+                    await toOgv;
+                }
+                catch(MultipleConversionException e)
+                {
+                    Assert.Equal(
+                        $"-i \"{Resources.Mp4WithAudio.FullName}\" -codec:v libtheora -b:v 2400k -quality good -cpu-used 16 -deadline realtime -codec:a libvorbis -b:a 128k -strict experimental -f mpegts -bsf:v h264_mp4toannexb -c copy \"{tsOutput}\"",
+                        e.InputParameters);
+                    Assert.Equal(
+                        "Current FFMpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.",
+                        e.Message);
+                    // ReSharper disable once PossibleIntendedRethrow
+                    throw e;
+                }
+            });
+        }
+
+        [Fact]
+        public async Task OnProgressChangedTest()
+        {
+            IVideoInfo videoInfo = new VideoInfo(Resources.MkvWithAudio);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+
+            videoInfo.OnConversionProgress += (duration, length) =>
+            {
+                currentProgress = duration;
+                videoLength = length;
+            };
+            bool conversionResult = await videoInfo.ToTs(output);
+
+            Assert.True(conversionResult);
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(9));
+        }
+
+        [Fact]
         public void PropertiesTest()
         {
             IVideoInfo videoInfo = new VideoInfo(Resources.Mp4WithAudio);
@@ -121,7 +172,7 @@ namespace Xabe.FFMpeg.Test
             IVideoInfo videoInfo = new VideoInfo(Resources.Mp4WithAudio);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Png);
             Image snapshot = await videoInfo.Snapshot(output);
-        
+
             Assert.Equal(snapshot.Width, videoInfo.Width);
             Assert.True(File.Exists(output));
         }
@@ -139,28 +190,6 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        public async Task OnProgressChangedTest()
-        {
-            IVideoInfo videoInfo = new VideoInfo(Resources.MkvWithAudio);
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
-
-            TimeSpan currentProgress;
-            TimeSpan videoLength;
-
-            videoInfo.OnConversionProgress += (duration, length) =>
-            {
-                currentProgress = duration;
-                videoLength = length;
-            };
-            bool conversionResult = await videoInfo.ToTs(output);
-
-            Assert.True(conversionResult);
-            Assert.True(currentProgress > TimeSpan.Zero);
-            Assert.True(currentProgress <= videoLength);
-            Assert.True(videoLength == TimeSpan.FromSeconds(9));
-        }
-
-        [Fact]
         public async Task ToOgvTest()
         {
             IVideoInfo videoInfo = new VideoInfo(Resources.Mp4WithAudio);
@@ -170,35 +199,6 @@ namespace Xabe.FFMpeg.Test
 
             Assert.True(File.Exists(output));
             Assert.Equal(TimeSpan.FromSeconds(13), new VideoInfo(output).Duration);
-        }
-
-        [Fact]
-        public async Task MultipleTaskTest()
-        {
-            IVideoInfo videoInfo = new VideoInfo(Resources.Mp4WithAudio);
-            string ogvOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
-            string tsOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
-
-            await Assert.ThrowsAsync<MultipleConversionException>(async () =>
-            {
-                try
-                {
-                    Task<bool> toOgv = videoInfo.ToOgv(ogvOutput);
-                    await videoInfo.ToTs(tsOutput);
-                    await toOgv;
-                }
-                catch(MultipleConversionException e)
-                {
-                    Assert.Equal(
-                        $"-i \"{Resources.Mp4WithAudio.FullName}\" -codec:v libtheora -b:v 2400k -quality good -cpu-used 16 -deadline realtime -codec:a libvorbis -b:a 128k -strict experimental -f mpegts -bsf:v h264_mp4toannexb -c copy \"{tsOutput}\"",
-                        e.InputParameters);
-                    Assert.Equal(
-                        "Current FFMpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.",
-                        e.Message);
-                    // ReSharper disable once PossibleIntendedRethrow
-                    throw e;
-                }
-            });
         }
 
         [Fact]

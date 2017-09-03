@@ -21,9 +21,9 @@ namespace Xabe.FFMpeg
     /// </summary>
     internal class FFMpeg: FFBase
     {
+        private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
         private List<string> _outputLog;
         private TimeSpan _totalTime;
-        private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
 
         /// <summary>
         ///     Fires when ffmpeg progress changes
@@ -65,7 +65,7 @@ namespace Xabe.FFMpeg
                 return;
 
             var regex = new Regex(TimeFormatRegex);
-            if (e.Data.Contains("Duration"))
+            if(e.Data.Contains("Duration"))
             {
                 Match match = regex.Match(e.Data);
                 _totalTime = TimeSpan.Parse(match.Value);
@@ -74,10 +74,7 @@ namespace Xabe.FFMpeg
             {
                 Match match = regex.Match(e.Data);
                 if(match.Success)
-                {
                     OnProgress(TimeSpan.Parse(match.Value), _totalTime);
-                }
-
             }
         }
     }

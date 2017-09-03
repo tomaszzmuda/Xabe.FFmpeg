@@ -15,11 +15,11 @@ namespace Xabe.FFMpeg
     // ReSharper disable once InheritdocConsiderUsage
     public abstract class FFBase: IDisposable
     {
-        private static string _ffmpegPath;
-        private static string _ffprobePath;
-
         private const string TryMultipleConversion =
             "Current FFMpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.";
+
+        private static string _ffmpegPath;
+        private static string _ffprobePath;
 
         /// <summary>
         ///     Directory contains FFMpeg and FFProbe
@@ -127,14 +127,14 @@ namespace Xabe.FFMpeg
         {
             get
             {
-                lock (_isRunningLock)
+                lock(_isRunningLock)
                 {
                     return _isRunning;
                 }
             }
             private set
             {
-                lock (_isRunningLock)
+                lock(_isRunningLock)
                 {
                     _isRunning = value;
                 }
@@ -148,14 +148,14 @@ namespace Xabe.FFMpeg
         {
             get
             {
-                lock (_wasKilledLock)
+                lock(_wasKilledLock)
                 {
                     return _wasKilled;
                 }
             }
             set
             {
-                lock (_wasKilledLock)
+                lock(_wasKilledLock)
                 {
                     _wasKilled = value;
                 }

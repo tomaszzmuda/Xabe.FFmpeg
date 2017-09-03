@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -14,6 +15,8 @@ namespace Xabe.FFMpeg
     /// <inheritdoc />
     public class Conversion: IConversion
     {
+        private readonly object _builderLock = new object();
+        private readonly object _ffmpegLock = new object();
         private string _audio;
         private string _audioSpeed;
         private string _bitsreamFilter;
@@ -21,12 +24,12 @@ namespace Xabe.FFMpeg
         private string _copy;
         private string _disabled;
         private FFMpeg _ffmpeg;
-        private readonly object _ffmpegLock = new object();
         private string _frameCount;
         private string _input;
         private string _loop;
         private string _output;
         private string _reverse;
+        private string _rotate;
         private string _scale;
         private string _seek;
         private string _shortestInput;
@@ -35,8 +38,6 @@ namespace Xabe.FFMpeg
         private string _threads;
         private string _video;
         private string _videoSpeed;
-        private string _rotate;
-        private readonly object _builderLock = new object();
 
         private FFMpeg FFmpeg
         {
@@ -81,9 +82,9 @@ namespace Xabe.FFMpeg
                 builder.Append(BuildAudioFilter());
                 builder.Append(_output);
 
-            return builder.ToString();
+                return builder.ToString();
+            }
         }
-    }
 
         /// <inheritdoc />
         [UsedImplicitly]
@@ -98,7 +99,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public async Task<bool> Start(string parameters)
         {
-            var processing = await FFmpeg.RunProcess(parameters);
+            bool processing = await FFmpeg.RunProcess(parameters);
             return processing;
         }
 
@@ -106,13 +107,12 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public void Clear()
         {
-            var fields = GetType()
+            IEnumerable<FieldInfo> fields = GetType()
                 .GetFields(BindingFlags.NonPublic |
-                           BindingFlags.Instance).Where(x => x.FieldType == typeof(string));
-            foreach (FieldInfo fieldinfo in fields)
-            {
+                           BindingFlags.Instance)
+                .Where(x => x.FieldType == typeof(string));
+            foreach(FieldInfo fieldinfo in fields)
                 fieldinfo.SetValue(this, null);
-            }
         }
 
         /// <inheritdoc />
@@ -129,7 +129,7 @@ namespace Xabe.FFMpeg
         {
             if(rotateDegrees == RotateDegrees.Invert)
                 _rotate = "-vf \"transpose=2,transpose=2\" ";
-            else 
+            else
                 _rotate = $"-vf \"transpose={(int) rotateDegrees}\" ";
             return this;
         }
@@ -242,7 +242,7 @@ namespace Xabe.FFMpeg
         /// <inheritdoc />
         public IConversion SetScale(VideoSize size)
         {
-            if (!string.IsNullOrWhiteSpace(size?.Resolution))
+            if(!string.IsNullOrWhiteSpace(size?.Resolution))
                 _scale = $"-vf scale={size.Resolution} ";
             return this;
         }

@@ -12,14 +12,14 @@ namespace Xabe.FFMpeg
     public interface IConversion
     {
         /// <summary>
-        ///     Clear saved parameters
-        /// </summary>
-        void Clear();
-
-        /// <summary>
         ///     Returns true if the associated process is still alive/running.
         /// </summary>
         bool IsRunning { get; }
+
+        /// <summary>
+        ///     Clear saved parameters
+        /// </summary>
+        void Clear();
 
         /// <summary>
         ///     Reverse media

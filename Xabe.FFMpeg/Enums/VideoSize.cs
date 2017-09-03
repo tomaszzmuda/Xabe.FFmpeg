@@ -11,6 +11,26 @@ namespace Xabe.FFMpeg.Enums
     public class VideoSize
     {
         /// <summary>
+        ///     FFMpeg resolution VideoSize
+        /// </summary>
+        internal readonly string Resolution;
+
+        /// <summary>
+        ///     VideoSize in ffmpeg format
+        /// </summary>
+        /// <param name="width">Width of output video</param>
+        /// <param name="height">Height of output video</param>
+        public VideoSize(int width, int height)
+        {
+            Resolution = $"{width}x{height}";
+        }
+
+        private VideoSize(string text)
+        {
+            Resolution = text;
+        }
+
+        /// <summary>
         ///     720x480
         /// </summary>
         public static VideoSize Ntsc => new VideoSize("720x480");
@@ -274,25 +294,5 @@ namespace Xabe.FFMpeg.Enums
         ///     7680x4320
         /// </summary>
         public static VideoSize Uhd4320 => new VideoSize("7680x4320");
-
-        /// <summary>
-        ///     FFMpeg resolution VideoSize
-        /// </summary>
-        internal readonly string Resolution;
-
-        /// <summary>
-        ///     VideoSize in ffmpeg format
-        /// </summary>
-        /// <param name="width">Width of output video</param>
-        /// <param name="height">Height of output video</param>
-        public VideoSize(int width, int height)
-        {
-            Resolution = $"{width}x{height}";
-        }
-
-        private VideoSize(string text)
-        {
-            Resolution = text;
-        }
     }
 }

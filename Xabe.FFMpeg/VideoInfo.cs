@@ -13,8 +13,8 @@ namespace Xabe.FFMpeg
     /// <inheritdoc cref="IVideoInfo" />
     public class VideoInfo: IDisposable, IVideoInfo
     {
-        private IConversion _conversion;
         private readonly object _conversionLock = new object();
+        private IConversion _conversion;
 
         /// <inheritdoc />
         public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
@@ -32,6 +32,22 @@ namespace Xabe.FFMpeg
                 throw new ArgumentException($"Input file {filePath} doesn't exists.");
             FilePath = filePath;
             new FFProbe().ProbeDetails(this);
+        }
+
+        private IConversion Conversion
+        {
+            get
+            {
+                lock(_conversionLock)
+                {
+                    if(_conversion == null)
+                    {
+                        _conversion = new Conversion();
+                        _conversion.OnProgress += OnConversionProgress;
+                    }
+                    return _conversion;
+                }
+            }
         }
 
         /// <inheritdoc cref="IVideoInfo.Dispose" />
@@ -80,22 +96,6 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         public bool IsRunning => Conversion.IsRunning;
-
-        private IConversion Conversion
-        {
-            get
-            {
-                lock (_conversionLock)
-                {
-                    if (_conversion == null)
-                    {
-                        _conversion = new Conversion();
-                        _conversion.OnProgress += OnConversionProgress;
-                    }
-                    return _conversion;
-                }
-            }
-        }
 
         /// <inheritdoc cref="IVideoInfo.ToString" />
         [UsedImplicitly]
@@ -185,9 +185,9 @@ namespace Xabe.FFMpeg
         public async Task<bool> ExtractVideo(string output)
         {
             Conversion.SetInput(FilePath)
-                                          .StreamCopy(Channel.Both)
-                                          .DisableChannel(Channel.Audio)
-                                          .SetOutput(output);
+                      .StreamCopy(Channel.Both)
+                      .DisableChannel(Channel.Audio)
+                      .SetOutput(output);
 
             return await _conversion.Start();
         }
@@ -197,8 +197,8 @@ namespace Xabe.FFMpeg
         public async Task<bool> ExtractAudio(string output)
         {
             Conversion.SetInput(FilePath)
-                                          .DisableChannel(Channel.Video)
-                                          .SetOutput(output);
+                      .DisableChannel(Channel.Video)
+                      .SetOutput(output);
 
             return await _conversion.Start();
         }
@@ -209,9 +209,9 @@ namespace Xabe.FFMpeg
         public async Task<bool> AddAudio(FileInfo audio, string output)
         {
             Conversion.SetInput(new FileInfo(FilePath), audio)
-                                          .StreamCopy(Channel.Video)
-                                          .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
-                                          .SetOutput(output);
+                      .StreamCopy(Channel.Video)
+                      .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
+                      .SetOutput(output);
 
             return await _conversion.Start();
         }
@@ -296,8 +296,8 @@ namespace Xabe.FFMpeg
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
             return await new Conversion().SetInput(uri)
-                                   .SetOutput(outputPath)
-                                   .Start();
+                                         .SetOutput(outputPath)
+                                         .Start();
         }
 
         /// <inheritdoc />
@@ -320,9 +320,9 @@ namespace Xabe.FFMpeg
 
             Conversion.
                 Concat(pathList.ToArray())
-                                          .StreamCopy(Channel.Both)
-                                          .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                                          .SetOutput(output);
+                      .StreamCopy(Channel.Both)
+                      .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+                      .SetOutput(output);
 
             return await _conversion.Start();
         }
