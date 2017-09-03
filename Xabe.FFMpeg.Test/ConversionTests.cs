@@ -10,15 +10,12 @@ namespace Xabe.FFMpeg.Test
 {
     public class ConversionTests
     {
-        private static readonly FileInfo SampleMkvVideo = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv"));
-        private static readonly FileInfo SampleTsWithAudio = new FileInfo(Path.Combine(Environment.CurrentDirectory, "Resources", "sample.ts"));
-
         [Fact]
         public async Task ChangeOutputFramesCountTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
                 .SetOutputFramesCount(50)
                 .Start();
@@ -38,15 +35,13 @@ namespace Xabe.FFMpeg.Test
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                 .SetOutput(outputPath)
-                .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName);
+                .Concat(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName);
 
             TimeSpan currentProgress;
-            TimeSpan videoLength;
 
             conversion.OnProgress += (duration, length) =>
             {
                 currentProgress = duration;
-                videoLength = length;
             };
             bool conversionResult = await conversion.Start();
 
@@ -63,7 +58,7 @@ namespace Xabe.FFMpeg.Test
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                 .SetOutput(outputPath)
-                .Concat(SampleTsWithAudio.FullName, SampleTsWithAudio.FullName)
+                .Concat(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName)
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
 
@@ -76,7 +71,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
             IConversion conversion = new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
                 .SetCodec(VideoCodec.MpegTs);
 
@@ -101,7 +96,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
                 .DisableChannel(Channel.Audio)
                 .Start();
@@ -116,7 +111,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
                 .DisableChannel(Channel.Video)
                 .Start();
@@ -132,7 +127,7 @@ namespace Xabe.FFMpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
             IConversion conversion = new Conversion();
             Task<bool> result = conversion
-                    .SetInput(SampleMkvVideo)
+                    .SetInput(Resources.MkvWithAudio)
                     .SetScale(VideoSize.Uhd4320)
                     .SetVideo(VideoCodec.LibTheora, 2400)
                     .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
@@ -156,7 +151,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
@@ -176,7 +171,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
@@ -194,17 +189,31 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public async Task IncompatibleParametersTest()
         {
+                    string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             await Assert.ThrowsAsync<ConversionException>(async () =>
             {
-                string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-                await new Conversion()
-                    .SetInput(SampleMkvVideo)
-                    .SetOutput(outputPath)
-                    .SetVideo(VideoCodec.LibX264, 2400)
-                    .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
-                    .Reverse(Channel.Both)
-                    .StreamCopy(Channel.Both)
-                    .Start();
+                try
+                {
+                    await new Conversion()
+                        .SetInput(Resources.MkvWithAudio)
+                        .SetOutput(outputPath)
+                        .SetVideo(VideoCodec.LibX264, 2400)
+                        .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                        .Reverse(Channel.Both)
+                        .StreamCopy(Channel.Both)
+                        .Start();
+                }
+                catch(ConversionException e)
+                {
+                    Assert.Equal(
+                        $"-i \"{Resources.MkvWithAudio.FullName}\" -codec:v libx264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
+                        e.InputParameters);
+                    Assert.EndsWith(
+                        "Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.\r\nFiltering and streamcopy cannot be used together.",
+                        e.Message);
+                    // ReSharper disable once PossibleIntendedRethrow
+                    throw e;
+                }
             });
         }
 
@@ -213,7 +222,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
                 .Start();
             var videoInfo = new VideoInfo(outputPath);
@@ -227,7 +236,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             var conversion = new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetCodec(VideoCodec.LibVpx)
                 .SetScale(VideoSize.Ega)
                 .StreamCopy(Channel.Both)
@@ -236,7 +245,7 @@ namespace Xabe.FFMpeg.Test
 
             conversion.Clear();
 
-            var result = await conversion.SetInput(SampleMkvVideo)
+            var result = await conversion.SetInput(Resources.MkvWithAudio)
                                              .SetOutput(outputPath)
                                              .Start();
 
@@ -254,16 +263,30 @@ namespace Xabe.FFMpeg.Test
 
             await Assert.ThrowsAsync<MultipleConversionException>(async () =>
             {
-                IConversion conversion = new Conversion();
-#pragma warning disable 4014
-                conversion
-                    .SetInput(SampleMkvVideo)
-                    .SetOutput(mp4Output)
-                    .Start();
-#pragma warning restore 4014
+                try
+                {
+                    IConversion conversion = new Conversion();
+                    Task<bool> toMp4 = conversion
+                        .SetInput(Resources.MkvWithAudio)
+                        .SetOutput(mp4Output)
+                        .Start();
 
-                conversion.SetOutput(tsOutput);
-                await conversion.Start();
+                    conversion.SetOutput(tsOutput);
+                    await conversion.Start();
+                    await toMp4;
+                }
+                catch (MultipleConversionException e)
+                {
+                    Assert.Equal(
+                        $"-i \"{Resources.MkvWithAudio.FullName}\" \"{tsOutput}\"",
+                        e.InputParameters);
+                    Assert.Equal(
+                        "Current FFMpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.",
+                        e.Message);
+                    // ReSharper disable once PossibleIntendedRethrow
+                    throw e;
+                }
+
             });
         }
 
@@ -272,7 +295,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
@@ -291,7 +314,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
@@ -311,7 +334,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
                 .SetSize(new Size(640, 480))
                 .Start();
@@ -327,7 +350,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
                 .SetCodec(VideoCodec.MpegTs)
                 .Start();
@@ -357,7 +380,7 @@ namespace Xabe.FFMpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
-                .SetInput(SampleMkvVideo)
+                .SetInput(Resources.MkvWithAudio)
                 .Rotate(rotateDegrees)
                 .SetOutput(outputPath)
                 .Start();

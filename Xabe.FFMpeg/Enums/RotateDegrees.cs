@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Xabe.FFMpeg.Enums
+﻿namespace Xabe.FFMpeg.Enums
 {
     /// <summary>
     ///     Defines types of avaiable rotation
