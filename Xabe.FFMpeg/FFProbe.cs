@@ -22,12 +22,12 @@ namespace Xabe.FFMpeg
             return new[] {probe.streams.FirstOrDefault(x => x.codec_type == "video") ?? null, probe.streams.FirstOrDefault(x => x.codec_type == "audio") ?? null};
         }
 
+        /// <inheritdoc />
         /// <summary>
         ///     Retrieve details from video file
         /// </summary>
         /// <param name="info">Source video file.</param>
-        /// <returns>VideoInfo object with details</returns>
-        public void ProbeDetails(VideoInfo info)
+        public FFProbe(VideoInfo info)
         {
             ProbeModel.Stream[] streams = GetStream(info);
             ProbeModel.Stream videoStream = streams[0];
