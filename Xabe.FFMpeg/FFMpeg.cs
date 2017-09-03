@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Xabe.FFMpeg.Exceptions;
 
 namespace Xabe.FFMpeg
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFMpeg.Exceptions
 {
     /// <inheritdoc />
     /// <summary>
@@ -9,12 +9,6 @@ namespace Xabe.FFMpeg
     /// </summary>
     public class ConversionException : Exception
     {
-        /// <summary>
-        ///     FFMpeg output
-        /// </summary>
-        [UsedImplicitly]
-        public string ErrorMessage { get; }
-
         /// <summary>
         ///     FFMpeg input parameters
         /// </summary>
@@ -27,9 +21,8 @@ namespace Xabe.FFMpeg
         /// </summary>
         /// <param name="errorMessage">FFMpeg error output</param>
         /// <param name="inputParameters">FFMPeg input parameters</param>
-        internal ConversionException(string errorMessage, string inputParameters)
+        internal ConversionException(string errorMessage, string inputParameters) : base(errorMessage)
         {
-            ErrorMessage = errorMessage;
             InputParameters = inputParameters;
         }
     }

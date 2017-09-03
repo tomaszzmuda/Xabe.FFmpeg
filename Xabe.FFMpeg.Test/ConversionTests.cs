@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
+using Xabe.FFMpeg.Exceptions;
 using Xunit;
 
 namespace Xabe.FFMpeg.Test
@@ -251,7 +252,7 @@ namespace Xabe.FFMpeg.Test
             string mp4Output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             string tsOutput = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<MultipleConversionException>(async () =>
             {
                 IConversion conversion = new Conversion();
 #pragma warning disable 4014

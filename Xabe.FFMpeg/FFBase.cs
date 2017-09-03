@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
+using Xabe.FFMpeg.Exceptions;
 
 namespace Xabe.FFMpeg
 {
@@ -202,7 +203,7 @@ namespace Xabe.FFMpeg
             bool rStandardOutput = false, bool rStandardError = false)
         {
             if(IsRunning)
-                throw new InvalidOperationException(TryMultipleConversion);
+                throw new MultipleConversionException(TryMultipleConversion, args);
 
             Process = new Process
             {

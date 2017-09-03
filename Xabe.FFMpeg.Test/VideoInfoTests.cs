@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFMpeg.Enums;
+using Xabe.FFMpeg.Exceptions;
 using Xunit;
 
 namespace Xabe.FFMpeg.Test
@@ -125,7 +126,7 @@ namespace Xabe.FFMpeg.Test
             IVideoInfo videoInfo = new VideoInfo(SampleVideoWithAudio);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Png);
             Image snapshot = await videoInfo.Snapshot(output);
-
+        
             Assert.Equal(snapshot.Width, videoInfo.Width);
             Assert.True(File.Exists(output));
         }
@@ -183,7 +184,7 @@ namespace Xabe.FFMpeg.Test
             string ogvOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ogv);
             string tsOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => { 
+            await Assert.ThrowsAsync<MultipleConversionException>(async () => { 
 #pragma warning disable 4014
                 videoInfo.ToOgv(ogvOutput);
 #pragma warning restore 4014
