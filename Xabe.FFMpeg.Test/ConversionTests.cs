@@ -193,7 +193,7 @@ namespace Xabe.FFMpeg.Test
         [Fact]
         public async Task IncompatibleParametersTest()
         {
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            await Assert.ThrowsAsync<ConversionException>(async () =>
             {
                 string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
                 await new Conversion()

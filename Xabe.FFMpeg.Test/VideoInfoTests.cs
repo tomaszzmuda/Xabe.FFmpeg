@@ -184,7 +184,9 @@ namespace Xabe.FFMpeg.Test
             string tsOutput = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Ts);
 
             await Assert.ThrowsAsync<InvalidOperationException>(async () => { 
+#pragma warning disable 4014
                 videoInfo.ToOgv(ogvOutput);
+#pragma warning restore 4014
                 await videoInfo.ToTs(tsOutput);
             });
         }

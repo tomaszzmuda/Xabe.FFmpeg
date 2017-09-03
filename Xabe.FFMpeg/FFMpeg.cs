@@ -14,6 +14,7 @@ namespace Xabe.FFMpeg
     public delegate void ConversionHandler(TimeSpan duration, TimeSpan totalLength);
 
     // ReSharper disable once InconsistentNaming
+    /// <inheritdoc />
     /// <summary>
     ///     Wrapper for FFMpeg
     /// </summary>
@@ -45,7 +46,7 @@ namespace Xabe.FFMpeg
                     return false;
 
                 if(Process.ExitCode != 0)
-                    throw new ArgumentException(string.Join(Environment.NewLine, _outputLog.ToArray()));
+                    throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
             }
 
             return true;
