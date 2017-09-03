@@ -14,7 +14,7 @@ namespace Xabe.FFMpeg
         private ProbeModel.Stream[] GetStream(VideoInfo videoInfo)
         {
             string jsonStreams =
-                RunProcess($"-v quiet -print_format json -show_streams \"{videoInfo.FilePath}\"");
+                RunProcess($"-v quiet -print_format json -show_streams \"{videoInfo.FullName}\"");
 
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
@@ -80,7 +80,7 @@ namespace Xabe.FFMpeg
         private FormatModel.Format GetFormat(VideoInfo info)
         {
             string jsonFormat =
-                RunProcess($"-v quiet -print_format json -show_format \"{info.FilePath}\"");
+                RunProcess($"-v quiet -print_format json -show_format \"{info.FullName}\"");
             FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonFormat)
                                                    .format;
             return format;

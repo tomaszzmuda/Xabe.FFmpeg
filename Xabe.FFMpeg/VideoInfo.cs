@@ -21,36 +21,36 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Get VideoInfo from file
         /// </summary>
-        /// <param name="filePath">FilePath to file</param>
+        /// <param name="fullName">FullName to file</param>
         [UsedImplicitly]
-        public VideoInfo(string filePath)
+        public VideoInfo(string fullName)
         {
-            if(!File.Exists(filePath))
-                throw new ArgumentException($"Input file {filePath} doesn't exists.");
-            FilePath = filePath;
+            if(!File.Exists(fullName))
+                throw new ArgumentException($"Input file {fullName} doesn't exists.");
+            FullName = fullName;
             new FFProbe().ProbeDetails(this);
         }
 
         /// <inheritdoc />
-        public string FilePath { get; }
+        public string FullName { get; }
 
         /// <inheritdoc />
         public TimeSpan VideoDuration { get; internal set; }
 
         /// <inheritdoc />
-        public string Extension => Path.GetExtension(FilePath);
+        public string Extension => Path.GetExtension(FullName);
 
         /// <inheritdoc />
         public TimeSpan Duration { get; internal set; }
 
         /// <inheritdoc />
-        public string AudioFormat { get; internal set; } = "none";
+        public string AudioFormat { get; internal set; }
 
         /// <inheritdoc />
         public TimeSpan AudioDuration { get; internal set; }
 
         /// <inheritdoc />
-        public string VideoFormat { get; internal set; } = "none";
+        public string VideoFormat { get; internal set; }
 
         /// <inheritdoc />
         public string Ratio { get; internal set; }
@@ -71,9 +71,9 @@ namespace Xabe.FFMpeg
         [UsedImplicitly]
         public override string ToString()
         {
-            return $"Video filePath : {FilePath}{Environment.NewLine}" +
-                   $"Video root : {Path.GetDirectoryName(FilePath)}{Environment.NewLine}" +
-                   $"Video name: {Path.GetFileName(FilePath)}{Environment.NewLine}" +
+            return $"Video fullName : {FullName}{Environment.NewLine}" +
+                   $"Video root : {Path.GetDirectoryName(FullName)}{Environment.NewLine}" +
+                   $"Video name: {Path.GetFileName(FullName)}{Environment.NewLine}" +
                    $"Video extension : {Extension}{Environment.NewLine}" +
                    $"Video duration : {VideoDuration}{Environment.NewLine}" +
                    $"Video format : {VideoFormat}{Environment.NewLine}" +

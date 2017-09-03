@@ -69,7 +69,7 @@ namespace Xabe.FFMpeg
         /// <summary>
         ///     Source file path
         /// </summary>
-        string FilePath { get; }
+        string FullName { get; }
 
         /// <summary>
         ///     Get formated info about video

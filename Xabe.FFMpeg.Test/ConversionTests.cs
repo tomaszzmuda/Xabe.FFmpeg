@@ -150,7 +150,7 @@ namespace Xabe.FFMpeg.Test
             var videoInfo = new VideoInfo(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
             Assert.Equal("h264", videoInfo.VideoFormat);
-            Assert.Equal("none", videoInfo.AudioFormat);
+            Assert.Null(videoInfo.AudioFormat);
         }
 
         [Fact]
@@ -166,7 +166,7 @@ namespace Xabe.FFMpeg.Test
             Assert.True(conversionResult);
             var videoInfo = new VideoInfo(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.Duration);
-            Assert.Equal("none", videoInfo.VideoFormat);
+            Assert.Null(videoInfo.VideoFormat);
             Assert.Equal("aac", videoInfo.AudioFormat);
         }
 

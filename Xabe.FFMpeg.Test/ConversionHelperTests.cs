@@ -33,7 +33,7 @@ namespace Xabe.FFMpeg.Test
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
             Assert.Equal("mp3", outputInfo.AudioFormat);
-            Assert.Equal("none", outputInfo.VideoFormat);
+            Assert.Null(outputInfo.VideoFormat);
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace Xabe.FFMpeg.Test
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
             Assert.Equal("h264", outputInfo.VideoFormat);
-            Assert.Equal("none", outputInfo.AudioFormat);
+            Assert.Null(outputInfo.AudioFormat);
         }
 
         [Fact]
