@@ -176,6 +176,7 @@ namespace Xabe.FFMpeg
         public override string ToString()
         {
             if(!_wasInitalized)
+                // ReSharper disable once ObjectCreationAsStatement
                 { _wasInitalized = true; new FFProbe(this); }
             return $"Video fullName : {FullName}{Environment.NewLine}" +
                    $"Video root : {Path.GetDirectoryName(FullName)}{Environment.NewLine}" +
