@@ -356,6 +356,28 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
+        public async Task OnProgressChangedTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+            IConversion conversion = ConversionHelper.ToTs(Resources.MkvWithAudio.FullName, output);
+
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+
+            conversion.OnProgress += (duration, length) =>
+            {
+                currentProgress = duration;
+                videoLength = length;
+            };
+            bool conversionResult = await conversion.Start();
+
+            Assert.True(conversionResult);
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(9));
+        }
+
+        [Fact]
         public async Task SizeTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);

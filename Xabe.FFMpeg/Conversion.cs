@@ -224,11 +224,11 @@ namespace Xabe.FFMpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetInput(params FileInfo[] inputs)
+        public IConversion SetInput(params string[] inputs)
         {
             _input = "";
-            foreach(FileInfo file in inputs)
-                _input += $"-i \"{file.FullName}\" ";
+            foreach(string path in inputs)
+                _input += $"-i \"{path}\" ";
             return this;
         }
 

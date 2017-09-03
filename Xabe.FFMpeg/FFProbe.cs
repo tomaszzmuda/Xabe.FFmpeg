@@ -47,6 +47,10 @@ namespace Xabe.FFMpeg
                 info.FrameRate = GetVideoFramerate(vid);
                 info.Ratio = GetVideoAspectRatio(info);
             }
+            if(aud != null)
+            {
+                
+            }
             info.Size = Math.Round(videoSize + audioSize, 2);
         }
 
