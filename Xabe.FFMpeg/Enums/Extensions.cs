@@ -34,5 +34,10 @@
         ///     .png
         /// </summary>
         public const string Png = ".png";
+
+        /// <summary>
+        ///     .mkv
+        /// </summary>
+        public const string Mkv = ".mkv";
     }
 }

@@ -50,7 +50,7 @@ namespace Xabe.FFMpeg
         public TimeSpan AudioDuration { get; internal set; }
 
         /// <inheritdoc />
-        public double AudioSize { get; internal set; }
+        public long AudioSize { get; internal set; }
 
         /// <inheritdoc />
         public string VideoFormat { get; internal set; } = "none";
@@ -68,26 +68,29 @@ namespace Xabe.FFMpeg
         public int Width { get; internal set; }
 
         /// <inheritdoc />
-        public double Size { get; internal set; }
+        public long Size { get; internal set; }
 
         /// <inheritdoc />
-        public double VideoSize { get; internal set; }
+        public long VideoSize { get; internal set; }
 
         /// <inheritdoc cref="IVideoInfo.ToString" />
         [UsedImplicitly]
         public override string ToString()
         {
-            return "Video FilePath : " + FilePath + Environment.NewLine +
-                   "Video Root : " + Path.GetDirectoryName(FilePath) + Environment.NewLine +
-                   "Video Name: " + Path.GetFileName(FilePath) + Environment.NewLine +
-                   "Video Extension : " + Extension + Environment.NewLine +
-                   "Video duration : " + Duration + Environment.NewLine +
-                   "Audio format : " + AudioFormat + Environment.NewLine +
-                   "Video format : " + VideoFormat + Environment.NewLine +
-                   "Aspect Ratio : " + Ratio + Environment.NewLine +
-                   "Framerate : " + FrameRate + "fps" + Environment.NewLine +
-                   "Resolution : " + Width + "x" + Height + Environment.NewLine +
-                   "Size : " + Size + " MB";
+            return $"Video filePath : {FilePath}{Environment.NewLine}" +
+                   $"Video root : {Path.GetDirectoryName(FilePath)}{Environment.NewLine}" +
+                   $"Video name: {Path.GetFileName(FilePath)}{Environment.NewLine}" +
+                   $"Video extension : {Extension}{Environment.NewLine}" +
+                   $"Video duration : {VideoDuration}{Environment.NewLine}" +
+                   $"Video format : {VideoFormat}{Environment.NewLine}" +
+                   $"Video size : {VideoSize} b{Environment.NewLine}" +
+                   $"Audio format : {AudioFormat}{Environment.NewLine}" +
+                   $"Audio size : {AudioSize} b{Environment.NewLine}" +
+                   $"Audio duration : {AudioDuration}{Environment.NewLine}" +
+                   $"Aspect Ratio : {Ratio}{Environment.NewLine}" +
+                   $"Framerate : {Ratio} fps{Environment.NewLine}" +
+                   $"Resolution : {Width} x {Height}{Environment.NewLine}" +
+                   $"Size : {Size} b";
         }
     }
 }

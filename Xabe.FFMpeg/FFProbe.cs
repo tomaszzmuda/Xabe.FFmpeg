@@ -46,7 +46,7 @@ namespace Xabe.FFMpeg
             }
 
 
-            info.Size = Math.Round(info.AudioSize + info.VideoSize, 2);
+            info.Size = info.AudioSize + info.VideoSize;
             info.Duration = TimeSpan.FromSeconds(Math.Max(info.VideoDuration.TotalSeconds, info.AudioDuration.TotalSeconds));
         }
 
@@ -62,14 +62,14 @@ namespace Xabe.FFMpeg
             return info.Width / cd + ":" + info.Height / cd;
         }
 
-        private double GetAudioSize(ProbeModel.Stream aud)
+        private long GetAudioSize(ProbeModel.Stream aud)
         {
-            return aud.bit_rate * aud.duration / 8388608;
+            return (long) (aud.bit_rate * aud.duration);
         }
 
-        private double GetVideoSize(ProbeModel.Stream vid, TimeSpan duration)
+        private long GetVideoSize(ProbeModel.Stream vid, TimeSpan duration)
         {
-            return vid.bit_rate * duration.TotalSeconds / 8388608;
+            return (long) (vid.bit_rate * duration.TotalSeconds);
         }
 
         private TimeSpan GetVideoDuration(VideoInfo info, ProbeModel.Stream video)
