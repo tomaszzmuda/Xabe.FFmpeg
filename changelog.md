@@ -9,6 +9,7 @@ Change Log / Release Notes
 * Added ConversionHelper class which contains predefined set of parameters for FFMpeg
 * VideoInfo now contains only properties, doesn't have any methods to convert media
 * Some improvements in unit tests
+* Added event on ffmpeg output data received
 
 ## Xabe.FFMpeg 1.5.1
 

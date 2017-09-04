@@ -13,19 +13,29 @@ Install the [Xabe.FFMpeg NuGet package](https://www.nuget.org/packages/Xabe.FFMp
 	
 Creating video info:
 
-	string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-	IVideoInfo videoInfo = new VideoInfo("videofile.mp");
-	IVideoInfo outputVideo = videoInfo.ToMp4(output);
+	IVideoInfo videoInfo = new VideoInfo("videofile.mkv");
 	
-Video info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size.
+Video info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size in VideoProperties property.
 
 It is possible to have more elastic way to convert media. **Conversion** class is builder for FFMpeg command. You can specify all implemented FFMpeg options and run process:
 	
-	bool conversionResult = new Conversion()
-		.SetInput(SampleMkvVideo)
+	string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+	bool result = await ConversionHelper.ToMp4("videofile.mkv", output)
+                                    .Start();
+
+or
+
+	string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+	bool conversionResult = await new Conversion()
+		.SetInput("videofile.mkv")
+		.Rotate(rotateDegrees)
 		.SetOutput(outputPath)
-		.SetCodec(VideoCodec.MpegTs)
 		.Start();
+
+it is possible to give your own arguments
+
+	bool conversionResult = await new Conversion().Start(-i "C:\Xabe.FFMpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv" "C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4");
+
 
 ## Features ##
 * [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-an-information-about-video)
@@ -44,9 +54,6 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 * Watermarks
 * Chroma key
 * Validate ffmpeg parameters
-* Make all time consumption operations async
-* Make own more precise exceptions
-* Event on ffmpeg output
 
 ## Lincence ## 
 
