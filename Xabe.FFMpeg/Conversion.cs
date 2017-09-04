@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -49,6 +50,7 @@ namespace Xabe.FFMpeg
                     {
                         _ffmpeg = new FFMpeg();
                         _ffmpeg.OnProgress += OnProgress;
+                        _ffmpeg.OnDataReceived += OnDataReceived;
                     }
                     return _ffmpeg;
                 }
@@ -90,6 +92,8 @@ namespace Xabe.FFMpeg
         /// <inheritdoc cref="IConversion.OnProgress" />
         [UsedImplicitly]
         public event ConversionHandler OnProgress;
+
+        public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
         public async Task<bool> Start()

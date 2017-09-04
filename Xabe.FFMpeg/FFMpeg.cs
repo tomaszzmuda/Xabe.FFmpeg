@@ -30,16 +30,22 @@ namespace Xabe.FFMpeg
         /// </summary>
         public event ConversionHandler OnProgress;
 
+        /// <summary>
+        ///     Fires when ffmpeg process print sonething
+        /// </summary>
+        public event DataReceivedEventHandler OnDataReceived;
+
         internal async Task<bool> RunProcess(string args)
         {
             _outputLog = new List<string>();
             WasKilled = false;
 
-            RunProcess(args, FFMpegPath, true, false, true);
+            RunProcess(args, FFMpegPath, true, true, true);
 
             using(Process)
             {
                 Process.ErrorDataReceived += OutputData;
+                Process.BeginOutputReadLine();
                 Process.BeginErrorReadLine();
                 await Task.Run(() => Process.WaitForExit());
 
@@ -57,6 +63,8 @@ namespace Xabe.FFMpeg
         {
             if(e.Data == null)
                 return;
+
+            OnDataReceived(this, e);
 
             _outputLog.Add(e.Data);
 

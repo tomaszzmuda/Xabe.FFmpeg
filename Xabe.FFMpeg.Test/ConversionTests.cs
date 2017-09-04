@@ -137,6 +137,27 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
+        public async Task FFMpegDataReceivedTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
+            IConversion conversion = new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetOutput(outputPath)
+                .SetCodec(VideoCodec.MpegTs);
+
+            var ffmpegPOutput = "";
+
+            conversion.OnDataReceived += (sender, args) =>
+            {
+                ffmpegPOutput += $"{args.Data}{Environment.NewLine}";   
+            };
+            bool conversionResult = await conversion.Start();
+
+            Assert.True(conversionResult);
+            Assert.EndsWith($"video:365kB audio:567kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 13.832154%{Environment.NewLine}", ffmpegPOutput);
+        }
+
+        [Fact]
         public async Task DisableAudioChannelTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
@@ -262,7 +283,7 @@ namespace Xabe.FFMpeg.Test
                         $"-i \"{Resources.MkvWithAudio.FullName}\" -codec:v libx264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
                         e.InputParameters);
                     Assert.EndsWith(
-                        "Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.\r\nFiltering and streamcopy cannot be used together.",
+                        $"Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.{Environment.NewLine}Filtering and streamcopy cannot be used together.",
                         e.Message);
                     // ReSharper disable once PossibleIntendedRethrow
                     throw e;

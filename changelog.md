@@ -1,10 +1,14 @@
 Change Log / Release Notes
 ==========================
 
-## Xabe.FFMpeg 1.6.0
+## Xabe.FFMpeg 2.0.0
 
 * Time consumptions methods are now asynchronous
 * Only one conversion can be in progress at time per Conversion/VideoInfo object
+* Lazy load properties for VideoInfo
+* Added ConversionHelper class which contains predefined set of parameters for FFMpeg
+* VideoInfo now contains only properties, doesn't have any methods to convert media
+* Some improvements in unit tests
 
 ## Xabe.FFMpeg 1.5.1
 

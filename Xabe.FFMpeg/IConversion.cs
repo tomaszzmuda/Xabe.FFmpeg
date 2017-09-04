@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -141,6 +142,11 @@ namespace Xabe.FFMpeg
         ///     Fires when ffmpeg progress changes
         /// </summary>
         event ConversionHandler OnProgress;
+
+        /// <summary>
+        ///     Fires when ffmpeg process print sonething
+        /// </summary>
+        event DataReceivedEventHandler OnDataReceived;
 
         /// <summary>
         ///     Set video codec
