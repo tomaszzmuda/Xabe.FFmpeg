@@ -154,7 +154,7 @@ namespace Xabe.FFMpeg.Test
             bool conversionResult = await conversion.Start();
 
             Assert.True(conversionResult);
-            Assert.EndsWith($"video:365kB audio:567kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 13.832154%{Environment.NewLine}", ffmpegPOutput);
+            Assert.Contains($"video:365kB audio:567kB subtitle:0kB other streams:0kB global headers:0kB", ffmpegPOutput);
         }
 
         [Fact]
