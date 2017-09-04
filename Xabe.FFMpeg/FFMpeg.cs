@@ -64,7 +64,7 @@ namespace Xabe.FFMpeg
             if(e.Data == null)
                 return;
 
-            OnDataReceived(this, e);
+            OnDataReceived?.Invoke(this, e);
 
             _outputLog.Add(e.Data);
 
