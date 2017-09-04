@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.IO;
+using Xabe.FFMpeg.Model;
 
 namespace Xabe.FFMpeg
 {
@@ -8,64 +9,14 @@ namespace Xabe.FFMpeg
     public interface IVideoInfo
     {
         /// <summary>
-        ///     Audio format
+        ///     Source file info
         /// </summary>
-        string AudioFormat { get; }
+        FileInfo FileInfo { get; }
 
         /// <summary>
-        ///     Duration of media
+        ///     Video properties
         /// </summary>
-        TimeSpan Duration { get; }
-
-        /// <summary>
-        ///     Duration of audio
-        /// </summary>
-        TimeSpan AudioDuration { get; }
-
-        /// <summary>
-        ///     Duration of video
-        /// </summary>
-        TimeSpan VideoDuration { get; }
-
-        /// <summary>
-        ///     Return extension of file
-        /// </summary>
-        string Extension { get; }
-
-        /// <summary>
-        ///     Frame rate
-        /// </summary>
-        double FrameRate { get; }
-
-        /// <summary>
-        ///     Height
-        /// </summary>
-        int Height { get; }
-
-        /// <summary>
-        ///     Screen ratio
-        /// </summary>
-        string Ratio { get; }
-
-        /// <summary>
-        ///     Size of file
-        /// </summary>
-        long Size { get; }
-
-        /// <summary>
-        ///     Video format
-        /// </summary>
-        string VideoFormat { get; }
-
-        /// <summary>
-        ///     Width
-        /// </summary>
-        int Width { get; }
-
-        /// <summary>
-        ///     Source file path
-        /// </summary>
-        string FullName { get; }
+        VideoProperties VideoProperties { get; }
 
         /// <summary>
         ///     Get formated info about video

@@ -6,51 +6,20 @@ using Xabe.FFMpeg.Model;
 namespace Xabe.FFMpeg
 {
     /// <summary>
-    ///     Get info about media file
+    ///     Get information about media file
     /// </summary>
     // ReSharper disable once InheritdocConsiderUsage
     internal sealed class FFProbe: FFBase
     {
-        private ProbeModel.Stream[] GetStream(VideoInfo videoInfo)
+        private ProbeModel.Stream[] GetStream(string videoPath)
         {
             string jsonStreams =
-                RunProcess($"-v quiet -print_format json -show_streams \"{videoInfo.FullName}\"");
+                RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
 
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
 
             return new[] {probe.streams.FirstOrDefault(x => x.codec_type == "video") ?? null, probe.streams.FirstOrDefault(x => x.codec_type == "audio") ?? null};
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        ///     Retrieve details from video file
-        /// </summary>
-        /// <param name="info">Source video file.</param>
-        public FFProbe(VideoInfo info)
-        {
-            ProbeModel.Stream[] streams = GetStream(info);
-            ProbeModel.Stream videoStream = streams[0];
-            ProbeModel.Stream audioStream = streams[1];
-            FormatModel.Format format = GetFormat(info);
-            info.Size = long.Parse(format.size);
-
-            if(videoStream != null)
-            {
-                info.VideoFormat = videoStream.codec_name;
-                info.VideoDuration = GetVideoDuration(format, videoStream);
-                info.Width = videoStream.width;
-                info.Height = videoStream.height;
-                info.FrameRate = GetVideoFramerate(videoStream);
-                info.Ratio = GetVideoAspectRatio(info);
-            }
-            if(audioStream != null)
-            {
-                info.AudioFormat = audioStream.codec_name;
-                info.AudioDuration = GetAudioDuration(audioStream);
-            }
-
-            info.Duration = TimeSpan.FromSeconds(Math.Max(info.VideoDuration.TotalSeconds, info.AudioDuration.TotalSeconds));
         }
 
         private double GetVideoFramerate(ProbeModel.Stream vid)
@@ -59,10 +28,10 @@ namespace Xabe.FFMpeg
             return Math.Round(double.Parse(fr[0]) / double.Parse(fr[1]), 3);
         }
 
-        private string GetVideoAspectRatio(VideoInfo info)
+        private string GetVideoAspectRatio(int width, int heigght)
         {
-            int cd = GetGcd(info.Width, info.Height);
-            return info.Width / cd + ":" + info.Height / cd;
+            int cd = GetGcd(width, heigght);
+            return width / cd + ":" + heigght / cd;
         }
 
         private TimeSpan GetVideoDuration(FormatModel.Format format, ProbeModel.Stream video)
@@ -78,10 +47,10 @@ namespace Xabe.FFMpeg
             return videoDuration;
         }
 
-        private FormatModel.Format GetFormat(VideoInfo info)
+        private FormatModel.Format GetFormat(string videoPath)
         {
             string jsonFormat =
-                RunProcess($"-v quiet -print_format json -show_format \"{info.FullName}\"");
+                RunProcess($"-v quiet -print_format json -show_format \"{videoPath}\"");
             FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonFormat)
                                                    .format;
             return format;
@@ -129,6 +98,34 @@ namespace Xabe.FFMpeg
             }
 
             return output;
+        }
+
+        public VideoProperties GetProperties(string videoPath)
+        {
+            var videoProperties = new VideoProperties();
+            ProbeModel.Stream[] streams = GetStream(videoPath);
+            ProbeModel.Stream videoStream = streams[0];
+            ProbeModel.Stream audioStream = streams[1];
+            FormatModel.Format format = GetFormat(videoPath);
+            videoProperties.Size = long.Parse(format.size);
+
+            if (videoStream != null)
+            {
+                videoProperties.VideoFormat = videoStream.codec_name;
+                videoProperties.VideoDuration = GetVideoDuration(format, videoStream);
+                videoProperties.Width = videoStream.width;
+                videoProperties.Height = videoStream.height;
+                videoProperties.FrameRate = GetVideoFramerate(videoStream);
+                videoProperties.Ratio = GetVideoAspectRatio(videoProperties.Width, videoProperties.Height);
+            }
+            if (audioStream != null)
+            {
+                videoProperties.AudioFormat = audioStream.codec_name;
+                videoProperties.AudioDuration = GetAudioDuration(audioStream);
+            }
+
+            videoProperties.Duration = TimeSpan.FromSeconds(Math.Max(videoProperties.VideoDuration.TotalSeconds, videoProperties.AudioDuration.TotalSeconds));
+            return videoProperties;
         }
     }
 }

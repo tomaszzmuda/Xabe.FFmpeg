@@ -159,7 +159,7 @@ namespace Xabe.FFMpeg
         {
             IVideoInfo source = new VideoInfo(inputPath);
             if(captureTime == null)
-                captureTime = TimeSpan.FromSeconds(source.VideoDuration.TotalSeconds / 3);
+                captureTime = TimeSpan.FromSeconds(source.VideoProperties.VideoDuration.TotalSeconds / 3);
 
             size = GetSize(source, size);
 
@@ -221,22 +221,22 @@ namespace Xabe.FFMpeg
         {
             if(size == null ||
                size.Value.Height == 0 && size.Value.Width == 0)
-                size = new Size(source.Width, source.Height);
+                size = new Size(source.VideoProperties.Width, source.VideoProperties.Height);
 
             if(size.Value.Width != size.Value.Height)
             {
                 if(size.Value.Width == 0)
                 {
-                    double ratio = source.Width / (double) size.Value.Width;
+                    double ratio = source.VideoProperties.Width / (double) size.Value.Width;
 
-                    size = new Size((int) (source.Width * ratio), (int) (source.Height * ratio));
+                    size = new Size((int) (source.VideoProperties.Width * ratio), (int) (source.VideoProperties.Height * ratio));
                 }
 
                 if(size.Value.Height == 0)
                 {
-                    double ratio = source.Height / (double) size.Value.Height;
+                    double ratio = source.VideoProperties.Height / (double) size.Value.Height;
 
-                    size = new Size((int) (source.Width * ratio), (int) (source.Height * ratio));
+                    size = new Size((int) (source.VideoProperties.Width * ratio), (int) (source.VideoProperties.Height * ratio));
                 }
             }
 
