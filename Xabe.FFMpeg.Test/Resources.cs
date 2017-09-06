@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Xabe.FFMpeg.Test
+namespace Xabe.FFmpeg.Test
 {
     internal static class Resources
     {

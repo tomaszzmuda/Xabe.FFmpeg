@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using JetBrains.Annotations;
-using Xabe.FFMpeg.Model;
+using Xabe.FFmpeg.Model;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IVideoInfo" />
     public class VideoInfo: IVideoInfo

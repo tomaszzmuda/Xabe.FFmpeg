@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using Xabe.FFMpeg.Enums;
+using Xabe.FFmpeg.Enums;
 using Xunit;
 
-namespace Xabe.FFMpeg.Test
+namespace Xabe.FFmpeg.Test
 {
     public class VideoInfoTests
 

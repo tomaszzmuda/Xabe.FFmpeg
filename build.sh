@@ -1,10 +1,10 @@
 #!/bin/bash
 dotnet restore
-dotnet test Xabe.FFMpeg.Test/
+dotnet test Xabe.FFmpeg.Test/
 if [[ -z "${TRAVIS_TAG}" ]]; then 
 	exit 0
 else
-	cd Xabe.FFMpeg
+	cd Xabe.FFmpeg
 	dotnet clean -c Release
 	dotnet build -c Release /property:Version=$TRAVIS_TAG /p:GenerateDocumentationFile=true
 	dotnet pack --no-build -c Release -o nuget /p:PackageVersion=$TRAVIS_TAG /p:GenerateDocumentationFile=true

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Xabe.FFMpeg.Exceptions;
+using Xabe.FFmpeg.Exceptions;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Info about conversion progress
@@ -17,21 +17,21 @@ namespace Xabe.FFMpeg
     // ReSharper disable once InconsistentNaming
     /// <inheritdoc />
     /// <summary>
-    ///     Wrapper for FFMpeg
+    ///     Wrapper for FFmpeg
     /// </summary>
-    internal class FFMpeg: FFBase
+    internal class FFmpeg: FFBase
     {
         private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
         private List<string> _outputLog;
         private TimeSpan _totalTime;
 
         /// <summary>
-        ///     Fires when ffmpeg progress changes
+        ///     Fires when FFmpeg progress changes
         /// </summary>
         public event ConversionHandler OnProgress;
 
         /// <summary>
-        ///     Fires when ffmpeg process print sonething
+        ///     Fires when FFmpeg process print sonething
         /// </summary>
         public event DataReceivedEventHandler OnDataReceived;
 
@@ -40,7 +40,7 @@ namespace Xabe.FFMpeg
             _outputLog = new List<string>();
             WasKilled = false;
 
-            RunProcess(args, FFMpegPath, true, true, true);
+            RunProcess(args, FFmpegPath, true, true, true);
 
             using(Process)
             {

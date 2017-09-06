@@ -2,7 +2,7 @@
 
 using JetBrains.Annotations;
 
-namespace Xabe.FFMpeg.Model
+namespace Xabe.FFmpeg.Model
 {
     [UsedImplicitly]
     internal class FormatModel

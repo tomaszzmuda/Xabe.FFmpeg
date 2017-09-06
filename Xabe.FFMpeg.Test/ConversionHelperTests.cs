@@ -2,10 +2,10 @@
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
-using Xabe.FFMpeg.Enums;
+using Xabe.FFmpeg.Enums;
 using Xunit;
 
-namespace Xabe.FFMpeg.Test
+namespace Xabe.FFmpeg.Test
 {
     public class ConversionHelperTests
 

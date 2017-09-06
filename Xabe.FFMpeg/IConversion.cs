@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
-using Xabe.FFMpeg.Enums;
+using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Allows to prepare and start IConversion. Only for advanced users.
@@ -139,12 +139,12 @@ namespace Xabe.FFMpeg
         IConversion SetSize(Size? size);
 
         /// <summary>
-        ///     Fires when ffmpeg progress changes
+        ///     Fires when FFmpeg progress changes
         /// </summary>
         event ConversionHandler OnProgress;
 
         /// <summary>
-        ///     Fires when ffmpeg process print sonething
+        ///     Fires when FFmpeg process print sonething
         /// </summary>
         event DataReceivedEventHandler OnDataReceived;
 
@@ -179,7 +179,7 @@ namespace Xabe.FFMpeg
         IConversion SetBitstreamFilter(Channel type, string filter);
 
         /// <summary>
-        ///     It makes ffmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing.
+        ///     It makes FFmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing.
         ///     It is useful for changing the container format or modifying container-level metadata.
         ///     Cannot be used with operations which require encoding and decoding video (scaling, changing codecs etc.)
         /// </summary>
@@ -249,14 +249,14 @@ namespace Xabe.FFMpeg
         Task<bool> Start();
 
         /// <summary>
-        ///     Start an ffmpeg process with specified arguments
+        ///     Start an FFmpeg process with specified arguments
         /// </summary>
-        /// <param name="parameters">FFMpeg parameters eg. "-i sample.mp4 -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000"</param>
+        /// <param name="parameters">FFmpeg parameters eg. "-i sample.mp4 -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000"</param>
         /// <returns>Conversion result</returns>
         Task<bool> Start(string parameters);
 
         /// <summary>
-        ///     Kill ffmpeg process
+        ///     Kill FFmpeg process
         /// </summary>
         void Dispose();
 

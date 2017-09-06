@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Xabe.FFMpeg.Exceptions
+namespace Xabe.FFmpeg.Exceptions
 {
     /// <inheritdoc />
     /// <summary>
@@ -14,14 +14,14 @@ namespace Xabe.FFMpeg.Exceptions
         ///     The exception that is thrown when user try to run second conversion simultaneously on VideoInfo/Conversion object
         /// </summary>
         /// <param name="errorMessage">Error message</param>
-        /// <param name="inputParameters">FFMPeg input parameters</param>
+        /// <param name="inputParameters">FFmpeg input parameters</param>
         internal MultipleConversionException(string errorMessage, string inputParameters): base(errorMessage)
         {
             InputParameters = inputParameters;
         }
 
         /// <summary>
-        ///     FFMpeg input parameters
+        ///     FFmpeg input parameters
         /// </summary>
         [UsedImplicitly]
         public string InputParameters { get; }

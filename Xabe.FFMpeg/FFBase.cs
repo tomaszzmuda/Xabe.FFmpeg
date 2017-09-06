@@ -5,26 +5,26 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using Xabe.FFMpeg.Exceptions;
+using Xabe.FFmpeg.Exceptions;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <summary>
-    ///     Base FFMpeg class
+    ///     Base FFmpeg class
     /// </summary>
     // ReSharper disable once InheritdocConsiderUsage
     public abstract class FFBase: IDisposable
     {
         private const string TryMultipleConversion =
-            "Current FFMpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.";
+            "Current FFmpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.";
 
         private static string _ffmpegPath;
         private static string _ffprobePath;
 
         /// <summary>
-        ///     Directory contains FFMpeg and FFProbe
+        ///     Directory contains FFmpeg and FFProbe
         /// </summary>
-        [CanBeNull] [UsedImplicitly] public static string FFMpegDir;
+        [CanBeNull] [UsedImplicitly] public static string FFmpegDir;
 
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
@@ -35,26 +35,26 @@ namespace Xabe.FFMpeg
         private bool _wasKilled;
 
         /// <summary>
-        ///     FFMpeg process
+        ///     FFmpeg process
         /// </summary>
         protected Process Process;
 
         /// <summary>
-        ///     Initalize new FFMpeg. Search ffmpeg and ffprobe in PATH
+        ///     Initalize new FFmpeg. Search FFmpeg and ffprobe in PATH
         /// </summary>
         protected FFBase()
         {
             if(!string.IsNullOrWhiteSpace(FFProbePath) &&
-               !string.IsNullOrWhiteSpace(FFMpegPath))
+               !string.IsNullOrWhiteSpace(FFmpegPath))
                 return;
 
-            if(!string.IsNullOrWhiteSpace(FFMpegDir))
+            if(!string.IsNullOrWhiteSpace(FFmpegDir))
             {
-                FFProbePath = new DirectoryInfo(FFMpegDir).GetFiles()
+                FFProbePath = new DirectoryInfo(FFmpegDir).GetFiles()
                                                           .First(x => x.Name.Contains("ffprobe"))
                                                           .FullName;
-                FFMpegPath = new DirectoryInfo(FFMpegDir).GetFiles()
-                                                         .First(x => x.Name.Contains("ffmpeg"))
+                FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
+                                                         .First(x => x.Name.Contains("FFmpeg"))
                                                          .FullName;
                 return;
             }
@@ -68,20 +68,20 @@ namespace Xabe.FFMpeg
             {
                 FindProgramsFromPath(path);
 
-                if(FFMpegPath != null &&
+                if(FFmpegPath != null &&
                    FFProbePath != null)
                     break;
             }
 
-            if(FFMpegPath == null ||
-               FFMpegPath == null)
-                throw new ArgumentException("Cannot find FFMpeg.");
+            if(FFmpegPath == null ||
+               FFmpegPath == null)
+                throw new ArgumentException("Cannot find FFmpeg.");
         }
 
         /// <summary>
-        ///     FilePath to FFMpeg
+        ///     FilePath to FFmpeg
         /// </summary>
-        protected string FFMpegPath
+        protected string FFmpegPath
         {
             get
             {
@@ -142,7 +142,7 @@ namespace Xabe.FFMpeg
         }
 
         /// <summary>
-        ///     Defines if the ffmpeg was killed by application
+        ///     Defines if the FFmpeg was killed by application
         /// </summary>
         protected bool WasKilled
         {
@@ -164,7 +164,7 @@ namespace Xabe.FFMpeg
 
         /// <inheritdoc />
         /// <summary>
-        ///     Kill ffmpeg process
+        ///     Kill FFmpeg process
         /// </summary>
         public void Dispose()
         {
@@ -186,7 +186,7 @@ namespace Xabe.FFMpeg
 
             FFProbePath = files.FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
                                ?.FullName;
-            FFMpegPath = files.FirstOrDefault(x => x.Name.StartsWith("ffmpeg", true, CultureInfo.InvariantCulture))
+            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith("FFmpeg", true, CultureInfo.InvariantCulture))
                               ?.FullName;
         }
 
@@ -194,7 +194,7 @@ namespace Xabe.FFMpeg
         ///     Run conversion
         /// </summary>
         /// <param name="args">Arguments</param>
-        /// <param name="processPath">FilePath to executable (ffmpeg, ffprobe)</param>
+        /// <param name="processPath">FilePath to executable (FFmpeg, ffprobe)</param>
         /// <param name="rStandardInput">Should redirect standard input</param>
         /// <param name="rStandardOutput">Should redirect standard output</param>
         /// <param name="rStandardError">Should redirect standard error</param>

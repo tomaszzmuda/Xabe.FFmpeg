@@ -1,15 +1,15 @@
-# Xabe.FFMpeg  [![Build Status](https://travis-ci.org/tomaszzmuda/Xabe.FFMpeg.svg?branch=master)](https://travis-ci.org/tomaszzmuda/Xabe.FFMpeg)
+# Xabe.FFmpeg  [![Build Status](https://travis-ci.org/tomaszzmuda/Xabe.FFmpeg.svg?branch=master)](https://travis-ci.org/tomaszzmuda/Xabe.FFmpeg)
 
-.NET Core wrapper for FFMpeg.
-Require installed ffmpeg and added in your PATH variable.
+.NET Core wrapper for FFmpeg.
+Require installed FFmpeg and added in your PATH variable.
 
 ## Using ##
 
-You have to have installed FFMpeg and added it to your PATH variable or specify directory where FFMpeg executables are before run conversion in variable FFBase.FFMpegDir.
+You have to have installed FFmpeg and added it to your PATH variable or specify directory where FFmpeg executables are before run conversion in variable FFBase.FFmpegDir.
 
-Install the [Xabe.FFMpeg NuGet package](https://www.nuget.org/packages/Xabe.FFMpeg "") via nuget:
+Install the [Xabe.FFmpeg NuGet package](https://www.nuget.org/packages/Xabe.FFmpeg "") via nuget:
 
-	PM> Install-Package Xabe.FFMpeg
+	PM> Install-Package Xabe.FFmpeg
 	
 Creating video info:
 
@@ -17,7 +17,7 @@ Creating video info:
 	
 Video info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size in VideoProperties property.
 
-It is possible to have more elastic way to convert media. **Conversion** class is builder for FFMpeg command. You can specify all implemented FFMpeg options and run process:
+It is possible to have more elastic way to convert media. **Conversion** class is builder for FFmpeg command. You can specify all implemented FFmpeg options and run process:
 	
 	string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 	bool result = await ConversionHelper.ToMp4("videofile.mkv", output)
@@ -34,12 +34,12 @@ or
 
 it is possible to give your own arguments
 
-	bool conversionResult = await new Conversion().Start(-i "C:\Xabe.FFMpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv" "C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4");
+	bool conversionResult = await new Conversion().Start(-i "C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv" "C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4");
 
 
 ## Features ##
-* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-an-information-about-video)
-* [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Extracting-audio-or-video)
+* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki/Getting-an-information-about-video)
+* [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki/Extracting-audio-or-video)
 * Convert media
 * Create snapshot
 * Add audio to video
@@ -47,14 +47,14 @@ it is possible to give your own arguments
 * Reverse
 * Change speed
 * Rotate video
-* Pass parameters directly to FFMpeg
+* Pass parameters directly to FFmpeg
 
 ## Planned features ##
 * Split 
 * Watermarks
 * Chroma key
-* Validate ffmpeg parameters
+* Validate FFmpeg parameters
 
 ## Lincence ## 
 
-Xabe.FFMpeg is licensed under MIT - see [License](LICENSE.md) for details.
+Xabe.FFmpeg is licensed under MIT - see [License](LICENSE.md) for details.

@@ -4,9 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Xabe.FFMpeg.Enums;
+using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Derives preconfigurated Configuration objects

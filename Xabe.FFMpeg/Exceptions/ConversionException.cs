@@ -1,27 +1,27 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Xabe.FFMpeg.Exceptions
+namespace Xabe.FFmpeg.Exceptions
 {
     /// <inheritdoc />
     /// <summary>
-    ///     The exception that is thrown when a ffmpeg process return error.
+    ///     The exception that is thrown when a FFmpeg process return error.
     /// </summary>
     public class ConversionException: Exception
     {
         /// <inheritdoc />
         /// <summary>
-        ///     The exception that is thrown when a ffmpeg process return error.
+        ///     The exception that is thrown when a FFmpeg process return error.
         /// </summary>
-        /// <param name="errorMessage">FFMpeg error output</param>
-        /// <param name="inputParameters">FFMPeg input parameters</param>
+        /// <param name="errorMessage">FFmpeg error output</param>
+        /// <param name="inputParameters">FFmpeg input parameters</param>
         internal ConversionException(string errorMessage, string inputParameters): base(errorMessage)
         {
             InputParameters = inputParameters;
         }
 
         /// <summary>
-        ///     FFMpeg input parameters
+        ///     FFmpeg input parameters
         /// </summary>
         [UsedImplicitly]
         public string InputParameters { get; }

@@ -2,12 +2,12 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/Xabe.FFMpeg/obj
-/Xabe.FFMpeg/nuget
-/Xabe.FFMpeg/bin/Release/netstandard1.3
-/Xabe.FFMpeg.Test/obj
-/.vs/Xabe.FFMpeg/v15/sqlite3
-/Xabe.FFMpeg.Test/bin/Debug/netcoreapp2.0
-/Xabe.FFMpeg/bin/Debug/netstandard2.0
-/Xabe.FFMpeg/bin/Release/netstandard2.0
+/Xabe.FFmpeg/obj
+/Xabe.FFmpeg/nuget
+/Xabe.FFmpeg/bin/Release/netstandard1.3
+/Xabe.FFmpeg.Test/obj
+/.vs/Xabe.FFmpeg/v15/sqlite3
+/Xabe.FFmpeg.Test/bin/Debug/netcoreapp2.0
+/Xabe.FFmpeg/bin/Debug/netstandard2.0
+/Xabe.FFmpeg/bin/Release/netstandard2.0
 /.vs/*

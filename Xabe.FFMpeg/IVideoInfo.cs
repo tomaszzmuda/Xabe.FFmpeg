@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using Xabe.FFMpeg.Model;
+using Xabe.FFmpeg.Model;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Information about media file

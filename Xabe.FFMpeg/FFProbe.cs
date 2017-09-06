@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Newtonsoft.Json;
-using Xabe.FFMpeg.Model;
+using Xabe.FFmpeg.Model;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Get information about media file

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Xabe.FFMpeg</AssemblyName>
-    <RootNamespace>Xabe.FFMpeg</RootNamespace>
+    <AssemblyName>Xabe.FFmpeg</AssemblyName>
+    <RootNamespace>Xabe.FFmpeg</RootNamespace>
     <Authors>Tomasz Żmuda</Authors>
     <Company>Xabe</Company>
     <Description>.NET Core wrapper for FFMpeg.</Description>

@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
-using Xabe.FFMpeg.Enums;
-using Xabe.FFMpeg.Exceptions;
+using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Exceptions;
 using Xunit;
 
-namespace Xabe.FFMpeg.Test
+namespace Xabe.FFmpeg.Test
 {
     public class ConversionTests
     {
@@ -137,7 +137,7 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        public async Task FFMpegDataReceivedTest()
+        public async Task FFmpegDataReceivedTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
             IConversion conversion = new Conversion()
@@ -145,16 +145,16 @@ namespace Xabe.FFMpeg.Test
                 .SetOutput(outputPath)
                 .SetCodec(VideoCodec.MpegTs);
 
-            var ffmpegPOutput = "";
+            var ffmpegOuput = "";
 
             conversion.OnDataReceived += (sender, args) =>
             {
-                ffmpegPOutput += $"{args.Data}{Environment.NewLine}";   
+                ffmpegOuput += $"{args.Data}{Environment.NewLine}";   
             };
             bool conversionResult = await conversion.Start();
 
             Assert.True(conversionResult);
-            Assert.Contains($"video:365kB audio:567kB subtitle:0kB other streams:0kB global headers:0kB", ffmpegPOutput);
+            Assert.Contains($"video:365kB audio:567kB subtitle:0kB other streams:0kB global headers:0kB", ffmpegOuput);
         }
 
         [Fact]
@@ -192,7 +192,7 @@ namespace Xabe.FFMpeg.Test
         }
 
         [Fact]
-        public async Task DisposeFFMpegProcessTest()
+        public async Task DisposeFFmpegProcessTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
             IConversion conversion = new Conversion();
@@ -333,7 +333,7 @@ namespace Xabe.FFMpeg.Test
                         $"-i \"{Resources.MkvWithAudio.FullName}\" \"{tsOutput}\"",
                         e.InputParameters);
                     Assert.Equal(
-                        "Current FFMpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.",
+                        "Current FFmpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.",
                         e.Message);
                     // ReSharper disable once PossibleIntendedRethrow
                     throw e;

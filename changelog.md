@@ -1,51 +1,51 @@
 Change Log / Release Notes
 ==========================
 
-## Xabe.FFMpeg 2.0.0
+## Xabe.FFmpeg 2.0.0
 
 * Time consumptions methods are now asynchronous
 * Only one conversion can be in progress at time per Conversion/VideoInfo object
 * Lazy load properties for VideoInfo
-* Added ConversionHelper class which contains predefined set of parameters for FFMpeg
+* Added ConversionHelper class which contains predefined set of parameters for FFmpeg
 * VideoInfo now contains only properties, doesn't have any methods to convert media
 * Some improvements in unit tests
-* Added event on ffmpeg output data received
+* Added event on FFmpeg output data received
 
-## Xabe.FFMpeg 1.5.1
+## Xabe.FFmpeg 1.5.1
 
-* Getting input video duration from FFMpeg header
-* Add ability to perform dynamic ffmpeg commands
+* Getting input video duration from FFmpeg header
+* Add ability to perform dynamic FFmpeg commands
 * Rotate video
 * Force user to use VideoSize in case to change video size
 * More unit tests
 
-## Xabe.FFMpeg 1.5.0
+## Xabe.FFmpeg 1.5.0
 
 * Code refactor
 * Some new unit tests
 * Change way of working VideoInfo conversions
 * Properly calculate output media file for joining multiple files
-* Dispose ffmpeg process now kill process not send stop signal
+* Dispose FFmpeg process now kill process not send stop signal
 
-## Xabe.FFMpeg 1.4.2
+## Xabe.FFmpeg 1.4.2
 
 * Even more unit tests
-* Optimize creating VideoInfo and Conversion object. FFMpeg executables pathes is saved after found
+* Optimize creating VideoInfo and Conversion object. FFmpeg executables pathes is saved after found
 * Better result of conversion state
 * Remove Kill method from FFBase but move functionality to Dispose
 * Add Resharper annotations and configuration
-* Add Conversion.Stop method which send exit signal to FFMpeg process
+* Add Conversion.Stop method which send exit signal to FFmpeg process
 
-## Xabe.FFMpeg 1.4.1
+## Xabe.FFmpeg 1.4.1
 
 * More unit tests
 * Fix issue when trying to process media with disabled video channel
 * Change obsolete alias "vframes" to "frames:v"
 * Change input parameter type to Conversion.Concat method from IEnumerable<string> to params string[]
 
-## Xabe.FFMpeg 1.4.0
+## Xabe.FFmpeg 1.4.0
 
 * Change name of SetChannels method to StreamCopy and extend documentation
 * Fix changing scale of output video
-* Add ffmpeg predefined video size
+* Add FFmpeg predefined video size
 * Refactor VideoSize class

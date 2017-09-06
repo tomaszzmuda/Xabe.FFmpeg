@@ -2,7 +2,7 @@
 
 // ReSharper disable InconsistentNaming
 
-namespace Xabe.FFMpeg.Model
+namespace Xabe.FFmpeg.Model
 {
     [UsedImplicitly]
     internal class ProbeModel

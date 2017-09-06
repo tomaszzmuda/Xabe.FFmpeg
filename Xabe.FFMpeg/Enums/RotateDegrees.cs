@@ -1,4 +1,4 @@
-﻿namespace Xabe.FFMpeg.Enums
+﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
     ///     Defines types of avaiable rotation

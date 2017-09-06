@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xabe.FFMpeg.Model
+namespace Xabe.FFmpeg.Model
 {
     /// <summary>
     ///     Information about media file

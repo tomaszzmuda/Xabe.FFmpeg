@@ -9,9 +9,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using Xabe.FFMpeg.Enums;
+using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFMpeg
+namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
     public class Conversion: IConversion
@@ -24,7 +24,7 @@ namespace Xabe.FFMpeg
         private string _codec;
         private string _copy;
         private string _disabled;
-        private FFMpeg _ffmpeg;
+        private FFmpeg _ffmpeg;
         private string _frameCount;
         private string _input;
         private string _loop;
@@ -40,7 +40,7 @@ namespace Xabe.FFMpeg
         private string _video;
         private string _videoSpeed;
 
-        private FFMpeg FFmpeg
+        private FFmpeg FFmpeg
         {
             get
             {
@@ -48,7 +48,7 @@ namespace Xabe.FFMpeg
                 {
                     if(_ffmpeg == null)
                     {
-                        _ffmpeg = new FFMpeg();
+                        _ffmpeg = new FFmpeg();
                         _ffmpeg.OnProgress += OnProgress;
                         _ffmpeg.OnDataReceived += OnDataReceived;
                     }

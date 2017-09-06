@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+
+    <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
+
+    <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

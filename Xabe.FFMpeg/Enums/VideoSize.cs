@@ -2,7 +2,7 @@
 
 using JetBrains.Annotations;
 
-namespace Xabe.FFMpeg.Enums
+namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
     ///     Video size
@@ -11,12 +11,12 @@ namespace Xabe.FFMpeg.Enums
     public class VideoSize
     {
         /// <summary>
-        ///     FFMpeg resolution VideoSize
+        ///     FFmpeg resolution VideoSize
         /// </summary>
         internal readonly string Resolution;
 
         /// <summary>
-        ///     VideoSize in ffmpeg format
+        ///     VideoSize in FFmpeg format
         /// </summary>
         /// <param name="width">Width of output video</param>
         /// <param name="height">Height of output video</param>
