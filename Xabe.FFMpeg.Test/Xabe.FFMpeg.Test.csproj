@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xabe.FFMpeg\Xabe.FFMpeg.csproj" />
+    <ProjectReference Include="..\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
   </ItemGroup>
 
 </Project>
