@@ -13,7 +13,7 @@ namespace Xabe.FFmpeg
     ///     Base FFmpeg class
     /// </summary>
     // ReSharper disable once InheritdocConsiderUsage
-    public abstract class FFBase: IDisposable
+    public abstract class FFbase: IDisposable
     {
         private const string TryMultipleConversion =
             "Current FFmpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.";
@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg
         private static string _ffprobePath;
 
         /// <summary>
-        ///     Directory contains FFmpeg and FFProbe
+        ///     Directory contains FFmpeg and FFprobe
         /// </summary>
         [CanBeNull] [UsedImplicitly] public static string FFmpegDir;
 
@@ -42,7 +42,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Initalize new FFmpeg. Search FFmpeg and ffprobe in PATH
         /// </summary>
-        protected FFBase()
+        protected FFbase()
         {
             if(!string.IsNullOrWhiteSpace(FFProbePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
@@ -100,7 +100,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     FilePath to FFProbe
+        ///     FilePath to FFprobe
         /// </summary>
         protected string FFProbePath
         {

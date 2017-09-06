@@ -33,7 +33,7 @@ namespace Xabe.FFmpeg
             {
                 if(_videoProperties == null)
                 {
-                    _videoProperties = new FFProbe().GetProperties(FileInfo.FullName);
+                    _videoProperties = new FFprobe().GetProperties(FileInfo.FullName);
                 }
                 return _videoProperties;
             }
