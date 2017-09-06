@@ -1,7 +1,6 @@
 # Xabe.FFMpeg  [![Build Status](https://travis-ci.org/tomaszzmuda/Xabe.FFMpeg.svg?branch=master)](https://travis-ci.org/tomaszzmuda/Xabe.FFMpeg)
 
-.NET Core wrapper for FFMpeg.
-Require installed ffmpeg and added in your PATH variable.
+Dotnet core wrapper for FFMpeg. It's allow to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
 ## Using ##
 
@@ -38,6 +37,7 @@ it is possible to give your own arguments
 
 
 ## Features ##
+* Cross-platform support
 * [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Getting-an-information-about-video)
 * [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFMpeg/wiki/Extracting-audio-or-video)
 * Convert media
@@ -49,11 +49,6 @@ it is possible to give your own arguments
 * Rotate video
 * Pass parameters directly to FFMpeg
 
-## Planned features ##
-* Split 
-* Watermarks
-* Chroma key
-* Validate ffmpeg parameters
 
 ## Lincence ## 
 
