@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabe.FFmpeg", "Xabe.FFmpeg\Xabe.FFmpeg.csproj", "{F6365ED8-3EB5-44E7-9192-A70D4E24619C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabe.FFmpeg.Test", "Xabe.FFmpeg.Test\Xabe.FFmpeg.Test.csproj", "{94F5D477-BB94-4739-BA6F-130EF8FB74E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{986DB5E3-B71F-4AC6-A530-2F527D78CB9F}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		build.sh = build.sh
+		changelog.md = changelog.md
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+		Xabe.FFMpeg.sln.DotSettings = Xabe.FFMpeg.sln.DotSettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6365ED8-3EB5-44E7-9192-A70D4E24619C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6365ED8-3EB5-44E7-9192-A70D4E24619C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6365ED8-3EB5-44E7-9192-A70D4E24619C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6365ED8-3EB5-44E7-9192-A70D4E24619C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94F5D477-BB94-4739-BA6F-130EF8FB74E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94F5D477-BB94-4739-BA6F-130EF8FB74E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94F5D477-BB94-4739-BA6F-130EF8FB74E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94F5D477-BB94-4739-BA6F-130EF8FB74E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {985B19C9-4F0D-4A74-9418-AE97F0C5CC91}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Xabe.FFmpeg</AssemblyName>
+    <RootNamespace>Xabe.FFmpeg</RootNamespace>
+    <Authors>Tomasz Żmuda</Authors>
+    <Company>Xabe</Company>
+    <Description>.NET Core wrapper for FFMpeg.</Description>
+    <Copyright>Copyright 2017 (c) Tomasz Zmuda.</Copyright>
+    <PackageLicenseUrl>https://github.com/tomaszzmuda/Xabe.FFMpeg/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
+    <RepositoryType>Dependency</RepositoryType>
+    <PackageTags>media converter audio ffmpeg wrapper core video encode decode</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\Xabe.FFMpeg.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CoreCompat.System.Drawing" Version="1.0.0-beta006" />
+    <PackageReference Include="JetBrains.Annotations" Version="11.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+</Project>
