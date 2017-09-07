@@ -55,19 +55,27 @@ namespace Xabe.FFmpeg
         /// </summary>
         protected FFbase()
         {
-            if(!string.IsNullOrWhiteSpace(FFProbePath) &&
+            if(!string.IsNullOrWhiteSpace(FFprobePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
                 return;
 
             if(!string.IsNullOrWhiteSpace(FFmpegDir))
             {
-                FFProbePath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                          .First(x => x.Name.ToLower().Contains(FFprobeExecutableName.ToLower()))
-                                                          .FullName;
-                FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                         .First(x => x.Name.ToLower().Contains(FFmpegExecutableName.ToLower()))
-                                                         .FullName;
-                return;
+                try
+                {
+                    FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
+                                                              .First(x => x.Name.ToLower()
+                                                                           .Contains(FFprobeExecutableName.ToLower()))
+                                                              .FullName;
+                    FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
+                                                             .First(x => x.Name.ToLower()
+                                                                          .Contains(FFmpegExecutableName.ToLower()))
+                                                             .FullName;
+                    return;
+                }
+                catch(InvalidOperationException)
+                {
+                }
             }
 
             char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
@@ -80,13 +88,17 @@ namespace Xabe.FFmpeg
                 FindProgramsFromPath(path);
 
                 if(FFmpegPath != null &&
-                   FFProbePath != null)
+                   FFprobePath != null)
                     break;
             }
 
             if(FFmpegPath == null ||
-               FFmpegPath == null)
-                throw new ArgumentException("Cannot find FFmpeg.");
+               FFprobePath == null)
+            {
+                string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
+                string exceptionMessage = $"Cannot find FFmpeg in {ffmpegDir}PATH";
+                throw new ArgumentException(exceptionMessage);
+            }
         }
 
         /// <summary>
@@ -113,7 +125,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     FilePath to FFprobe
         /// </summary>
-        protected string FFProbePath
+        protected string FFprobePath
         {
             get
             {
@@ -195,7 +207,7 @@ namespace Xabe.FFmpeg
                 return;
             FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-            FFProbePath = files.FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
+            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
                                ?.FullName;
             FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith("FFmpeg", true, CultureInfo.InvariantCulture))
                               ?.FullName;

@@ -79,7 +79,7 @@ namespace Xabe.FFmpeg
 
         private string RunProcess(string args)
         {
-            RunProcess(args, FFProbePath, rStandardOutput: true);
+            RunProcess(args, FFprobePath, rStandardOutput: true);
 
             string output;
 
