@@ -1,6 +1,16 @@
 Change Log / Release Notes
 ==========================
 
+## Xabe.FFmpeg 2.0.2
+
+* More clear exceptions if cannot find FFmpeg executables
+* Ability to change name of FFmpeg executables
+* Now FFmpeg executables name parser is case insensitive
+
+## Xabe.FFmpeg 2.0.1
+
+* Fix names in solution
+
 ## Xabe.FFmpeg 2.0.0
 
 * Time consumptions methods are now asynchronous
