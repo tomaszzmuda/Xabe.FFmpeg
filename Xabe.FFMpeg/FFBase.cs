@@ -26,6 +26,17 @@ namespace Xabe.FFmpeg
         /// </summary>
         [CanBeNull] [UsedImplicitly] public static string FFmpegDir;
 
+        /// <summary>
+        ///     Name of FFmpeg executable name (Case insensitive)
+        /// </summary>
+        [CanBeNull] [UsedImplicitly] public static string FFmpegExecutableName = "fFmpeg";
+
+        /// <summary>
+        ///     Name of FFprobe executable name (Case insensitive)
+        /// </summary>
+        [CanBeNull] [UsedImplicitly] public static string FFprobeExecutableName = "ffprobe";
+
+
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
         private readonly object _isRunningLock = new object();
@@ -51,10 +62,10 @@ namespace Xabe.FFmpeg
             if(!string.IsNullOrWhiteSpace(FFmpegDir))
             {
                 FFProbePath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                          .First(x => x.Name.Contains("ffprobe"))
+                                                          .First(x => x.Name.ToLower().Contains(FFprobeExecutableName.ToLower()))
                                                           .FullName;
                 FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                         .First(x => x.Name.Contains("FFmpeg"))
+                                                         .First(x => x.Name.ToLower().Contains(FFmpegExecutableName.ToLower()))
                                                          .FullName;
                 return;
             }
