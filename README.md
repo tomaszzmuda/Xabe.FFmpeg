@@ -33,7 +33,7 @@ or
 
 it is possible to give your own arguments
 
-	bool conversionResult = await new Conversion().Start(-i "C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv" "C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4");
+	bool conversionResult = await new Conversion().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
 
 
 ## Features ##
