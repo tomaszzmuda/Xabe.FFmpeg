@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xunit;
@@ -75,8 +76,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(result);
             Assert.True(File.Exists(output));
-            Image snapshot = Image.FromFile(output);
-            Assert.Equal(snapshot.Width, snapshot.Width);
+            Assert.Equal(1890492, (await File.ReadAllBytesAsync(output)).LongLength);
         }
 
         [Fact]
