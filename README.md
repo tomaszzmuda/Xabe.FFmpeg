@@ -1,4 +1,4 @@
-# Xabe.FFmpeg  [![Build Status](https://travis-ci.org/tomaszzmuda/Xabe.FFMpeg.svg?branch=master)](https://travis-ci.org/tomaszzmuda/Xabe.FFMpeg)
+# Xabe.FFmpeg  [![Build Status](https://travis-ci.org/tomaszzmuda/Xabe.FFmpeg.svg?branch=master)](https://travis-ci.org/tomaszzmuda/Xabe.FFmpeg)
 
 Dotnet core wrapper for FFmpeg. It's allow to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
