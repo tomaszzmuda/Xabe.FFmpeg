@@ -39,5 +39,10 @@
         ///     .mkv
         /// </summary>
         public const string Mkv = ".mkv";
+
+        /// <summary>
+        ///     .gif
+        /// </summary>
+        public const string Gif = ".gif";
     }
 }

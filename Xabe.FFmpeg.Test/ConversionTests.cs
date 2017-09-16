@@ -324,6 +324,27 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task LoopTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Gif);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.Mp4)
+                .SetLoop(1)
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var videoInfo = new VideoInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(0), videoInfo.VideoProperties.Duration);
+            Assert.Equal("gif", videoInfo.VideoProperties.VideoFormat);
+            Assert.Null(videoInfo.VideoProperties.AudioFormat);
+            Assert.Equal("16:9", videoInfo.VideoProperties.Ratio);
+            Assert.Equal(25, videoInfo.VideoProperties.FrameRate);
+            Assert.Equal(1280, videoInfo.VideoProperties.Width);
+            Assert.Equal(720, videoInfo.VideoProperties.Height);
+        }
+
+        [Fact]
         public async Task MultipleTaskTest()
         {
             string mp4Output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
