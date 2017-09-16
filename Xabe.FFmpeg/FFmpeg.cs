@@ -38,31 +38,31 @@ namespace Xabe.FFmpeg
 
         internal async Task<bool> RunProcess(string args, CancellationToken cancellationToken)
         {
-            _outputLog = new List<string>();
-            WasKilled = false;
-
-            RunProcess(args, FFmpegPath, true, true, true);
-
-            using(Process)
+            return await Task.Run(() =>
             {
-                Process.ErrorDataReceived += ProcessOutputData;
-                Process.BeginOutputReadLine();
-                Process.BeginErrorReadLine();
-                cancellationToken.Register(() =>
+                _outputLog = new List<string>();
+
+                RunProcess(args, FFmpegPath, true, true, true);
+
+                using(Process)
                 {
-                    Process.Kill();
-                    WasKilled = true;
-                });
-                await Task.Run(() => Process.WaitForExit(), cancellationToken);
+                    Process.ErrorDataReceived += ProcessOutputData;
+                    Process.BeginOutputReadLine();
+                    Process.BeginErrorReadLine();
+                    cancellationToken.Register(() =>
+                    {
+                        Process.Kill();
+                    });
+                    Process.WaitForExit();
 
-                if(WasKilled)
-                    return false;
+                    if(cancellationToken.IsCancellationRequested)
+                        return false;
 
-                if(Process.ExitCode != 0)
-                    throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-            }
-
-            return true;
+                    if(Process.ExitCode != 0)
+                        throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                }
+                return true;
+            }, cancellationToken);
         }
 
         private void ProcessOutputData(object sender, DataReceivedEventArgs e)

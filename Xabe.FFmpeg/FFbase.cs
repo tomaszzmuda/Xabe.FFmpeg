@@ -35,9 +35,6 @@ namespace Xabe.FFmpeg
 
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
-        private readonly object _wasKilledLock = new object();
-
-        private bool _wasKilled;
 
         /// <summary>
         ///     FFmpeg process
@@ -131,27 +128,6 @@ namespace Xabe.FFmpeg
                 lock(_ffprobePathLock)
                 {
                     _ffprobePath = value;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Defines if the FFmpeg was killed by application
-        /// </summary>
-        protected bool WasKilled
-        {
-            get
-            {
-                lock(_wasKilledLock)
-                {
-                    return _wasKilled;
-                }
-            }
-            set
-            {
-                lock(_wasKilledLock)
-                {
-                    _wasKilled = value;
                 }
             }
         }
