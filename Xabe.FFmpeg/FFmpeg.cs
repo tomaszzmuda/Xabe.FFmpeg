@@ -29,12 +29,12 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
-        public event ConversionHandler OnProgress;
+        internal event ConversionHandler OnProgress;
 
         /// <summary>
         ///     Fires when FFmpeg process print sonething
         /// </summary>
-        public event DataReceivedEventHandler OnDataReceived;
+        internal event DataReceivedEventHandler OnDataReceived;
 
         internal async Task<bool> RunProcess(string args, CancellationToken cancellationToken)
         {
