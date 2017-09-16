@@ -9,7 +9,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg
 {
     /// <summary>
-    ///     Allows to prepare and start IConversion. Only for advanced users.
+    ///     Allows to prepare and start IConversion.
     /// </summary>
     public interface IConversion
     {
