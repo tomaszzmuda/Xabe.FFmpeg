@@ -28,16 +28,18 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public VideoProperties VideoProperties { get {
-            lock(_propertiesLock)
+        public VideoProperties VideoProperties
+        {
+            get
             {
-                if(_videoProperties == null)
+                lock(_propertiesLock)
                 {
-                    _videoProperties = new FFprobe().GetProperties(FileInfo.FullName);
+                    if(_videoProperties == null)
+                        _videoProperties = new FFprobe().GetProperties(FileInfo.FullName);
+                    return _videoProperties;
                 }
-                return _videoProperties;
             }
-        } }
+        }
 
         /// <inheritdoc />
         public FileInfo FileInfo { get; }

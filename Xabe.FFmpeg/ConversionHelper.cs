@@ -137,7 +137,7 @@ namespace Xabe.FFmpeg
         /// <param name="delay">Delay between repeats (in seconds)</param>
         /// <returns>Conversion result</returns>
         [UsedImplicitly]
-        public static IConversion ToGif(string inputPath, string output, int loop, int delay=0)
+        public static IConversion ToGif(string inputPath, string output, int loop, int delay = 0)
         {
             return new Conversion()
                 .SetInput(inputPath)

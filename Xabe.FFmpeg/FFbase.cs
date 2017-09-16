@@ -54,7 +54,6 @@ namespace Xabe.FFmpeg
                 return;
 
             if(!string.IsNullOrWhiteSpace(FFmpegDir))
-            {
                 try
                 {
                     FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
@@ -70,7 +69,6 @@ namespace Xabe.FFmpeg
                 catch(InvalidOperationException)
                 {
                 }
-            }
 
             char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
 

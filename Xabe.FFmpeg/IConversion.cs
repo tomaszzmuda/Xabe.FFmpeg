@@ -217,7 +217,7 @@ namespace Xabe.FFmpeg
         /// <param name="count">Number of repeats</param>
         /// <param name="delay">Delay between repeats (in seconds)</param>
         /// <returns>IConversion object</returns>
-        IConversion SetLoop(int count, int delay=0);
+        IConversion SetLoop(int count, int delay = 0);
 
         /// <summary>
         ///     Finish encoding when the shortest input stream ends. (-shortest)

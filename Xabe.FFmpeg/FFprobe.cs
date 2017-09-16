@@ -109,7 +109,7 @@ namespace Xabe.FFmpeg
             FormatModel.Format format = GetFormat(videoPath);
             videoProperties.Size = long.Parse(format.size);
 
-            if (videoStream != null)
+            if(videoStream != null)
             {
                 videoProperties.VideoFormat = videoStream.codec_name;
                 videoProperties.VideoDuration = GetVideoDuration(format, videoStream);
@@ -118,7 +118,7 @@ namespace Xabe.FFmpeg
                 videoProperties.FrameRate = GetVideoFramerate(videoStream);
                 videoProperties.Ratio = GetVideoAspectRatio(videoProperties.Width, videoProperties.Height);
             }
-            if (audioStream != null)
+            if(audioStream != null)
             {
                 videoProperties.AudioFormat = audioStream.codec_name;
                 videoProperties.AudioDuration = GetAudioDuration(audioStream);

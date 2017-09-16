@@ -9,6 +9,27 @@ namespace Xabe.FFmpeg.Test
     public class ConversionHelperTests
 
     {
+        [Theory]
+        [InlineData(1, 0)]
+        [InlineData(1, 1)]
+        public async Task ToGifTest(int loopCount, int delay)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Gif);
+
+            bool result = await ConversionHelper.ToGif(Resources.Mp4.FullName, output, loopCount, delay)
+                                                .Start();
+
+            Assert.True(result);
+            var videoInfo = new VideoInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(0), videoInfo.VideoProperties.Duration);
+            Assert.Equal("gif", videoInfo.VideoProperties.VideoFormat);
+            Assert.Null(videoInfo.VideoProperties.AudioFormat);
+            Assert.Equal("16:9", videoInfo.VideoProperties.Ratio);
+            Assert.Equal(25, videoInfo.VideoProperties.FrameRate);
+            Assert.Equal(1280, videoInfo.VideoProperties.Width);
+            Assert.Equal(720, videoInfo.VideoProperties.Height);
+        }
+
         [Fact]
         public async Task AddAudio()
         {
@@ -105,27 +126,6 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), outputInfo.VideoProperties.Duration);
             Assert.Equal("theora", outputInfo.VideoProperties.VideoFormat);
             Assert.Equal("vorbis", outputInfo.VideoProperties.AudioFormat);
-        }
-
-        [Theory]
-        [InlineData(1, 0)]
-        [InlineData(1, 1)]
-        public async Task ToGifTest(int loopCount, int delay)
-        {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Gif);
-
-            bool result = await ConversionHelper.ToGif(Resources.Mp4.FullName, output, loopCount, delay)
-                                                .Start();
-
-            Assert.True(result);
-            var videoInfo = new VideoInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(0), videoInfo.VideoProperties.Duration);
-            Assert.Equal("gif", videoInfo.VideoProperties.VideoFormat);
-            Assert.Null(videoInfo.VideoProperties.AudioFormat);
-            Assert.Equal("16:9", videoInfo.VideoProperties.Ratio);
-            Assert.Equal(25, videoInfo.VideoProperties.FrameRate);
-            Assert.Equal(1280, videoInfo.VideoProperties.Width);
-            Assert.Equal(720, videoInfo.VideoProperties.Height);
         }
 
         [Fact]

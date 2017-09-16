@@ -138,27 +138,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task FFmpegDataReceivedTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
-            IConversion conversion = new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetOutput(outputPath)
-                .SetCodec(VideoCodec.MpegTs);
-
-            var ffmpegOuput = "";
-
-            conversion.OnDataReceived += (sender, args) =>
-            {
-                ffmpegOuput += $"{args.Data}{Environment.NewLine}";   
-            };
-            bool conversionResult = await conversion.Start();
-
-            Assert.True(conversionResult);
-            Assert.Contains($"video:365kB audio:567kB subtitle:0kB other streams:0kB global headers:0kB", ffmpegOuput);
-        }
-
-        [Fact]
         public async Task DisableAudioChannelTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
@@ -190,46 +169,6 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
             Assert.Null(videoInfo.VideoProperties.VideoFormat);
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-        }
-
-        [Fact]
-        public async Task StopFFmpegProcessTest()
-        {
-            var cancellationTokenSource = new CancellationTokenSource();
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-            IConversion conversion = new Conversion();
-            Task<bool> result = conversion
-                .SetInput(Resources.MkvWithAudio)
-                .SetScale(VideoSize.Uhd4320)
-                .SetVideo(VideoCodec.LibTheora, 2400)
-                .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
-                .SetOutput(outputPath)
-                .SetSpeed(Speed.VerySlow)
-                .UseMultiThread(false)
-                .Start(cancellationTokenSource.Token);
-
-            cancellationTokenSource.Cancel();
-            Assert.False(await result);
-        }
-
-        [Fact]
-        public async Task TimeoutTest()
-        {
-            var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(1000);
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-            IConversion conversion = new Conversion();
-            Task<bool> result = conversion
-                .SetInput(Resources.MkvWithAudio)
-                .SetScale(VideoSize.Uhd4320)
-                .SetVideo(VideoCodec.LibTheora, 2400)
-                .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
-                .SetOutput(outputPath)
-                .SetSpeed(Speed.VerySlow)
-                .UseMultiThread(false)
-                .Start(cancellationTokenSource.Token);
-
-            Assert.False(await result);
         }
 
         [Fact]
@@ -277,6 +216,24 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task FFmpegDataReceivedTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
+            IConversion conversion = new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetOutput(outputPath)
+                .SetCodec(VideoCodec.MpegTs);
+
+            var ffmpegOuput = "";
+
+            conversion.OnDataReceived += (sender, args) => { ffmpegOuput += $"{args.Data}{Environment.NewLine}"; };
+            bool conversionResult = await conversion.Start();
+
+            Assert.True(conversionResult);
+            Assert.Contains($"video:365kB audio:567kB subtitle:0kB other streams:0kB global headers:0kB", ffmpegOuput);
+        }
+
+        [Fact]
         public async Task IncompatibleParametersTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
@@ -308,22 +265,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task MinimumOptionsTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetOutput(outputPath)
-                .Start();
-
-            Assert.True(conversionResult);
-            var videoInfo = new VideoInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-        }
-
-        [Fact]
         public async Task LoopTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Gif);
@@ -345,20 +286,36 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task MinimumOptionsTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var videoInfo = new VideoInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
+            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
+            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+        }
+
+        [Fact]
         public async Task MultipleTaskTest()
         {
             string mp4Output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             string tsOutput = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
 
-                    IConversion conversion = new Conversion();
-                    Task<bool> toMp4 = conversion
-                        .SetInput(Resources.MkvWithAudio)
-                        .SetOutput(mp4Output)
-                        .Start();
+            IConversion conversion = new Conversion();
+            Task<bool> toMp4 = conversion
+                .SetInput(Resources.MkvWithAudio)
+                .SetOutput(mp4Output)
+                .Start();
 
-                    conversion.SetOutput(tsOutput);
-                    Assert.True(await conversion.Start());
-                    Assert.True(await toMp4);
+            conversion.SetOutput(tsOutput);
+            Assert.True(await conversion.Start());
+            Assert.True(await toMp4);
         }
 
         [Fact]
@@ -438,6 +395,46 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
             Assert.Equal(640, videoInfo.VideoProperties.Width);
             Assert.Equal(480, videoInfo.VideoProperties.Height);
+        }
+
+        [Fact]
+        public async Task StopFFmpegProcessTest()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            IConversion conversion = new Conversion();
+            Task<bool> result = conversion
+                .SetInput(Resources.MkvWithAudio)
+                .SetScale(VideoSize.Uhd4320)
+                .SetVideo(VideoCodec.LibTheora, 2400)
+                .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
+                .SetOutput(outputPath)
+                .SetSpeed(Speed.VerySlow)
+                .UseMultiThread(false)
+                .Start(cancellationTokenSource.Token);
+
+            cancellationTokenSource.Cancel();
+            Assert.False(await result);
+        }
+
+        [Fact]
+        public async Task TimeoutTest()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(1000);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            IConversion conversion = new Conversion();
+            Task<bool> result = conversion
+                .SetInput(Resources.MkvWithAudio)
+                .SetScale(VideoSize.Uhd4320)
+                .SetVideo(VideoCodec.LibTheora, 2400)
+                .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
+                .SetOutput(outputPath)
+                .SetSpeed(Speed.VerySlow)
+                .UseMultiThread(false)
+                .Start(cancellationTokenSource.Token);
+
+            Assert.False(await result);
         }
 
         [Fact]

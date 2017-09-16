@@ -125,7 +125,7 @@ namespace Xabe.FFmpeg
             else
                 _rotate = $"-vf \"transpose={(int) rotateDegrees}\" ";
             return this;
-        }   
+        }
 
         /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)

@@ -67,14 +67,14 @@ namespace Xabe.FFmpeg
 
         private void ProcessOutputData(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data == null)
+            if(e.Data == null)
                 return;
 
             OnDataReceived?.Invoke(this, e);
 
             _outputLog.Add(e.Data);
 
-            if (OnProgress == null)
+            if(OnProgress == null)
                 return;
 
             CalculateTime(e);
@@ -83,15 +83,15 @@ namespace Xabe.FFmpeg
         private void CalculateTime(DataReceivedEventArgs e)
         {
             var regex = new Regex(TimeFormatRegex);
-            if (e.Data.Contains("Duration"))
+            if(e.Data.Contains("Duration"))
             {
                 Match match = regex.Match(e.Data);
                 _totalTime = TimeSpan.Parse(match.Value);
             }
-            else if (e.Data.Contains("frame"))
+            else if(e.Data.Contains("frame"))
             {
                 Match match = regex.Match(e.Data);
-                if (match.Success)
+                if(match.Success)
                     OnProgress(TimeSpan.Parse(match.Value), _totalTime);
             }
         }
