@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
@@ -192,8 +193,9 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task DisposeFFmpegProcessTest()
+        public async Task StopFFmpegProcessTest()
         {
+            var cancellationTokenSource = new CancellationTokenSource();
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
             IConversion conversion = new Conversion();
             Task<bool> result = conversion
@@ -204,15 +206,29 @@ namespace Xabe.FFmpeg.Test
                 .SetOutput(outputPath)
                 .SetSpeed(Speed.VerySlow)
                 .UseMultiThread(false)
-                .Start();
+                .Start(cancellationTokenSource.Token);
 
-            while(!conversion.IsRunning)
-            {
-            }
+            cancellationTokenSource.Cancel();
+            Assert.False(await result);
+        }
 
-            Assert.True(conversion.IsRunning);
-            conversion.Dispose();
-            Assert.False(conversion.IsRunning);
+        [Fact]
+        public async Task TimeoutTest()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(1000);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+            IConversion conversion = new Conversion();
+            Task<bool> result = conversion
+                .SetInput(Resources.MkvWithAudio)
+                .SetScale(VideoSize.Uhd4320)
+                .SetVideo(VideoCodec.LibTheora, 2400)
+                .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
+                .SetOutput(outputPath)
+                .SetSpeed(Speed.VerySlow)
+                .UseMultiThread(false)
+                .Start(cancellationTokenSource.Token);
+
             Assert.False(await result);
         }
 
@@ -313,10 +329,6 @@ namespace Xabe.FFmpeg.Test
             string mp4Output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             string tsOutput = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
 
-            await Assert.ThrowsAsync<MultipleConversionException>(async () =>
-            {
-                try
-                {
                     IConversion conversion = new Conversion();
                     Task<bool> toMp4 = conversion
                         .SetInput(Resources.MkvWithAudio)
@@ -324,21 +336,8 @@ namespace Xabe.FFmpeg.Test
                         .Start();
 
                     conversion.SetOutput(tsOutput);
-                    await conversion.Start();
-                    await toMp4;
-                }
-                catch(MultipleConversionException e)
-                {
-                    Assert.Equal(
-                        $"-i \"{Resources.MkvWithAudio.FullName}\" \"{tsOutput}\"",
-                        e.InputParameters);
-                    Assert.Equal(
-                        "Current FFmpeg process associated to this object is already in use. Please wait till the end of file conversion or create another VideoInfo/Conversion instance and run process.",
-                        e.Message);
-                    // ReSharper disable once PossibleIntendedRethrow
-                    throw e;
-                }
-            });
+                    Assert.True(await conversion.Start());
+                    Assert.True(await toMp4);
         }
 
         [Fact]

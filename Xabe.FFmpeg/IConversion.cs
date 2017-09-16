@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
@@ -12,11 +13,6 @@ namespace Xabe.FFmpeg
     /// </summary>
     public interface IConversion
     {
-        /// <summary>
-        ///     Returns true if the associated process is still alive/running.
-        /// </summary>
-        bool IsRunning { get; }
-
         /// <summary>
         ///     Clear saved parameters
         /// </summary>
@@ -237,9 +233,9 @@ namespace Xabe.FFmpeg
         IConversion Concat(params string[] paths);
 
         /// <summary>
-        ///     Build command
+        ///     Build FFmpeg arguments
         /// </summary>
-        /// <returns>Command</returns>
+        /// <returns>Arguments</returns>
         string Build();
 
         /// <summary>
@@ -249,16 +245,18 @@ namespace Xabe.FFmpeg
         Task<bool> Start();
 
         /// <summary>
+        ///     Start conversion
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Conversion result</returns>
+        Task<bool> Start(CancellationToken cancellationToken);
+
+        /// <summary>
         ///     Start an FFmpeg process with specified arguments
         /// </summary>
         /// <param name="parameters">FFmpeg parameters eg. "-i sample.mp4 -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000"</param>
         /// <returns>Conversion result</returns>
         Task<bool> Start(string parameters);
-
-        /// <summary>
-        ///     Kill FFmpeg process
-        /// </summary>
-        void Dispose();
 
         /// <summary>
         ///     Rotate video

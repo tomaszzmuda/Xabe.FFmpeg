@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Xabe.FFmpeg.Enums;
@@ -102,9 +103,24 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public async Task<bool> Start(CancellationToken cancellationToken)
+        {
+            return await Start(Build(), cancellationToken); ;
+        }
+
+        /// <inheritdoc />
         public async Task<bool> Start(string parameters)
         {
-            bool processing = await FFmpeg.RunProcess(parameters);
+            return await Start(parameters, new CancellationToken());
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> Start(string parameters, CancellationToken cancellationToken)
+        {
+            var ffmpeg = new FFmpeg();
+            ffmpeg.OnProgress += OnProgress;
+            ffmpeg.OnDataReceived += OnDataReceived;
+            bool processing = await ffmpeg.RunProcess(parameters, cancellationToken);
             return processing;
         }
 
@@ -118,15 +134,6 @@ namespace Xabe.FFmpeg
                 .Where(x => x.FieldType == typeof(string));
             foreach(FieldInfo fieldinfo in fields)
                 fieldinfo.SetValue(this, null);
-        }
-
-        /// <inheritdoc />
-        public bool IsRunning => FFmpeg.IsRunning;
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            FFmpeg.Dispose();
         }
 
         /// <inheritdoc />

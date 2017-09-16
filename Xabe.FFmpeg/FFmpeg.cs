@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Exceptions;
 
@@ -35,7 +36,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         public event DataReceivedEventHandler OnDataReceived;
 
-        internal async Task<bool> RunProcess(string args)
+        internal async Task<bool> RunProcess(string args, CancellationToken cancellationToken)
         {
             _outputLog = new List<string>();
             WasKilled = false;
@@ -44,10 +45,15 @@ namespace Xabe.FFmpeg
 
             using(Process)
             {
-                Process.ErrorDataReceived += OutputData;
+                Process.ErrorDataReceived += ProcessOutputData;
                 Process.BeginOutputReadLine();
                 Process.BeginErrorReadLine();
-                await Task.Run(() => Process.WaitForExit());
+                cancellationToken.Register(() =>
+                {
+                    Process.Kill();
+                    WasKilled = true;
+                });
+                await Task.Run(() => Process.WaitForExit(), cancellationToken);
 
                 if(WasKilled)
                     return false;
@@ -59,29 +65,33 @@ namespace Xabe.FFmpeg
             return true;
         }
 
-        private void OutputData(object sender, DataReceivedEventArgs e)
+        private void ProcessOutputData(object sender, DataReceivedEventArgs e)
         {
-            if(e.Data == null)
+            if (e.Data == null)
                 return;
 
             OnDataReceived?.Invoke(this, e);
 
             _outputLog.Add(e.Data);
 
-            if(OnProgress == null ||
-               !IsRunning)
+            if (OnProgress == null)
                 return;
 
+            CalculateTime(e);
+        }
+
+        private void CalculateTime(DataReceivedEventArgs e)
+        {
             var regex = new Regex(TimeFormatRegex);
-            if(e.Data.Contains("Duration"))
+            if (e.Data.Contains("Duration"))
             {
                 Match match = regex.Match(e.Data);
                 _totalTime = TimeSpan.Parse(match.Value);
             }
-            else if(e.Data.Contains("frame"))
+            else if (e.Data.Contains("frame"))
             {
                 Match match = regex.Match(e.Data);
-                if(match.Success)
+                if (match.Success)
                     OnProgress(TimeSpan.Parse(match.Value), _totalTime);
             }
         }
