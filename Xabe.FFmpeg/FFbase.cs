@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
-using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {

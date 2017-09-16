@@ -260,6 +260,14 @@ namespace Xabe.FFmpeg
         Task<bool> Start(string parameters);
 
         /// <summary>
+        ///     Start an FFmpeg process with specified arguments
+        /// </summary>
+        /// <param name="parameters">FFmpeg parameters eg. "-i sample.mp4 -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000"</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>Conversion result</returns>
+        Task<bool> Start(string parameters, CancellationToken cancellationToken);
+
+        /// <summary>
         ///     Rotate video
         /// </summary>
         /// <param name="rotateDegrees">Rotate type</param>

@@ -18,14 +18,12 @@ namespace Xabe.FFmpeg
     public class Conversion: IConversion
     {
         private readonly object _builderLock = new object();
-        private readonly object _ffmpegLock = new object();
         private string _audio;
         private string _audioSpeed;
         private string _bitsreamFilter;
         private string _codec;
         private string _copy;
         private string _disabled;
-        private FFmpeg _ffmpeg;
         private string _frameCount;
         private string _input;
         private string _loop;
@@ -40,23 +38,6 @@ namespace Xabe.FFmpeg
         private string _threads;
         private string _video;
         private string _videoSpeed;
-
-        private FFmpeg FFmpeg
-        {
-            get
-            {
-                lock(_ffmpegLock)
-                {
-                    if(_ffmpeg == null)
-                    {
-                        _ffmpeg = new FFmpeg();
-                        _ffmpeg.OnProgress += OnProgress;
-                        _ffmpeg.OnDataReceived += OnDataReceived;
-                    }
-                    return _ffmpeg;
-                }
-            }
-        }
 
         /// <inheritdoc />
         public string Build()
@@ -105,7 +86,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public async Task<bool> Start(CancellationToken cancellationToken)
         {
-            return await Start(Build(), cancellationToken); ;
+            return await Start(Build(), cancellationToken);
         }
 
         /// <inheritdoc />
@@ -144,7 +125,7 @@ namespace Xabe.FFmpeg
             else
                 _rotate = $"-vf \"transpose={(int) rotateDegrees}\" ";
             return this;
-        }
+        }   
 
         /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
