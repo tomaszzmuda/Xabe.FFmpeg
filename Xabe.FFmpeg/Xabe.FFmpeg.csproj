@@ -15,7 +15,6 @@
     <PackageTags>media converter audio ffmpeg wrapper core video encode decode</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>Xabe.FFmpeg.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
