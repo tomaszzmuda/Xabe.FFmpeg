@@ -369,9 +369,11 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetLoop(int count)
+        public IConversion SetLoop(int count, int delay)
         {
             _loop = $"-loop {count} ";
+            if(delay > 0)
+                _loop += $"-final_delay {delay / 100} ";
             return this;
         }
 

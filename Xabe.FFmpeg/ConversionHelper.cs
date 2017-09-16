@@ -128,6 +128,22 @@ namespace Xabe.FFmpeg
                 .SetOutput(output);
         }
 
+        /// <summary>
+        ///     Convert image video stream to gif
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="output">Output path</param>
+        /// <param name="loop">Number of repeats</param>
+        /// <param name="delay">Delay between repeats (in seconds)</param>
+        /// <returns>Conversion result</returns>
+        [UsedImplicitly]
+        public static IConversion ToGif(string inputPath, string output, int loop, int delay=0)
+        {
+            return new Conversion()
+                .SetInput(inputPath)
+                .SetLoop(1, delay)
+                .SetOutput(output);
+        }
 
         /// <summary>
         ///     Add audio to file
