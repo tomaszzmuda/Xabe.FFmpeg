@@ -38,6 +38,7 @@ namespace Xabe.FFmpeg
         private string _threads;
         private string _video;
         private string _videoSpeed;
+        private string _watermark;
 
         /// <inheritdoc />
         public string Build()
@@ -46,6 +47,7 @@ namespace Xabe.FFmpeg
             {
                 var builder = new StringBuilder();
                 builder.Append(_input);
+                builder.Append(_watermark);
                 builder.Append(_scale);
                 builder.Append(_video);
                 builder.Append(_speed);
@@ -298,6 +300,34 @@ namespace Xabe.FFmpeg
                     _copy = "-c copy ";
                     break;
             }
+            return this;
+        }
+
+        public IConversion SetWatermark(string imagePath, Position position)
+        {
+            var argument = $"-i \"{imagePath}\" -filter_complex ";
+            switch (position)
+            {
+                case Position.Bottom:
+                    argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
+                    break;
+                case Position.Center:
+                    argument += "\"overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2\" ";
+                    break;
+                case Position.LeftDown:
+                    argument += "";
+                    break;
+                case Position.LeftUp:
+                    argument += "";
+                    break;
+                case Position.RightDown:
+                    argument += "";
+                    break;
+                case Position.RightUp:
+                    argument += "";
+                    break;
+            }
+            _watermark = argument;
             return this;
         }
 

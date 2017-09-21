@@ -183,6 +183,8 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         IConversion StreamCopy(Channel type);
 
+        IConversion SetWatermark(string imagePath, Position position);
+
         /// <summary>
         ///     Change video speed
         /// </summary>

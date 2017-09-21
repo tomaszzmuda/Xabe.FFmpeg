@@ -43,4 +43,10 @@
     <ProjectReference Include="..\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\watermark.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
