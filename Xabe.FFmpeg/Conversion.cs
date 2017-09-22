@@ -315,16 +315,16 @@ namespace Xabe.FFmpeg
                     argument += "\"overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2\" ";
                     break;
                 case Position.LeftDown:
-                    argument += "";
+                    argument += "\"overlay=5:main_h-overlay_h\" ";
                     break;
                 case Position.LeftUp:
-                    argument += "";
+                    argument += "\"overlay=5:5\" ";
                     break;
                 case Position.RightDown:
-                    argument += "";
+                    argument += "\"overlay=(main_w-overlay_w):main_h-overlay_h\" ";
                     break;
                 case Position.RightUp:
-                    argument += "";
+                    argument += "\"overlay=(main_w-overlay_w):5\" ";
                     break;
             }
             _watermark = argument;
