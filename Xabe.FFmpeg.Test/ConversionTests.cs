@@ -30,6 +30,32 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
         }
 
+        [Theory]
+        [InlineData(Position.UpperRight)]
+        [InlineData(Position.BottomRight)]
+        [InlineData(Position.Left)]
+        [InlineData(Position.Right)]
+        [InlineData(Position.Up)]
+        [InlineData(Position.BottomLeft)]
+        [InlineData(Position.UpperLeft)]
+        [InlineData(Position.Center)]
+        [InlineData(Position.Bottom)]
+        public async Task WatermarkTest(Position position)
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetWatermark(Resources.PngSample.FullName, position)
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var videoInfo = new VideoInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
+            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
+            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+        }
+
         [Fact]
         public async Task ChangeOutputFramesCountTest()
         {
@@ -291,32 +317,6 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .SetOutput(outputPath)
-                .Start();
-
-            Assert.True(conversionResult);
-            var videoInfo = new VideoInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-        }
-
-        [Theory]
-        [InlineData(Position.RightUp)]
-        [InlineData(Position.RightDown)]
-        [InlineData(Position.Left)]
-        [InlineData(Position.Right)]
-        [InlineData(Position.Up)]
-        [InlineData(Position.LeftDown)]
-        [InlineData(Position.LeftUp)]
-        [InlineData(Position.Center)]
-        [InlineData(Position.Bottom)]
-        public async Task WatermarkTest(Position position)
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetWatermark(Resources.PngSample.FullName, position)
                 .SetOutput(outputPath)
                 .Start();
 

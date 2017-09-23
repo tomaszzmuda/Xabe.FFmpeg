@@ -303,10 +303,11 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <inheritdoc />
         public IConversion SetWatermark(string imagePath, Position position)
         {
-            var argument = $"-i \"{imagePath}\" -filter_complex ";
-            switch (position)
+            string argument = $"-i \"{imagePath}\" -filter_complex ";
+            switch(position)
             {
                 case Position.Bottom:
                     argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
@@ -314,16 +315,16 @@ namespace Xabe.FFmpeg
                 case Position.Center:
                     argument += "\"overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2\" ";
                     break;
-                case Position.LeftDown:
+                case Position.BottomLeft:
                     argument += "\"overlay=5:main_h-overlay_h\" ";
                     break;
-                case Position.LeftUp:
+                case Position.UpperLeft:
                     argument += "\"overlay=5:5\" ";
                     break;
-                case Position.RightDown:
+                case Position.BottomRight:
                     argument += "\"overlay=(main_w-overlay_w):main_h-overlay_h\" ";
                     break;
-                case Position.RightUp:
+                case Position.UpperRight:
                     argument += "\"overlay=(main_w-overlay_w):5\" ";
                     break;
                 case Position.Left:

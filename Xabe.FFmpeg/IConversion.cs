@@ -183,6 +183,12 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         IConversion StreamCopy(Channel type);
 
+        /// <summary>
+        ///     Melt watermark into video file
+        /// </summary>
+        /// <param name="imagePath">Watermark</param>
+        /// <param name="position">Position of watermark</param>
+        /// <returns>IConversion object</returns>
         IConversion SetWatermark(string imagePath, Position position);
 
         /// <summary>

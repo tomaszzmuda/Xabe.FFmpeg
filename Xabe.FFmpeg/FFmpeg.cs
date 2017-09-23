@@ -49,10 +49,7 @@ namespace Xabe.FFmpeg
                     Process.ErrorDataReceived += ProcessOutputData;
                     Process.BeginOutputReadLine();
                     Process.BeginErrorReadLine();
-                    cancellationToken.Register(() =>
-                    {
-                        Process.Kill();
-                    });
+                    cancellationToken.Register(() => { Process.Kill(); });
                     Process.WaitForExit();
 
                     if(cancellationToken.IsCancellationRequested)

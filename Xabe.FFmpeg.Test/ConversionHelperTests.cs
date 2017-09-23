@@ -58,19 +58,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task WatermarkTest()
-        {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp3);
-            bool result = await ConversionHelper.SetWatermark(Resources.Mp4WithAudio.FullName, Resources.PngSample.FullName, Position.Center, output)
-                                                .Start();
-
-            Assert.True(result);
-            var outputInfo = new VideoInfo(output);
-            Assert.Equal("mp3", outputInfo.VideoProperties.AudioFormat);
-            Assert.Null(outputInfo.VideoProperties.VideoFormat);
-        }
-
-        [Fact]
         public async Task ExtractVideo()
         {
             FileInfo fileInfo = Resources.Mp4WithAudio;
@@ -169,6 +156,19 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(13), outputInfo.VideoProperties.Duration);
             Assert.Equal("vp8", outputInfo.VideoProperties.VideoFormat);
             Assert.Equal("vorbis", outputInfo.VideoProperties.AudioFormat);
+        }
+
+        [Fact]
+        public async Task WatermarkTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp3);
+            bool result = await ConversionHelper.SetWatermark(Resources.Mp4WithAudio.FullName, Resources.PngSample.FullName, Position.Center, output)
+                                                .Start();
+
+            Assert.True(result);
+            var outputInfo = new VideoInfo(output);
+            Assert.Equal("mp3", outputInfo.VideoProperties.AudioFormat);
+            Assert.Null(outputInfo.VideoProperties.VideoFormat);
         }
     }
 }
