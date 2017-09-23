@@ -326,6 +326,15 @@ namespace Xabe.FFmpeg
                 case Position.RightUp:
                     argument += "\"overlay=(main_w-overlay_w):5\" ";
                     break;
+                case Position.Left:
+                    argument += "\"overlay=5:(main_h-overlay_h)/2\" ";
+                    break;
+                case Position.Right:
+                    argument += "\"overlay=(main_w-overlay_w-5):(main_h-overlay_h)/2\" ";
+                    break;
+                case Position.Up:
+                    argument += "\"overlay=(main_w-overlay_w)/2:5\" ";
+                    break;
             }
             _watermark = argument;
             return this;

@@ -4,6 +4,9 @@
     {
         LeftUp,
         RightUp,
+        Right,
+        Left,
+        Up,
         RightDown,
         LeftDown,
         Center,
