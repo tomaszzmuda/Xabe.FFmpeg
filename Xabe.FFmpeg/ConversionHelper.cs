@@ -113,6 +113,25 @@ namespace Xabe.FFmpeg
                 .SetOutput(output);
         }
 
+
+        /// <summary>
+        ///     Melt watermark into video
+        /// </summary>
+        /// <param name="inputPath">Input video path</param>
+        /// <param name="position">Position of watermark</param>
+        /// <param name="output">Output file</param>
+        /// <param name="inputImage">Watermark</param>
+        /// <returns>Conversion result</returns>
+        [UsedImplicitly]
+        public static IConversion SetWatermark(string inputPath, string inputImage, Position position, string output)
+        {
+            return new Conversion()
+                .SetInput(inputPath)
+                .StreamCopy(Channel.Both)
+                .SetWatermark(inputImage, position)
+                .SetOutput(output);
+        }
+
         /// <summary>
         ///     Extract audio from file
         /// </summary>
