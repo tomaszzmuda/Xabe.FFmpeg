@@ -2,6 +2,9 @@ language: csharp
 mono: none
 dotnet: 2.0.0
 dist: trusty
+env:
+  global:
+    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 before_install:
   - sudo add-apt-repository ppa:mc3man/trusty-media -y
   - sudo apt-get -qq update
