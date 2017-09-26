@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/tomaszzmuda/Xabe.FFmpeg.svg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/issues)
 [![GitHub stars](https://img.shields.io/github/stars/tomaszzmuda/Xabe.FFmpeg.svg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/stargazers)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/LICENSE.md)
+[![HitCount](http://hits.dwyl.io/tomaszzmuda/Xabe.FFmpeg.svg)](http://hits.dwyl.io/tomaszzmuda/Xabe.FFmpeg)
 
 Dotnet core wrapper for FFmpeg. It's allow to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
