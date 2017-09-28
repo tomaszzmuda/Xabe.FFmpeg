@@ -16,6 +16,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
+    <PackageIconUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg/blob/master/Xabe.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
