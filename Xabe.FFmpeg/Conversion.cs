@@ -35,11 +35,11 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private string _size;
         private string _speed;
+        private string _split;
         private string _threads;
         private string _video;
         private string _videoSpeed;
         private string _watermark;
-        private string _split;
 
         /// <inheritdoc />
         public string Build()
