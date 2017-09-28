@@ -168,7 +168,7 @@ namespace Xabe.FFmpeg.Test
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
             Assert.Equal("mp3", outputInfo.VideoProperties.AudioFormat);
-            Assert.Null(outputInfo.VideoProperties.VideoFormat);
+            Assert.Equal("png", outputInfo.VideoProperties.VideoFormat);
         }
     }
 }

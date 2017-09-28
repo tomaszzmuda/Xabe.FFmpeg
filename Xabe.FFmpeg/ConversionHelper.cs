@@ -127,7 +127,6 @@ namespace Xabe.FFmpeg
         {
             return new Conversion()
                 .SetInput(inputPath)
-                .StreamCopy(Channel.Both)
                 .SetWatermark(inputImage, position)
                 .SetOutput(output);
         }
