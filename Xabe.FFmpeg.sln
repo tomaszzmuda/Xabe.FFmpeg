@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 		Xabe.FFMpeg.sln.DotSettings = Xabe.FFMpeg.sln.DotSettings
+		Xabe.FFmpeg\Resources\Xabe.png = Xabe.FFmpeg\Resources\Xabe.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabe.FFmpeg.Test", "Xabe.FFmpeg.Test\Xabe.FFmpeg.Test.csproj", "{E2DF5E93-351E-4086-8D5C-6FA6BFA4B117}"
