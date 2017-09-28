@@ -1,6 +1,13 @@
 Change Log / Release Notes
 ==========================
 
+
+## Xabe.FFmpeg 2.0.4
+
+* Few tests
+* Watermarks
+* Icon!
+
 ## Xabe.FFmpeg 2.0.3
 
 * Remove useless dependencies causing crashes during installing package on .NET Framework target projects

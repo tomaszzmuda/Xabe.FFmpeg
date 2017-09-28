@@ -55,7 +55,7 @@ it is possible to give your own arguments
 * Change speed
 * Rotate video
 * Pass parameters directly to FFmpeg
-
+* Set watermark for video file
 
 ## Lincence ## 
 
