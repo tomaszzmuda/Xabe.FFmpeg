@@ -276,5 +276,22 @@ namespace Xabe.FFmpeg
 
             return size;
         }
+
+        /// <summary>
+        ///     Get part of video
+        /// </summary>
+        /// <param name="inputPath">Video</param>
+        /// <param name="outputPath">Output file</param>
+        /// <param name="startTime">Start point</param>
+        /// <param name="duration">Duration of new video</param>
+        /// <returns></returns>
+        public static IConversion Split(string inputPath, TimeSpan startTime, TimeSpan duration, string outputPath)
+        {
+            return new Conversion()
+                .SetInput(inputPath)
+                .StreamCopy(Channel.Video)
+                .Split(startTime, duration)
+                .SetOutput(outputPath);
+        }
     }
 }

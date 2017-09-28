@@ -281,5 +281,13 @@ namespace Xabe.FFmpeg
         /// <param name="rotateDegrees">Rotate type</param>
         /// <returns>Conversion result</returns>
         IConversion Rotate(RotateDegrees rotateDegrees);
+
+        /// <summary>
+        ///     Get part of video
+        /// </summary>
+        /// <param name="startTime">Start point</param>
+        /// <param name="duration">Duration of new video</param>
+        /// <returns></returns>
+        IConversion Split(TimeSpan startTime, TimeSpan duration);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
@@ -169,6 +170,20 @@ namespace Xabe.FFmpeg.Test
             var outputInfo = new VideoInfo(output);
             Assert.Equal("mp3", outputInfo.VideoProperties.AudioFormat);
             Assert.Equal("png", outputInfo.VideoProperties.VideoFormat);
+        }
+
+        [Fact]
+        public async Task SplitVideoTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool result = await ConversionHelper.Split(Resources.Mp4WithAudio.FullName, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8), output)
+                                                .Start();
+
+            Assert.True(result);
+            var outputInfo = new VideoInfo(output);
+            Assert.Equal("aac", outputInfo.VideoProperties.AudioFormat);
+            Assert.Equal("h264", outputInfo.VideoProperties.VideoFormat);
+            Assert.Equal(TimeSpan.FromSeconds(8), outputInfo.VideoProperties.Duration);
         }
     }
 }

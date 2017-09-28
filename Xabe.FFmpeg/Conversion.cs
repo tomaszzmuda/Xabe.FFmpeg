@@ -39,6 +39,7 @@ namespace Xabe.FFmpeg
         private string _video;
         private string _videoSpeed;
         private string _watermark;
+        private string _split;
 
         /// <inheritdoc />
         public string Build()
@@ -66,6 +67,7 @@ namespace Xabe.FFmpeg
                 builder.Append(_shortestInput);
                 builder.Append(BuildVideoFilter());
                 builder.Append(BuildAudioFilter());
+                builder.Append(_split);
                 builder.Append(_output);
 
                 return builder.ToString();
@@ -126,6 +128,13 @@ namespace Xabe.FFmpeg
                 _rotate = "-vf \"transpose=2,transpose=2\" ";
             else
                 _rotate = $"-vf \"transpose={(int) rotateDegrees}\" ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion Split(TimeSpan startTime, TimeSpan duration)
+        {
+            _split = $"-ss {startTime} -t {duration} ";
             return this;
         }
 
