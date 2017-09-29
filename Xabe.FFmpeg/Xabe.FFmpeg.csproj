@@ -16,7 +16,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
-    <PackageIconUrl>https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/Icon.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/NugetIcon.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
