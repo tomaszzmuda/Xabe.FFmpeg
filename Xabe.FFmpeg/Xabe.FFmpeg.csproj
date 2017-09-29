@@ -6,7 +6,7 @@
     <RootNamespace>Xabe.FFmpeg</RootNamespace>
     <Authors>Tomasz Żmuda</Authors>
     <Company>Xabe</Company>
-    <Description>.NET Core wrapper for FFMpeg.</Description>
+    <Description>Cross-platform wrapper for FFmpeg.</Description>
     <Copyright>Copyright 2017 (c) Tomasz Zmuda.</Copyright>
     <PackageLicenseUrl>https://github.com/tomaszzmuda/Xabe.FFMpeg/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</PackageProjectUrl>
