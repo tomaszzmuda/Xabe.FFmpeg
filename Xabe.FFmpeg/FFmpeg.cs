@@ -78,6 +78,9 @@ namespace Xabe.FFmpeg
 
         private void CalculateTime(DataReceivedEventArgs e)
         {
+            if(e.Data.Contains("Duration: N/A"))
+                return;
+
             var regex = new Regex(TimeFormatRegex);
             if(e.Data.Contains("Duration"))
             {

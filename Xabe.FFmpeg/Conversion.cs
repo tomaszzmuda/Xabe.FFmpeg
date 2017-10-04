@@ -416,10 +416,20 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+//        /// <inheritdoc />
+//        public IConversion Concat(params string[] paths)
+//        {
+//            _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
+//            return this;
+//        }
+
         /// <inheritdoc />
         public IConversion Concat(params string[] paths)
         {
-            _input = $"-i \"concat:{string.Join(@"|", paths)}\" ";
+            string tmpFile = Path.GetTempFileName();
+            File.WriteAllLines(tmpFile, paths.Select(x => $"file '{x}'"));
+
+            _input = $"-f concat -safe 0 -i \"{tmpFile}\" -c copy ";
             return this;
         }
 
