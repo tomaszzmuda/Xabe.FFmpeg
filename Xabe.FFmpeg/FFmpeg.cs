@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg
         internal event ConversionHandler OnProgress;
 
         /// <summary>
-        ///     Fires when FFmpeg process print sonething
+        ///     Fires when FFmpeg process print something
         /// </summary>
         internal event DataReceivedEventHandler OnDataReceived;
 
@@ -47,7 +47,6 @@ namespace Xabe.FFmpeg
                 using(Process)
                 {
                     Process.ErrorDataReceived += ProcessOutputData;
-                    Process.BeginOutputReadLine();
                     Process.BeginErrorReadLine();
                     cancellationToken.Register(() => { Process.Kill(); });
                     Process.WaitForExit();
