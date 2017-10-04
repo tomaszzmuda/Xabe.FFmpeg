@@ -74,7 +74,6 @@ namespace Xabe.FFmpeg
             }
         }
 
-        // ReSharper disable once InheritdocInvalidUsage
         /// <inheritdoc cref="IConversion.OnProgress" />
         [UsedImplicitly]
         public event ConversionHandler OnProgress;
