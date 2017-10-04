@@ -78,6 +78,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public event ConversionHandler OnProgress;
 
+        /// <inheritdoc cref="IConversion.OnDataReceived" />
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
