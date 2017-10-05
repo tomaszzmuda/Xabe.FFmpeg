@@ -8,6 +8,9 @@
 
 .NET Standard wrapper for FFmpeg. It's allow to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
+
+[Link to documentation](https://github.com/tomaszzmuda/Xabe.FFmpeg/)
+
 ## Using ##
 
 You have to have installed FFmpeg and added it to your PATH variable or specify directory where FFmpeg executables are before run conversion in variable FFbase.FFmpegDir.
