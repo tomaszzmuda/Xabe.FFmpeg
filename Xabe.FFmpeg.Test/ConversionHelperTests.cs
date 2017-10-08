@@ -87,6 +87,20 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task ChangeSizeTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
+            string input = Resources.MkvWithAudio.FullName;
+
+            bool result = await ConversionHelper.ChangeSize(input, output, new VideoSize(640, 360)).Start();
+
+            Assert.True(result);
+            var outputInfo = new VideoInfo(output);
+            Assert.Equal(640, outputInfo.VideoProperties.Width);
+            Assert.Equal(360, outputInfo.VideoProperties.Height);
+        }
+
+        [Fact]
         public async Task SnapshotTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Png);

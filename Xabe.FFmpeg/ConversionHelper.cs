@@ -11,7 +11,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Derives preconfigurated Configuration objects
     /// </summary>
-    public abstract class ConversionHelper
+    public static class ConversionHelper
     {
         /// <summary>
         ///     Convert file to MP4
@@ -95,6 +95,21 @@ namespace Xabe.FFmpeg
                 .SetSpeed(16)
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
                 .SetOutput(outputPath);
+        }
+
+        /// <summary>
+        /// Change video size
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="output">Output path</param>
+        /// <param name="size">Expected size</param>
+        /// <returns>Conversion result</returns>
+        public static IConversion ChangeSize(string inputPath, string output, VideoSize size)
+        {
+            return new Conversion()
+                .SetInput(inputPath)
+                .SetScale(size)
+                .SetOutput(output);
         }
 
         /// <summary>
