@@ -304,7 +304,6 @@ namespace Xabe.FFmpeg
         {
             return new Conversion()
                 .SetInput(inputPath)
-                .StreamCopy(Channel.Video)
                 .Split(startTime, duration)
                 .SetOutput(outputPath);
         }
