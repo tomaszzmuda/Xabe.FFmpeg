@@ -264,7 +264,7 @@ namespace Xabe.FFmpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             File.Create(outputPath);
-            await Assert.ThrowsAsync<IOException>(async () =>
+            await Assert.ThrowsAsync<ConversionException>(async () =>
                 await new Conversion()
                     .SetInput(Resources.MkvWithAudio)
                     .SetOutput(outputPath)
@@ -291,13 +291,12 @@ namespace Xabe.FFmpeg.Test
                 catch(ConversionException e)
                 {
                     Assert.Equal(
-                        $"-i \"{Resources.MkvWithAudio.FullName}\" -codec:v libx264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
+                        $"-i \"{Resources.MkvWithAudio.FullName}\" -n -codec:v libx264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
                         e.InputParameters);
                     Assert.EndsWith(
                         $"Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.{Environment.NewLine}Filtering and streamcopy cannot be used together.",
                         e.Message);
-                    // ReSharper disable once PossibleIntendedRethrow
-                    throw e;
+                    throw;
                 }
             });
         }
