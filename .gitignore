@@ -12,3 +12,4 @@
 /Xabe.FFmpeg/bin/Release/netstandard2.0
 /.vs/*
 *.nupkg
+*.user
