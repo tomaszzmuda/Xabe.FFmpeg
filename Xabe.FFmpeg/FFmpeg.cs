@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace Xabe.FFmpeg
 
                 using(Process)
                 {
-                    Process.ErrorDataReceived += ProcessOutputData;
+                    Process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     Process.BeginErrorReadLine();
                     cancellationToken.Register(() => { Process.Kill(); });
                     Process.WaitForExit();
@@ -61,7 +62,7 @@ namespace Xabe.FFmpeg
             }, cancellationToken);
         }
 
-        private void ProcessOutputData(object sender, DataReceivedEventArgs e)
+        private void ProcessOutputData(DataReceivedEventArgs e, string args)
         {
             if(e.Data == null)
                 return;
@@ -73,10 +74,10 @@ namespace Xabe.FFmpeg
             if(OnProgress == null)
                 return;
 
-            CalculateTime(e);
+            CalculateTime(e, args);
         }
 
-        private void CalculateTime(DataReceivedEventArgs e)
+        private void CalculateTime(DataReceivedEventArgs e, string args)
         {
             if(e.Data.Contains("Duration: N/A"))
                 return;
@@ -84,8 +85,7 @@ namespace Xabe.FFmpeg
             var regex = new Regex(TimeFormatRegex);
             if(e.Data.Contains("Duration"))
             {
-                Match match = regex.Match(e.Data);
-                _totalTime = TimeSpan.Parse(match.Value);
+                GetDuration(e, regex, args);
             }
             else if(e.Data.Contains("frame"))
             {
@@ -93,6 +93,35 @@ namespace Xabe.FFmpeg
                 if(match.Success)
                     OnProgress(TimeSpan.Parse(match.Value), _totalTime);
             }
+        }
+
+        private void GetDuration(DataReceivedEventArgs e, Regex regex, string args)
+        {
+            string t = GetArgumentValue("-t", args);
+            if(!string.IsNullOrWhiteSpace(t))
+            {
+                _totalTime = TimeSpan.Parse(t);
+                return;
+            }
+
+            Match match = regex.Match(e.Data);
+            _totalTime = TimeSpan.Parse(match.Value);
+
+
+            string ss = GetArgumentValue("-ss", args);
+            if (!string.IsNullOrWhiteSpace(ss))
+            {
+                _totalTime -= TimeSpan.Parse(ss);
+            }
+        }
+
+        private string GetArgumentValue(string option, string args)
+        {
+            List<string> words = args.Split(' ').ToList();
+            int index = words.IndexOf(option);
+            if(index >= 0)
+                return words[index + 1];   
+            return "";
         }
     }
 }
