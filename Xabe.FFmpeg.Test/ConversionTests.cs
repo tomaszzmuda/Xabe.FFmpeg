@@ -223,6 +223,24 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
         }
 
+        [Theory]
+        [InlineData(2.5)]
+        [InlineData(0.4)]
+        public async Task ChangeMediaSpeedSpeedTestArgumentOutOfRange(double multiplication)
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetSpeed(Speed.UltraFast)
+                .UseMultiThread(true)
+                .SetOutput(outputPath)
+                .SetVideo(VideoCodec.LibX264, 2400)
+                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                .ChangeSpeed(Channel.Both, multiplication)
+                .Start());
+        }
+
         [Fact]
         public async Task FFmpegDataReceivedTest()
         {
