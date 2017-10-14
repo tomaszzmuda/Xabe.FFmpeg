@@ -56,6 +56,50 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
         }
 
+        [Theory]
+        [InlineData(12, 12, 12, 1.0, Channel.Both)]
+        [InlineData(6, 6, 6, 2.0, Channel.Both)]
+        [InlineData(24, 24, 24, 0.5, Channel.Both)]
+        public async Task ChangeMediaSpeedSpeedTest(int expectedDuration, int expectedVideoDuration, int expectedAudioDuration, double speed, Channel channel)
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetSpeed(Speed.UltraFast)
+                .UseMultiThread(true)
+                .SetOutput(outputPath)
+                .SetVideo(VideoCodec.LibX264, 2400)
+                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                .ChangeSpeed(channel, speed)
+                .Start();
+
+            Assert.True(conversionResult);
+            var videoInfo = new VideoInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(expectedDuration), videoInfo.VideoProperties.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), videoInfo.VideoProperties.AudioDuration);
+            Assert.Equal(TimeSpan.FromSeconds(expectedVideoDuration), videoInfo.VideoProperties.VideoDuration);
+            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
+            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+        }
+
+        [Theory]
+        [InlineData(2.5)]
+        [InlineData(0.4)]
+        public async Task ChangeMediaSpeedSpeedTestArgumentOutOfRange(double multiplication)
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetSpeed(Speed.UltraFast)
+                .UseMultiThread(true)
+                .SetOutput(outputPath)
+                .SetVideo(VideoCodec.LibX264, 2400)
+                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
+                .ChangeSpeed(Channel.Both, multiplication)
+                .Start());
+        }
+
         [Fact]
         public async Task ChangeOutputFramesCountTest()
         {
@@ -195,50 +239,6 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
             Assert.Null(videoInfo.VideoProperties.VideoFormat);
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-        }
-
-        [Theory]
-        [InlineData(12, 12, 12, 1.0, Channel.Both)]
-        [InlineData(6, 6, 6, 2.0, Channel.Both)]
-        [InlineData(24, 24, 24, 0.5, Channel.Both)]
-        public async Task ChangeMediaSpeedSpeedTest(int expectedDuration, int expectedVideoDuration, int expectedAudioDuration, double speed, Channel channel)
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetSpeed(Speed.UltraFast)
-                .UseMultiThread(true)
-                .SetOutput(outputPath)
-                .SetVideo(VideoCodec.LibX264, 2400)
-                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
-                .ChangeSpeed(channel, speed)
-                .Start();
-
-            Assert.True(conversionResult);
-            var videoInfo = new VideoInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(expectedDuration), videoInfo.VideoProperties.Duration);
-            Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), videoInfo.VideoProperties.AudioDuration);
-            Assert.Equal(TimeSpan.FromSeconds(expectedVideoDuration), videoInfo.VideoProperties.VideoDuration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-        }
-
-        [Theory]
-        [InlineData(2.5)]
-        [InlineData(0.4)]
-        public async Task ChangeMediaSpeedSpeedTestArgumentOutOfRange(double multiplication)
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-
-            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetSpeed(Speed.UltraFast)
-                .UseMultiThread(true)
-                .SetOutput(outputPath)
-                .SetVideo(VideoCodec.LibX264, 2400)
-                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
-                .ChangeSpeed(Channel.Both, multiplication)
-                .Start());
         }
 
         [Fact]
