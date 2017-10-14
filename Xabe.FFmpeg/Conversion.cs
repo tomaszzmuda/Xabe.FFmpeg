@@ -102,6 +102,10 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public async Task<bool> Start(string parameters, CancellationToken cancellationToken)
         {
+            string outputFile = _output.Substring(1, _output.Length - 2);
+            if (File.Exists(outputFile))
+                throw new IOException($"{outputFile} exists.");
+
             var ffmpeg = new FFmpeg();
             ffmpeg.OnProgress += OnProgress;
             ffmpeg.OnDataReceived += OnDataReceived;

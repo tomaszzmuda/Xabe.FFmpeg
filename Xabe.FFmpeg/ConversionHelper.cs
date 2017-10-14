@@ -98,7 +98,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        /// Change video size
+        ///     Change video size
         /// </summary>
         /// <param name="inputPath">Input path</param>
         /// <param name="output">Output path</param>
