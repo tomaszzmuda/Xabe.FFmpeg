@@ -20,6 +20,7 @@ namespace Xabe.FFmpeg
         private readonly object _builderLock = new object();
         private string _audio;
         private string _audioSpeed;
+        private string _videoSpeed;
         private string _bitsreamFilter;
         private string _codec;
         private string _copy;
@@ -38,7 +39,6 @@ namespace Xabe.FFmpeg
         private string _split;
         private string _threads;
         private string _video;
-        private string _videoSpeed;
         private string _watermark;
 
         /// <inheritdoc />
@@ -351,16 +351,39 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion ChangeVideoSpeed(double multiplication)
+        public IConversion ChangeSpeed(Channel channel, double multiplication)
         {
-            _videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)}*PTS ";
-            return this;
-        }
+            if(multiplication < 0.5 ||
+               multiplication > 2.0)
+            {
+                throw new ArgumentOutOfRangeException("Value has to be greater than 0.5 and less than 2.0.");
+            }
 
-        /// <inheritdoc />
-        public IConversion ChangeAudioSpeed(double multiplication)
-        {
-            _audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
+            double videoMultiplicator = 1;
+            if(multiplication >= 1)
+            {
+                videoMultiplicator = 1 - (multiplication - 1) / 2;
+            }
+            else
+            {
+                videoMultiplicator = 1 + (multiplication - 1) * -2;
+            }
+
+            string audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
+            string videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
+            switch (channel)
+            {
+                case Channel.Audio:
+                    _audioSpeed = audioSpeed;
+                    break;
+                case Channel.Video:
+                    _videoSpeed = videoSpeed;
+                    break;
+                case Channel.Both:
+                    _audioSpeed = audioSpeed;
+                    _videoSpeed = videoSpeed;
+                    break;
+            }
             return this;
         }
 

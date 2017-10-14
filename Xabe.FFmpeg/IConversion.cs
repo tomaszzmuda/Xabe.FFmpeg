@@ -192,18 +192,12 @@ namespace Xabe.FFmpeg
         IConversion SetWatermark(string imagePath, Position position);
 
         /// <summary>
-        ///     Change video speed
+        ///     Change speed of media
         /// </summary>
-        /// <param name="multiplication">Speed value. To double the speed of the video set this to 0.5.</param>
+        /// <param name="channel">Channel</param>
+        /// <param name="multiplaction">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
         /// <returns>IConversion object</returns>
-        IConversion ChangeVideoSpeed(double multiplication);
-
-        /// <summary>
-        ///     Change video speed
-        /// </summary>
-        /// <param name="multiplication">Speed value. (0.5 - 2.0). To double the speed of the audio set this to 2.0</param>
-        /// <returns>IConversion object</returns>
-        IConversion ChangeAudioSpeed(double multiplication);
+        IConversion ChangeSpeed(Channel channel, double multiplaction);
 
         /// <summary>
         ///     Seeks in input file to position. (-ss argument)

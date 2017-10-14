@@ -197,8 +197,11 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
         }
 
-        [Fact]
-        public async Task DoubleSlowVideoSpeedTest()
+        [Theory]
+        [InlineData(12, 12, 12, 1.0, Channel.Both)]
+        [InlineData(6, 6, 6, 2.0, Channel.Both)]
+        [InlineData(24, 24, 24, 0.5, Channel.Both)]
+        public async Task ChangeMediaSpeedSpeedTest(int expectedDuration, int expectedVideoDuration, int expectedAudioDuration, double speed, Channel channel)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
@@ -208,35 +211,14 @@ namespace Xabe.FFmpeg.Test
                 .SetOutput(outputPath)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
-                .ChangeVideoSpeed(0.5)
-                .ChangeAudioSpeed(2)
+                .ChangeSpeed(channel, speed)
                 .Start();
 
             Assert.True(conversionResult);
             var videoInfo = new VideoInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(6), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-        }
-
-        [Fact]
-        public async Task DoubleVideoSpeedTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetSpeed(Speed.UltraFast)
-                .UseMultiThread(true)
-                .SetOutput(outputPath)
-                .SetVideo(VideoCodec.LibX264, 2400)
-                .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
-                .ChangeVideoSpeed(2)
-                .ChangeAudioSpeed(0.5)
-                .Start();
-
-            Assert.True(conversionResult);
-            var videoInfo = new VideoInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(24), videoInfo.VideoProperties.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(expectedDuration), videoInfo.VideoProperties.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), videoInfo.VideoProperties.AudioDuration);
+            Assert.Equal(TimeSpan.FromSeconds(expectedVideoDuration), videoInfo.VideoProperties.VideoDuration);
             Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
         }
