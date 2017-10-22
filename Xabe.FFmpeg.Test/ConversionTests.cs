@@ -143,6 +143,16 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
         }
 
+        [Fact]
+        public async Task DifferentFormatsException()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await new Conversion()
+                    .Concat(Resources.MkvWithAudio.FullName, Resources.FlvWithAudio.FullName)
+                    .SetOutput(outputPath)
+                    .Start());
+        }
 
         [Fact]
         public async Task ConcatConversionStatusTest()

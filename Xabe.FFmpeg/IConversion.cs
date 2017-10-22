@@ -229,7 +229,7 @@ namespace Xabe.FFmpeg
         IConversion UseShortest(bool useShortest);
 
         /// <summary>
-        ///     Concat multiple media files
+        ///     Concat multiple media files. All files must have the same streams (same codecs, same time base, etc.)
         /// </summary>
         /// <param name="paths">Media files</param>
         /// <returns>IConversion object</returns>

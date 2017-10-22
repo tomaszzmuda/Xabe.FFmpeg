@@ -245,12 +245,24 @@ namespace Xabe.FFmpeg
         /// <param name="output">Concatenated inputVideos</param>
         /// <param name="inputVideos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
+        [Obsolete("This method will be remove in version 3.0.0. Please use method Xabe.FFmpeg.ConversionHelper.Concatenate instead.")]
         public static async Task<bool> JoinWith(string output, params string[] inputVideos)
+        {
+            return await Concatenate(output, inputVideos);
+        }
+
+        /// <summary>
+        ///     Concat multiple inputVideos. 
+        /// </summary>
+        /// <param name="output">Concatenated inputVideos</param>
+        /// <param name="inputVideos">Videos to add</param>
+        /// <returns>Conversion result</returns>
+        [UsedImplicitly]
+        public static async Task<bool> Concatenate(string output, params string[] inputVideos)
         {
             var pathList = new List<string>();
 
-            foreach(string path in inputVideos)
+            foreach (string path in inputVideos)
             {
                 string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
                 pathList.Add(tempFileName);

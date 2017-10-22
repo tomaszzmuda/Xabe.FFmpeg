@@ -92,7 +92,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
 
-            bool result = await ConversionHelper.JoinWith(output, Resources.MkvWithAudio.FullName, Resources.Mp4WithAudio.FullName);
+            bool result = await ConversionHelper.Concatenate(output, Resources.MkvWithAudio.FullName, Resources.Mp4WithAudio.FullName);
 
             Assert.True(result);
             var outputInfo = new VideoInfo(output);
