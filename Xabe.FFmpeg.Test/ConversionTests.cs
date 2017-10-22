@@ -162,7 +162,7 @@ namespace Xabe.FFmpeg.Test
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                 .SetOutput(outputPath)
-                .Concat(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName);
+                .Concatenate(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName);
 
             TimeSpan currentProgress;
 
@@ -182,7 +182,7 @@ namespace Xabe.FFmpeg.Test
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                 .SetOutput(outputPath)
-                .Concat(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName)
+                .Concatenate(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName)
                 .Start();
 
             Assert.True(conversionResult);
