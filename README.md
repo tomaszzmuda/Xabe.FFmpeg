@@ -20,11 +20,11 @@ Install the [Xabe.FFmpeg NuGet package](https://www.nuget.org/packages/Xabe.FFmp
 
 	PM> Install-Package Xabe.FFmpeg
 	
-Creating video info:
+Creating media info:
 
-	IVideoInfo videoInfo = new VideoInfo("videofile.mkv");
+	IMediaInfo mediaInfo = new MediaInfo("videofile.mkv");
 	
-Video info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size in VideoProperties property.
+Media info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size in Properties property.
 
 It is possible to have more elastic way to convert media. **Conversion** class is builder for FFmpeg command. You can specify all implemented FFmpeg options and run process:
 	
