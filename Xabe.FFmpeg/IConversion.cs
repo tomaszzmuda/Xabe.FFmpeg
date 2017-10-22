@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {
@@ -197,6 +198,7 @@ namespace Xabe.FFmpeg
         /// <param name="channel">Channel</param>
         /// <param name="multiplaction">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
         /// <returns>IConversion object</returns>
+        /// <exception cref="ArgumentOutOfRangeException">When speed isn't between 0.5 - 2.0.</exception>
         IConversion ChangeSpeed(Channel channel, double multiplaction);
 
         /// <summary>
@@ -233,6 +235,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="paths">Media files</param>
         /// <returns>IConversion object</returns>
+        /// <exception cref="ArgumentException">When try to concatenate different formats.</exception>
         [Obsolete("This method will be remove in version 3.0.0. Please use method Xabe.FFmpeg.IConversion.Concatenate instead.")]
         IConversion Concat(params string[] paths);
 
@@ -241,6 +244,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="paths">Media files</param>
         /// <returns>IConversion object</returns>
+        /// <exception cref="ArgumentException">When try to concatenate different formats.</exception>
         IConversion Concatenate(params string[] paths);
 
         /// <summary>
@@ -253,6 +257,10 @@ namespace Xabe.FFmpeg
         ///     Start conversion
         /// </summary>
         /// <returns>Conversion result</returns>
+        /// <exception cref="ConversionException">Occurs when FFmpeg process return error.</exception>
+        /// <exception cref="ArgumentException">Occurs when no FFmpeg executables were found.</exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
         Task<bool> Start();
 
         /// <summary>
@@ -260,6 +268,11 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Conversion result</returns>
+        /// <exception cref="ConversionException">Occurs when FFmpeg process return error.</exception>
+        /// <exception cref="ArgumentException">Occurs when no FFmpeg executables were found.</exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="TaskCanceledException">Occurs when task was cancalled.</exception>
         Task<bool> Start(CancellationToken cancellationToken);
 
         /// <summary>
@@ -267,6 +280,10 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="parameters">FFmpeg parameters eg. "-i sample.mp4 -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000"</param>
         /// <returns>Conversion result</returns>
+        /// <exception cref="ConversionException">Occurs when FFmpeg process return error.</exception>
+        /// <exception cref="ArgumentException">Occurs when no FFmpeg executables were found.</exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
         Task<bool> Start(string parameters);
 
         /// <summary>
@@ -275,6 +292,11 @@ namespace Xabe.FFmpeg
         /// <param name="parameters">FFmpeg parameters eg. "-i sample.mp4 -v 0 -vcodec mpeg4 -f mpegts udp://127.0.0.1:23000"</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Conversion result</returns>
+        /// <exception cref="ConversionException">Occurs when FFmpeg process return error.</exception>
+        /// <exception cref="ArgumentException">Occurs when no FFmpeg executables were found.</exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="TaskCanceledException">Occurs when task was cancalled.</exception>
         Task<bool> Start(string parameters, CancellationToken cancellationToken);
 
         /// <summary>

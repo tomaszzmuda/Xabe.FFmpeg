@@ -153,6 +153,7 @@ namespace Xabe.FFmpeg
         /// <param name="rStandardOutput">Should redirect standard output</param>
         /// <param name="rStandardError">Should redirect standard error</param>
         /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
         protected void RunProcess(string args, string processPath, bool rStandardInput = false,
             bool rStandardOutput = false, bool rStandardError = false)
         {
