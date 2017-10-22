@@ -208,7 +208,7 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo source = new MediaInfo(inputPath);
             if(captureTime == null)
-                captureTime = TimeSpan.FromSeconds(source.VideoProperties.VideoDuration.TotalSeconds / 3);
+                captureTime = TimeSpan.FromSeconds(source.Properties.VideoDuration.TotalSeconds / 3);
 
             size = GetSize(source, size);
 
@@ -282,22 +282,22 @@ namespace Xabe.FFmpeg
         {
             if(size == null ||
                size.Value.Height == 0 && size.Value.Width == 0)
-                size = new Size(source.VideoProperties.Width, source.VideoProperties.Height);
+                size = new Size(source.Properties.Width, source.Properties.Height);
 
             if(size.Value.Width != size.Value.Height)
             {
                 if(size.Value.Width == 0)
                 {
-                    double ratio = source.VideoProperties.Width / (double) size.Value.Width;
+                    double ratio = source.Properties.Width / (double) size.Value.Width;
 
-                    size = new Size((int) (source.VideoProperties.Width * ratio), (int) (source.VideoProperties.Height * ratio));
+                    size = new Size((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
                 }
 
                 if(size.Value.Height == 0)
                 {
-                    double ratio = source.VideoProperties.Height / (double) size.Value.Height;
+                    double ratio = source.Properties.Height / (double) size.Value.Height;
 
-                    size = new Size((int) (source.VideoProperties.Width * ratio), (int) (source.VideoProperties.Height * ratio));
+                    size = new Size((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
                 }
             }
 

@@ -24,10 +24,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Theory]
@@ -50,10 +50,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Theory]
@@ -74,12 +74,12 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(expectedDuration), videoInfo.VideoProperties.Duration);
-            Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), videoInfo.VideoProperties.AudioDuration);
-            Assert.Equal(TimeSpan.FromSeconds(expectedVideoDuration), videoInfo.VideoProperties.VideoDuration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(expectedDuration), mediaInfo.Properties.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), mediaInfo.Properties.AudioDuration);
+            Assert.Equal(TimeSpan.FromSeconds(expectedVideoDuration), mediaInfo.Properties.VideoDuration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Theory]
@@ -111,11 +111,11 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(2), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-            Assert.Equal(50, videoInfo.VideoProperties.Duration.TotalSeconds * videoInfo.VideoProperties.FrameRate);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(2), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            Assert.Equal(50, mediaInfo.Properties.Duration.TotalSeconds * mediaInfo.Properties.FrameRate);
         }
 
         [Fact]
@@ -137,10 +137,10 @@ namespace Xabe.FFmpeg.Test
                                                     .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
@@ -171,7 +171,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(conversionResult);
 //            Assert.True(currentProgress > TimeSpan.Zero);
-            Assert.True(new MediaInfo(outputPath).VideoProperties.Duration == TimeSpan.FromSeconds(26));
+            Assert.True(new MediaInfo(outputPath).Properties.Duration == TimeSpan.FromSeconds(26));
         }
 
         [Fact]
@@ -186,10 +186,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(26), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(26), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
@@ -228,10 +228,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Null(videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Null(mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
@@ -245,10 +245,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Null(videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Null(mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
@@ -322,14 +322,14 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(0), videoInfo.VideoProperties.Duration);
-            Assert.Equal("gif", videoInfo.VideoProperties.VideoFormat);
-            Assert.Null(videoInfo.VideoProperties.AudioFormat);
-            Assert.Equal("16:9", videoInfo.VideoProperties.Ratio);
-            Assert.Equal(25, videoInfo.VideoProperties.FrameRate);
-            Assert.Equal(1280, videoInfo.VideoProperties.Width);
-            Assert.Equal(720, videoInfo.VideoProperties.Height);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(0), mediaInfo.Properties.Duration);
+            Assert.Equal("gif", mediaInfo.Properties.VideoFormat);
+            Assert.Null(mediaInfo.Properties.AudioFormat);
+            Assert.Equal("16:9", mediaInfo.Properties.Ratio);
+            Assert.Equal(25, mediaInfo.Properties.FrameRate);
+            Assert.Equal(1280, mediaInfo.Properties.Width);
+            Assert.Equal(720, mediaInfo.Properties.Height);
         }
 
         [Fact]
@@ -359,10 +359,10 @@ namespace Xabe.FFmpeg.Test
             bool conversionResult = await new Conversion().Start(arguments);
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
@@ -380,10 +380,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
@@ -401,12 +401,12 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-            Assert.Equal(128, videoInfo.VideoProperties.Width);
-            Assert.Equal(96, videoInfo.VideoProperties.Height);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            Assert.Equal(128, mediaInfo.Properties.Width);
+            Assert.Equal(96, mediaInfo.Properties.Height);
         }
 
         [Fact]
@@ -419,10 +419,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
@@ -461,12 +461,12 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("h264", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("aac", videoInfo.VideoProperties.AudioFormat);
-            Assert.Equal(640, videoInfo.VideoProperties.Width);
-            Assert.Equal(480, videoInfo.VideoProperties.Height);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            Assert.Equal(640, mediaInfo.Properties.Width);
+            Assert.Equal(480, mediaInfo.Properties.Height);
         }
 
         [Fact]
@@ -520,10 +520,10 @@ namespace Xabe.FFmpeg.Test
                 .Start();
 
             Assert.True(conversionResult);
-            var videoInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), videoInfo.VideoProperties.Duration);
-            Assert.Equal("mpeg2video", videoInfo.VideoProperties.VideoFormat);
-            Assert.Equal("mp2", videoInfo.VideoProperties.AudioFormat);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("mpeg2video", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("mp2", mediaInfo.Properties.AudioFormat);
         }
     }
 }

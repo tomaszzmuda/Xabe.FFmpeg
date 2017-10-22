@@ -9,7 +9,7 @@ namespace Xabe.FFmpeg
     public class MediaInfo: IMediaInfo
     {
         private readonly object _propertiesLock = new object();
-        private VideoProperties _videoProperties;
+        private MediaProperties _properties;
 
         /// <inheritdoc />
         public MediaInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
@@ -28,15 +28,19 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public VideoProperties VideoProperties
+        [Obsolete("This property will be remove in version 3.0.0. Please use Xabe.FFmpeg.IMediaInfo.Properties instead.")]
+        public MediaProperties VideoProperties => Properties;
+
+        /// <inheritdoc />
+        public MediaProperties Properties
         {
             get
             {
-                lock(_propertiesLock)
+                lock (_propertiesLock)
                 {
-                    if(_videoProperties == null)
-                        _videoProperties = new FFprobe().GetProperties(FileInfo.FullName);
-                    return _videoProperties;
+                    if (_properties == null)
+                        _properties = new FFprobe().GetProperties(FileInfo.FullName);
+                    return _properties;
                 }
             }
         }
@@ -52,14 +56,14 @@ namespace Xabe.FFmpeg
                    $"Video root : {Path.GetDirectoryName(FileInfo.FullName)}{Environment.NewLine}" +
                    $"Video name: {FileInfo.Name}{Environment.NewLine}" +
                    $"Video extension : {FileInfo.Extension}{Environment.NewLine}" +
-                   $"Video duration : {VideoProperties.VideoDuration}{Environment.NewLine}" +
-                   $"Video format : {VideoProperties.VideoFormat}{Environment.NewLine}" +
-                   $"Audio format : {VideoProperties.AudioFormat}{Environment.NewLine}" +
-                   $"Audio duration : {VideoProperties.AudioDuration}{Environment.NewLine}" +
-                   $"Aspect Ratio : {VideoProperties.Ratio}{Environment.NewLine}" +
-                   $"Framerate : {VideoProperties.Ratio} fps{Environment.NewLine}" +
-                   $"Resolution : {VideoProperties.Width} x {VideoProperties.Height}{Environment.NewLine}" +
-                   $"Size : {VideoProperties.Size} b";
+                   $"Video duration : {Properties.VideoDuration}{Environment.NewLine}" +
+                   $"Video format : {Properties.VideoFormat}{Environment.NewLine}" +
+                   $"Audio format : {Properties.AudioFormat}{Environment.NewLine}" +
+                   $"Audio duration : {Properties.AudioDuration}{Environment.NewLine}" +
+                   $"Aspect Ratio : {Properties.Ratio}{Environment.NewLine}" +
+                   $"Framerate : {Properties.Ratio} fps{Environment.NewLine}" +
+                   $"Resolution : {Properties.Width} x {Properties.Height}{Environment.NewLine}" +
+                   $"Size : {Properties.Size} b";
         }
     }
 }

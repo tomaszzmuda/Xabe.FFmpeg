@@ -443,7 +443,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion Concatenate(params string[] paths)
         {
-            if (paths.Select(x => new MediaInfo(x).VideoProperties.VideoFormat)
+            if (paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
                      .Distinct()
                      .Count() != 1)
             {

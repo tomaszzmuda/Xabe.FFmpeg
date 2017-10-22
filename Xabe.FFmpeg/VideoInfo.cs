@@ -10,7 +10,7 @@ namespace Xabe.FFmpeg
     public class VideoInfo: IVideoInfo
     {
         private readonly object _propertiesLock = new object();
-        private VideoProperties _videoProperties;
+        private MediaProperties _mediaProperties;
 
         /// <inheritdoc />
         public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
@@ -29,15 +29,18 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public VideoProperties VideoProperties
+        public MediaProperties Properties => VideoProperties;
+
+        /// <inheritdoc />
+        public MediaProperties VideoProperties
         {
             get
             {
                 lock(_propertiesLock)
                 {
-                    if(_videoProperties == null)
-                        _videoProperties = new FFprobe().GetProperties(FileInfo.FullName);
-                    return _videoProperties;
+                    if(_mediaProperties == null)
+                        _mediaProperties = new FFprobe().GetProperties(FileInfo.FullName);
+                    return _mediaProperties;
                 }
             }
         }
@@ -45,7 +48,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public FileInfo FileInfo { get; }
 
-        /// <inheritdoc cref="IVideoInfo.ToString" />
+        /// <inheritdoc cref="IMediaInfo.ToString" />
         [UsedImplicitly]
         public override string ToString()
         {

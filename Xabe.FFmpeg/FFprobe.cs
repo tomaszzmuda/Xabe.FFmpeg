@@ -100,9 +100,9 @@ namespace Xabe.FFmpeg
             return output;
         }
 
-        public VideoProperties GetProperties(string videoPath)
+        public MediaProperties GetProperties(string videoPath)
         {
-            var videoProperties = new VideoProperties();
+            var videoProperties = new MediaProperties();
             ProbeModel.Stream[] streams = GetStream(videoPath);
             ProbeModel.Stream videoStream = streams[0];
             ProbeModel.Stream audioStream = streams[1];
