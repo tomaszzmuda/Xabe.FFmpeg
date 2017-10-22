@@ -25,7 +25,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Name of FFmpeg executable name (Case insensitive)
         /// </summary>
-        [CanBeNull] [UsedImplicitly] public static string FFmpegExecutableName = "fFmpeg";
+        [CanBeNull] [UsedImplicitly] public static string FFmpegExecutableName = "ffmpeg";
 
         /// <summary>
         ///     Name of FFprobe executable name (Case insensitive)
@@ -42,46 +42,48 @@ namespace Xabe.FFmpeg
         protected Process Process;
 
         /// <summary>
-        ///     Initalize new FFmpeg. Search FFmpeg and ffprobe in PATH
+        ///     Initalize new FFmpeg. Search FFmpeg and FFprobe in PATH
         /// </summary>
         protected FFbase()
         {
-            if(!string.IsNullOrWhiteSpace(FFprobePath) &&
+            if (!string.IsNullOrWhiteSpace(FFprobePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
                 return;
 
-            if(!string.IsNullOrWhiteSpace(FFmpegDir))
-                try
-                {
-                    FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                              .First(x => x.Name.ToLower()
-                                                                           .Contains(FFprobeExecutableName.ToLower()))
-                                                              .FullName;
-                    FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                             .First(x => x.Name.ToLower()
-                                                                          .Contains(FFmpegExecutableName.ToLower()))
-                                                             .FullName;
-                    return;
-                }
-                catch(InvalidOperationException)
-                {
-                }
+            if (!string.IsNullOrWhiteSpace(FFmpegDir))
+            {
+                FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
+                                                            .FirstOrDefault(x => x.Name.ToLower()
+                                                                        .Contains(FFprobeExecutableName.ToLower()))
+                                                            .FullName;
+                FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
+                                                            .FirstOrDefault(x => x.Name.ToLower()
+                                                                        .Contains(FFmpegExecutableName.ToLower()))
+                                                            .FullName;
+                ValidateExecutables();
+                return;
+            }
 
             char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
 
             string[] paths = Environment.GetEnvironmentVariable("PATH")
                                         .Split(splitChar);
 
-            foreach(string path in paths)
+            foreach (string path in paths)
             {
                 FindProgramsFromPath(path);
 
-                if(FFmpegPath != null &&
+                if (FFmpegPath != null &&
                    FFprobePath != null)
                     break;
             }
 
-            if(FFmpegPath == null ||
+            ValidateExecutables();
+        }
+
+        private void ValidateExecutables()
+        {
+            if (FFmpegPath == null ||
                FFprobePath == null)
             {
                 string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
@@ -138,9 +140,9 @@ namespace Xabe.FFmpeg
                 return;
             FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith("ffprobe", true, CultureInfo.InvariantCulture))
+            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith(FFprobeExecutableName, true, CultureInfo.InvariantCulture))
                                ?.FullName;
-            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith("FFmpeg", true, CultureInfo.InvariantCulture))
+            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith(FFmpegExecutableName, true, CultureInfo.InvariantCulture))
                               ?.FullName;
         }
 
