@@ -11,7 +11,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void AudioPopertiesTest()
         {
-            IVideoInfo videoInfo = new VideoInfo(Resources.Mp3);
+            IMediaInfo videoInfo = new MediaInfo(Resources.Mp3);
 
             Assert.True(File.Exists(videoInfo.FileInfo.FullName));
             Assert.Equal(Extensions.Mp3, videoInfo.FileInfo.Extension);
@@ -34,7 +34,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void MkvPropertiesTest()
         {
-            IVideoInfo videoInfo = new VideoInfo(Resources.MkvWithAudio);
+            IMediaInfo videoInfo = new MediaInfo(Resources.MkvWithAudio);
 
             Assert.True(File.Exists(videoInfo.FileInfo.FullName));
             Assert.Equal(Extensions.Mkv, videoInfo.FileInfo.Extension);
@@ -57,7 +57,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void PropertiesTest()
         {
-            IVideoInfo videoInfo = new VideoInfo(Resources.Mp4WithAudio);
+            IMediaInfo videoInfo = new MediaInfo(Resources.Mp4WithAudio);
 
             Assert.True(File.Exists(videoInfo.FileInfo.FullName));
             Assert.Equal(Extensions.Mp4, videoInfo.FileInfo.Extension);
@@ -80,7 +80,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void ToStringTest()
         {
-            IVideoInfo videoInfo = new VideoInfo(Resources.Mp4WithAudio);
+            IMediaInfo videoInfo = new MediaInfo(Resources.Mp4WithAudio);
             string output = videoInfo.ToString();
             string expectedOutput =
                 $"Video name: input.mp4{Environment.NewLine}Video extension : .mp4{Environment.NewLine}Video duration : 00:00:13{Environment.NewLine}Video format : h264{Environment.NewLine}Audio format : aac{Environment.NewLine}Audio duration : 00:00:13{Environment.NewLine}Aspect Ratio : 16:9{Environment.NewLine}Framerate : 16:9 fps{Environment.NewLine}Resolution : 1280 x 720{Environment.NewLine}Size : 2107842 b";

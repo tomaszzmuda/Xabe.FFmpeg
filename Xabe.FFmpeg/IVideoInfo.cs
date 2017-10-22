@@ -1,27 +1,10 @@
-﻿using System.IO;
-using Xabe.FFmpeg.Model;
+﻿using System;
 
 namespace Xabe.FFmpeg
 {
-    /// <summary>
-    ///     Information about media file
-    /// </summary>
-    public interface IVideoInfo
+    /// <inheritdoc />
+    [Obsolete("This interface will be remove in version 3.0.0. Please use Xabe.FFmpeg.IMediaInfo instead.")]
+    public interface IVideoInfo : IMediaInfo
     {
-        /// <summary>
-        ///     Source file info
-        /// </summary>
-        FileInfo FileInfo { get; }
-
-        /// <summary>
-        ///     Video properties
-        /// </summary>
-        VideoProperties VideoProperties { get; }
-
-        /// <summary>
-        ///     Get formated info about video
-        /// </summary>
-        /// <returns>Formated info about vidoe</returns>
-        string ToString();
     }
 }

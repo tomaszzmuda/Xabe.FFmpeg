@@ -5,23 +5,22 @@ using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
-    /// <inheritdoc cref="IVideoInfo" />
-    [Obsolete("This class will be remove in version 3.0.0. Please use Xabe.FFmpeg.MediaInfo instead.")]
-    public class VideoInfo: IVideoInfo
+    /// <inheritdoc cref="IMediaInfo" />
+    public class MediaInfo: IMediaInfo
     {
         private readonly object _propertiesLock = new object();
         private VideoProperties _videoProperties;
 
         /// <inheritdoc />
-        public VideoInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
+        public MediaInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
         {
         }
 
         /// <summary>
-        ///     Get VideoInfo from file
+        ///     Get MediaInfo from file
         /// </summary>
         /// <param name="fullName">FullName to file</param>
-        public VideoInfo(string fullName)
+        public MediaInfo(string fullName)
         {
             if(!File.Exists(fullName))
                 throw new ArgumentException($"Input file {fullName} doesn't exists.");
@@ -45,7 +44,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public FileInfo FileInfo { get; }
 
-        /// <inheritdoc cref="IVideoInfo.ToString" />
+        /// <inheritdoc cref="IMediaInfo.ToString" />
         [UsedImplicitly]
         public override string ToString()
         {

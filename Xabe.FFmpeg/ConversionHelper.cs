@@ -206,7 +206,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion Snapshot(string inputPath, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
-            IVideoInfo source = new VideoInfo(inputPath);
+            IMediaInfo source = new MediaInfo(inputPath);
             if(captureTime == null)
                 captureTime = TimeSpan.FromSeconds(source.VideoProperties.VideoDuration.TotalSeconds / 3);
 
@@ -278,7 +278,7 @@ namespace Xabe.FFmpeg
                                          .Start();
         }
 
-        private static Size? GetSize(IVideoInfo source, Size? size)
+        private static Size? GetSize(IMediaInfo source, Size? size)
         {
             if(size == null ||
                size.Value.Height == 0 && size.Value.Width == 0)
