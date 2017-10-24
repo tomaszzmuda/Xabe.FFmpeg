@@ -42,6 +42,7 @@ namespace Xabe.FFmpeg
         private string _watermark;
         private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private string _burnSubtitles;
+        private IEnumerable<FieldInfo> _fields;
 
         /// <inheritdoc />
         public string Build()
@@ -138,11 +139,12 @@ namespace Xabe.FFmpeg
         public void Clear()
         {
             _subtitles.Clear();
-            IEnumerable<FieldInfo> fields = GetType()
-                .GetFields(BindingFlags.NonPublic |
-                           BindingFlags.Instance)
-                .Where(x => x.FieldType == typeof(string));
-            foreach(FieldInfo fieldinfo in fields)
+            if(_fields == null)
+                _fields = GetType()
+                    .GetFields(BindingFlags.NonPublic |
+                               BindingFlags.Instance)
+                    .Where(x => x.FieldType == typeof(string));
+            foreach(FieldInfo fieldinfo in _fields)
                 fieldinfo.SetValue(this, null);
         }
 
