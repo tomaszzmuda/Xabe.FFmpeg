@@ -60,6 +60,20 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task AddSubtitleTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
+            string input = Resources.MkvWithAudio.FullName;
+
+            bool result = await ConversionHelper.AddSubtitle(input, output, Resources.Subtitle.FullName, "pol")
+                                                .Start();
+
+            Assert.True(result);
+            var outputInfo = new MediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(5377), outputInfo.Properties.Duration);
+        }
+
+        [Fact]
         public async Task ExtractAudio()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp3);

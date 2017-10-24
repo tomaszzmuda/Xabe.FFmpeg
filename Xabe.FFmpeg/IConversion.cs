@@ -314,6 +314,6 @@ namespace Xabe.FFmpeg
         /// <returns></returns>
         IConversion Split(TimeSpan startTime, TimeSpan duration);
 
-        IConversion AddSubtitles(string subtitlePath, string language);
+        IConversion AddSubtitle(string subtitlePath, string language);
     }
 }

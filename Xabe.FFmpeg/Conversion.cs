@@ -163,7 +163,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion AddSubtitles(string subtitlePath, string language)
+        public IConversion AddSubtitle(string subtitlePath, string language)
         {
             _subtitles.Add(language, subtitlePath);
             return this;

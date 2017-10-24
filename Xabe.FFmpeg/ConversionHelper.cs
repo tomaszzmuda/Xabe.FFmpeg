@@ -113,6 +113,22 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
+        ///     Change video size
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="output">Output path</param>
+        /// <param name="size">Expected size</param>
+        /// <returns>Conversion result</returns>
+        public static IConversion AddSubtitle(string inputPath, string output, string subtitlePath, [CanBeNull] string language)
+        {
+            return new Conversion()
+                .SetInput(inputPath)
+                .AddSubtitle(subtitlePath, language)
+                .StreamCopy(Channel.Both)
+                .SetOutput(output);
+        }
+
+        /// <summary>
         ///     Extract video from file
         /// </summary>
         /// <param name="inputPath">Input path</param>

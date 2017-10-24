@@ -431,8 +431,8 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .AddSubtitles(Resources.Subtitle.FullName, "ger")
-                .AddSubtitles(Resources.Subtitle.FullName, "eng")
+                .AddSubtitle(Resources.Subtitle.FullName, "ger")
+                .AddSubtitle(Resources.Subtitle.FullName, "eng")
                 .StreamCopy(Channel.Both)
                 .SetOutput(outputPath)
                 .Start();
