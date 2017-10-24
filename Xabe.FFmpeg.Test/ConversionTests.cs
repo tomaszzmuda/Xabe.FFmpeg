@@ -45,7 +45,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .SetWatermark(Resources.PngSample.FullName, position)
+                .SetWatermark(Resources.PngSample, position)
                 .SetOutput(outputPath)
                 .Start();
 
@@ -149,7 +149,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             await Assert.ThrowsAsync<ArgumentException>(async () =>
                 await new Conversion()
-                    .Concat(Resources.MkvWithAudio.FullName, Resources.FlvWithAudio.FullName)
+                    .Concat(Resources.MkvWithAudio, Resources.FlvWithAudio)
                     .SetOutput(outputPath)
                     .Start());
         }
@@ -162,7 +162,7 @@ namespace Xabe.FFmpeg.Test
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                 .SetOutput(outputPath)
-                .Concatenate(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName);
+                .Concatenate(Resources.TsWithAudio, Resources.TsWithAudio);
 
             TimeSpan currentProgress;
 
@@ -182,7 +182,7 @@ namespace Xabe.FFmpeg.Test
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                 .SetOutput(outputPath)
-                .Concatenate(Resources.TsWithAudio.FullName, Resources.TsWithAudio.FullName)
+                .Concatenate(Resources.TsWithAudio, Resources.TsWithAudio)
                 .Start();
 
             Assert.True(conversionResult);
@@ -301,7 +301,7 @@ namespace Xabe.FFmpeg.Test
                 catch(ConversionException e)
                 {
                     Assert.Equal(
-                        $"-i \"{Resources.MkvWithAudio.FullName}\" -n -codec:v libx264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
+                        $"-i \"{Resources.MkvWithAudio}\" -n -codec:v libx264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
                         e.InputParameters);
                     Assert.EndsWith(
                         $"Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.{Environment.NewLine}Filtering and streamcopy cannot be used together.",
@@ -431,8 +431,8 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .AddSubtitle(Resources.Subtitle.FullName, "ger")
-                .AddSubtitle(Resources.Subtitle.FullName, "eng")
+                .AddSubtitle(Resources.Subtitle, "ger")
+                .AddSubtitle(Resources.Subtitle, "eng")
                 .StreamCopy(Channel.Both)
                 .SetOutput(outputPath)
                 .Start();
