@@ -113,11 +113,12 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Change video size
+        ///     Add subtitle to file
         /// </summary>
         /// <param name="inputPath">Input path</param>
         /// <param name="output">Output path</param>
-        /// <param name="size">Expected size</param>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
         public static IConversion AddSubtitle(string inputPath, string output, string subtitlePath, [CanBeNull] string language)
         {

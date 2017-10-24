@@ -311,9 +311,15 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="startTime">Start point</param>
         /// <param name="duration">Duration of new video</param>
-        /// <returns></returns>
+        /// <returns>Conversion result</returns>
         IConversion Split(TimeSpan startTime, TimeSpan duration);
 
+        /// <summary>
+        ///     Add subtitle to file
+        /// </summary>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
+        /// <returns>Conversion result</returns>
         IConversion AddSubtitle(string subtitlePath, string language);
     }
 }
