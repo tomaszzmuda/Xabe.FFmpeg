@@ -74,6 +74,20 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task BurnSubtitleTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            string input = Resources.Mp4;
+
+            bool result = await ConversionHelper.BurnSubtitle(input, output, Resources.Subtitle)
+                                                .Start();
+
+            Assert.True(result);
+            var outputInfo = new MediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(13), outputInfo.Properties.Duration);
+        }
+
+        [Fact]
         public async Task ExtractAudio()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp3);

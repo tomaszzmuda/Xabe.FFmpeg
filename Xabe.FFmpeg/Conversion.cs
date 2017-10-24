@@ -41,6 +41,7 @@ namespace Xabe.FFmpeg
         private string _videoSpeed;
         private string _watermark;
         private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
+        private string _burnSubtitles;
 
         /// <inheritdoc />
         public string Build()
@@ -166,6 +167,13 @@ namespace Xabe.FFmpeg
         public IConversion AddSubtitle(string subtitlePath, string language)
         {
             _subtitles.Add(language, subtitlePath);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetSubtitle(string subtitlePath)
+        {
+            _burnSubtitles = $"\"subtitles='{subtitlePath}'\" ".Replace("\\", "\\\\").Replace(":", "\\:");
             return this;
         }
 
@@ -492,6 +500,7 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             builder.Append("-filter:v ");
             builder.Append(_videoSpeed);
+            builder.Append(_burnSubtitles);
 
             string filter = builder.ToString();
             if(filter == "-filter:v ")

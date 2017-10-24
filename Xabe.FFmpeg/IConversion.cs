@@ -321,5 +321,13 @@ namespace Xabe.FFmpeg
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
         IConversion AddSubtitle(string subtitlePath, string language);
+
+
+        /// <summary>
+        ///     Burn subtitle into file
+        /// </summary>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <returns>Conversion result</returns>
+        IConversion SetSubtitle(string subtitlePath);
     }
 }
