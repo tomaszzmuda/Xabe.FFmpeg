@@ -44,6 +44,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\sampleSubtitles.srt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\sampleSubtitles.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\watermark.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

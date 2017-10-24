@@ -426,6 +426,25 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task AddSubtitlesTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .AddSubtitles(Resources.Subtitle.FullName, "ger")
+                .AddSubtitles(Resources.Subtitle.FullName, "eng")
+                .StreamCopy(Channel.Both)
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(5377), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+        }
+
+        [Fact]
         public async Task SeekLengthTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);

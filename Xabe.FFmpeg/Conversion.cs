@@ -40,6 +40,7 @@ namespace Xabe.FFmpeg
         private string _video;
         private string _videoSpeed;
         private string _watermark;
+        private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
 
         /// <inheritdoc />
         public string Build()
@@ -48,6 +49,7 @@ namespace Xabe.FFmpeg
             {
                 var builder = new StringBuilder();
                 builder.Append(_input);
+                AddSubtitles(builder);
                 builder.Append("-n ");
                 builder.Append(_watermark);
                 builder.Append(_scale);
@@ -72,6 +74,26 @@ namespace Xabe.FFmpeg
                 builder.Append(_output);
 
                 return builder.ToString();
+            }
+        }
+
+        private void AddSubtitles(StringBuilder builder)
+        {
+            if(!_subtitles.Any())
+                return;
+
+            foreach (KeyValuePair<string, string> item in _subtitles)
+            {
+                builder.Append($"-i \"{item.Value}\" ");
+            }
+            builder.Append("-map 0 ");
+            for (var i = 0; i < _subtitles.Count; i++)
+            {
+                builder.Append($"-map {i + 1} ");
+            }
+            for (var i = 0; i < _subtitles.Count; i++)
+            {
+                builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i).Key} ");
             }
         }
 
@@ -114,6 +136,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public void Clear()
         {
+            _subtitles.Clear();
             IEnumerable<FieldInfo> fields = GetType()
                 .GetFields(BindingFlags.NonPublic |
                            BindingFlags.Instance)
@@ -136,6 +159,13 @@ namespace Xabe.FFmpeg
         public IConversion Split(TimeSpan startTime, TimeSpan duration)
         {
             _split = $"-ss {startTime} -t {duration} ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddSubtitles(string subtitlePath, string language)
+        {
+            _subtitles.Add(language, subtitlePath);
             return this;
         }
 

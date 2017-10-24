@@ -313,5 +313,7 @@ namespace Xabe.FFmpeg
         /// <param name="duration">Duration of new video</param>
         /// <returns></returns>
         IConversion Split(TimeSpan startTime, TimeSpan duration);
+
+        IConversion AddSubtitles(string subtitlePath, string language);
     }
 }
