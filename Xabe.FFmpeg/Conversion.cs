@@ -18,12 +18,15 @@ namespace Xabe.FFmpeg
     public class Conversion: IConversion
     {
         private readonly object _builderLock = new object();
+        private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private string _audio;
         private string _audioSpeed;
         private string _bitsreamFilter;
+        private string _burnSubtitles;
         private string _codec;
         private string _copy;
         private string _disabled;
+        private IEnumerable<FieldInfo> _fields;
         private string _frameCount;
         private string _input;
         private string _loop;
@@ -40,9 +43,6 @@ namespace Xabe.FFmpeg
         private string _video;
         private string _videoSpeed;
         private string _watermark;
-        private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
-        private string _burnSubtitles;
-        private IEnumerable<FieldInfo> _fields;
 
         /// <inheritdoc />
         public string Build()
@@ -76,26 +76,6 @@ namespace Xabe.FFmpeg
                 builder.Append(_output);
 
                 return builder.ToString();
-            }
-        }
-
-        private void AddSubtitles(StringBuilder builder)
-        {
-            if(!_subtitles.Any())
-                return;
-
-            foreach (KeyValuePair<string, string> item in _subtitles)
-            {
-                builder.Append($"-i \"{item.Value}\" ");
-            }
-            builder.Append("-map 0 ");
-            for (var i = 0; i < _subtitles.Count; i++)
-            {
-                builder.Append($"-map {i + 1} ");
-            }
-            for (var i = 0; i < _subtitles.Count; i++)
-            {
-                builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i).Key} ");
             }
         }
 
@@ -175,7 +155,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath)
         {
-            _burnSubtitles = $"\"subtitles='{subtitlePath}'\" ".Replace("\\", "\\\\").Replace(":", "\\:");
+            _burnSubtitles = $"\"subtitles='{subtitlePath}'\" ".Replace("\\", "\\\\")
+                                                               .Replace(":", "\\:");
             return this;
         }
 
@@ -483,18 +464,30 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion Concatenate(params string[] paths)
         {
-            if (paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
-                     .Distinct()
-                     .Count() != 1)
-            {
+            if(paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
+                    .Distinct()
+                    .Count() != 1)
                 throw new ArgumentException("All files have to be in the same format!");
-            }
 
             string tmpFile = Path.GetTempFileName();
             File.WriteAllLines(tmpFile, paths.Select(x => $"file '{x}'"));
 
             _input = $"-f concat -safe 0 -i \"{tmpFile}\" -c copy ";
             return this;
+        }
+
+        private void AddSubtitles(StringBuilder builder)
+        {
+            if(!_subtitles.Any())
+                return;
+
+            foreach(KeyValuePair<string, string> item in _subtitles)
+                builder.Append($"-i \"{item.Value}\" ");
+            builder.Append("-map 0 ");
+            for(var i = 0; i < _subtitles.Count; i++)
+                builder.Append($"-map {i + 1} ");
+            for(var i = 0; i < _subtitles.Count; i++)
+                builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i) .Key} ");
         }
 
         private string BuildVideoFilter()

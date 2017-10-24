@@ -36,9 +36,9 @@ namespace Xabe.FFmpeg
         {
             get
             {
-                lock (_propertiesLock)
+                lock(_propertiesLock)
                 {
-                    if (_properties == null)
+                    if(_properties == null)
                         _properties = new FFprobe().GetProperties(FileInfo.FullName);
                     return _properties;
                 }

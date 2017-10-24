@@ -46,20 +46,20 @@ namespace Xabe.FFmpeg
         /// </summary>
         protected FFbase()
         {
-            if (!string.IsNullOrWhiteSpace(FFprobePath) &&
+            if(!string.IsNullOrWhiteSpace(FFprobePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
                 return;
 
-            if (!string.IsNullOrWhiteSpace(FFmpegDir))
+            if(!string.IsNullOrWhiteSpace(FFmpegDir))
             {
                 FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                            .FirstOrDefault(x => x.Name.ToLower()
-                                                                        .Contains(FFprobeExecutableName.ToLower()))
-                                                            .FullName;
+                                                          .FirstOrDefault(x => x.Name.ToLower()
+                                                                                .Contains(FFprobeExecutableName.ToLower()))
+                                                          .FullName;
                 FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                            .FirstOrDefault(x => x.Name.ToLower()
-                                                                        .Contains(FFmpegExecutableName.ToLower()))
-                                                            .FullName;
+                                                         .FirstOrDefault(x => x.Name.ToLower()
+                                                                               .Contains(FFmpegExecutableName.ToLower()))
+                                                         .FullName;
                 ValidateExecutables();
                 return;
             }
@@ -69,27 +69,16 @@ namespace Xabe.FFmpeg
             string[] paths = Environment.GetEnvironmentVariable("PATH")
                                         .Split(splitChar);
 
-            foreach (string path in paths)
+            foreach(string path in paths)
             {
                 FindProgramsFromPath(path);
 
-                if (FFmpegPath != null &&
+                if(FFmpegPath != null &&
                    FFprobePath != null)
                     break;
             }
 
             ValidateExecutables();
-        }
-
-        private void ValidateExecutables()
-        {
-            if (FFmpegPath == null ||
-               FFprobePath == null)
-            {
-                string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
-                string exceptionMessage = $"Cannot find FFmpeg in {ffmpegDir}PATH";
-                throw new ArgumentException(exceptionMessage);
-            }
         }
 
         /// <summary>
@@ -131,6 +120,17 @@ namespace Xabe.FFmpeg
                 {
                     _ffprobePath = value;
                 }
+            }
+        }
+
+        private void ValidateExecutables()
+        {
+            if(FFmpegPath == null ||
+               FFprobePath == null)
+            {
+                string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
+                string exceptionMessage = $"Cannot find FFmpeg in {ffmpegDir}PATH";
+                throw new ArgumentException(exceptionMessage);
             }
         }
 

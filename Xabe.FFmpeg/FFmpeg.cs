@@ -109,18 +109,17 @@ namespace Xabe.FFmpeg
 
 
             string ss = GetArgumentValue("-ss", args);
-            if (!string.IsNullOrWhiteSpace(ss))
-            {
+            if(!string.IsNullOrWhiteSpace(ss))
                 _totalTime -= TimeSpan.Parse(ss);
-            }
         }
 
         private string GetArgumentValue(string option, string args)
         {
-            List<string> words = args.Split(' ').ToList();
+            List<string> words = args.Split(' ')
+                                     .ToList();
             int index = words.IndexOf(option);
             if(index >= 0)
-                return words[index + 1];   
+                return words[index + 1];
             return "";
         }
     }

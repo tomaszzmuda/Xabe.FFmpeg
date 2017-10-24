@@ -45,21 +45,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task ChangeSizeTest()
-        {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
-            string input = Resources.MkvWithAudio;
-
-            bool result = await ConversionHelper.ChangeSize(input, output, new VideoSize(640, 360))
-                                                .Start();
-
-            Assert.True(result);
-            var outputInfo = new MediaInfo(output);
-            Assert.Equal(640, outputInfo.Properties.Width);
-            Assert.Equal(360, outputInfo.Properties.Height);
-        }
-
-        [Fact]
         public async Task AddSubtitleTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
@@ -85,6 +70,21 @@ namespace Xabe.FFmpeg.Test
             Assert.True(result);
             var outputInfo = new MediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(13), outputInfo.Properties.Duration);
+        }
+
+        [Fact]
+        public async Task ChangeSizeTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
+            string input = Resources.MkvWithAudio;
+
+            bool result = await ConversionHelper.ChangeSize(input, output, new VideoSize(640, 360))
+                                                .Start();
+
+            Assert.True(result);
+            var outputInfo = new MediaInfo(output);
+            Assert.Equal(640, outputInfo.Properties.Width);
+            Assert.Equal(360, outputInfo.Properties.Height);
         }
 
         [Fact]

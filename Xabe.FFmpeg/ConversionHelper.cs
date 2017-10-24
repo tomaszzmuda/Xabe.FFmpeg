@@ -113,7 +113,8 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use SetSubtitles method.
+        ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
+        ///     SetSubtitles method.
         /// </summary>
         /// <param name="inputPath">Input path</param>
         /// <param name="output">Output path</param>
@@ -130,7 +131,8 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Burn subtitle into video. If you want to add subtitle as new stream (like in .mkv) you should use AddSubtitle method.
+        ///     Burn subtitle into video. If you want to add subtitle as new stream (like in .mkv) you should use AddSubtitle
+        ///     method.
         /// </summary>
         /// <param name="inputPath">Input path</param>
         /// <param name="output">Output path</param>
@@ -284,7 +286,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Concat multiple inputVideos. 
+        ///     Concat multiple inputVideos.
         /// </summary>
         /// <param name="output">Concatenated inputVideos</param>
         /// <param name="inputVideos">Videos to add</param>
@@ -294,7 +296,7 @@ namespace Xabe.FFmpeg
         {
             var pathList = new List<string>();
 
-            foreach (string path in inputVideos)
+            foreach(string path in inputVideos)
             {
                 string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
                 pathList.Add(tempFileName);

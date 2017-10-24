@@ -101,6 +101,42 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task AddSubtitlesTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .AddSubtitle(Resources.Subtitle, "ger")
+                .AddSubtitle(Resources.Subtitle, "eng")
+                .StreamCopy(Channel.Both)
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(5377), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+        }
+
+        [Fact]
+        public async Task BurnSubtitlesTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetSubtitle(Resources.Subtitle)
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+        }
+
+        [Fact]
         public async Task ChangeOutputFramesCountTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
@@ -141,17 +177,6 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
             Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
-        }
-
-        [Fact]
-        public async Task DifferentFormatsException()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
-                await new Conversion()
-                    .Concat(Resources.MkvWithAudio, Resources.FlvWithAudio)
-                    .SetOutput(outputPath)
-                    .Start());
         }
 
         [Fact]
@@ -215,6 +240,17 @@ namespace Xabe.FFmpeg.Test
             Assert.True(currentProgress > TimeSpan.Zero);
             Assert.True(currentProgress <= videoLength);
             Assert.True(videoLength == TimeSpan.FromSeconds(9));
+        }
+
+        [Fact]
+        public async Task DifferentFormatsException()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await new Conversion()
+                    .Concat(Resources.MkvWithAudio, Resources.FlvWithAudio)
+                    .SetOutput(outputPath)
+                    .Start());
         }
 
         [Fact]
@@ -410,58 +446,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task SimpleConversionTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetOutput(outputPath)
-                .Start();
-
-            Assert.True(conversionResult);
-            var mediaInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
-            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
-            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
-        }
-
-        [Fact]
-        public async Task AddSubtitlesTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .AddSubtitle(Resources.Subtitle, "ger")
-                .AddSubtitle(Resources.Subtitle, "eng")
-                .StreamCopy(Channel.Both)
-                .SetOutput(outputPath)
-                .Start();
-
-            Assert.True(conversionResult);
-            var mediaInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(5377), mediaInfo.Properties.Duration);
-            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
-            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
-        }
-
-        [Fact]
-        public async Task BurnSubtitlesTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetSubtitle(Resources.Subtitle)
-                .SetOutput(outputPath)
-                .Start();
-
-            Assert.True(conversionResult);
-            var mediaInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
-            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
-            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
-        }
-
-        [Fact]
         public async Task SeekLengthTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
@@ -484,6 +468,22 @@ namespace Xabe.FFmpeg.Test
             Assert.True(currentProgress > TimeSpan.Zero);
             Assert.True(currentProgress <= videoLength);
             Assert.True(videoLength == TimeSpan.FromSeconds(7));
+        }
+
+        [Fact]
+        public async Task SimpleConversionTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
 
         [Fact]
