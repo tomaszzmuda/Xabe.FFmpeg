@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg.Test
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
                 outputs.Add(output);
-                IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output, multithread:!parallel);
+                IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output, multithread: !parallel);
                 conversions.Add(conversion);
                 queue.Add(conversion);
             }

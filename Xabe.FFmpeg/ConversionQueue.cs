@@ -31,10 +31,10 @@ namespace Xabe.FFmpeg
         /// </summary>
         public async Task Start()
         {
-            if (!_parallel)
+            if(!_parallel)
                 _tasks.Add(Worker());
             else
-                for (var i = 0; i < Environment.ProcessorCount; i++)
+                for(var i = 0; i < Environment.ProcessorCount; i++)
                     _tasks.Add(Worker());
 
             await Task.WhenAll(_tasks);
