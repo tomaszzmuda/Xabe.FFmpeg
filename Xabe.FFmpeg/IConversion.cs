@@ -236,15 +236,6 @@ namespace Xabe.FFmpeg
         /// <param name="paths">Media files</param>
         /// <returns>IConversion object</returns>
         /// <exception cref="ArgumentException">When try to concatenate different formats.</exception>
-        [Obsolete("This method will be remove in version 3.0.0. Please use method Xabe.FFmpeg.IConversion.Concatenate instead.")]
-        IConversion Concat(params string[] paths);
-
-        /// <summary>
-        ///     Concat multiple media files. All files must have the same streams (same codecs, same time base, etc.)
-        /// </summary>
-        /// <param name="paths">Media files</param>
-        /// <returns>IConversion object</returns>
-        /// <exception cref="ArgumentException">When try to concatenate different formats.</exception>
         IConversion Concatenate(params string[] paths);
 
         /// <summary>

@@ -248,7 +248,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             await Assert.ThrowsAsync<ArgumentException>(async () =>
                 await new Conversion()
-                    .Concat(Resources.MkvWithAudio, Resources.FlvWithAudio)
+                    .Concatenate(Resources.MkvWithAudio, Resources.FlvWithAudio)
                     .SetOutput(outputPath)
                     .Start());
         }

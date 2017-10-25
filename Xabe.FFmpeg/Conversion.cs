@@ -456,12 +456,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion Concat(params string[] paths)
-        {
-            return Concatenate(paths);
-        }
-
-        /// <inheritdoc />
         public IConversion Concatenate(params string[] paths)
         {
             if(paths.Select(x => new MediaInfo(x).Properties.VideoFormat)

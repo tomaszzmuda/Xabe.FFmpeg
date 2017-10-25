@@ -274,18 +274,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Concat multiple inputVideos
-        /// </summary>
-        /// <param name="output">Concatenated inputVideos</param>
-        /// <param name="inputVideos">Videos to add</param>
-        /// <returns>Conversion result</returns>
-        [Obsolete("This method will be remove in version 3.0.0. Please use method Xabe.FFmpeg.ConversionHelper.Concatenate instead.")]
-        public static async Task<bool> JoinWith(string output, params string[] inputVideos)
-        {
-            return await Concatenate(output, inputVideos);
-        }
-
-        /// <summary>
         ///     Concat multiple inputVideos.
         /// </summary>
         /// <param name="output">Concatenated inputVideos</param>
@@ -305,7 +293,7 @@ namespace Xabe.FFmpeg
             }
 
             return await new Conversion().
-                Concat(pathList.ToArray())
+                Concatenate(pathList.ToArray())
                                          .StreamCopy(Channel.Both)
                                          .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
                                          .SetOutput(output)
