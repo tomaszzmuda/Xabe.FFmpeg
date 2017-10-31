@@ -330,6 +330,9 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         IConversion SetSubtitle(string subtitlePath);
 
+        /// <summary>
+        ///     Output file path
+        /// </summary>
         string OutputFilePath { get; }
     }
 }
