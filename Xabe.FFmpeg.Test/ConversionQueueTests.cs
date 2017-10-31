@@ -29,17 +29,17 @@ namespace Xabe.FFmpeg.Test
             }
 
             queue.Start();
-            var tmp = new AutoResetEvent(false);
-            queue.OnConverted += (number, count, conversion) => Queue_OnConverted(number, count, conversion, tmp);
+            var resetEvent = new AutoResetEvent(false);
+            queue.OnConverted += (number, count, conversion) => Queue_OnConverted(number, count, conversion, resetEvent);
             queue.OnException += (number, count, conversion) =>
             {
-                tmp.Set();
+                resetEvent.Set();
                 throw new Exception();
             };
-            tmp.WaitOne();
+            resetEvent.WaitOne();
         }
 
-        private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent tmp)
+        private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
             var mediaInfo = new MediaInfo(currentConversion.OutputFilePath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
@@ -47,7 +47,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
             if(conversionNumber == totalConversionsCount)
             {
-                tmp.Set();
+                resetEvent.Set();
             }
         }
     }
