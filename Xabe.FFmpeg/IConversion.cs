@@ -329,5 +329,7 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <returns>Conversion result</returns>
         IConversion SetSubtitle(string subtitlePath);
+
+        string OutputFilePath { get; }
     }
 }

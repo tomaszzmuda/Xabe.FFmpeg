@@ -161,6 +161,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public string OutputFilePath { get; private set; }
+
+        /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
         {
             _speed = $"-preset {speed.ToString() .ToLower()} ";
@@ -261,6 +264,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetOutput(string outputPath)
         {
+            OutputFilePath = outputPath;
             _output = $"\"{outputPath}\"";
             return this;
         }
