@@ -16,15 +16,11 @@ namespace Xabe.FFmpeg.Test
         public void QueueTest(bool parallel)
         {
             var queue = new ConversionQueue(parallel);
-            var outputs = new List<string>();
-            var conversions = new List<IConversion>();
 
             for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
-                outputs.Add(output);
                 IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
-                conversions.Add(conversion);
                 queue.Add(conversion);
             }
 
@@ -55,16 +51,12 @@ namespace Xabe.FFmpeg.Test
         public void QueueDisposeTest()
         {
             var queue = new ConversionQueue();
-            var outputs = new List<string>();
-            var conversions = new List<IConversion>();
             var exceptionOccures = false;
 
             for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
-                outputs.Add(output);
                 IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
-                conversions.Add(conversion);
                 queue.Add(conversion);
             }
 
@@ -84,16 +76,12 @@ namespace Xabe.FFmpeg.Test
         public void QueueTimeOutTest()
         {
             var queue = new ConversionQueue();
-            var outputs = new List<string>();
-            var conversions = new List<IConversion>();
             var exceptionOccures = false;
 
             for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
-                outputs.Add(output);
                 IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
-                conversions.Add(conversion);
                 queue.Add(conversion);
             }
 
