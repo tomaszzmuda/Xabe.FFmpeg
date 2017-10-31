@@ -17,9 +17,22 @@ namespace Xabe.FFmpeg
         private long _totalItems;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
-        public delegate void ConversionQueueEventHandler(int conversionNumber, int totalConversionsCount, IConversion currentConversion);
+        /// <summary>
+        ///     Information about queue's media status
+        /// </summary>
+        /// <param name="currentItemNumber">Auto incremented id of conversion</param>
+        /// <param name="totalItemsCount">Count of conversion items</param>
+        /// <param name="conversion">Conversion that was just finished</param>
+        public delegate void ConversionQueueEventHandler(int currentItemNumber, int totalItemsCount, IConversion conversion);
 
+        /// <summary>
+        ///     Occurs when conversion in queue finished
+        /// </summary>
         public event ConversionQueueEventHandler OnConverted;
+
+        /// <summary>
+        ///     Occurs when appers any exceptions during conversion
+        /// </summary>
         public event ConversionQueueEventHandler OnException;
 
         /// <summary>
