@@ -15,23 +15,26 @@ namespace Xabe.FFmpeg
         private readonly ManualResetEvent _start = new ManualResetEvent(false);
         private long _number;
         private long _totalItems;
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         public delegate void ConversionQueueEventHandler(int conversionNumber, int totalConversionsCount, IConversion currentConversion);
 
         public event ConversionQueueEventHandler OnConverted;
         public event ConversionQueueEventHandler OnException;
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Queue for conversions.
+        /// </summary>
+        /// <param name="parallel">If set, queue create multiple workers based on CPU cores. It's best to set if files are small (less than few MB).</param>
         public ConversionQueue(bool parallel = false)
         {
             _parallel = parallel;
 
             if (!_parallel)
-                Task.Run(() => Worker(cancellationTokenSource.Token));
+                Task.Run(() => Worker(_cancellationTokenSource.Token));
             else
                 for (var i = 0; i < Environment.ProcessorCount; i++)
-                    Task.Run(() => Worker(cancellationTokenSource.Token));
+                    Task.Run(() => Worker(_cancellationTokenSource.Token));
         }
 
         private bool GetNext(out IConversion conversion)
@@ -49,22 +52,29 @@ namespace Xabe.FFmpeg
                     _start.WaitOne();
                     if(!GetNext(out conversion))
                         continue;
-                    await conversion.Start();
+                    await conversion.Start(token);
                     Interlocked.Increment(ref _number);
-                    OnConverted((int) Interlocked.Read(ref _number), (int) Interlocked.Read(ref _totalItems), conversion);
+                    OnConverted?.Invoke((int) Interlocked.Read(ref _number), (int) Interlocked.Read(ref _totalItems), conversion);
                 }
                 catch(Exception)
                 {
-                    OnException((int)Interlocked.Read(ref _number), (int)Interlocked.Read(ref _totalItems), conversion);
+                    OnException?.Invoke((int)Interlocked.Read(ref _number), (int)Interlocked.Read(ref _totalItems), conversion);
                 }
             }
         }
 
-        public void Start()
+        /// <summary>
+        ///     Start converting media in queue
+        /// </summary>
+        public void Start(CancellationTokenSource cancellationTokenSource = null)
         {
+            _cancellationTokenSource = cancellationTokenSource ?? new CancellationTokenSource();
             _start.Set();
         }
 
+        /// <summary>
+        ///     Pause converting media in queue
+        /// </summary>
         public void Pause()
         {
             _start.Reset();
@@ -84,6 +94,7 @@ namespace Xabe.FFmpeg
         public void Dispose()
         {
             _start?.Dispose();
+            _cancellationTokenSource.Cancel();
         }
     }
 }

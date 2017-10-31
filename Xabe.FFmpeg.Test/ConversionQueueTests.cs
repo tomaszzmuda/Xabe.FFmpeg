@@ -50,5 +50,65 @@ namespace Xabe.FFmpeg.Test
                 resetEvent.Set();
             }
         }
+
+        [Fact]
+        public void QueueDisposeTest()
+        {
+            var queue = new ConversionQueue();
+            var outputs = new List<string>();
+            var conversions = new List<IConversion>();
+            var exceptionOccures = false;
+
+            for (var i = 0; i < 2; i++)
+            {
+                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+                outputs.Add(output);
+                IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
+                conversions.Add(conversion);
+                queue.Add(conversion);
+            }
+
+            queue.Start();
+            var resetEvent = new AutoResetEvent(false);
+            queue.OnException += (number, count, conversion) =>
+            {
+                exceptionOccures = true;
+                resetEvent.Set();
+            };
+            queue.Dispose();
+            resetEvent.WaitOne();
+            Assert.True(exceptionOccures);
+        }
+
+        [Fact]
+        public void QueueTimeOutTest()
+        {
+            var queue = new ConversionQueue();
+            var outputs = new List<string>();
+            var conversions = new List<IConversion>();
+            var exceptionOccures = false;
+
+            for (var i = 0; i < 2; i++)
+            {
+                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+                outputs.Add(output);
+                IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
+                conversions.Add(conversion);
+                queue.Add(conversion);
+            }
+
+            var cancellationTokenSource = new CancellationTokenSource(500);
+
+            queue.Start(cancellationTokenSource);
+            var resetEvent = new AutoResetEvent(false);
+            queue.OnException += (number, count, conversion) =>
+            {
+                exceptionOccures = true;
+                resetEvent.Set();
+            };
+            queue.Dispose();
+            resetEvent.WaitOne();
+            Assert.True(exceptionOccures);
+        }
     }
 }
