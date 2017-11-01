@@ -138,7 +138,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
-        event ConversionHandler OnProgress;
+        event ConversionProgressEventHandler OnProgress;
 
         /// <summary>
         ///     Fires when FFmpeg process print sonething

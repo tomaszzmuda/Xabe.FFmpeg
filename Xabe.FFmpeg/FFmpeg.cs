@@ -12,9 +12,37 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Info about conversion progress
     /// </summary>
-    /// <param name="duration">Current processing time</param>
-    /// <param name="totalLength">Movie length</param>
-    public delegate void ConversionHandler(TimeSpan duration, TimeSpan totalLength);
+    /// <param name="sender">Sender</param>
+    /// <param name="args">Conversion info</param>
+    public delegate void ConversionProgressEventHandler(object sender, ConversionProgressEventArgs args);
+
+    /// <summary>
+    ///     Conversion information
+    /// </summary>
+    public class ConversionProgressEventArgs : EventArgs
+    {
+        /// <inheritdoc />
+        public ConversionProgressEventArgs(TimeSpan timeSpan, TimeSpan totalTime)
+        {
+            Duration = timeSpan;
+            TotalLength = totalTime;
+        }
+
+        /// <summary>
+        ///     Current processing time
+        /// </summary>
+        public TimeSpan Duration { get; }
+
+        /// <summary>
+        ///     Input movie length
+        /// </summary>
+        public TimeSpan TotalLength { get; }
+
+        /// <summary>
+        ///     Percent of conversion
+        /// </summary>
+        public int Percent => (int)(Math.Round(Duration.TotalSeconds / TotalLength.TotalSeconds, 2) * 100);
+    }
 
     // ReSharper disable once InconsistentNaming
     /// <inheritdoc />
@@ -30,7 +58,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
-        internal event ConversionHandler OnProgress;
+        internal event ConversionProgressEventHandler OnProgress;
 
         /// <summary>
         ///     Fires when FFmpeg process print something
@@ -91,7 +119,7 @@ namespace Xabe.FFmpeg
             {
                 Match match = regex.Match(e.Data);
                 if(match.Success)
-                    OnProgress(TimeSpan.Parse(match.Value), _totalTime);
+                    OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime));
             }
         }
 

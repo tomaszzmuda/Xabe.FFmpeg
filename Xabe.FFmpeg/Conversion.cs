@@ -28,7 +28,7 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         public static IConversion New()
         {
-            return Conversion.New();
+            return new Conversion();
         }
 
         private readonly object _builderLock = new object();
@@ -95,7 +95,7 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc cref="IConversion.OnProgress" />
         [UsedImplicitly]
-        public event ConversionHandler OnProgress;
+        public event ConversionProgressEventHandler OnProgress;
 
         /// <inheritdoc cref="IConversion.OnDataReceived" />
         public event DataReceivedEventHandler OnDataReceived;

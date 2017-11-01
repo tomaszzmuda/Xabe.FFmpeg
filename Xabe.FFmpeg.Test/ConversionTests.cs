@@ -191,7 +191,7 @@ namespace Xabe.FFmpeg.Test
 
             TimeSpan currentProgress;
 
-            conversion.OnProgress += (duration, length) => { currentProgress = duration; };
+            conversion.OnProgress += (sender, e) => { currentProgress = e.Duration; };
             bool conversionResult = await conversion.Start();
 
             Assert.True(conversionResult);
@@ -229,10 +229,10 @@ namespace Xabe.FFmpeg.Test
             TimeSpan currentProgress;
             TimeSpan videoLength;
 
-            conversion.OnProgress += (duration, length) =>
+            conversion.OnProgress += (sender, e) =>
             {
-                currentProgress = duration;
-                videoLength = length;
+                currentProgress = e.Duration;
+                videoLength = e.TotalLength;
             };
             bool conversionResult = await conversion.Start();
 
@@ -457,10 +457,10 @@ namespace Xabe.FFmpeg.Test
 
             TimeSpan currentProgress;
             TimeSpan videoLength;
-            conversion.OnProgress += (duration, totalLength) =>
+            conversion.OnProgress += (sender, e) =>
             {
-                currentProgress = duration;
-                videoLength = totalLength;
+                currentProgress = e.Duration;
+                videoLength = e.TotalLength;
             };
 
             await conversion.Start();
