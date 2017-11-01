@@ -15,6 +15,11 @@ namespace Xabe.FFmpeg
     public interface IConversion
     {
         /// <summary>
+        ///     Output file path
+        /// </summary>
+        string OutputFilePath { get; }
+
+        /// <summary>
         ///     Clear saved parameters
         /// </summary>
         void Clear();
@@ -320,10 +325,5 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <returns>Conversion result</returns>
         IConversion SetSubtitle(string subtitlePath);
-
-        /// <summary>
-        ///     Output file path
-        /// </summary>
-        string OutputFilePath { get; }
     }
 }

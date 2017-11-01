@@ -17,20 +17,6 @@ namespace Xabe.FFmpeg
     /// <inheritdoc />
     public class Conversion: IConversion
     {
-        private Conversion()
-        {
-            
-        }
-
-        /// <summary>
-        ///     Get new instance of Conversion
-        /// </summary>
-        /// <returns>IConversion object</returns>
-        public static IConversion New()
-        {
-            return new Conversion();
-        }
-
         private readonly object _builderLock = new object();
         private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private string _audio;
@@ -57,6 +43,10 @@ namespace Xabe.FFmpeg
         private string _video;
         private string _videoSpeed;
         private string _watermark;
+
+        private Conversion()
+        {
+        }
 
         /// <inheritdoc />
         public string Build()
@@ -486,6 +476,15 @@ namespace Xabe.FFmpeg
 
             _input = $"-f concat -safe 0 -i \"{tmpFile}\" -c copy ";
             return this;
+        }
+
+        /// <summary>
+        ///     Get new instance of Conversion
+        /// </summary>
+        /// <returns>IConversion object</returns>
+        public static IConversion New()
+        {
+            return new Conversion();
         }
 
         private void AddSubtitles(StringBuilder builder)
