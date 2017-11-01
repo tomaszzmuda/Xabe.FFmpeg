@@ -125,13 +125,13 @@ namespace Xabe.FFmpeg
 
         private void ValidateExecutables()
         {
-            if(FFmpegPath == null ||
-               FFprobePath == null)
-            {
-                string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
-                string exceptionMessage = $"Cannot find FFmpeg in {ffmpegDir}PATH";
-                throw new ArgumentException(exceptionMessage);
-            }
+            if(FFmpegPath != null &&
+               FFprobePath != null)
+                return;
+
+            string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
+            string exceptionMessage = $"Cannot find FFmpeg in {ffmpegDir}PATH";
+            throw new ArgumentException(exceptionMessage);
         }
 
         private void FindProgramsFromPath(string path)
