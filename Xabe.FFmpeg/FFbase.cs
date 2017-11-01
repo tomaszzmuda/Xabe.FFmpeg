@@ -130,7 +130,7 @@ namespace Xabe.FFmpeg
                 return;
 
             string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
-            string exceptionMessage = $"Cannot find FFmpeg in {ffmpegDir}PATH";
+            string exceptionMessage = $"Cannot find FFmpeg in {ffmpegDir}PATH. This package needs installed FFmpeg. Please add it to your PATH variable or specify path to DIRECTORY with FFmpeg executables in {nameof(FFbase)}.{nameof(FFmpegDir)}";
             throw new ArgumentException(exceptionMessage);
         }
 
