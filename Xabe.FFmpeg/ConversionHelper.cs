@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg
         public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .UseMultiThread(multithread)
                 .SetScale(size)
@@ -46,7 +46,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion ToTs(string inputPath, string outputPath)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .StreamCopy(Channel.Both)
                 .SetBitstreamFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
@@ -66,7 +66,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibVpx, 2400)
@@ -88,7 +88,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibTheora, 2400)
@@ -106,7 +106,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ChangeSize(string inputPath, string output, VideoSize size)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .SetScale(size)
                 .SetOutput(output);
@@ -123,7 +123,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion AddSubtitle(string inputPath, string output, string subtitlePath, [CanBeNull] string language)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .AddSubtitle(subtitlePath, language)
                 .StreamCopy(Channel.Both)
@@ -140,7 +140,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion BurnSubtitle(string inputPath, string output, string subtitlePath)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .SetSubtitle(subtitlePath)
                 .SetOutput(output);
@@ -155,7 +155,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion ExtractVideo(string inputPath, string output)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .StreamCopy(Channel.Both)
                 .DisableChannel(Channel.Audio)
@@ -174,7 +174,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion SetWatermark(string inputPath, string inputImage, Position position, string output)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .SetWatermark(inputImage, position)
                 .SetOutput(output);
@@ -189,7 +189,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion ExtractAudio(string inputPath, string output)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .DisableChannel(Channel.Video)
                 .SetOutput(output);
@@ -206,7 +206,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion ToGif(string inputPath, string output, int loop, int delay = 0)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .SetLoop(1, delay)
                 .SetOutput(output);
@@ -222,7 +222,7 @@ namespace Xabe.FFmpeg
         [UsedImplicitly]
         public static IConversion AddAudio(string inputPath, string audioFilePath, string output)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath, audioFilePath)
                 .StreamCopy(Channel.Video)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
@@ -246,7 +246,7 @@ namespace Xabe.FFmpeg
 
             size = GetSize(source, size);
 
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .SetVideo(VideoCodec.Png)
                 .SetOutputFramesCount(1)
@@ -268,7 +268,7 @@ namespace Xabe.FFmpeg
                uri.Scheme != "https")
                 throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(uri)
                 .SetOutput(outputPath);
         }
@@ -292,7 +292,7 @@ namespace Xabe.FFmpeg
                     .Start();
             }
 
-            return await new Conversion().
+            return await Conversion.New().
                 Concatenate(pathList.ToArray())
                                          .StreamCopy(Channel.Both)
                                          .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
@@ -336,7 +336,7 @@ namespace Xabe.FFmpeg
         /// <returns></returns>
         public static IConversion Split(string inputPath, TimeSpan startTime, TimeSpan duration, string outputPath)
         {
-            return new Conversion()
+            return Conversion.New()
                 .SetInput(inputPath)
                 .Split(startTime, duration)
                 .SetOutput(outputPath);

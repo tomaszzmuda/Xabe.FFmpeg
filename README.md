@@ -35,7 +35,7 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 or
 
 	string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-	bool conversionResult = await new Conversion()
+	bool conversionResult = await Conversion.New()
 		.SetInput("videofile.mkv")
 		.Rotate(rotateDegrees)
 		.SetOutput(outputPath)
@@ -43,7 +43,7 @@ or
 
 it is possible to give your own arguments
 
-	bool conversionResult = await new Conversion().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
+	bool conversionResult = await Conversion.New().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
 
 
 ## Features ##

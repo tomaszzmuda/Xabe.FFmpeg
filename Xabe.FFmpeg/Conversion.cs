@@ -17,6 +17,20 @@ namespace Xabe.FFmpeg
     /// <inheritdoc />
     public class Conversion: IConversion
     {
+        private Conversion()
+        {
+            
+        }
+
+        /// <summary>
+        ///     Get new instance of Conversion
+        /// </summary>
+        /// <returns>IConversion object</returns>
+        public static IConversion New()
+        {
+            return Conversion.New();
+        }
+
         private readonly object _builderLock = new object();
         private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private string _audio;
