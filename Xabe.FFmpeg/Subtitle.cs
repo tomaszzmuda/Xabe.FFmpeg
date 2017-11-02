@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
@@ -9,6 +10,7 @@ namespace Xabe.FFmpeg
     public class Subtitle
     {
         private readonly string _path;
+        private static readonly Dictionary<SubtitleFormat, string> _descriptions = new Dictionary<SubtitleFormat, string>();
 
         /// <inheritdoc />
         public Subtitle(string path)
@@ -21,26 +23,18 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="outputPath"></param>
         /// <param name="subtitleFormat"></param>
-        /// <returns></returns>
+        /// <returns>Conversion result</returns>
         public async Task<bool> Convert(string outputPath, SubtitleFormat subtitleFormat)
         {
-            var codec = "";
-            switch(subtitleFormat)
+            if(!_descriptions.TryGetValue(subtitleFormat, out string description))
             {
-                case SubtitleFormat.SRT:
-                    codec = "srt";
-                    break;
-                case SubtitleFormat.WebVTT:
-                    codec = "webvtt";
-                    break;
-                case SubtitleFormat.ASS:
-                    codec = "ass";
-                    break;
+                description = Extensions.GetDescription(subtitleFormat);
+                _descriptions.Add(subtitleFormat, description);
             }
 
             return await new Conversion().SetInput(_path)
                                          .SetOutput(outputPath)
-                                         .SetCodec(codec)
+                                         .SetCodec(description)
                                          .Start();
         }
     }
