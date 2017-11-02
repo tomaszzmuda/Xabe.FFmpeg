@@ -106,8 +106,8 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .AddSubtitle(Resources.Subtitle, "ger")
-                .AddSubtitle(Resources.Subtitle, "eng")
+                .AddSubtitle(Resources.SubtitleSrt, "ger")
+                .AddSubtitle(Resources.SubtitleSrt, "eng")
                 .StreamCopy(Channel.Both)
                 .SetOutput(outputPath)
                 .Start();
@@ -125,7 +125,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .SetSubtitle(Resources.Subtitle)
+                .SetSubtitle(Resources.SubtitleSrt)
                 .SetOutput(outputPath)
                 .Start();
 

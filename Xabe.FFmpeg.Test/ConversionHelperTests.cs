@@ -50,7 +50,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
             string input = Resources.MkvWithAudio;
 
-            bool result = await ConversionHelper.AddSubtitle(input, output, Resources.Subtitle, "pol")
+            bool result = await ConversionHelper.AddSubtitle(input, output, Resources.SubtitleSrt, "pol")
                                                 .Start();
 
             Assert.True(result);
@@ -64,7 +64,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             string input = Resources.Mp4;
 
-            bool result = await ConversionHelper.BurnSubtitle(input, output, Resources.Subtitle)
+            bool result = await ConversionHelper.BurnSubtitle(input, output, Resources.SubtitleSrt)
                                                 .Start();
 
             Assert.True(result);
