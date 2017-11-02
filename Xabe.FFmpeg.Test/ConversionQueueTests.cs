@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Xabe.FFmpeg.Enums;
@@ -17,7 +16,7 @@ namespace Xabe.FFmpeg.Test
         {
             var queue = new ConversionQueue(parallel);
 
-            for (var i = 0; i < 2; i++)
+            for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
                 IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
@@ -42,9 +41,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
             if(conversionNumber == totalConversionsCount)
-            {
                 resetEvent.Set();
-            }
         }
 
         [Fact]
@@ -53,7 +50,7 @@ namespace Xabe.FFmpeg.Test
             var queue = new ConversionQueue();
             var exceptionOccures = false;
 
-            for (var i = 0; i < 2; i++)
+            for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
                 IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
@@ -78,7 +75,7 @@ namespace Xabe.FFmpeg.Test
             var queue = new ConversionQueue();
             var exceptionOccures = false;
 
-            for (var i = 0; i < 2; i++)
+            for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
                 IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
