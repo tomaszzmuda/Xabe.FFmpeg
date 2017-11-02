@@ -55,7 +55,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(result);
             var outputInfo = new MediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(5377), outputInfo.Properties.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Properties.Duration);
         }
 
         [Fact]
