@@ -114,7 +114,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(conversionResult);
             var mediaInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(5377), mediaInfo.Properties.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(3071), mediaInfo.Properties.Duration);
             Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
