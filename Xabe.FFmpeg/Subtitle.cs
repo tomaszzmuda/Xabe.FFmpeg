@@ -39,9 +39,9 @@ namespace Xabe.FFmpeg
             }
 
             return await new Conversion().SetInput(_path)
-                                  .SetOutput(outputPath)
-                                  .SetCodec(codec)
-                                  .Start();
+                                         .SetOutput(outputPath)
+                                         .SetCodec(codec)
+                                         .Start();
         }
     }
 }

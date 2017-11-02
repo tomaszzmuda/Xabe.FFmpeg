@@ -9,7 +9,7 @@
         ///     SubRip
         /// </summary>
         SRT,
-        
+
         /// <summary>
         ///     WebVTT
         /// </summary>
