@@ -13,11 +13,7 @@
   <ItemGroup>
     <None Remove="Resources\sample.flv" />
     <None Remove="Resources\sample.ts" />
-    <None Remove="Resources\sampleAss.ass" />
-    <None Remove="Resources\sampleMicroDVD.txt" />
-    <None Remove="Resources\sampleMPL2.txt" />
     <None Remove="Resources\sampleSrt.srt" />
-    <None Remove="Resources\sampleSsa.ssa" />
     <None Remove="Resources\SampleVideo_360x240_1mb.mkv" />
     <None Remove="Resources\watermark.png" />
   </ItemGroup>
