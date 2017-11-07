@@ -18,5 +18,5 @@ install:
  - dotnet clean -c Release
  - cd Xabe.FFmpeg
 
-after_success:
+script:
  - ./build.sh
