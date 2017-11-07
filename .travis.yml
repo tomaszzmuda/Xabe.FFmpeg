@@ -5,14 +5,18 @@ dist: trusty
 env:
   global:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
 before_install:
  # - sudo add-apt-repository ppa:mc3man/trusty-media -y
  # - sudo apt-get -qq update
  # - sudo apt-get install ffmpeg gstreamer0.10-ffmpeg libav-tools libgdiplus libavcodec-extra  libtheora-dev -y
  # - sudo apt-cache policy libav-tools
-script:
+
+install:
  - dotnet restore
  - dotnet test Xabe.FFmpeg.Test/
  - dotnet clean -c Release
  - cd Xabe.FFmpeg
- - ./build
+
+after_success:
+ - ./build.sh
