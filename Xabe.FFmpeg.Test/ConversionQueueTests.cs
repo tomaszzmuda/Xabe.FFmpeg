@@ -89,10 +89,10 @@ namespace Xabe.FFmpeg.Test
             queue.OnException += (number, count, conversion) =>
             {
                 exceptionOccures = true;
-                resetEvent.Set();
+                resetEvent.Set();   
             };
             queue.Dispose();
-            resetEvent.WaitOne();
+            Assert.True(resetEvent.WaitOne(2000));
             Assert.True(exceptionOccures);
         }
     }
