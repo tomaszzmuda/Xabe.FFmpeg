@@ -1,7 +1,3 @@
-#!/bin/bash
-dotnet restore
-dotnet test Xabe.FFmpeg.Test/
-dotnet clean -c Release
 cd Xabe.FFmpeg
 if [[ -z "${TRAVIS_TAG}" ]]; then 
 	dotnet build /p:GenerateDocumentationFile=true

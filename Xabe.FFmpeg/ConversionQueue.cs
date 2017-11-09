@@ -46,7 +46,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public void Dispose()
         {
-            _start?.Dispose();
+            _start?.Reset();
             _cancellationTokenSource.Cancel();
         }
 
