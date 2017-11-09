@@ -19,4 +19,4 @@ install:
  - cd Xabe.FFmpeg
 
 script:
- - ./build.sh
+ - ./Xabe.FFmpeg/build.sh
