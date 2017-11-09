@@ -16,7 +16,7 @@ install:
  - dotnet restore
  - dotnet test Xabe.FFmpeg.Test/
  - dotnet clean -c Release
- - cd Xabe.FFmpeg
 
 script:
- - ./Xabe.FFmpeg/build.sh
+ - cd Xabe.FFmpeg
+ - ./build.sh
