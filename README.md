@@ -9,7 +9,7 @@
 .NET Standard wrapper for FFmpeg. It's allow to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
 
-[Link to documentation](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki)
+[List of features and wiki](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki)
 
 ## Using ##
 
@@ -44,21 +44,6 @@ or
 it is possible to give your own arguments
 
 	bool conversionResult = await new Conversion().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
-
-
-## Features ##
-* Cross-platform support
-* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki/Getting-an-information-about-video)
-* [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki/Extracting-audio-or-video)
-* Convert media
-* Create snapshot
-* Add audio to video
-* Concatenate multiple videos
-* Reverse
-* Change speed
-* Rotate video
-* Pass parameters directly to FFmpeg
-* Set watermark for video file
 
 ## Lincence ## 
 
