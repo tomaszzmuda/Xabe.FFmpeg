@@ -59,13 +59,13 @@ namespace Xabe.FFmpeg.Test
                 queue.Add(conversion);
             }
 
-            queue.Start();
             var resetEvent = new AutoResetEvent(false);
             queue.OnException += (number, count, conversion) =>
             {
                 exceptionOccures = true;
                 resetEvent.Set();
             };
+            queue.Start();
             Assert.True(resetEvent.WaitOne(2000));
             Assert.True(exceptionOccures);
         }
