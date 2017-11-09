@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Test
                 resetEvent.Set();
                 throw new Exception();
             };
-            Assert.True(resetEvent.WaitOne(2000));
+            Assert.True(resetEvent.WaitOne(60000));
         }
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
