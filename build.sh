@@ -1,3 +1,4 @@
+cd Xabe.FFmpeg
 if [[ -z "${TRAVIS_TAG}" ]]; then 
 	dotnet build /p:GenerateDocumentationFile=true
 	dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true
