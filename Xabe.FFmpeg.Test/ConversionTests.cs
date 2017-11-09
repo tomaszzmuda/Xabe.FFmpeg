@@ -521,7 +521,7 @@ namespace Xabe.FFmpeg.Test
                 .UseMultiThread(false)
                 .Start(cancellationTokenSource.Token);
 
-            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Cancel(false);
             Assert.False(await result);
         }
 
