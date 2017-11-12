@@ -42,7 +42,7 @@ namespace Xabe.FFmpeg
                 {
                     Process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     Process.BeginErrorReadLine();
-                    cancellationToken.Register(() => { Process.Kill(); });
+                    cancellationToken.Register(() => { Process.StandardInput.Write("q"); });
                     Process.WaitForExit();
 
                     if(cancellationToken.IsCancellationRequested)

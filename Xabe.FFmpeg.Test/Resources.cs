@@ -12,6 +12,7 @@ namespace Xabe.FFmpeg.Test
         internal static readonly string MkvWithAudio = Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv");
         internal static readonly string TsWithAudio = Path.Combine(Environment.CurrentDirectory, "Resources", "sample.ts");
         internal static readonly string FlvWithAudio = Path.Combine(Environment.CurrentDirectory, "Resources", "sample.flv");
-        internal static readonly string Subtitle = Path.Combine(Environment.CurrentDirectory, "Resources", "sampleSubtitles.srt");
+
+        internal static readonly string SubtitleSrt = Path.Combine(Environment.CurrentDirectory, "Resources", "sampleSrt.srt");
     }
 }

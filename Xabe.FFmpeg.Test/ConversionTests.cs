@@ -104,17 +104,17 @@ namespace Xabe.FFmpeg.Test
         public async Task AddSubtitlesTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
-            bool conversionResult = await Conversion.New()
-                                                    .SetInput(Resources.MkvWithAudio)
-                                                    .AddSubtitle(Resources.Subtitle, "ger")
-                                                    .AddSubtitle(Resources.Subtitle, "eng")
-                                                    .StreamCopy(Channel.Both)
-                                                    .SetOutput(outputPath)
-                                                    .Start();
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .AddSubtitle(Resources.SubtitleSrt, "ger")
+                .AddSubtitle(Resources.SubtitleSrt, "eng")
+                .StreamCopy(Channel.Both)
+                .SetOutput(outputPath)
+                .Start();
 
             Assert.True(conversionResult);
             var mediaInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(5377), mediaInfo.Properties.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(3071), mediaInfo.Properties.Duration);
             Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
         }
@@ -123,11 +123,11 @@ namespace Xabe.FFmpeg.Test
         public async Task BurnSubtitlesTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await Conversion.New()
-                                                    .SetInput(Resources.MkvWithAudio)
-                                                    .SetSubtitle(Resources.Subtitle)
-                                                    .SetOutput(outputPath)
-                                                    .Start();
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetSubtitle(Resources.SubtitleSrt)
+                .SetOutput(outputPath)
+                .Start();
 
             Assert.True(conversionResult);
             var mediaInfo = new MediaInfo(outputPath);
@@ -522,7 +522,7 @@ namespace Xabe.FFmpeg.Test
                 .UseMultiThread(false)
                 .Start(cancellationTokenSource.Token);
 
-            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Cancel(false);
             Assert.False(await result);
         }
 

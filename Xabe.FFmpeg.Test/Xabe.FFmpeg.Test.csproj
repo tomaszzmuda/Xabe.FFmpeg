@@ -11,8 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\sample.flv" />
     <None Remove="Resources\sample.ts" />
+    <None Remove="Resources\sampleSrt.srt" />
     <None Remove="Resources\SampleVideo_360x240_1mb.mkv" />
+    <None Remove="Resources\watermark.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,10 +28,19 @@
     <Content Include="Resources\mute.mp4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\sample.flv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\sample.ts">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\sampleSrt.srt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\SampleVideo_360x240_1mb.mkv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\watermark.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -48,9 +60,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\sampleSubtitles.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\watermark.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

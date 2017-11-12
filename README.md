@@ -5,11 +5,13 @@
 [![GitHub stars](https://img.shields.io/github/stars/tomaszzmuda/Xabe.FFmpeg.svg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/stargazers)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/LICENSE.md)
 [![HitCount](http://hits.dwyl.io/tomaszzmuda/Xabe.FFmpeg.svg)](http://hits.dwyl.io/tomaszzmuda/Xabe.FFmpeg)
+[![Join the chat at https://gitter.im/Xabe-FFmpeg/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Xabe-FFmpeg/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 .NET Standard wrapper for FFmpeg. It's allow to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
 
-[Link to documentation](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki)
+[List of features and wiki](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki)
 
 ## Using ##
 
@@ -45,21 +47,10 @@ it is possible to give your own arguments
 
 	bool conversionResult = await Conversion.New().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
 
-
-## Features ##
-* Cross-platform support
-* [Getting an information about video](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki/Getting-an-information-about-video)
-* [Extracting audio or video](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki/Extracting-audio-or-video)
-* Convert media
-* Create snapshot
-* Add audio to video
-* Concatenate multiple videos
-* Reverse
-* Change speed
-* Rotate video
-* Pass parameters directly to FFmpeg
-* Set watermark for video file
-
-## Lincence ## 
+## Lincence ##
 
 Xabe.FFmpeg is licensed under MIT - see [License](LICENSE.md) for details.
+
+## Contact ##
+
+Feel free to ask any questions on [Gitter](https://gitter.im/Xabe-FFmpeg/Lobby# "Gitter") or write e-mail  to **tomasz.zmuda@xabe.xyz**

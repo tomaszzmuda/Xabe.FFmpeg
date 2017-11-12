@@ -31,7 +31,7 @@ namespace Xabe.FFmpeg.Test
                 resetEvent.Set();
                 throw new Exception();
             };
-            resetEvent.WaitOne();
+            Assert.True(resetEvent.WaitOne(60000));
         }
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
@@ -45,7 +45,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public void QueueDisposeTest()
+        public void QueueExceptionTest()
         {
             var queue = new ConversionQueue();
             var exceptionOccures = false;
@@ -53,46 +53,19 @@ namespace Xabe.FFmpeg.Test
             for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+                File.Create(output);
                 IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
                 queue.Add(conversion);
             }
 
+            var resetEvent = new AutoResetEvent(false);
+            queue.OnException += (number, count, conversion) =>
+            {
+                exceptionOccures = true;
+                resetEvent.Set();
+            };
             queue.Start();
-            var resetEvent = new AutoResetEvent(false);
-            queue.OnException += (number, count, conversion) =>
-            {
-                exceptionOccures = true;
-                resetEvent.Set();
-            };
-            queue.Dispose();
-            resetEvent.WaitOne();
-            Assert.True(exceptionOccures);
-        }
-
-        [Fact]
-        public void QueueTimeOutTest()
-        {
-            var queue = new ConversionQueue();
-            var exceptionOccures = false;
-
-            for(var i = 0; i < 2; i++)
-            {
-                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
-                IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
-                queue.Add(conversion);
-            }
-
-            var cancellationTokenSource = new CancellationTokenSource(500);
-
-            queue.Start(cancellationTokenSource);
-            var resetEvent = new AutoResetEvent(false);
-            queue.OnException += (number, count, conversion) =>
-            {
-                exceptionOccures = true;
-                resetEvent.Set();
-            };
-            queue.Dispose();
-            resetEvent.WaitOne();
+            Assert.True(resetEvent.WaitOne(2000));
             Assert.True(exceptionOccures);
         }
     }
