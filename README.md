@@ -47,6 +47,10 @@ it is possible to give your own arguments
 
 	bool conversionResult = await new Conversion().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
 
-## Lincence ## 
+## Lincence ##
 
 Xabe.FFmpeg is licensed under MIT - see [License](LICENSE.md) for details.
+
+## Contact ##
+
+Feel free to ask any questions on [Gitter](https://gitter.im/Xabe-FFmpeg/Lobby# "Gitter") or write e-mail  to **tomasz.zmuda@xabe.xyz**
