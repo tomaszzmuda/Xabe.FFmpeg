@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg
                 _descriptions.Add(subtitleFormat, description);
             }
 
-            return await new Conversion().SetInput(_path)
+            return await Conversion.New().SetInput(_path)
                                          .SetOutput(outputPath)
                                          .SetCodec(description)
                                          .Start();

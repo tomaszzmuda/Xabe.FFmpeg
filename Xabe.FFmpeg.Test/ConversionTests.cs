@@ -104,7 +104,7 @@ namespace Xabe.FFmpeg.Test
         public async Task AddSubtitlesTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
-            bool conversionResult = await new Conversion()
+            bool conversionResult = await Conversion.New()
                 .SetInput(Resources.MkvWithAudio)
                 .AddSubtitle(Resources.SubtitleSrt, "ger")
                 .AddSubtitle(Resources.SubtitleSrt, "eng")
@@ -123,7 +123,7 @@ namespace Xabe.FFmpeg.Test
         public async Task BurnSubtitlesTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
+            bool conversionResult = await Conversion.New()
                 .SetInput(Resources.MkvWithAudio)
                 .SetSubtitle(Resources.SubtitleSrt)
                 .SetOutput(outputPath)
