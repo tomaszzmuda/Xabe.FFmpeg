@@ -52,7 +52,7 @@ namespace Xabe.FFmpeg
                         throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
                 }
                 return true;
-            }, cancellationToken);
+            });
         }
 
         private void ProcessOutputData(DataReceivedEventArgs e, string args)
