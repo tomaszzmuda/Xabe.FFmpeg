@@ -166,7 +166,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
         {
-            _speed = $"-preset {speed.ToString() .ToLower()} ";
+            _speed = $"-preset {speed.ToString().ToLower()} ";
             return this;
         }
 
