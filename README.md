@@ -49,7 +49,7 @@ it is possible to give your own arguments
 
 ## Lincence ##
 
-Xabe.FFmpeg is licensed under MIT - see [License](LICENSE.md) for details.
+Xabe.FFmpeg is licensed under [Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)](https://creativecommons.org/licenses/by-nc-sa/3.0/) - see [License](LICENSE.md) for details. If you want use Xabe.FFmpeg in commercial project please ask about licensing at **tomasz.zmuda@xabe.xyz**
 
 ## Contact ##
 
