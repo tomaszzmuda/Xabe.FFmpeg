@@ -62,17 +62,18 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Destination file</param>
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
+        /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
         [UsedImplicitly]
-        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal)
+        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
                 .SetInput(inputPath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibVpx, 2400)
-                .SetSpeed(16)
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
-                .SetOutput(outputPath);
+                .SetOutput(outputPath)
+                .UseMultiThread(multithread);
         }
 
 
@@ -92,9 +93,9 @@ namespace Xabe.FFmpeg
                 .SetInput(inputPath)
                 .SetScale(size)
                 .SetVideo(VideoCodec.LibTheora, 2400)
-                .SetSpeed(16)
                 .SetAudio(AudioCodec.LibVorbis, audioQuality)
-                .SetOutput(outputPath);
+                .SetOutput(outputPath)
+                .UseMultiThread(multithread);
         }
 
         /// <summary>
@@ -121,7 +122,7 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
-        public static IConversion AddSubtitle(string inputPath, string output, string subtitlePath, [CanBeNull] string language)
+        public static IConversion AddSubtitle(string inputPath, string output, string subtitlePath, string language)
         {
             return new Conversion()
                 .SetInput(inputPath)
