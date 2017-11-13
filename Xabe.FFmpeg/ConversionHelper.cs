@@ -22,18 +22,19 @@ namespace Xabe.FFmpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
+        /// <param name="bitrate">birate of video</param>
         /// <returns>Conversion result</returns>
         [UsedImplicitly]
         public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
-            VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+            VideoSize size = null, AudioQuality? audioQuality = null, bool? multithread = null, int? bitrate = null)
         {
             return new Conversion()
                 .SetInput(inputPath)
-                .UseMultiThread(multithread)
+                .UseMultiThread(multithread ?? false)
                 .SetScale(size)
-                .SetVideo(VideoCodec.LibX264, 2400)
+                .SetVideo(VideoCodec.LibX264, bitrate ?? 2400)
                 .SetSpeed(speed)
-                .SetAudio(AudioCodec.Aac, audioQuality)
+                .SetAudio(AudioCodec.Aac, audioQuality ?? AudioQuality.Normal)
                 .SetOutput(outputPath);
         }
 
@@ -62,19 +63,46 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Destination file</param>
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
+        /// <param name="bitrate">bitrate of video</param>
+        /// <param name="cputhread">MAx number of cpu thread</param>
         /// <returns>Conversion result</returns>
         [UsedImplicitly]
-        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal)
+        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, 
+            AudioQuality? audioQuality = null, int? bitrate = null, int? cputhread = null)
         {
             return new Conversion()
                 .SetInput(inputPath)
                 .SetScale(size)
-                .SetVideo(VideoCodec.LibVpx, 2400)
-                .SetSpeed(16)
-                .SetAudio(AudioCodec.LibVorbis, audioQuality)
+                .SetVideo(VideoCodec.LibVpx, bitrate ?? 2400)
+                .SetSpeed(cputhread ?? 16)
+                .SetAudio(AudioCodec.LibVorbis, audioQuality ?? AudioQuality.Normal)
                 .SetOutput(outputPath);
         }
 
+        /// <summary>
+        ///     Convert file to WebM
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Destination file</param>
+        /// <param name="size">Dimension</param>
+        /// <param name="audioQuality">Audio quality</param>
+        /// <param name="multithread">Use multithread</param>
+        /// <param name="bitrate">bitrate of video</param>
+        /// <param name="speed">Encoding speed profile</param>
+        /// <returns>Conversion result</returns>
+        [UsedImplicitly]
+        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, 
+            AudioQuality? audioQuality = null, bool? multithread = null, int? bitrate = null, Speed? speed = null)
+        {
+            return new Conversion()
+                .SetInput(inputPath)
+                .SetScale(size)
+                .UseMultiThread(multithread ?? false)
+                .SetVideo(VideoCodec.LibVpx, bitrate ?? 2400)
+                .SetSpeed(speed ?? Speed.Fast)
+                .SetAudio(AudioCodec.LibVorbis, audioQuality ?? AudioQuality.Normal)
+                .SetOutput(outputPath);
+        }
 
         /// <summary>
         ///     Convert file to OGV
@@ -84,16 +112,20 @@ namespace Xabe.FFmpeg
         /// <param name="size">Dimension</param>
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
+        /// <param name="bitrate"></param>
+        /// <param name="cputhread"></param>
         /// <returns>Conversion result</returns>
         [UsedImplicitly]
-        public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, 
+            AudioQuality? audioQuality = null, bool? multithread = null, int? bitrate = null, int? cputhread = null)
         {
             return new Conversion()
                 .SetInput(inputPath)
                 .SetScale(size)
-                .SetVideo(VideoCodec.LibTheora, 2400)
-                .SetSpeed(16)
-                .SetAudio(AudioCodec.LibVorbis, audioQuality)
+                .UseMultiThread(multithread ?? false)
+                .SetVideo(VideoCodec.LibTheora, bitrate ?? 2400)
+                .SetSpeed(cputhread ?? 16)
+                .SetAudio(AudioCodec.LibVorbis, audioQuality ?? AudioQuality.Normal)
                 .SetOutput(outputPath);
         }
 
