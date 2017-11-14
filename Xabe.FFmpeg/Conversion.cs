@@ -43,6 +43,7 @@ namespace Xabe.FFmpeg
         private string _video;
         private string _videoSpeed;
         private string _watermark;
+        private string _additionalsParams;
 
         /// <inheritdoc />
         public string Build()
@@ -73,6 +74,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildVideoFilter());
                 builder.Append(BuildAudioFilter());
                 builder.Append(_split);
+                builder.Append(_additionalsParams);
                 builder.Append(_output);
 
                 return builder.ToString();
@@ -457,6 +459,13 @@ namespace Xabe.FFmpeg
                 return this;
             _shortestInput = "-shortest ";
             return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetAdditionalParams(string parameters)
+        {
+            _additionalsParams = $"{parameters.Trim()} ";
+            return this; 
         }
 
         /// <inheritdoc />
