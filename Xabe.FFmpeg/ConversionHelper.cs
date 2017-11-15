@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
@@ -23,7 +22,6 @@ namespace Xabe.FFmpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
@@ -43,7 +41,6 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion ToTs(string inputPath, string outputPath)
         {
             return new Conversion()
@@ -64,7 +61,6 @@ namespace Xabe.FFmpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
@@ -86,7 +82,6 @@ namespace Xabe.FFmpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
@@ -153,7 +148,6 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="output">Output audio stream</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion ExtractVideo(string inputPath, string output)
         {
             return new Conversion()
@@ -172,7 +166,6 @@ namespace Xabe.FFmpeg
         /// <param name="output">Output file</param>
         /// <param name="inputImage">Watermark</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion SetWatermark(string inputPath, string inputImage, Position position, string output)
         {
             return new Conversion()
@@ -187,7 +180,6 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="output">Output video stream</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion ExtractAudio(string inputPath, string output)
         {
             return new Conversion()
@@ -204,7 +196,6 @@ namespace Xabe.FFmpeg
         /// <param name="loop">Number of repeats</param>
         /// <param name="delay">Delay between repeats (in seconds)</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion ToGif(string inputPath, string output, int loop, int delay = 0)
         {
             return new Conversion()
@@ -220,7 +211,6 @@ namespace Xabe.FFmpeg
         /// <param name="audioFilePath">Audio file</param>
         /// <param name="output">Output file</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion AddAudio(string inputPath, string audioFilePath, string output)
         {
             return new Conversion()
@@ -238,7 +228,6 @@ namespace Xabe.FFmpeg
         /// <param name="size">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion Snapshot(string inputPath, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
             IMediaInfo source = new MediaInfo(inputPath);
@@ -262,7 +251,6 @@ namespace Xabe.FFmpeg
         /// <param name="uri">URI to stream.</param>
         /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static IConversion SaveM3U8Stream(Uri uri, string outputPath)
         {
             if(uri.Scheme != "http" ||
@@ -292,7 +280,6 @@ namespace Xabe.FFmpeg
         /// <param name="output">Concatenated inputVideos</param>
         /// <param name="inputVideos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        [UsedImplicitly]
         public static async Task<bool> Concatenate(string output, params string[] inputVideos)
         {
             var pathList = new List<string>();

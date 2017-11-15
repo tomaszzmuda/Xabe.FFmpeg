@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using JetBrains.Annotations;
 using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
@@ -49,7 +48,6 @@ namespace Xabe.FFmpeg
         public FileInfo FileInfo { get; }
 
         /// <inheritdoc cref="IMediaInfo.ToString" />
-        [UsedImplicitly]
         public override string ToString()
         {
             return $"Video fullName : {FileInfo.FullName}{Environment.NewLine}" +

@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace Xabe.FFmpeg.Exceptions
 {
@@ -23,7 +22,6 @@ namespace Xabe.FFmpeg.Exceptions
         /// <summary>
         ///     FFmpeg input parameters
         /// </summary>
-        [UsedImplicitly]
         public string InputParameters { get; }
     }
 }

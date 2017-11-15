@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
@@ -80,7 +79,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc cref="IConversion.OnProgress" />
-        [UsedImplicitly]
         public event ConversionHandler OnProgress;
 
         /// <inheritdoc cref="IConversion.OnDataReceived" />

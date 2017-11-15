@@ -1,15 +1,12 @@
-﻿using JetBrains.Annotations;
-
+﻿
 // ReSharper disable InconsistentNaming
 
 namespace Xabe.FFmpeg.Model
 {
-    [UsedImplicitly]
     internal class ProbeModel
     {
         public Stream[] streams { get; set; }
 
-        [UsedImplicitly]
         public class Stream
         {
             public string codec_name { get; set; }

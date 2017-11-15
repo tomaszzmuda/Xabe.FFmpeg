@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using JetBrains.Annotations;
 
 namespace Xabe.FFmpeg
 {
@@ -20,17 +19,25 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Directory contains FFmpeg and FFprobe
         /// </summary>
-        [CanBeNull] [UsedImplicitly] public static string FFmpegDir;
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnassignedField.Global
+        public static string FFmpegDir;
 
         /// <summary>
         ///     Name of FFmpeg executable name (Case insensitive)
         /// </summary>
-        [CanBeNull] [UsedImplicitly] public static string FFmpegExecutableName = "ffmpeg";
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once ConvertToConstant.Global
+        // ReSharper disable once FieldCanBeMadeReadOnly.Global
+        public static string FFmpegExecutableName = "ffmpeg";
 
         /// <summary>
         ///     Name of FFprobe executable name (Case insensitive)
         /// </summary>
-        [CanBeNull] [UsedImplicitly] public static string FFprobeExecutableName = "ffprobe";
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once ConvertToConstant.Global
+        // ReSharper disable once FieldCanBeMadeReadOnly.Global
+        public static string FFprobeExecutableName = "ffprobe";
 
 
         private static readonly object _ffmpegPathLock = new object();

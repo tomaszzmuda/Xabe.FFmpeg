@@ -1,13 +1,11 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using JetBrains.Annotations;
 
 namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
     ///     Video size
     /// </summary>
-    [UsedImplicitly]
     public class VideoSize
     {
         /// <summary>
