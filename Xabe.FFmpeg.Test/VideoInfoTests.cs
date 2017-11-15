@@ -6,8 +6,15 @@ using Xunit;
 namespace Xabe.FFmpeg.Test
 {
     public class VideoInfoTests
-
     {
+        [Fact]
+        public void IncorrectFormatTest()
+        {
+            IMediaInfo mediaInfo = new MediaInfo(Resources.Dll);
+
+            Assert.Null(mediaInfo.Properties);
+        }
+
         [Fact]
         public void AudioPopertiesTest()
         {

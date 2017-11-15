@@ -19,7 +19,7 @@ namespace Xabe.FFmpeg
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
 
-            return new[] {probe.streams.FirstOrDefault(x => x.codec_type == "video") ?? null, probe.streams.FirstOrDefault(x => x.codec_type == "audio") ?? null};
+            return new[] {probe.streams?.FirstOrDefault(x => x.codec_type == "video") ?? null, probe.streams?.FirstOrDefault(x => x.codec_type == "audio") ?? null};
         }
 
         private double GetVideoFramerate(ProbeModel.Stream vid)
@@ -106,6 +106,10 @@ namespace Xabe.FFmpeg
             ProbeModel.Stream[] streams = GetStream(videoPath);
             ProbeModel.Stream videoStream = streams[0];
             ProbeModel.Stream audioStream = streams[1];
+            if(videoStream == null &&
+               audioStream == null)
+                return null;
+
             FormatModel.Format format = GetFormat(videoPath);
             videoProperties.Size = long.Parse(format.size);
 
