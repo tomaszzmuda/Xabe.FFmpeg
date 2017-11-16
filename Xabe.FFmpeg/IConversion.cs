@@ -327,7 +327,6 @@ namespace Xabe.FFmpeg
         /// <returns></returns>
         IConversion AddSubtitle(string subtitlePath, string language);
 
-
         /// <summary>
         ///     Burn subtitle into file
         /// </summary>
@@ -336,10 +335,9 @@ namespace Xabe.FFmpeg
         IConversion SetSubtitle(string subtitlePath);
 
         /// <summary>
-        /// Set additional parameters for the conversion (They must be well formed)
+        ///     Add additional parameters for the conversion (They must be well formed)
         /// </summary>
-        /// <param name="parameter">
-        /// Parameter to set</param>
+        /// <param name="parameter"> Parameter to set</param>
         /// <returns>IConversion object</returns>
         IConversion AddParameter(string parameter);
     }

@@ -73,7 +73,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildVideoFilter());
                 builder.Append(BuildAudioFilter());
                 builder.Append(_split);
-                AddParameters(builder);
+                builder.Append(_parameters.Aggregate("", (parameter, result) => result += parameter));
                 builder.Append(_output);
 
                 return builder.ToString();
@@ -518,15 +518,6 @@ namespace Xabe.FFmpeg
             if(filter == "-filter:a ")
                 return "";
             return filter;
-        }
-
-        private void AddParameters(StringBuilder builder)
-        {
-            if (!_parameters.Any())
-                return;
-
-            foreach(string parameter in _parameters)
-                builder.Append(parameter);
         }
 
         /// <inheritdoc />
