@@ -8,14 +8,6 @@ namespace Xabe.FFmpeg.Test
     public class VideoInfoTests
     {
         [Fact]
-        public void IncorrectFormatTest()
-        {
-            IMediaInfo mediaInfo = new MediaInfo(Resources.Dll);
-
-            Assert.Null(mediaInfo.Properties);
-        }
-
-        [Fact]
         public void AudioPopertiesTest()
         {
             IMediaInfo mediaInfo = new MediaInfo(Resources.Mp3);
@@ -36,6 +28,14 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Properties.Duration);
             Assert.Equal(216916, mediaInfo.Properties.Size);
+        }
+
+        [Fact]
+        public void IncorrectFormatTest()
+        {
+            IMediaInfo mediaInfo = new MediaInfo(Resources.Dll);
+
+            Assert.Null(mediaInfo.Properties);
         }
 
         [Fact]

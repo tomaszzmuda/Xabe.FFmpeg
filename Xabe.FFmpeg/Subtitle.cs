@@ -9,8 +9,8 @@ namespace Xabe.FFmpeg
     /// </summary>
     public class Subtitle
     {
-        private readonly string _path;
         private static readonly Dictionary<SubtitleFormat, string> _descriptions = new Dictionary<SubtitleFormat, string>();
+        private readonly string _path;
 
         /// <inheritdoc />
         public Subtitle(string path)

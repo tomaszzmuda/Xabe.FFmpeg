@@ -17,8 +17,8 @@ namespace Xabe.FFmpeg
     public class Conversion: IConversion
     {
         private readonly object _builderLock = new object();
-        private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private readonly IList<string> _parameters = new List<string>();
+        private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private string _audio;
         private string _audioSpeed;
         private string _bitsreamFilter;
@@ -167,7 +167,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
         {
-            _speed = $"-preset {speed.ToString().ToLower()} ";
+            _speed = $"-preset {speed.ToString() .ToLower()} ";
             return this;
         }
 
@@ -459,7 +459,7 @@ namespace Xabe.FFmpeg
             _shortestInput = "-shortest ";
             return this;
         }
-        
+
         /// <inheritdoc />
         public IConversion Concat(params string[] paths)
         {
@@ -478,6 +478,13 @@ namespace Xabe.FFmpeg
             File.WriteAllLines(tmpFile, paths.Select(x => $"file '{x}'"));
 
             _input = $"-f concat -safe 0 -i \"{tmpFile}\" -c copy ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddParameter(string parameter)
+        {
+            _parameters.Add($"{parameter.Trim()} ");
             return this;
         }
 
@@ -519,13 +526,5 @@ namespace Xabe.FFmpeg
                 return "";
             return filter;
         }
-
-        /// <inheritdoc />
-        public IConversion AddParameter(string parameter)
-        {
-            _parameters.Add($"{parameter.Trim()} ");
-            return this;
-        }
-
     }
 }
