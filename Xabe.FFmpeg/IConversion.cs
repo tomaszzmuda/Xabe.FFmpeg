@@ -236,13 +236,6 @@ namespace Xabe.FFmpeg
         IConversion UseShortest(bool useShortest);
 
         /// <summary>
-        ///     Set additional parameters for the conversion (They must be well formed)
-        /// </summary>
-        /// <param name="parameters">Parameters</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetAdditionalParams(string parameters);
-
-        /// <summary>
         ///     Concat multiple media files. All files must have the same streams (same codecs, same time base, etc.)
         /// </summary>
         /// <param name="paths">Media files</param>
@@ -331,7 +324,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
-        /// <returns>Conversion result</returns>
+        /// <returns></returns>
         IConversion AddSubtitle(string subtitlePath, string language);
 
 
@@ -341,5 +334,13 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <returns>Conversion result</returns>
         IConversion SetSubtitle(string subtitlePath);
+
+        /// <summary>
+        /// Set additional parameters for the conversion (They must be well formed)
+        /// </summary>
+        /// <param name="parameter">
+        /// Parameter to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion AddParameter(string parameter);
     }
 }

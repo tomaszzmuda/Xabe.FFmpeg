@@ -18,6 +18,7 @@ namespace Xabe.FFmpeg
     {
         private readonly object _builderLock = new object();
         private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
+        private readonly IList<string> _parameters = new List<string>();
         private string _audio;
         private string _audioSpeed;
         private string _bitsreamFilter;
@@ -42,7 +43,6 @@ namespace Xabe.FFmpeg
         private string _video;
         private string _videoSpeed;
         private string _watermark;
-        private string _additionalsParams;
 
         /// <inheritdoc />
         public string Build()
@@ -73,7 +73,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildVideoFilter());
                 builder.Append(BuildAudioFilter());
                 builder.Append(_split);
-                builder.Append(_additionalsParams);
+                AddParameters(builder);
                 builder.Append(_output);
 
                 return builder.ToString();
@@ -119,6 +119,7 @@ namespace Xabe.FFmpeg
         public void Clear()
         {
             _subtitles.Clear();
+            _parameters.Clear();
             if(_fields == null)
                 _fields = GetType()
                     .GetFields(BindingFlags.NonPublic |
@@ -458,14 +459,7 @@ namespace Xabe.FFmpeg
             _shortestInput = "-shortest ";
             return this;
         }
-
-        /// <inheritdoc />
-        public IConversion SetAdditionalParams(string parameters)
-        {
-            _additionalsParams = $"{parameters.Trim()} ";
-            return this; 
-        }
-
+        
         /// <inheritdoc />
         public IConversion Concat(params string[] paths)
         {
@@ -525,5 +519,22 @@ namespace Xabe.FFmpeg
                 return "";
             return filter;
         }
+
+        private void AddParameters(StringBuilder builder)
+        {
+            if (!_parameters.Any())
+                return;
+
+            foreach(string parameter in _parameters)
+                builder.Append(parameter);
+        }
+
+        /// <inheritdoc />
+        public IConversion AddParameter(string parameter)
+        {
+            _parameters.Add($"{parameter.Trim()} ");
+            return this;
+        }
+
     }
 }
