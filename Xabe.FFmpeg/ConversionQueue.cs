@@ -18,7 +18,7 @@ namespace Xabe.FFmpeg
         /// <param name="conversion">Conversion that was just finished</param>
         public delegate void ConversionQueueEventHandler(int currentItemNumber, int totalItemsCount, IConversion conversion);
 
-        private readonly ConcurrentBag<IConversion> _list = new ConcurrentBag<IConversion>();
+        private readonly BlockingCollection<IConversion> _list = new BlockingCollection<IConversion>();
         private readonly bool _parallel;
         private readonly ManualResetEvent _start = new ManualResetEvent(false);
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
@@ -60,9 +60,9 @@ namespace Xabe.FFmpeg
         /// </summary>
         public event ConversionQueueEventHandler OnException;
 
-        private bool GetNext(out IConversion conversion)
+        private IConversion GetNext()
         {
-            return _list.TryTake(out conversion);
+            return _list.Take();
         }
 
         private async Task Worker(CancellationToken token)
@@ -73,8 +73,7 @@ namespace Xabe.FFmpeg
                 try
                 {
                     _start.WaitOne();
-                    if(!GetNext(out conversion))
-                        continue;
+                    conversion = GetNext();
                     await conversion.Start(token);
                     Interlocked.Increment(ref _number);
                     OnConverted?.Invoke((int) Interlocked.Read(ref _number), (int) Interlocked.Read(ref _totalItems), conversion);
