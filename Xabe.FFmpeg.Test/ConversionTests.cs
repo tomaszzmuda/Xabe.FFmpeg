@@ -577,5 +577,16 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("mpeg2video", mediaInfo.Properties.VideoFormat);
             Assert.Equal("mp2", mediaInfo.Properties.AudioFormat);
         }
+
+        [Fact]
+        public void BuildParameterOrderTest()
+        {
+            var conv = new Conversion();
+            conv.SetSpeed(Speed.Fast);
+            conv.SetScale(VideoSize.Hd720);
+            string result = conv.Build();
+
+            Assert.Equal("-n -vf scale=1280x720 -preset fast ", result);
+        }
     }
 }
