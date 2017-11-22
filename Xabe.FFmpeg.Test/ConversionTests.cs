@@ -581,12 +581,11 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void BuildParameterOrderTest()
         {
-            var conv = new Conversion();
-            conv.SetSpeed(Speed.Fast);
-            conv.SetScale(VideoSize.Hd720);
-            string result = conv.Build();
+            var parameters = new Conversion().AddParameter("-preset fast")
+                                             .AddParameter("-vf scale=1280x720")
+                                             .Build();
 
-            Assert.Equal("-n -vf scale=1280x720 -preset fast ", result);
+            Assert.True(parameters.IndexOf("-preset fast", StringComparison.Ordinal) < parameters.IndexOf("-vf scale=1280x720", StringComparison.Ordinal));
         }
     }
 }
