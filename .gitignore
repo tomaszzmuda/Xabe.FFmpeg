@@ -8,6 +8,7 @@
 /Xabe.FFmpeg.Test/obj
 /.vs/Xabe.FFmpeg/v15/sqlite3
 /Xabe.FFmpeg.Test/bin/Debug/netcoreapp2.0
+/Xabe.FFmpeg.Test/bin/Release/netcoreapp2.0
 /Xabe.FFmpeg/bin/Debug/netstandard2.0
 /Xabe.FFmpeg/bin/Release/netstandard2.0
 /.vs/*
