@@ -177,7 +177,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize)
         {
-            _burnSubtitles = $"\"subtitles='{subtitlePath}'\"".Replace("\\", "\\\\")
+            _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                                .Replace(":", "\\:");
 
             if(!string.IsNullOrEmpty(encode))
@@ -186,7 +186,7 @@ namespace Xabe.FFmpeg
                 _burnSubtitles += $":force_style=\'{style}\'";
             if(originalSize != default(Size))
                 _burnSubtitles += $":original_size={originalSize.Width}x{originalSize.Height}";
-            _burnSubtitles += " ";
+            _burnSubtitles += "\" ";
 
             return this;
         }
