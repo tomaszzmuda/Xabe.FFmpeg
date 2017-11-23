@@ -335,6 +335,33 @@ namespace Xabe.FFmpeg
         IConversion SetSubtitle(string subtitlePath);
 
         /// <summary>
+        ///     Burn subtitle into file
+        /// </summary>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
+        /// <returns>Conversion result</returns>
+        IConversion SetSubtitle(string subtitlePath, string encode);
+
+        /// <summary>
+        ///     Burn subtitle into file
+        /// </summary>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
+        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
+        /// <returns>Conversion result</returns>
+        IConversion SetSubtitle(string subtitlePath, string style, Size originalSize);
+
+        /// <summary>
+        ///     Burn subtitle into file
+        /// </summary>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
+        /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
+        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
+        /// <returns>Conversion result</returns>
+        IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize);
+
+        /// <summary>
         ///     Add additional parameters for the conversion (They must be well formed)
         /// </summary>
         /// <param name="parameter"> Parameter to set</param>
