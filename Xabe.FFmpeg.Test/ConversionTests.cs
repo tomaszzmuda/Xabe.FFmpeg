@@ -154,6 +154,27 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task BurnSubtitlesWithParametersTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            string subtitle = Resources.SubtitleSrt.Replace("\\", "\\\\")
+                                                    .Replace(":", "\\:");
+
+            IConversion conversion = new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new Size(1024, 768))
+                .SetOutput(outputPath);
+            bool conversionResult = await conversion.Start();
+            
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            Assert.Equal($"-i \"{Resources.MkvWithAudio}\" -n -filter:v \"subtitles='{subtitle}':charenc=UTF-8:force_style='Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30':original_size=1024x768\" \"{outputPath}\"", conversion.Build());
+        }
+
+        [Fact]
         public async Task ChangeOutputFramesCountTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
