@@ -68,5 +68,32 @@ namespace Xabe.FFmpeg.Test
             Assert.True(resetEvent.WaitOne(2000));
             Assert.True(exceptionOccures);
         }
+
+        [Fact]
+        public void QueueNumberIncrementExceptionTest()
+        {
+            var queue = new ConversionQueue();
+            var currentItemNumber = 0;
+            var totalItemsCount = 0;
+
+            for (var i = 0; i < 2; i++)
+            {
+                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+                File.Create(output);
+                IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
+                queue.Add(conversion);
+            }
+
+            var resetEvent = new AutoResetEvent(false);
+            queue.OnException += (number, count, conversion) =>
+            {
+                totalItemsCount = count;
+                currentItemNumber = number;
+                if (number == count) resetEvent.Set();
+            };
+            queue.Start();
+            Assert.True(resetEvent.WaitOne(10000));
+            Assert.Equal(totalItemsCount, currentItemNumber);
+        }
     }
 }
