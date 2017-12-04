@@ -74,8 +74,8 @@ namespace Xabe.FFmpeg
                 {
                     _start.WaitOne();
                     conversion = GetNext();
-                    await conversion.Start(token);
                     Interlocked.Increment(ref _number);
+                    await conversion.Start(token);
                     OnConverted?.Invoke((int) Interlocked.Read(ref _number), (int) Interlocked.Read(ref _totalItems), conversion);
                 }
                 catch(Exception)

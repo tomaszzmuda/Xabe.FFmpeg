@@ -49,8 +49,10 @@ namespace Xabe.FFmpeg.Test
         {
             var queue = new ConversionQueue();
             var exceptionOccures = false;
+            var currentItemNumber = 0;
+            var totalItemsCount = 0;
 
-            for(var i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
                 File.Create(output);
@@ -62,10 +64,13 @@ namespace Xabe.FFmpeg.Test
             queue.OnException += (number, count, conversion) =>
             {
                 exceptionOccures = true;
-                resetEvent.Set();
+                totalItemsCount = count;
+                currentItemNumber = number;
+                if(number == count) resetEvent.Set();
             };
             queue.Start();
             Assert.True(resetEvent.WaitOne(2000));
+            Assert.Equal(totalItemsCount, currentItemNumber);
             Assert.True(exceptionOccures);
         }
     }
