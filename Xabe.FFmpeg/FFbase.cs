@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace Xabe.FFmpeg
@@ -71,13 +72,18 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            string workingDirectory = Environment.CurrentDirectory;
+            Assembly entryAssembly = Assembly.GetEntryAssembly();
 
-            FindProgramsFromPath(workingDirectory);
+            if(entryAssembly != null)
+            {
+                string workingDirectory = Path.GetDirectoryName(entryAssembly.Location);
 
-            if(FFmpegPath != null &&
-               FFprobePath != null)
-                return;
+                FindProgramsFromPath(workingDirectory);
+
+                if (FFmpegPath != null &&
+                    FFprobePath != null)
+                    return;
+            }
 
             char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
 
