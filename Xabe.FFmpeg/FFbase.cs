@@ -71,6 +71,14 @@ namespace Xabe.FFmpeg
                 return;
             }
 
+            string workingDirectory = Environment.CurrentDirectory;
+
+            FindProgramsFromPath(workingDirectory);
+
+            if(FFmpegPath != null &&
+               FFprobePath != null)
+                return;
+
             char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
 
             string[] paths = Environment.GetEnvironmentVariable("PATH")
