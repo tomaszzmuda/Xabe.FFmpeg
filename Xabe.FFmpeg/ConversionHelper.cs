@@ -299,10 +299,10 @@ namespace Xabe.FFmpeg
             }
             conversion.AddParameter($"-filter_complex \"");
 
-            var maxResolutionMedia = mediaInfos.First(); //mediaInfos.OrderByDescending(x => x.Properties.Width).First();
+            var maxResolutionMedia = mediaInfos.OrderByDescending(x => x.Properties.Width).First();
             for (int i = 0; i < inputVideos.Length; i++)
             {
-                conversion.AddParameter($"[{i}:v]scale=200:100,setdar=dar=4/3,setpts=PTS-STARTPTS[v{i}]; ");
+                conversion.AddParameter($"[{i}:v]scale={maxResolutionMedia.Properties.Width}:{maxResolutionMedia.Properties.Height},setdar=dar={maxResolutionMedia.Properties.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
             }
 //            if (mediaInfos.Select(x => x.Properties.Ratio).Count() != 1 || mediaInfos.Select(x => x.Properties.Height).Count() != 1 || mediaInfos.Select(x => x.Properties.Width).Count() != 1)
 //            {
