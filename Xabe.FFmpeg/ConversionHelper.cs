@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
@@ -284,20 +285,56 @@ namespace Xabe.FFmpeg
         {
             var pathList = new List<string>();
 
-            foreach(string path in inputVideos)
+            var mediaInfos = new List<MediaInfo>();
+            foreach(string inputVideo in inputVideos)
             {
-                string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-                pathList.Add(tempFileName);
-                await ToTs(path, tempFileName)
-                    .Start();
+                mediaInfos.Add(new MediaInfo(inputVideo));
             }
 
-            return await new Conversion().
-                Concat(pathList.ToArray())
-                                         .StreamCopy(Channel.Both)
-                                         .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                                         .SetOutput(output)
-                                         .Start();
+            var conversion = new Conversion();
+
+            foreach (string inputVideo in inputVideos)
+            {
+                conversion.AddParameter($"-i {inputVideo} ");
+            }
+            conversion.AddParameter($"-filter_complex \"");
+
+            var maxResolutionMedia = mediaInfos.First(); //mediaInfos.OrderByDescending(x => x.Properties.Width).First();
+            for (int i = 0; i < inputVideos.Length; i++)
+            {
+                conversion.AddParameter($"[{i}:v]scale=200:100,setdar=dar=4/3,setpts=PTS-STARTPTS[v{i}]; ");
+            }
+//            if (mediaInfos.Select(x => x.Properties.Ratio).Count() != 1 || mediaInfos.Select(x => x.Properties.Height).Count() != 1 || mediaInfos.Select(x => x.Properties.Width).Count() != 1)
+//            {
+//                conversion.AddParameter($"scale={maxResolutionMedia.Properties.Width}:{maxResolutionMedia.Properties.Height};");
+//            }
+
+            for (int i = 0; i < inputVideos.Length; i++)
+            {
+                conversion.AddParameter($"[v{i}][0:a]");
+            }
+
+
+                conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
+
+            conversion.AddParameter("-c:v libx264 -c:a aac -strict experimental");
+            conversion.SetOutput(output);
+            return await conversion.Start();
+
+//            foreach (string path in inputVideos)
+//            {
+//                string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
+//                pathList.Add(tempFileName);
+//                await ToTs(path, tempFileName)
+//                    .Start();
+//            }
+//
+//            return await new Conversion().
+//                Concat(pathList.ToArray())
+//                                         .StreamCopy(Channel.Both)
+//                                         .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
+//                                         .SetOutput(output)
+//                                         .Start();
         }
 
         private static Size? GetSize(IMediaInfo source, Size? size)
