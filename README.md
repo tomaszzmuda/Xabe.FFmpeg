@@ -15,7 +15,8 @@
 
 ## Using ##
 
-You have to have installed FFmpeg and added it to your PATH variable or specify directory where FFmpeg executables are before run conversion in variable FFbase.FFmpegDir.
+**You have to have installed FFmpeg and added it to your PATH variable OR specify directory where FFmpeg and ffprob are before run conversion in variable FFbase.FFmpegDir OR have FFmpeg and FFprobe in directory with you executable.**
+
 Default the library is trying to find FFmpeg executables names contains "ffprobe", "ffmpeg". This function is case insensitive. Those names can be changed in FFbase.FFmpegExecutableName and FFbase.FFprobeExecutableName.
 
 Install the [Xabe.FFmpeg NuGet package](https://www.nuget.org/packages/Xabe.FFmpeg) via nuget:
