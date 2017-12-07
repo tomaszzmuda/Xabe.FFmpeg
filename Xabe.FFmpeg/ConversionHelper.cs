@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -284,25 +284,21 @@ namespace Xabe.FFmpeg
         public static async Task<bool> Concatenate(string output, params string[] inputVideos)
         {
             var mediaInfos = new List<MediaInfo>();
-            foreach(string inputVideo in inputVideos)
-            {
-                mediaInfos.Add(new MediaInfo(inputVideo));
-            }
 
             var conversion = new Conversion();
-
-            foreach(string inputVideo in inputVideos)
+            foreach (string inputVideo in inputVideos)
             {
+                mediaInfos.Add(new MediaInfo(inputVideo));
                 conversion.AddParameter($"-i {inputVideo} ");
             }
             conversion.AddParameter($"-filter_complex \"");
 
-            MediaInfo maxResolutionMedia = mediaInfos.OrderByDescending(x => x.Properties.Width)
-                                               .First();
-            for(var i = 0; i < inputVideos.Length; i++)
+            MediaProperties maxResolutionMedia = mediaInfos.OrderByDescending(x => x.Properties.Width)
+                                                     .First().Properties;
+            for(var i = 0; i < mediaInfos.Count; i++)
             {
-                conversion.AddParameter(
-                    $"[{i}:v]scale={maxResolutionMedia.Properties.Width}:{maxResolutionMedia.Properties.Height},setdar=dar={maxResolutionMedia.Properties.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
+                    conversion.AddParameter(
+                        $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
             }
 
             for(var i = 0; i < inputVideos.Length; i++)
@@ -311,8 +307,6 @@ namespace Xabe.FFmpeg
             }
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
-
-            conversion.AddParameter("-c:v libx264 -c:a aac -strict experimental");
             conversion.SetOutput(output);
             return await conversion.Start();
         }
