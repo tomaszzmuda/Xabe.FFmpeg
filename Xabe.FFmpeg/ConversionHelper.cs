@@ -294,6 +294,7 @@ namespace Xabe.FFmpeg
                 mediaInfos.Add(new MediaInfo(inputVideo));
                 conversion.AddParameter($"-i \"{inputVideo}\" ");
             }
+            conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
             conversion.AddParameter($"-filter_complex \"");
 
             MediaProperties maxResolutionMedia = mediaInfos.OrderByDescending(x => x.Properties.Width)
@@ -304,9 +305,12 @@ namespace Xabe.FFmpeg
                         $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
             }
 
-            for(var i = 0; i < inputVideos.Length; i++)
+            for(var i = 0; i < mediaInfos.Count; i++)
             {
-                conversion.AddParameter($"[v{i}][{i}:a]");
+                if(string.IsNullOrEmpty(mediaInfos[i].Properties.AudioFormat))
+                    conversion.AddParameter($"[v{i}]");
+                else
+                    conversion.AddParameter($"[v{i}][{i}:a]");
             }
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
