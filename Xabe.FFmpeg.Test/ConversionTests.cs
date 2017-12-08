@@ -541,23 +541,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task LogLevelTest()
-        {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            bool conversionResult = await new Conversion()
-                .SetInput(Resources.MkvWithAudio)
-                .SetLogLevel(LogLevel.Debug)
-                .SetOutput(outputPath)
-                .Start();
-
-            Assert.True(conversionResult);
-            var mediaInfo = new MediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
-            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
-            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
-        }
-
-        [Fact]
         public async Task SizeTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
