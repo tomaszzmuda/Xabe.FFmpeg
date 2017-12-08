@@ -306,7 +306,7 @@ namespace Xabe.FFmpeg
 
             for(var i = 0; i < inputVideos.Length; i++)
             {
-                conversion.AddParameter($"[v{i}][0:a]");
+                conversion.AddParameter($"[v{i}][{i}:a]");
             }
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
