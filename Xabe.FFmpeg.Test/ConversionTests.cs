@@ -524,6 +524,23 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task X265Test()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = await new Conversion()
+                .SetInput(Resources.MkvWithAudio)
+                .SetVideo("libx265")
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("hevc", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+        }
+
+        [Fact]
         public async Task SizeTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
