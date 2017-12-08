@@ -283,13 +283,16 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static async Task<bool> Concatenate(string output, params string[] inputVideos)
         {
+            if(inputVideos.Length <= 1)
+                throw new ArgumentException("You must provide at least 2 files for the concatenation to work", "inputVideos");
+
             var mediaInfos = new List<MediaInfo>();
 
             var conversion = new Conversion();
             foreach (string inputVideo in inputVideos)
             {
                 mediaInfos.Add(new MediaInfo(inputVideo));
-                conversion.AddParameter($"-i {inputVideo} ");
+                conversion.AddParameter($"-i \"{inputVideo}\" ");
             }
             conversion.AddParameter($"-filter_complex \"");
 
@@ -303,7 +306,7 @@ namespace Xabe.FFmpeg
 
             for(var i = 0; i < inputVideos.Length; i++)
             {
-                conversion.AddParameter($"[v{i}][0:a]");
+                conversion.AddParameter($"[v{i}][{i}:a]");
             }
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
