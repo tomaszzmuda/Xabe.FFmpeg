@@ -14,3 +14,4 @@
 /.vs/*
 *.nupkg
 *.user
+/Xabe.FFmpeg.Test/bin/Debug/netcoreapp1.1

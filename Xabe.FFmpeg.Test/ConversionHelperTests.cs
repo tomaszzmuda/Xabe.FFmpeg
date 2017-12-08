@@ -137,7 +137,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(result);
             Assert.True(File.Exists(output));
-            Assert.Equal(1890492, (await File.ReadAllBytesAsync(output)).LongLength);
+            Assert.Equal(1890492, File.ReadAllBytes(output).Length);
         }
 
         [Fact]
