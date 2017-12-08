@@ -15,3 +15,4 @@
 *.nupkg
 *.user
 /Xabe.FFmpeg.Test/bin/Debug/netcoreapp1.1
+/Xabe.FFmpeg/bin/Debug/netstandard1.6
