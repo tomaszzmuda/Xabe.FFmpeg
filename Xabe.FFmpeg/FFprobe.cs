@@ -94,7 +94,7 @@ namespace Xabe.FFmpeg
             finally
             {
                 Process.WaitForExit();
-                Process.Kill();
+                Process.Dispose();
             }
 
             return output;
