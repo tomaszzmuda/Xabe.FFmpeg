@@ -283,6 +283,9 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static async Task<bool> Concatenate(string output, params string[] inputVideos)
         {
+            if(inputVideos.Length <= 1)
+                throw new ArgumentException("You must provide at least 2 files for the concatenation to work", "inputVideos");
+
             var mediaInfos = new List<MediaInfo>();
 
             var conversion = new Conversion();
