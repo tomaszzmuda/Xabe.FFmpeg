@@ -289,7 +289,7 @@ namespace Xabe.FFmpeg
             foreach (string inputVideo in inputVideos)
             {
                 mediaInfos.Add(new MediaInfo(inputVideo));
-                conversion.AddParameter($"-i {inputVideo} ");
+                conversion.AddParameter($"-i \"{inputVideo}\" ");
             }
             conversion.AddParameter($"-filter_complex \"");
 
