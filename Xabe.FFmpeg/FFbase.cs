@@ -162,9 +162,9 @@ namespace Xabe.FFmpeg
                 return;
             FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith(FFprobeExecutableName, true, CultureInfo.InvariantCulture))
+            FFprobePath = files.FirstOrDefault(x => x.Name.ToLower().StartsWith(FFprobeExecutableName.ToLower()))
                                ?.FullName;
-            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith(FFmpegExecutableName, true, CultureInfo.InvariantCulture))
+            FFmpegPath = files.FirstOrDefault(x => x.Name.ToLower().StartsWith(FFmpegExecutableName.ToLower()))
                               ?.FullName;
         }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -121,7 +121,7 @@ namespace Xabe.FFmpeg
             _subtitles.Clear();
             _parameters.Clear();
             if(_fields == null)
-                _fields = GetType()
+                _fields = GetType().GetTypeInfo()
                     .GetFields(BindingFlags.NonPublic |
                                BindingFlags.Instance)
                     .Where(x => x.FieldType == typeof(string));
@@ -309,11 +309,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetSize(Size? size)
+        public IConversion SetSize(Size size)
         {
-            if(size.HasValue)
-                _size = $"-s {size.Value.Width}x{size.Value.Height} ";
-
+                _size = $"-s {size.Width}x{size.Height} ";
             return this;
         }
 
@@ -420,8 +418,8 @@ namespace Xabe.FFmpeg
             else
                 videoMultiplicator = 1 + (multiplication - 1) * -2;
 
-            string audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
-            string videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
+            string audioSpeed = $"atempo={string.Format(new CultureInfo("en-US"), "{0:N1}", multiplication)} ";
+            string videoSpeed = $"setpts={string.Format(new CultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
             switch(channel)
             {
                 case Channel.Audio:

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -228,7 +228,7 @@ namespace Xabe.FFmpeg
         /// <param name="size">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Conversion result</returns>
-        public static IConversion Snapshot(string inputPath, string outputPath, Size? size = null, TimeSpan? captureTime = null)
+        public static IConversion Snapshot(string inputPath, string outputPath, Size size = null, TimeSpan? captureTime = null)
         {
             IMediaInfo source = new MediaInfo(inputPath);
             if(captureTime == null)
@@ -300,24 +300,24 @@ namespace Xabe.FFmpeg
                                          .Start();
         }
 
-        private static Size? GetSize(IMediaInfo source, Size? size)
+        private static Size GetSize(IMediaInfo source, Size size)
         {
             if(size == null ||
-               size.Value.Height == 0 && size.Value.Width == 0)
+               size.Height == 0 && size.Width == 0)
                 size = new Size(source.Properties.Width, source.Properties.Height);
 
-            if(size.Value.Width != size.Value.Height)
+            if(size.Width != size.Height)
             {
-                if(size.Value.Width == 0)
+                if(size.Width == 0)
                 {
-                    double ratio = source.Properties.Width / (double) size.Value.Width;
+                    double ratio = source.Properties.Width / (double) size.Width;
 
                     size = new Size((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
                 }
 
-                if(size.Value.Height == 0)
+                if(size.Height == 0)
                 {
-                    double ratio = source.Properties.Height / (double) size.Value.Height;
+                    double ratio = source.Properties.Height / (double) size.Height;
 
                     size = new Size((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
                 }

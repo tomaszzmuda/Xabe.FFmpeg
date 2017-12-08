@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -138,7 +138,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="size">VideoSize</param>
         /// <returns>IConversion object</returns>
-        IConversion SetSize(Size? size);
+        IConversion SetSize(Size size);
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
