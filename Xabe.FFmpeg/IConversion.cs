@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -131,14 +131,14 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="size">VideoSize</param>
         /// <returns>IConversion object</returns>
-        IConversion SetScale(VideoSize size);
+        IConversion SetScale(Resolution size);
 
         /// <summary>
         ///     Set size of video
         /// </summary>
-        /// <param name="size">VideoSize</param>
+        /// <param name="resolution">VideoSize</param>
         /// <returns>IConversion object</returns>
-        IConversion SetSize(Size? size);
+        IConversion SetSize(Resolution resolution);
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
@@ -347,9 +347,9 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
-        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
+        /// <param name="originalResolution">Specify the resolution of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
         /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath, string style, Size originalSize);
+        IConversion SetSubtitle(string subtitlePath, string style, Resolution originalResolution);
 
         /// <summary>
         ///     Burn subtitle into file
@@ -357,9 +357,9 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
         /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
-        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
+        /// <param name="originalResolution">Specify the resolution of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
         /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize);
+        IConversion SetSubtitle(string subtitlePath, string encode, string style, Resolution originalResolution);
 
         /// <summary>
         ///     Add additional parameters for the conversion (They must be well formed)

@@ -51,7 +51,7 @@ namespace Xabe.FFmpeg.Enums
 
         internal static string GetDescription(Enum value)
         {
-            FieldInfo fi = value.GetType()
+            FieldInfo fi = value.GetType().GetTypeInfo()
                                 .GetField(value.ToString());
 
             var attributes =

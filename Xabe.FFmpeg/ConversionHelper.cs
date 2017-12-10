@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
         public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
-            VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+            Resolution size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
                 .SetInput(inputPath)
@@ -61,7 +61,7 @@ namespace Xabe.FFmpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public static IConversion ToWebM(string inputPath, string outputPath, Resolution size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
                 .SetInput(inputPath)
@@ -82,7 +82,7 @@ namespace Xabe.FFmpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public static IConversion ToOgv(string inputPath, string outputPath, Resolution size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
                 .SetInput(inputPath)
@@ -100,7 +100,7 @@ namespace Xabe.FFmpeg
         /// <param name="output">Output path</param>
         /// <param name="size">Expected size</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ChangeSize(string inputPath, string output, VideoSize size)
+        public static IConversion ChangeSize(string inputPath, string output, Resolution size)
         {
             return new Conversion()
                 .SetInput(inputPath)
@@ -225,23 +225,23 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputPath">Video</param>
         /// <param name="outputPath">Output file</param>
-        /// <param name="size">Dimension of snapshot</param>
+        /// <param name="resolution">Dimension of snapshot</param>
         /// <param name="captureTime"></param>
         /// <returns>Conversion result</returns>
-        public static IConversion Snapshot(string inputPath, string outputPath, Size? size = null, TimeSpan? captureTime = null)
+        public static IConversion Snapshot(string inputPath, string outputPath, Resolution resolution = null, TimeSpan? captureTime = null)
         {
             IMediaInfo source = new MediaInfo(inputPath);
             if(captureTime == null)
                 captureTime = TimeSpan.FromSeconds(source.Properties.VideoDuration.TotalSeconds / 3);
 
-            size = GetSize(source, size);
+            resolution = GetSize(source, resolution);
 
             return new Conversion()
                 .SetInput(inputPath)
                 .SetVideo(VideoCodec.Png)
                 .SetOutputFramesCount(1)
                 .SetSeek(captureTime)
-                .SetSize(size)
+                .SetSize(resolution)
                 .SetOutput(outputPath);
         }
 
@@ -300,30 +300,30 @@ namespace Xabe.FFmpeg
                                          .Start();
         }
 
-        private static Size? GetSize(IMediaInfo source, Size? size)
+        private static Resolution GetSize(IMediaInfo source, Resolution resolution)
         {
-            if(size == null ||
-               size.Value.Height == 0 && size.Value.Width == 0)
-                size = new Size(source.Properties.Width, source.Properties.Height);
+            if(resolution == null ||
+               resolution.Height == 0 && resolution.Width == 0)
+                resolution = new Resolution(source.Properties.Width, source.Properties.Height);
 
-            if(size.Value.Width != size.Value.Height)
+            if(resolution.Width != resolution.Height)
             {
-                if(size.Value.Width == 0)
+                if(resolution.Width == 0)
                 {
-                    double ratio = source.Properties.Width / (double) size.Value.Width;
+                    double ratio = source.Properties.Width / (double) resolution.Width;
 
-                    size = new Size((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
+                    resolution = new Resolution((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
                 }
 
-                if(size.Value.Height == 0)
+                if(resolution.Height == 0)
                 {
-                    double ratio = source.Properties.Height / (double) size.Value.Height;
+                    double ratio = source.Properties.Height / (double) resolution.Height;
 
-                    size = new Size((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
+                    resolution = new Resolution((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
                 }
             }
 
-            return size;
+            return resolution;
         }
 
         /// <summary>

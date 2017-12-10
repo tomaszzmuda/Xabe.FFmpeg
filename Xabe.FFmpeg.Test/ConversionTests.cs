@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
+using Xabe.FFmpeg.Model;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -162,7 +162,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversion conversion = new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new Size(1024, 768))
+                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new Resolution(1024, 768))
                 .SetOutput(outputPath);
             bool conversionResult = await conversion.Start();
             
@@ -199,7 +199,7 @@ namespace Xabe.FFmpeg.Test
             IConversion conversion = new Conversion()
                 .SetInput(Resources.MkvWithAudio)
                 .SetCodec(VideoCodec.LibVpx)
-                .SetScale(VideoSize.Ega)
+                .SetScale(Resolution.Ega)
                 .StreamCopy(Channel.Both)
                 .Reverse(Channel.Both)
                 .SetOutput(outputPath);
@@ -468,7 +468,7 @@ namespace Xabe.FFmpeg.Test
                 .SetSpeed(Speed.UltraFast)
                 .UseMultiThread(true)
                 .SetOutput(outputPath)
-                .SetScale(VideoSize.Sqcif)
+                .SetScale(Resolution.Sqcif)
                 .SetVideo(VideoCodec.LibX264, 2400)
                 .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                 .Start();
@@ -547,7 +547,7 @@ namespace Xabe.FFmpeg.Test
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
-                .SetSize(new Size(640, 480))
+                .SetSize(new Resolution(640, 480))
                 .Start();
 
             Assert.True(conversionResult);
@@ -567,7 +567,7 @@ namespace Xabe.FFmpeg.Test
             IConversion conversion = new Conversion();
             Task<bool> result = conversion
                 .SetInput(Resources.MkvWithAudio)
-                .SetScale(VideoSize.Uhd4320)
+                .SetScale(Resolution.Uhd4320)
                 .SetVideo(VideoCodec.LibTheora, 2400)
                 .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
                 .SetOutput(outputPath)
@@ -588,7 +588,7 @@ namespace Xabe.FFmpeg.Test
             IConversion conversion = new Conversion();
             Task<bool> result = conversion
                 .SetInput(Resources.MkvWithAudio)
-                .SetScale(VideoSize.Uhd4320)
+                .SetScale(Resolution.Uhd4320)
                 .SetVideo(VideoCodec.LibTheora, 2400)
                 .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
                 .SetOutput(outputPath)

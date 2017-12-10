@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -121,7 +121,7 @@ namespace Xabe.FFmpeg
             _subtitles.Clear();
             _parameters.Clear();
             if(_fields == null)
-                _fields = GetType()
+                _fields = GetType().GetTypeInfo()
                     .GetFields(BindingFlags.NonPublic |
                                BindingFlags.Instance)
                     .Where(x => x.FieldType == typeof(string));
@@ -156,26 +156,26 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath)
         {
-            this.SetSubtitle(subtitlePath, "", "", default(Size));
+            SetSubtitle(subtitlePath, "", "", default(Resolution));
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath, string encode)
         {
-            this.SetSubtitle(subtitlePath, encode, "", default(Size));
+            SetSubtitle(subtitlePath, encode, "", default(Resolution));
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string style, Size originalSize)
+        public IConversion SetSubtitle(string subtitlePath, string style, Resolution originalResolution)
         {
-            this.SetSubtitle(subtitlePath, "", style, originalSize);
+            SetSubtitle(subtitlePath, "", style, originalResolution);
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize)
+        public IConversion SetSubtitle(string subtitlePath, string encode, string style, Resolution originalResolution)
         {
             _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                                .Replace(":", "\\:");
@@ -184,8 +184,8 @@ namespace Xabe.FFmpeg
                 _burnSubtitles += $":charenc={encode}";
             if(!string.IsNullOrEmpty(style))
                 _burnSubtitles += $":force_style=\'{style}\'";
-            if(originalSize != default(Size))
-                _burnSubtitles += $":original_size={originalSize.Width}x{originalSize.Height}";
+            if(originalResolution != default(Resolution))
+                _burnSubtitles += $":original_size={originalResolution.Width}x{originalResolution.Height}";
             _burnSubtitles += "\" ";
 
             return this;
@@ -301,19 +301,17 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetScale(VideoSize size)
+        public IConversion SetScale(Resolution size)
         {
-            if(!string.IsNullOrWhiteSpace(size?.Resolution))
-                _scale = $"-vf scale={size.Resolution} ";
+            if(!string.IsNullOrWhiteSpace(size?.ToString()))
+                _scale = $"-vf scale={size} ";
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetSize(Size? size)
+        public IConversion SetSize(Resolution resolution)
         {
-            if(size.HasValue)
-                _size = $"-s {size.Value.Width}x{size.Value.Height} ";
-
+                _size = $"-s {resolution.Width}x{resolution.Height} ";
             return this;
         }
 
@@ -412,7 +410,7 @@ namespace Xabe.FFmpeg
         {
             if(multiplication < 0.5 ||
                multiplication > 2.0)
-                throw new ArgumentOutOfRangeException("Value has to be greater than 0.5 and less than 2.0.");
+                throw new ArgumentOutOfRangeException(nameof(multiplication), "Value has to be greater than 0.5 and less than 2.0.");
 
             double videoMultiplicator = 1;
             if(multiplication >= 1)
@@ -420,8 +418,8 @@ namespace Xabe.FFmpeg
             else
                 videoMultiplicator = 1 + (multiplication - 1) * -2;
 
-            string audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
-            string videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
+            string audioSpeed = $"atempo={string.Format(new CultureInfo("en-US"), "{0:N1}", multiplication)} ";
+            string videoSpeed = $"setpts={string.Format(new CultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
             switch(channel)
             {
                 case Channel.Audio:
