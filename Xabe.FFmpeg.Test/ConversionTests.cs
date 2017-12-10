@@ -161,7 +161,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversion conversion = new Conversion()
                 .SetInput(Resources.MkvWithAudio)
-                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new Model.Size(1024, 768))
+                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new Model.Resolution(1024, 768))
                 .SetOutput(outputPath);
             bool conversionResult = await conversion.Start();
             
@@ -546,7 +546,7 @@ namespace Xabe.FFmpeg.Test
             bool conversionResult = await new Conversion()
                 .SetInput(Resources.MkvWithAudio)
                 .SetOutput(outputPath)
-                .SetSize(new Model.Size(640, 480))
+                .SetSize(new Model.Resolution(640, 480))
                 .Start();
 
             Assert.True(conversionResult);

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Xabe.FFmpeg.Model
 {
-    public class Size
+    public class Resolution
     {
-        public Size(int width, int height)
+        public Resolution(int width, int height)
         {
             Width = width;
             Height = height;
