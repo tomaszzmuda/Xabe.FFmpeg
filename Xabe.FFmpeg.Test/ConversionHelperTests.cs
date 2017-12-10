@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
@@ -114,18 +115,26 @@ namespace Xabe.FFmpeg.Test
             Assert.Null(outputInfo.Properties.AudioFormat);
         }
 
-        [Fact]
-        public async Task JoinWith()
+        public static IEnumerable<object[]> JoinFiles => new[]
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720},
+            new object[] {Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240},
+            new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720 }
+        };
 
-            bool result = await ConversionHelper.Concatenate(output, Resources.MkvWithAudio, Resources.Mp4WithAudio);
+        [Theory]
+        [MemberData(nameof(JoinFiles))]
+        public async Task JoinWith(string firstFile, string secondFile, int duration, int width, int height)
+        {
+        string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
 
-            Assert.True(result);
-            var outputInfo = new MediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(23), outputInfo.Properties.Duration);
-            Assert.Equal("h264", outputInfo.Properties.VideoFormat);
-            Assert.Equal("aac", outputInfo.Properties.AudioFormat);
+        bool result = await ConversionHelper.Concatenate(output, firstFile, secondFile);
+
+        Assert.True(result);
+        var outputInfo = new MediaInfo(output);
+        Assert.Equal(TimeSpan.FromSeconds(duration), outputInfo.Properties.Duration);
+        Assert.Equal(width, outputInfo.Properties.Width);
+        Assert.Equal(height, outputInfo.Properties.Height);
         }
 
         [Fact]
