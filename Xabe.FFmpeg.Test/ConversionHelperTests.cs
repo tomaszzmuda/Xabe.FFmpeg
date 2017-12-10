@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -78,7 +79,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
             string input = Resources.MkvWithAudio;
 
-            bool result = await ConversionHelper.ChangeSize(input, output, new VideoSize(640, 360))
+            bool result = await ConversionHelper.ChangeSize(input, output, new Resolution(640, 360))
                                                 .Start();
 
             Assert.True(result);

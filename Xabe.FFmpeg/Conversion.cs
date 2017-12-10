@@ -301,10 +301,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetScale(VideoSize size)
+        public IConversion SetScale(Resolution size)
         {
-            if(!string.IsNullOrWhiteSpace(size?.Resolution))
-                _scale = $"-vf scale={size.Resolution} ";
+            if(!string.IsNullOrWhiteSpace(size?.ToString()))
+                _scale = $"-vf scale={size.ToString()} ";
             return this;
         }
 

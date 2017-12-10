@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
         public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
-            VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+            Resolution size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
                 .SetInput(inputPath)
@@ -61,7 +61,7 @@ namespace Xabe.FFmpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public static IConversion ToWebM(string inputPath, string outputPath, Resolution size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
                 .SetInput(inputPath)
@@ -82,7 +82,7 @@ namespace Xabe.FFmpeg
         /// <param name="audioQuality">Audio quality</param>
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+        public static IConversion ToOgv(string inputPath, string outputPath, Resolution size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
             return new Conversion()
                 .SetInput(inputPath)
@@ -100,7 +100,7 @@ namespace Xabe.FFmpeg
         /// <param name="output">Output path</param>
         /// <param name="size">Expected size</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ChangeSize(string inputPath, string output, VideoSize size)
+        public static IConversion ChangeSize(string inputPath, string output, Resolution size)
         {
             return new Conversion()
                 .SetInput(inputPath)
