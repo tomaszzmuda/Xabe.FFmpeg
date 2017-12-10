@@ -156,21 +156,21 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath)
         {
-            this.SetSubtitle(subtitlePath, "", "", default(Resolution));
+            SetSubtitle(subtitlePath, "", "", default(Resolution));
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath, string encode)
         {
-            this.SetSubtitle(subtitlePath, encode, "", default(Resolution));
+            SetSubtitle(subtitlePath, encode, "", default(Resolution));
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath, string style, Resolution originalResolution)
         {
-            this.SetSubtitle(subtitlePath, "", style, originalResolution);
+            SetSubtitle(subtitlePath, "", style, originalResolution);
             return this;
         }
 
@@ -304,7 +304,7 @@ namespace Xabe.FFmpeg
         public IConversion SetScale(Resolution size)
         {
             if(!string.IsNullOrWhiteSpace(size?.ToString()))
-                _scale = $"-vf scale={size.ToString()} ";
+                _scale = $"-vf scale={size} ";
             return this;
         }
 
@@ -410,7 +410,7 @@ namespace Xabe.FFmpeg
         {
             if(multiplication < 0.5 ||
                multiplication > 2.0)
-                throw new ArgumentOutOfRangeException("Value has to be greater than 0.5 and less than 2.0.");
+                throw new ArgumentOutOfRangeException(nameof(multiplication), "Value has to be greater than 0.5 and less than 2.0.");
 
             double videoMultiplicator = 1;
             if(multiplication >= 1)
