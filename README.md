@@ -13,6 +13,8 @@
 
 [List of features and wiki](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki)
 
+[If you want to push something](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki/Contribution)
+
 ## Using ##
 
 **You have to have installed FFmpeg and added it to your PATH variable OR specify directory where FFmpeg and ffprob are before run conversion in variable FFbase.FFmpegDir OR have FFmpeg and FFprobe in directory with you executable.**
