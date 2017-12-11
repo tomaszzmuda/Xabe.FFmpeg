@@ -308,7 +308,7 @@ namespace Xabe.FFmpeg
             for(var i = 0; i < mediaInfos.Count; i++)
             {
                 if(string.IsNullOrEmpty(mediaInfos[i].Properties.AudioFormat))
-                    conversion.AddParameter($"[v{i}]");
+                    conversion.AddParameter($"[v{i}][{mediaInfos.Count}:a]");
                 else
                     conversion.AddParameter($"[v{i}][{i}:a]");
             }
