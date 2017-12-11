@@ -6,7 +6,6 @@ using Xunit;
 namespace Xabe.FFmpeg.Test
 {
     public class VideoInfoTests
-
     {
         [Fact]
         public void AudioPopertiesTest()
@@ -29,6 +28,14 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Properties.Duration);
             Assert.Equal(216916, mediaInfo.Properties.Size);
+        }
+
+        [Fact]
+        public void IncorrectFormatTest()
+        {
+            IMediaInfo mediaInfo = new MediaInfo(Resources.Dll);
+
+            Assert.Null(mediaInfo.Properties);
         }
 
         [Fact]

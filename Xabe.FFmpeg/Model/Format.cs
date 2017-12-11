@@ -1,23 +1,19 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using JetBrains.Annotations;
 
 namespace Xabe.FFmpeg.Model
 {
-    [UsedImplicitly]
     internal class FormatModel
     {
         private FormatModel()
         {
         }
 
-        [UsedImplicitly]
         internal class Root
         {
             public Format format { get; set; }
         }
 
-        [UsedImplicitly]
         internal class Format
         {
 //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
@@ -29,9 +25,9 @@ namespace Xabe.FFmpeg.Model
 //            public string startTime { get; set; }
 //            public int probeScore { get; set; }
 //            public Tags tags { get; set; }
-            public string size { get; [UsedImplicitly] set; }
-            public double bitRate { get; [UsedImplicitly] set; }
-            public double duration { get; [UsedImplicitly] set; }
+            public string size { get; set; }
+            public double bitRate { get; set; }
+            public double duration { get; set; }
         }
 
 //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT

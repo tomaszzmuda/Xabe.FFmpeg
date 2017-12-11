@@ -10,19 +10,16 @@ namespace Xabe.FFmpeg.Enums
         /// <summary>
         ///     SubRip
         /// </summary>
-        [Description("srt")]
-        SRT,
+        [Description("srt")] SRT,
 
         /// <summary>
         ///     WebVTT
         /// </summary>
-        [Description("webvtt")]
-        WebVTT,
+        [Description("webvtt")] WebVTT,
 
         /// <summary>
         ///     Advanced SubStation Alpha
         /// </summary>
-        [Description("ass")]
-        ASS
+        [Description("ass")] ASS
     }
 }

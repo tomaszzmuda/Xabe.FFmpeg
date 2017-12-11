@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
@@ -18,6 +17,7 @@ namespace Xabe.FFmpeg
     public class Conversion: IConversion
     {
         private readonly object _builderLock = new object();
+        private readonly IList<string> _parameters = new List<string>();
         private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private string _audio;
         private string _audioSpeed;
@@ -77,6 +77,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildVideoFilter());
                 builder.Append(BuildAudioFilter());
                 builder.Append(_split);
+                builder.Append(string.Join("", _parameters));
                 builder.Append(_output);
 
                 return builder.ToString();
@@ -84,7 +85,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc cref="IConversion.OnProgress" />
-        [UsedImplicitly]
         public event ConversionProgressEventHandler OnProgress;
 
         /// <inheritdoc cref="IConversion.OnDataReceived" />
@@ -123,6 +123,7 @@ namespace Xabe.FFmpeg
         public void Clear()
         {
             _subtitles.Clear();
+            _parameters.Clear();
             if(_fields == null)
                 _fields = GetType()
                     .GetFields(BindingFlags.NonPublic |
@@ -159,8 +160,45 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath)
         {
-            _burnSubtitles = $"\"subtitles='{subtitlePath}'\" ".Replace("\\", "\\\\")
+            this.SetSubtitle(subtitlePath, "", "", default(Size));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetSubtitle(string subtitlePath, string encode)
+        {
+            this.SetSubtitle(subtitlePath, encode, "", default(Size));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetSubtitle(string subtitlePath, string style, Size originalSize)
+        {
+            this.SetSubtitle(subtitlePath, "", style, originalSize);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize)
+        {
+            _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                                .Replace(":", "\\:");
+
+            if(!string.IsNullOrEmpty(encode))
+                _burnSubtitles += $":charenc={encode}";
+            if(!string.IsNullOrEmpty(style))
+                _burnSubtitles += $":force_style=\'{style}\'";
+            if(originalSize != default(Size))
+                _burnSubtitles += $":original_size={originalSize.Width}x{originalSize.Height}";
+            _burnSubtitles += "\" ";
+
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddParameter(string parameter)
+        {
+            _parameters.Add($"{parameter.Trim()} ");
             return this;
         }
 
@@ -170,7 +208,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
         {
-            _speed = $"-preset {speed.ToString().ToLower()} ";
+            _speed = $"-preset {speed.ToString() .ToLower()} ";
             return this;
         }
 

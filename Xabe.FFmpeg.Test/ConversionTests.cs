@@ -101,6 +101,23 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task AdditionalParametersTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
+
+            bool conversionResult = await Conversion.New().SetInput(Resources.MkvWithAudio)
+                                                          .AddParameter($"-ss {TimeSpan.FromSeconds(1)} -t {TimeSpan.FromSeconds(1)}")
+                                                          .AddParameter("-s 1920x1080")
+                                                          .SetOutput(outputPath)
+                                                          .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(1), mediaInfo.Properties.Duration);
+            Assert.Equal(1920, mediaInfo.Properties.Width);
+        }
+
+        [Fact]
         public async Task AddSubtitlesTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mkv);
@@ -134,6 +151,27 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
             Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+        }
+
+        [Fact]
+        public async Task BurnSubtitlesWithParametersTest()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            string subtitle = Resources.SubtitleSrt.Replace("\\", "\\\\")
+                                                    .Replace(":", "\\:");
+
+            IConversion conversion = Conversion.New()
+                .SetInput(Resources.MkvWithAudio)
+                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new Size(1024, 768))
+                .SetOutput(outputPath);
+            bool conversionResult = await conversion.Start();
+            
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            Assert.Equal($"-i \"{Resources.MkvWithAudio}\" -n -filter:v \"subtitles='{subtitle}':charenc=UTF-8:force_style='Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30':original_size=1024x768\" \"{outputPath}\"", conversion.Build());
         }
 
         [Fact]
@@ -388,9 +426,8 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task PassArgumentsTest()
         {
-            string inputFile = Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv");
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-            string arguments = $"-i \"{inputFile}\" \"{outputPath}\"";
+            string arguments = $"-i \"{Resources.MkvWithAudio}\" \"{outputPath}\"";
 
             bool conversionResult = await Conversion.New()
                                                     .Start(arguments);
@@ -488,6 +525,23 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task X265Test()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
+            bool conversionResult = await Conversion.New()
+                .SetInput(Resources.MkvWithAudio)
+                .SetVideo("libx265")
+                .SetOutput(outputPath)
+                .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = new MediaInfo(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
+            Assert.Equal("hevc", mediaInfo.Properties.VideoFormat);
+            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+        }
+
+        [Fact]
         public async Task SizeTest()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
@@ -561,6 +615,16 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
             Assert.Equal("mpeg2video", mediaInfo.Properties.VideoFormat);
             Assert.Equal("mp2", mediaInfo.Properties.AudioFormat);
+        }
+
+        [Fact]
+        public void BuildParameterOrderTest()
+        {
+            var parameters = Conversion.New().AddParameter("-preset fast")
+                                             .AddParameter("-vf scale=1280x720")
+                                             .Build();
+
+            Assert.True(parameters.IndexOf("-preset fast", StringComparison.Ordinal) < parameters.IndexOf("-vf scale=1280x720", StringComparison.Ordinal));
         }
     }
 }
