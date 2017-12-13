@@ -10,8 +10,6 @@ namespace Xabe.FFmpeg.Test
     public class ConversionQueueTests
 
     {
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
-
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
@@ -27,13 +25,14 @@ namespace Xabe.FFmpeg.Test
             }
 
             queue.Start();
-            queue.OnConverted += (number, count, conversion) => Queue_OnConverted(number, count, conversion, _resetEvent);
+            var resetEvent = new AutoResetEvent(false);
+            queue.OnConverted += (number, count, conversion) => Queue_OnConverted(number, count, conversion, resetEvent);
             queue.OnException += (number, count, conversion) =>
             {
-                _resetEvent.Set();
+                resetEvent.Set();
                 throw new Exception();
             };
-            Assert.True(_resetEvent.WaitOne(60000));
+            Assert.True(resetEvent.WaitOne(60000));
         }
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
