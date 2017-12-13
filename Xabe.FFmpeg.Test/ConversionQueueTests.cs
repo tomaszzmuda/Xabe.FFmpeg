@@ -10,14 +10,16 @@ namespace Xabe.FFmpeg.Test
     public class ConversionQueueTests
 
     {
+        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public async Task QueueTest(bool parallel)
+        public void QueueTest(bool parallel)
         {
             var queue = new ConversionQueue(parallel);
 
-            for(var i = 0; i < 2; i++)
+            for(var i = 0; i < 2; i++)  
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
                 IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
@@ -25,14 +27,13 @@ namespace Xabe.FFmpeg.Test
             }
 
             queue.Start();
-            var resetEvent = new AutoResetEvent(false);
-            queue.OnConverted += (number, count, conversion) => Queue_OnConverted(number, count, conversion, resetEvent);
+            queue.OnConverted += (number, count, conversion) => Queue_OnConverted(number, count, conversion, _resetEvent);
             queue.OnException += (number, count, conversion) =>
             {
-                resetEvent.Set();
+                _resetEvent.Set();
                 throw new Exception();
             };
-            Assert.True(resetEvent.WaitOne(60000));
+            Assert.True(_resetEvent.WaitOne(60000));
         }
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
