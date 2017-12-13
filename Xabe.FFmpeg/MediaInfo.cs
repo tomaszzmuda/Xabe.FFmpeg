@@ -7,38 +7,37 @@ namespace Xabe.FFmpeg
     /// <inheritdoc cref="IMediaInfo" />
     public class MediaInfo: IMediaInfo
     {
-        private readonly object _propertiesLock = new object();
-        private MediaProperties _properties;
-
-        /// <inheritdoc />
-        public MediaInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
+        private MediaInfo(string fullName)
         {
+            if(!File.Exists(fullName))
+                throw new ArgumentException($"Input file {fullName} doesn't exists.");
+            FileInfo = new FileInfo(fullName);
+            Properties = new FFprobe().GetProperties(FileInfo.FullName);
+            if(Properties == null)
+                throw new ArgumentException($"Input file {fullName} doesn't recognized.");
         }
 
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
-        /// <param name="fullName">FullName to file</param>
-        public MediaInfo(string fullName)
+        /// <param name="filePath">FullPath to file</param>
+        public static IMediaInfo Get(string filePath)
         {
-            if(!File.Exists(fullName))
-                throw new ArgumentException($"Input file {fullName} doesn't exists.");
-            FileInfo = new FileInfo(fullName);
+            var mediaInfo = new MediaInfo(filePath);
+            return mediaInfo;
+        }
+
+        /// <summary>
+        ///     Get MediaInfo from file
+        /// </summary>
+        /// <param name="fileInfo">FileInfo</param>
+        public static IMediaInfo Get(FileInfo fileInfo)
+        {
+            return MediaInfo.Get(fileInfo.FullName);
         }
 
         /// <inheritdoc />
-        public MediaProperties Properties
-        {
-            get
-            {
-                lock(_propertiesLock)
-                {
-                    if(_properties == null)
-                        _properties = new FFprobe().GetProperties(FileInfo.FullName);
-                    return _properties;
-                }
-            }
-        }
+        public MediaProperties Properties { get; }
 
         /// <inheritdoc />
         public FileInfo FileInfo { get; }

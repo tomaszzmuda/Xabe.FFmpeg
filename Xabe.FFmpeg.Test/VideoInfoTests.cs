@@ -10,7 +10,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void AudioPopertiesTest()
         {
-            IMediaInfo mediaInfo = new MediaInfo(Resources.Mp3);
+            IMediaInfo mediaInfo = MediaInfo.Get(Resources.Mp3);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
             Assert.Equal(Extensions.Mp3, mediaInfo.FileInfo.Extension);
@@ -33,15 +33,13 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void IncorrectFormatTest()
         {
-            IMediaInfo mediaInfo = new MediaInfo(Resources.Dll);
-
-            Assert.Null(mediaInfo.Properties);
+            Assert.Throws<ArgumentException>(() => MediaInfo.Get(Resources.Dll));
         }
 
         [Fact]
         public void MkvPropertiesTest()
         {
-            IMediaInfo mediaInfo = new MediaInfo(Resources.MkvWithAudio);
+            IMediaInfo mediaInfo = MediaInfo.Get(Resources.MkvWithAudio);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
             Assert.Equal(Extensions.Mkv, mediaInfo.FileInfo.Extension);
@@ -64,7 +62,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void PropertiesTest()
         {
-            IMediaInfo mediaInfo = new MediaInfo(Resources.Mp4WithAudio);
+            IMediaInfo mediaInfo = MediaInfo.Get(Resources.Mp4WithAudio);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
             Assert.Equal(Extensions.Mp4, mediaInfo.FileInfo.Extension);
@@ -87,7 +85,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void ToStringTest()
         {
-            IMediaInfo videoInfo = new MediaInfo(Resources.Mp4WithAudio);
+            IMediaInfo videoInfo = MediaInfo.Get(Resources.Mp4WithAudio);
             string output = videoInfo.ToString();
             string expectedOutput =
                 $"Video name: input.mp4{Environment.NewLine}Video extension : .mp4{Environment.NewLine}Video duration : 00:00:13{Environment.NewLine}Video format : h264{Environment.NewLine}Audio format : aac{Environment.NewLine}Audio duration : 00:00:13{Environment.NewLine}Aspect Ratio : 16:9{Environment.NewLine}Framerate : 16:9 fps{Environment.NewLine}Resolution : 1280 x 720{Environment.NewLine}Size : 2107842 b";

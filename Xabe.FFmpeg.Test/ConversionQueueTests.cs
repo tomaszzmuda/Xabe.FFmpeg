@@ -36,7 +36,7 @@ namespace Xabe.FFmpeg.Test
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
-            var mediaInfo = new MediaInfo(currentConversion.OutputFilePath);
+            var mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
             Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);

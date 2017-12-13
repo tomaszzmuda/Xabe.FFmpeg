@@ -231,7 +231,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion Snapshot(string inputPath, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
-            IMediaInfo source = new MediaInfo(inputPath);
+            IMediaInfo source = MediaInfo.Get(inputPath);
             if(captureTime == null)
                 captureTime = TimeSpan.FromSeconds(source.Properties.VideoDuration.TotalSeconds / 3);
 
@@ -274,12 +274,12 @@ namespace Xabe.FFmpeg
             if(inputVideos.Length <= 1)
                 throw new ArgumentException("You must provide at least 2 files for the concatenation to work", "inputVideos");
 
-            var mediaInfos = new List<MediaInfo>();
+            var mediaInfos = new List<IMediaInfo>();
 
             var conversion = Conversion.New();
             foreach (string inputVideo in inputVideos)
             {
-                mediaInfos.Add(new MediaInfo(inputVideo));
+                mediaInfos.Add(MediaInfo.Get(inputVideo));
                 conversion.AddParameter($"-i \"{inputVideo}\" ");
             }
             conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
