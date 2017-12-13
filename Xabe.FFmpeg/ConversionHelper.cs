@@ -231,8 +231,9 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion Snapshot(string inputPath, string outputPath, Size? size = null, TimeSpan? captureTime = null)
         {
-            IMediaInfo source = MediaInfo.Get(inputPath);
-            if(captureTime == null)
+            IMediaInfo source = MediaInfo.Get(inputPath)
+                                                   .Result;
+            if (captureTime == null)
                 captureTime = TimeSpan.FromSeconds(source.Properties.VideoDuration.TotalSeconds / 3);
 
             size = GetSize(source, size);
@@ -279,7 +280,7 @@ namespace Xabe.FFmpeg
             var conversion = Conversion.New();
             foreach (string inputVideo in inputVideos)
             {
-                mediaInfos.Add(MediaInfo.Get(inputVideo));
+                mediaInfos.Add(await MediaInfo.Get(inputVideo));
                 conversion.AddParameter($"-i \"{inputVideo}\" ");
             }
             conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");

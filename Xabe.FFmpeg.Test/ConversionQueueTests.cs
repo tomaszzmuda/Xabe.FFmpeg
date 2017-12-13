@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace Xabe.FFmpeg.Test
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void QueueTest(bool parallel)
+        public async Task QueueTest(bool parallel)
         {
             var queue = new ConversionQueue(parallel);
 
@@ -36,7 +37,7 @@ namespace Xabe.FFmpeg.Test
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
-            var mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath);
+            var mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).Result;
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
             Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);

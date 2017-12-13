@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
@@ -7,33 +8,36 @@ namespace Xabe.FFmpeg
     /// <inheritdoc cref="IMediaInfo" />
     public class MediaInfo: IMediaInfo
     {
-        private MediaInfo(string fullName)
+        private MediaInfo(FileInfo fileInfo, MediaProperties properties)
         {
-            if(!File.Exists(fullName))
-                throw new ArgumentException($"Input file {fullName} doesn't exists.");
-            FileInfo = new FileInfo(fullName);
-            Properties = new FFprobe().GetProperties(FileInfo.FullName);
-            if(Properties == null)
-                throw new ArgumentException($"Input file {fullName} doesn't recognized.");
+            FileInfo = fileInfo;
+            Properties = properties;
         }
 
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
-        public static IMediaInfo Get(string filePath)
+        public static async Task<IMediaInfo> Get(string filePath)
         {
-            var mediaInfo = new MediaInfo(filePath);
-            return mediaInfo;
+            return await Get(new FileInfo(filePath));
         }
 
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="fileInfo">FileInfo</param>
-        public static IMediaInfo Get(FileInfo fileInfo)
+        public static async Task<IMediaInfo> Get(FileInfo fileInfo)
         {
-            return MediaInfo.Get(fileInfo.FullName);
+            if (!File.Exists(fileInfo.FullName))
+                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
+            MediaProperties properties = await new FFprobe().GetProperties(fileInfo.FullName);
+            if (properties == null)
+                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't recognized.");
+
+            var mediaInfo = new MediaInfo(fileInfo, properties);
+            return mediaInfo;
+
         }
 
         /// <inheritdoc />
