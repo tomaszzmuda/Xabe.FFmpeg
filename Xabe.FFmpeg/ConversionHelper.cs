@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -282,22 +283,39 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static async Task<bool> Concatenate(string output, params string[] inputVideos)
         {
-            var pathList = new List<string>();
+            if(inputVideos.Length <= 1)
+                throw new ArgumentException("You must provide at least 2 files for the concatenation to work", "inputVideos");
 
-            foreach(string path in inputVideos)
+            var mediaInfos = new List<MediaInfo>();
+
+            var conversion = new Conversion();
+            foreach (string inputVideo in inputVideos)
             {
-                string tempFileName = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Ts);
-                pathList.Add(tempFileName);
-                await ToTs(path, tempFileName)
-                    .Start();
+                mediaInfos.Add(new MediaInfo(inputVideo));
+                conversion.AddParameter($"-i \"{inputVideo}\" ");
+            }
+            conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
+            conversion.AddParameter($"-filter_complex \"");
+
+            MediaProperties maxResolutionMedia = mediaInfos.OrderByDescending(x => x.Properties.Width)
+                                                     .First().Properties;
+            for(var i = 0; i < mediaInfos.Count; i++)
+            {
+                    conversion.AddParameter(
+                        $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
             }
 
-            return await new Conversion().
-                Concat(pathList.ToArray())
-                                         .StreamCopy(Channel.Both)
-                                         .SetBitstreamFilter(Channel.Audio, Filter.Aac_AdtstoAsc)
-                                         .SetOutput(output)
-                                         .Start();
+            for(var i = 0; i < mediaInfos.Count; i++)
+            {
+                if(string.IsNullOrEmpty(mediaInfos[i].Properties.AudioFormat))
+                    conversion.AddParameter($"[v{i}][{mediaInfos.Count}:a]");
+                else
+                    conversion.AddParameter($"[v{i}][{i}:a]");
+            }
+
+            conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
+            conversion.SetOutput(output);
+            return await conversion.Start();
         }
 
         private static Size? GetSize(IMediaInfo source, Size? size)
