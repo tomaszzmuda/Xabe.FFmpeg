@@ -16,6 +16,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageIconUrl>https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/Assets/icon_white.png</PackageIconUrl>
   </PropertyGroup>
 

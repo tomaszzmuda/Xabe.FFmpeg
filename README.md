@@ -38,7 +38,7 @@ It is possible to have more elastic way to convert media. **Conversion** class i
 or
 
 	string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-	bool conversionResult = await new Conversion()
+	bool conversionResult = await Conversion.New()
 		.SetInput("videofile.mkv")
 		.Rotate(rotateDegrees)
 		.SetOutput(outputPath)
@@ -46,11 +46,11 @@ or
 
 it is possible to give your own arguments
 
-	bool conversionResult = await new Conversion().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
+	bool conversionResult = await Conversion.New().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
 
 ## Lincence ##
 
-Xabe.FFmpeg is licensed under MIT - see [License](LICENSE.md) for details.
+Xabe.FFmpeg is licensed under [Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)](https://creativecommons.org/licenses/by-nc-sa/3.0/) - see [License](LICENSE.md) for details. If you want use Xabe.FFmpeg in commercial project please ask about licensing at **tomasz.zmuda@xabe.xyz**
 
 ## Contact ##
 

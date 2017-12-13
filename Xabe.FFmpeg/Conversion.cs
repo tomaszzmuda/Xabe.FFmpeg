@@ -44,6 +44,10 @@ namespace Xabe.FFmpeg
         private string _videoSpeed;
         private string _watermark;
 
+        private Conversion()
+        {
+        }
+
         /// <inheritdoc />
         public string Build()
         {
@@ -81,7 +85,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc cref="IConversion.OnProgress" />
-        public event ConversionHandler OnProgress;
+        public event ConversionProgressEventHandler OnProgress;
 
         /// <inheritdoc cref="IConversion.OnDataReceived" />
         public event DataReceivedEventHandler OnDataReceived;
@@ -188,6 +192,13 @@ namespace Xabe.FFmpeg
                 _burnSubtitles += $":original_size={originalSize.Width}x{originalSize.Height}";
             _burnSubtitles += "\" ";
 
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddParameter(string parameter)
+        {
+            _parameters.Add($"{parameter.Trim()} ");
             return this;
         }
 
@@ -491,12 +502,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion Concat(params string[] paths)
-        {
-            return Concatenate(paths);
-        }
-
-        /// <inheritdoc />
         public IConversion Concatenate(params string[] paths)
         {
             if(paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
@@ -511,11 +516,13 @@ namespace Xabe.FFmpeg
             return this;
         }
 
-        /// <inheritdoc />
-        public IConversion AddParameter(string parameter)
+        /// <summary>
+        ///     Get new instance of Conversion
+        /// </summary>
+        /// <returns>IConversion object</returns>
+        public static IConversion New()
         {
-            _parameters.Add($"{parameter.Trim()} ");
-            return this;
+            return new Conversion();
         }
 
         private void AddSubtitles(StringBuilder builder)

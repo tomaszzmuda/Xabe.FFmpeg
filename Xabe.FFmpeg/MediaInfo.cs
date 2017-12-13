@@ -27,10 +27,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        [Obsolete("This property will be remove in version 3.0.0. Please use Xabe.FFmpeg.IMediaInfo.Properties instead.")]
-        public MediaProperties VideoProperties => Properties;
-
-        /// <inheritdoc />
         public MediaProperties Properties
         {
             get
