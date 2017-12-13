@@ -504,11 +504,6 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion Concatenate(params string[] paths)
         {
-            if(paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
-                    .Distinct()
-                    .Count() != 1)
-                throw new ArgumentException("All files have to be in the same format!");
-
             string tmpFile = Path.GetTempFileName();
             File.WriteAllLines(tmpFile, paths.Select(x => $"file '{x}'"));
 

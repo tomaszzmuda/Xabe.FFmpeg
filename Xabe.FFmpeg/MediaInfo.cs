@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
@@ -7,38 +8,40 @@ namespace Xabe.FFmpeg
     /// <inheritdoc cref="IMediaInfo" />
     public class MediaInfo: IMediaInfo
     {
-        private readonly object _propertiesLock = new object();
-        private MediaProperties _properties;
-
-        /// <inheritdoc />
-        public MediaInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
+        private MediaInfo(FileInfo fileInfo, MediaProperties properties)
         {
+            FileInfo = fileInfo;
+            Properties = properties;
         }
 
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
-        /// <param name="fullName">FullName to file</param>
-        public MediaInfo(string fullName)
+        /// <param name="filePath">FullPath to file</param>
+        public static async Task<IMediaInfo> Get(string filePath)
         {
-            if(!File.Exists(fullName))
-                throw new ArgumentException($"Input file {fullName} doesn't exists.");
-            FileInfo = new FileInfo(fullName);
+            return await Get(new FileInfo(filePath));
+        }
+
+        /// <summary>
+        ///     Get MediaInfo from file
+        /// </summary>
+        /// <param name="fileInfo">FileInfo</param>
+        public static async Task<IMediaInfo> Get(FileInfo fileInfo)
+        {
+            if (!File.Exists(fileInfo.FullName))
+                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
+            MediaProperties properties = await new FFprobe().GetProperties(fileInfo.FullName);
+            if (properties == null)
+                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't recognized.");
+
+            var mediaInfo = new MediaInfo(fileInfo, properties);
+            return mediaInfo;
+
         }
 
         /// <inheritdoc />
-        public MediaProperties Properties
-        {
-            get
-            {
-                lock(_propertiesLock)
-                {
-                    if(_properties == null)
-                        _properties = new FFprobe().GetProperties(FileInfo.FullName);
-                    return _properties;
-                }
-            }
-        }
+        public MediaProperties Properties { get; }
 
         /// <inheritdoc />
         public FileInfo FileInfo { get; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xabe.FFmpeg.Model;
 
@@ -11,10 +12,10 @@ namespace Xabe.FFmpeg
     // ReSharper disable once InheritdocConsiderUsage
     internal sealed class FFprobe: FFbase
     {
-        private ProbeModel.Stream[] GetStream(string videoPath)
+        private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
             string jsonStreams =
-                RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
+                await RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
 
             var probe =
                 JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
@@ -47,10 +48,10 @@ namespace Xabe.FFmpeg
             return videoDuration;
         }
 
-        private FormatModel.Format GetFormat(string videoPath)
+        private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
             string jsonFormat =
-                RunProcess($"-v quiet -print_format json -show_format \"{videoPath}\"");
+                await RunProcess($"-v quiet -print_format json -show_format \"{videoPath}\"");
             FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonFormat)
                                                    .format;
             return format;
@@ -77,40 +78,43 @@ namespace Xabe.FFmpeg
         }
 
 
-        private string RunProcess(string args)
+        private async Task<string> RunProcess(string args)
         {
-            RunProcess(args, FFprobePath, rStandardOutput: true);
-
-            string output;
-
-            try
+            return await Task.Run(() =>
             {
-                output = Process.StandardOutput.ReadToEnd();
-            }
-            catch(Exception)
-            {
-                output = "";
-            }
-            finally
-            {
-                Process.WaitForExit();
-                Process.Close();
-            }
+                RunProcess(args, FFprobePath, rStandardOutput: true);
 
-            return output;
+                string output;
+
+                try
+                {
+                    output = Process.StandardOutput.ReadToEnd();
+                }
+                catch(Exception)
+                {
+                    output = "";
+                }
+                finally
+                {
+                    Process.WaitForExit();
+                    Process.Close();
+                }
+
+                return output;
+            });
         }
 
-        public MediaProperties GetProperties(string videoPath)
+        public async Task<MediaProperties> GetProperties(string videoPath)
         {
             var videoProperties = new MediaProperties();
-            ProbeModel.Stream[] streams = GetStream(videoPath);
+            ProbeModel.Stream[] streams = await GetStream(videoPath);
             ProbeModel.Stream videoStream = streams[0];
             ProbeModel.Stream audioStream = streams[1];
             if(videoStream == null &&
                audioStream == null)
                 return null;
 
-            FormatModel.Format format = GetFormat(videoPath);
+            FormatModel.Format format = await GetFormat(videoPath);
             videoProperties.Size = long.Parse(format.size);
 
             if(videoStream != null)
