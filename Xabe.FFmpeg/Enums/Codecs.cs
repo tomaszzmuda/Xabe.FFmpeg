@@ -1,25 +1,9 @@
 ﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
-    ///     Audio codec
-    /// </summary>
-    public enum AudioCodec
-    {
-        /// <summary>
-        ///     Aac
-        /// </summary>
-        Aac,
-
-        /// <summary>
-        ///     LibVorbis
-        /// </summary>
-        LibVorbis
-    }
-
-    /// <summary>
     ///     Filter
     /// </summary>
-    public enum Filter
+    public enum BitstreamFilter
     {
         /// <summary>
         ///     H264_Mp4ToAnnexB

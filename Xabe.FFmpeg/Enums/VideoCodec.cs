@@ -9,7 +9,7 @@ namespace Xabe.FFmpeg.Enums
         /// <summary>
         ///     Video codec
         /// </summary>
-        public string FileFormat { get; }
+        public string Codec { get; }
 
         /// <summary>
         ///     H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (decoders: h264 h264_crystalhd h264_vdpau ) (encoders: libx264 libx264rgb )
@@ -49,13 +49,13 @@ namespace Xabe.FFmpeg.Enums
         /// <inheritdoc />
         public override string ToString()
         {
-            return FileFormat;
+            return Codec;
         }
 
         /// <inheritdoc />
         public VideoCodec(string format)
         {
-            FileFormat = format;
+            Codec = format;
         }
     }
 }

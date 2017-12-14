@@ -153,9 +153,9 @@ namespace Xabe.FFmpeg
         ///     Set filter
         /// </summary>
         /// <param name="type">Channel type</param>
-        /// <param name="filter">Filter</param>
+        /// <param name="bitstreamFilter">Filter</param>
         /// <returns>IConversion object</returns>
-        IConversion SetBitstreamFilter(Channel type, Filter filter);
+        IConversion SetBitstreamFilter(Channel type, BitstreamFilter bitstreamFilter);
 
         /// <summary>
         ///     Set filter

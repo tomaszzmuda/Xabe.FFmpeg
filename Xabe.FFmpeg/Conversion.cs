@@ -228,7 +228,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetAudio(string codec, AudioQuality bitrate)
         {
-            _audio = $"-codec:a {codec.ToLower()} -b:a {(int) bitrate}k -strict experimental ";
+            _audio = $"-codec:a {codec} -b:a {(int) bitrate}k -strict experimental ";
             return this;
         }
 
@@ -330,9 +330,9 @@ namespace Xabe.FFmpeg
         }   
 
         /// <inheritdoc />
-        public IConversion SetBitstreamFilter(Channel type, Filter filter)
+        public IConversion SetBitstreamFilter(Channel type, BitstreamFilter bitstreamFilter)
         {
-            return SetBitstreamFilter(type, filter.ToString());
+            return SetBitstreamFilter(type, bitstreamFilter.ToString());
         }
 
         /// <inheritdoc />
