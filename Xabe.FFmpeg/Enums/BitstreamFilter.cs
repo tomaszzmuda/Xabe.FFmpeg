@@ -1,7 +1,7 @@
 ﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
-    ///     Filter
+    ///     Bistream filter
     /// </summary>
     public enum BitstreamFilter
     {
@@ -16,26 +16,5 @@
         /// </summary>
         // ReSharper disable once InconsistentNaming
         Aac_AdtstoAsc
-    }
-
-    /// <summary>
-    ///     Channel
-    /// </summary>
-    public enum Channel
-    {
-        /// <summary>
-        ///     Audio
-        /// </summary>
-        Audio,
-
-        /// <summary>
-        ///     Video
-        /// </summary>
-        Video,
-
-        /// <summary>
-        ///     Both
-        /// </summary>
-        Both
     }
 }
