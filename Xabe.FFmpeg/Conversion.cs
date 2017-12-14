@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg
         private string _audioSpeed;
         private string _bitsreamFilter;
         private string _burnSubtitles;
-        private string _codec;
+        private string _format;
         private string _copy;
         private string _disabled;
         private IEnumerable<FieldInfo> _fields;
@@ -40,7 +40,7 @@ namespace Xabe.FFmpeg
         private string _speed;
         private string _split;
         private string _threads;
-        private string _video;
+        private string _codec;
         private string _videoSpeed;
         private string _watermark;
 
@@ -59,13 +59,13 @@ namespace Xabe.FFmpeg
                 builder.Append("-n ");
                 builder.Append(_watermark);
                 builder.Append(_scale);
-                builder.Append(_video);
+                builder.Append(_codec);
                 builder.Append(_speed);
                 builder.Append(_audio);
                 builder.Append(_threads);
                 builder.Append(_disabled);
                 builder.Append(_size);
-                builder.Append(_codec);
+                builder.Append(_format);
                 builder.Append(_bitsreamFilter);
                 builder.Append(_copy);
                 builder.Append(_seek);
@@ -233,18 +233,12 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetVideo(VideoCodec codec, int bitrate = 0)
+        public IConversion SetCodec(VideoCodec codec, int bitrate = 0)
         {
-            return SetVideo(codec.ToString(), bitrate);
-        }
+            _codec = $"-codec:v {codec} ";
 
-        /// <inheritdoc />
-        public IConversion SetVideo(string codec, int bitrate = 0)
-        {
-            _video = $"-codec:v {codec.ToLower()} ";
-
-            if(bitrate > 0)
-                _video += $"-b:v {bitrate}k ";
+            if (bitrate > 0)
+                _codec += $"-b:v {bitrate}k ";
             return this;
         }
 
@@ -329,17 +323,11 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetCodec(VideoCodec codec)
+        public IConversion SetFormat(VideoFormat format)
         {
-            return SetCodec(codec.ToString());
-        }
-
-        /// <inheritdoc />
-        public IConversion SetCodec(string codec)
-        {
-            _codec = $"-f {codec.ToLower()} ";
+            _format = $"-f {format} ";
             return this;
-        }
+        }   
 
         /// <inheritdoc />
         public IConversion SetBitstreamFilter(Channel type, Filter filter)

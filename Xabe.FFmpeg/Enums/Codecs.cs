@@ -1,37 +1,6 @@
 ﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
-    ///     Video codec
-    /// </summary>
-    public enum VideoCodec
-    {
-        /// <summary>
-        ///     LibX264
-        /// </summary>
-        LibX264,
-
-        /// <summary>
-        ///     LibVpx
-        /// </summary>
-        LibVpx,
-
-        /// <summary>
-        ///     LibTheora
-        /// </summary>
-        LibTheora,
-
-        /// <summary>
-        ///     Png
-        /// </summary>
-        Png,
-
-        /// <summary>
-        ///     MpegTs
-        /// </summary>
-        MpegTs
-    }
-
-    /// <summary>
     ///     Audio codec
     /// </summary>
     public enum AudioCodec

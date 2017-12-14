@@ -68,7 +68,7 @@ namespace Xabe.FFmpeg.Test
                                                     .SetSpeed(Speed.UltraFast)
                                                     .UseMultiThread(true)
                                                     .SetOutput(outputPath)
-                                                    .SetVideo(VideoCodec.LibX264, 2400)
+                                                    .SetCodec(VideoCodec.h264, 2400)
                                                     .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                                                     .ChangeSpeed(channel, speed)
                                                     .Start();
@@ -94,7 +94,7 @@ namespace Xabe.FFmpeg.Test
                                                                                               .SetSpeed(Speed.UltraFast)
                                                                                               .UseMultiThread(true)
                                                                                               .SetOutput(outputPath)
-                                                                                              .SetVideo(VideoCodec.LibX264, 2400)
+                                                                                              .SetCodec(VideoCodec.h264, 2400)
                                                                                               .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                                                                                               .ChangeSpeed(Channel.Both, multiplication)
                                                                                               .Start());
@@ -198,7 +198,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             IConversion conversion = Conversion.New()
                                                .SetInput(Resources.MkvWithAudio)
-                                               .SetCodec(VideoCodec.LibVpx)
+                                               .SetCodec(VideoCodec.vp8)
                                                .SetScale(VideoSize.Ega)
                                                .StreamCopy(Channel.Both)
                                                .Reverse(Channel.Both)
@@ -262,7 +262,7 @@ namespace Xabe.FFmpeg.Test
             IConversion conversion = Conversion.New()
                                                .SetInput(Resources.MkvWithAudio)
                                                .SetOutput(outputPath)
-                                               .SetCodec(VideoCodec.MpegTs);
+                                               .SetFormat(VideoFormat.mpegts);
 
             TimeSpan currentProgress;
             TimeSpan videoLength;
@@ -321,7 +321,7 @@ namespace Xabe.FFmpeg.Test
             IConversion conversion = Conversion.New()
                                                .SetInput(Resources.MkvWithAudio)
                                                .SetOutput(outputPath)
-                                               .SetCodec(VideoCodec.MpegTs);
+                                               .SetFormat(VideoFormat.mpegts);
 
             var ffmpegOuput = "";
 
@@ -355,7 +355,7 @@ namespace Xabe.FFmpeg.Test
                     await Conversion.New()
                                     .SetInput(Resources.MkvWithAudio)
                                     .SetOutput(outputPath)
-                                    .SetVideo(VideoCodec.LibX264, 2400)
+                                    .SetCodec(VideoCodec.h264, 2400)
                                     .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                                     .Reverse(Channel.Both)
                                     .StreamCopy(Channel.Both)
@@ -364,7 +364,7 @@ namespace Xabe.FFmpeg.Test
                 catch(ConversionException e)
                 {
                     Assert.Equal(
-                        $"-i \"{Resources.MkvWithAudio}\" -n -codec:v libx264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
+                        $"-i \"{Resources.MkvWithAudio}\" -n -codec:v h264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
                         e.InputParameters);
                     Assert.EndsWith(
                         $"Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.{Environment.NewLine}Filtering and streamcopy cannot be used together.",
@@ -437,7 +437,7 @@ namespace Xabe.FFmpeg.Test
                                                     .SetSpeed(Speed.UltraFast)
                                                     .UseMultiThread(true)
                                                     .SetOutput(outputPath)
-                                                    .SetVideo(VideoCodec.LibX264, 2400)
+                                                    .SetCodec(VideoCodec.h264, 2400)
                                                     .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                                                     .Reverse(Channel.Both)
                                                     .Start();
@@ -459,7 +459,7 @@ namespace Xabe.FFmpeg.Test
                                                     .UseMultiThread(true)
                                                     .SetOutput(outputPath)
                                                     .SetScale(VideoSize.Sqcif)
-                                                    .SetVideo(VideoCodec.LibX264, 2400)
+                                                    .SetCodec(VideoCodec.h264, 2400)
                                                     .SetAudio(AudioCodec.Aac, AudioQuality.Ultra)
                                                     .Start();
 
@@ -519,7 +519,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
             bool conversionResult = await Conversion.New()
                 .SetInput(Resources.MkvWithAudio)
-                .SetVideo("libx265")
+                .SetCodec(VideoCodec.hevc)
                 .SetOutput(outputPath)
                 .Start();
 
@@ -558,7 +558,7 @@ namespace Xabe.FFmpeg.Test
             Task<bool> result = conversion
                 .SetInput(Resources.MkvWithAudio)
                 .SetScale(VideoSize.Uhd4320)
-                .SetVideo(VideoCodec.LibTheora, 2400)
+                .SetCodec(VideoCodec.theora, 2400)
                 .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
                 .SetOutput(outputPath)
                 .SetSpeed(Speed.VerySlow)
@@ -579,7 +579,7 @@ namespace Xabe.FFmpeg.Test
             Task<bool> result = conversion
                 .SetInput(Resources.MkvWithAudio)
                 .SetScale(VideoSize.Uhd4320)
-                .SetVideo(VideoCodec.LibTheora, 2400)
+                .SetCodec(VideoCodec.theora, 2400)
                 .SetAudio(AudioCodec.LibVorbis, AudioQuality.Ultra)
                 .SetOutput(outputPath)
                 .SetSpeed(Speed.VerySlow)
@@ -596,7 +596,7 @@ namespace Xabe.FFmpeg.Test
             bool conversionResult = await Conversion.New()
                                                     .SetInput(Resources.MkvWithAudio)
                                                     .SetOutput(outputPath)
-                                                    .SetCodec(VideoCodec.MpegTs)
+                                                    .SetFormat(VideoFormat.mpegts)
                                                     .Start();
 
             Assert.True(conversionResult);
