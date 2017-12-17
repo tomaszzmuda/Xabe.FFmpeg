@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -138,12 +137,12 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="size">VideoSize</param>
         /// <returns>IConversion object</returns>
-        IConversion SetSize(Size? size);
+        IConversion SetSize(VideoSize size);
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
-        event ConversionHandler OnProgress;
+        event ConversionProgressEventHandler OnProgress;
 
         /// <summary>
         ///     Fires when FFmpeg process print sonething
@@ -234,15 +233,6 @@ namespace Xabe.FFmpeg
         /// <param name="useShortest"></param>
         /// <returns>IConversion object</returns>
         IConversion UseShortest(bool useShortest);
-
-        /// <summary>
-        ///     Concat multiple media files. All files must have the same streams (same codecs, same time base, etc.)
-        /// </summary>
-        /// <param name="paths">Media files</param>
-        /// <returns>IConversion object</returns>
-        /// <exception cref="ArgumentException">When try to concatenate different formats.</exception>
-        [Obsolete("This method will be remove in version 3.0.0. Please use method Xabe.FFmpeg.IConversion.Concatenate instead.")]
-        IConversion Concat(params string[] paths);
 
         /// <summary>
         ///     Concat multiple media files. All files must have the same streams (same codecs, same time base, etc.)
@@ -349,7 +339,7 @@ namespace Xabe.FFmpeg
         /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
         /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
         /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath, string style, Size originalSize);
+        IConversion SetSubtitle(string subtitlePath, string style, VideoSize originalSize);
 
         /// <summary>
         ///     Burn subtitle into file
@@ -359,7 +349,7 @@ namespace Xabe.FFmpeg
         /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
         /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
         /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize);
+        IConversion SetSubtitle(string subtitlePath, string encode, string style, VideoSize originalSize);
 
         /// <summary>
         ///     Add additional parameters for the conversion (They must be well formed)

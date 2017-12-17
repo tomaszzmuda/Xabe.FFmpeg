@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
@@ -13,12 +12,6 @@ namespace Xabe.FFmpeg
         ///     Source file info
         /// </summary>
         FileInfo FileInfo { get; }
-
-        /// <summary>
-        ///     Video properties
-        /// </summary>
-        [Obsolete("This property will be remove in version 3.0.0. Please use Xabe.FFmpeg.IMediaInfo.Properties instead.")]
-        MediaProperties VideoProperties { get; }
 
         /// <summary>
         ///     Media properties

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -44,6 +43,10 @@ namespace Xabe.FFmpeg
         private string _videoSpeed;
         private string _watermark;
 
+        private Conversion()
+        {
+        }
+
         /// <inheritdoc />
         public string Build()
         {
@@ -81,7 +84,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc cref="IConversion.OnProgress" />
-        public event ConversionHandler OnProgress;
+        public event ConversionProgressEventHandler OnProgress;
 
         /// <inheritdoc cref="IConversion.OnDataReceived" />
         public event DataReceivedEventHandler OnDataReceived;
@@ -156,26 +159,26 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath)
         {
-            this.SetSubtitle(subtitlePath, "", "", default(Size));
+            this.SetSubtitle(subtitlePath, "", "", null);
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath, string encode)
         {
-            this.SetSubtitle(subtitlePath, encode, "", default(Size));
+            this.SetSubtitle(subtitlePath, encode, "", null);
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string style, Size originalSize)
+        public IConversion SetSubtitle(string subtitlePath, string style, VideoSize originalSize)
         {
             this.SetSubtitle(subtitlePath, "", style, originalSize);
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize)
+        public IConversion SetSubtitle(string subtitlePath, string encode, string style, VideoSize originalSize)
         {
             _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                                .Replace(":", "\\:");
@@ -184,10 +187,17 @@ namespace Xabe.FFmpeg
                 _burnSubtitles += $":charenc={encode}";
             if(!string.IsNullOrEmpty(style))
                 _burnSubtitles += $":force_style=\'{style}\'";
-            if(originalSize != default(Size))
-                _burnSubtitles += $":original_size={originalSize.Width}x{originalSize.Height}";
+            if(originalSize != null)
+                _burnSubtitles += $":original_size={originalSize.Resolution}";
             _burnSubtitles += "\" ";
 
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddParameter(string parameter)
+        {
+            _parameters.Add($"{parameter.Trim()} ");
             return this;
         }
 
@@ -309,10 +319,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetSize(Size? size)
+        public IConversion SetSize(VideoSize size)
         {
-            if(size.HasValue)
-                _size = $"-s {size.Value.Width}x{size.Value.Height} ";
+            if(size != null)
+                _size = $"-s {size.Resolution} ";
 
             return this;
         }
@@ -491,19 +501,8 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion Concat(params string[] paths)
-        {
-            return Concatenate(paths);
-        }
-
-        /// <inheritdoc />
         public IConversion Concatenate(params string[] paths)
         {
-            if(paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
-                    .Distinct()
-                    .Count() != 1)
-                throw new ArgumentException("All files have to be in the same format!");
-
             string tmpFile = Path.GetTempFileName();
             File.WriteAllLines(tmpFile, paths.Select(x => $"file '{x}'"));
 
@@ -511,11 +510,13 @@ namespace Xabe.FFmpeg
             return this;
         }
 
-        /// <inheritdoc />
-        public IConversion AddParameter(string parameter)
+        /// <summary>
+        ///     Get new instance of Conversion
+        /// </summary>
+        /// <returns>IConversion object</returns>
+        public static IConversion New()
         {
-            _parameters.Add($"{parameter.Trim()} ");
-            return this;
+            return new Conversion();
         }
 
         private void AddSubtitles(StringBuilder builder)
