@@ -29,9 +29,9 @@ namespace Xabe.FFmpeg
                              .SetInput(inputPath)
                              .UseMultiThread(multithread)
                              .SetScale(size)
-                             .SetVideo(VideoCodec.LibX264, 2400)
+                             .SetCodec(VideoCodec.h264, 2400)
                              .SetSpeed(speed)
-                             .SetAudio(AudioCodec.Aac, audioQuality)
+                             .SetAudio(AudioCodec.aac, audioQuality)
                              .SetOutput(outputPath);
         }
 
@@ -46,8 +46,8 @@ namespace Xabe.FFmpeg
             return Conversion.New()
                              .SetInput(inputPath)
                              .StreamCopy(Channel.Both)
-                             .SetBitstreamFilter(Channel.Video, Filter.H264_Mp4ToAnnexB)
-                             .SetCodec(VideoCodec.MpegTs)
+                             .SetBitstreamFilter(Channel.Video, BitstreamFilter.H264_Mp4ToAnnexB)
+                             .SetFormat(VideoFormat.mpegts)
                              .SetOutput(outputPath);
         }
 
@@ -66,8 +66,8 @@ namespace Xabe.FFmpeg
             return Conversion.New()
                 .SetInput(inputPath)
                 .SetScale(size)
-                .SetVideo(VideoCodec.LibVpx, 2400)
-                .SetAudio(AudioCodec.LibVorbis, audioQuality)
+                .SetCodec(VideoCodec.vp8, 2400)
+                .SetAudio(AudioCodec.libvorbis, audioQuality)
                 .SetOutput(outputPath)
                 .UseMultiThread(multithread);
         }
@@ -87,9 +87,9 @@ namespace Xabe.FFmpeg
             return Conversion.New()
                 .SetInput(inputPath)
                 .SetScale(size)
-                .SetVideo(VideoCodec.LibTheora, 2400)
+                .SetCodec(VideoCodec.theora, 2400)
                 .SetSpeed(16)
-                .SetAudio(AudioCodec.LibVorbis, audioQuality)
+                .SetAudio(AudioCodec.libvorbis, audioQuality)
                 .SetOutput(outputPath);
         }
 
@@ -216,7 +216,7 @@ namespace Xabe.FFmpeg
             return Conversion.New()
                              .SetInput(inputPath, audioFilePath)
                              .StreamCopy(Channel.Video)
-                             .SetAudio(AudioCodec.Aac, AudioQuality.Hd)
+                             .SetAudio(AudioCodec.aac, AudioQuality.Hd)
                              .SetOutput(output);
         }
 
@@ -239,7 +239,7 @@ namespace Xabe.FFmpeg
 
             return Conversion.New()
                              .SetInput(inputPath)
-                             .SetVideo(VideoCodec.Png)
+                             .SetCodec(VideoCodec.png)
                              .SetOutputFramesCount(1)
                              .SetSeek(captureTime)
                              .SetSize(size)

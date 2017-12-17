@@ -66,15 +66,7 @@ namespace Xabe.FFmpeg
         /// <param name="codec">Video codec</param>
         /// <param name="bitrate">Video bitrate</param>
         /// <returns>IConversion object</returns>
-        IConversion SetVideo(VideoCodec codec, int bitrate = 0);
-
-        /// <summary>
-        ///     Set video codec and bitrate
-        /// </summary>
-        /// <param name="codec">Video codec</param>
-        /// <param name="bitrate">Video bitrate</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetVideo(string codec, int bitrate = 0);
+        IConversion SetCodec(VideoCodec codec, int bitrate = 0);
 
         /// <summary>
         ///     Defines if converter should use all CPU cores
@@ -152,24 +144,17 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Set video codec
         /// </summary>
-        /// <param name="codec">Video codec</param>
+        /// <param name="format"></param>
         /// <returns>IConversion object</returns>
-        IConversion SetCodec(VideoCodec codec);
-
-        /// <summary>
-        ///     Set video codec
-        /// </summary>
-        /// <param name="codec">Video codec</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetCodec(string codec);
+        IConversion SetFormat(VideoFormat format);
 
         /// <summary>
         ///     Set filter
         /// </summary>
         /// <param name="type">Channel type</param>
-        /// <param name="filter">Filter</param>
+        /// <param name="bitstreamFilter">Filter</param>
         /// <returns>IConversion object</returns>
-        IConversion SetBitstreamFilter(Channel type, Filter filter);
+        IConversion SetBitstreamFilter(Channel type, BitstreamFilter bitstreamFilter);
 
         /// <summary>
         ///     Set filter
