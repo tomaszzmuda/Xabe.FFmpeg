@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -162,7 +161,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversion conversion = Conversion.New()
                 .SetInput(Resources.MkvWithAudio)
-                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new Size(1024, 768))
+                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new VideoSize(1024, 768))
                 .SetOutput(outputPath);
             bool conversionResult = await conversion.Start();
             
@@ -537,7 +536,7 @@ namespace Xabe.FFmpeg.Test
             bool conversionResult = await Conversion.New()
                                                     .SetInput(Resources.MkvWithAudio)
                                                     .SetOutput(outputPath)
-                                                    .SetSize(new Size(640, 480))
+                                                    .SetSize(new VideoSize(640, 480))
                                                     .Start();
 
             Assert.True(conversionResult);
@@ -547,6 +546,24 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
             Assert.Equal(640, mediaInfo.Properties.Width);
             Assert.Equal(480, mediaInfo.Properties.Height);
+        }
+
+        [Fact]
+        public async Task SetNullSizeTest()
+        {
+            string inputPath = Resources.MkvWithAudio;
+            var inputMediaInfo = await MediaInfo.Get(inputPath);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            bool conversionResult = await Conversion.New()
+                                                    .SetInput(inputPath)
+                                                    .SetOutput(outputPath)
+                                                    .SetSize(null)
+                                                    .Start();
+
+            Assert.True(conversionResult);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(inputMediaInfo.Properties.Width, mediaInfo.Properties.Width);
+            Assert.Equal(inputMediaInfo.Properties.Height, mediaInfo.Properties.Height);
         }
 
         [Fact]

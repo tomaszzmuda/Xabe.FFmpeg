@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -160,26 +159,26 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath)
         {
-            this.SetSubtitle(subtitlePath, "", "", default(Size));
+            this.SetSubtitle(subtitlePath, "", "", null);
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetSubtitle(string subtitlePath, string encode)
         {
-            this.SetSubtitle(subtitlePath, encode, "", default(Size));
+            this.SetSubtitle(subtitlePath, encode, "", null);
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string style, Size originalSize)
+        public IConversion SetSubtitle(string subtitlePath, string style, VideoSize originalSize)
         {
             this.SetSubtitle(subtitlePath, "", style, originalSize);
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string encode, string style, Size originalSize)
+        public IConversion SetSubtitle(string subtitlePath, string encode, string style, VideoSize originalSize)
         {
             _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                                .Replace(":", "\\:");
@@ -188,8 +187,8 @@ namespace Xabe.FFmpeg
                 _burnSubtitles += $":charenc={encode}";
             if(!string.IsNullOrEmpty(style))
                 _burnSubtitles += $":force_style=\'{style}\'";
-            if(originalSize != default(Size))
-                _burnSubtitles += $":original_size={originalSize.Width}x{originalSize.Height}";
+            if(originalSize != null)
+                _burnSubtitles += $":original_size={originalSize.Resolution}";
             _burnSubtitles += "\" ";
 
             return this;
@@ -320,10 +319,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetSize(Size? size)
+        public IConversion SetSize(VideoSize size)
         {
-            if(size.HasValue)
-                _size = $"-s {size.Value.Width}x{size.Value.Height} ";
+            if(size != null)
+                _size = $"-s {size.Resolution} ";
 
             return this;
         }

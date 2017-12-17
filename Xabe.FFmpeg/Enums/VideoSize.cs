@@ -14,17 +14,35 @@ namespace Xabe.FFmpeg.Enums
         internal readonly string Resolution;
 
         /// <summary>
+        ///     FFmpeg resolution width
+        /// </summary>
+        internal readonly int Width;
+
+        /// <summary>
+        ///     FFmpeg resolution height
+        /// </summary>
+        internal readonly int Height;
+
+        /// <summary>
         ///     VideoSize in FFmpeg format
         /// </summary>
         /// <param name="width">Width of output video</param>
         /// <param name="height">Height of output video</param>
         public VideoSize(int width, int height)
         {
+            Width = width;
+            Height = height;
             Resolution = $"{width}x{height}";
         }
 
         private VideoSize(string text)
         {
+            string[] splittedResolution = text.Split('x');
+            if(splittedResolution.Length == 2)
+            {
+                Width = int.Parse(splittedResolution[0]);
+                Height = int.Parse(splittedResolution[1]);
+            }
             Resolution = text;
         }
 
