@@ -28,7 +28,7 @@ namespace Xabe.FFmpeg
         {
             if(!_descriptions.TryGetValue(subtitleFormat, out string description))
             {
-                description = Extensions.GetDescription(subtitleFormat);
+                description = subtitleFormat.GetDescription();
                 _descriptions.Add(subtitleFormat, description);
             }
 
