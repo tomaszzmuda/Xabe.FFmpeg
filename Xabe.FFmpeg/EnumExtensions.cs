@@ -1,14 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 
 namespace Xabe.FFmpeg
 {
-    public static class EnumExtensions
+    internal static class EnumExtensions
     {
+        private static readonly Dictionary<Type, Dictionary<Enum, string>> _enums = new Dictionary<Type, Dictionary<Enum, string>>();
 
-        public static string GetDescription(this Enum value)
+        internal static string GetDescription(this Enum value)
         {
+            if(!_enums.TryGetValue(value.GetType(), out Dictionary<Enum, string> dic))
+            {
+                dic = new Dictionary<Enum, string>();
+                _enums.Add(value.GetType(), dic);
+            }
+            else if (dic.TryGetValue(value, out string description))
+            {
+                return description;
+            }
+
             FieldInfo fi = value.GetType()
                                 .GetField(value.ToString());
 
@@ -17,9 +29,12 @@ namespace Xabe.FFmpeg
                     typeof(DescriptionAttribute),
                     false);
 
-            if (attributes != null &&
-                attributes.Length > 0)
+            if(attributes != null &&
+               attributes.Length > 0)
+            {
+                dic[value] = attributes[0].Description;
                 return attributes[0].Description;
+            }
 
             return value.ToString();
         }
