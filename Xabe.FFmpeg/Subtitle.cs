@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
@@ -28,7 +29,7 @@ namespace Xabe.FFmpeg
         {
             if(!_descriptions.TryGetValue(subtitleFormat, out string description))
             {
-                description = subtitleFormat.GetDescription();
+                description = ((Enum) subtitleFormat).GetDescription();
                 _descriptions.Add(subtitleFormat, description);
             }
 
