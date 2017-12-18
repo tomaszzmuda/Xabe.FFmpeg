@@ -1,7 +1,7 @@
 ﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
-    ///     Video files extensions
+    ///     Files extensions
     /// </summary>
     public static class FileExtensions
     {

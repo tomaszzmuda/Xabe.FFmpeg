@@ -188,7 +188,7 @@ namespace Xabe.FFmpeg
             if(!string.IsNullOrEmpty(style))
                 _burnSubtitles += $":force_style=\'{style}\'";
             if(originalSize != null)
-                _burnSubtitles += $":original_size={originalSize.Resolution}";
+                _burnSubtitles += $":original_size={originalSize}";
             _burnSubtitles += "\" ";
 
             return this;
@@ -307,8 +307,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetScale(VideoSize size)
         {
-            if(!string.IsNullOrWhiteSpace(size?.Resolution))
-                _scale = $"-vf scale={size.Resolution} ";
+            if(size != null)
+                _scale = $"-vf scale={size} ";
             return this;
         }
 
@@ -316,7 +316,7 @@ namespace Xabe.FFmpeg
         public IConversion SetSize(VideoSize size)
         {
             if(size != null)
-                _size = $"-s {size.Resolution} ";
+                _size = $"-s {size} ";
 
             return this;
         }
