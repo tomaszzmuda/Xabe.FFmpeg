@@ -1,4 +1,4 @@
-namespace Xabe.FFmpeg.Enums
+﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
     ///     Video files extensions
@@ -46,4 +46,3 @@ namespace Xabe.FFmpeg.Enums
         public const string Gif = ".gif";
     }
 }
-

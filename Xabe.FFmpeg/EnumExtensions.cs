@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Reflection;
 
 namespace Xabe.FFmpeg
 {
-    internal static class EnumExtensions
+    public static class EnumExtensions
     {
 
-        internal static string GetDescription(this Enum value)
+        public static string GetDescription(this Enum value)
         {
             FieldInfo fi = value.GetType()
                                 .GetField(value.ToString());
@@ -25,4 +25,3 @@ namespace Xabe.FFmpeg
         }
     }
 }
-
