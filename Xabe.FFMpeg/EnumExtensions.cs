@@ -6,7 +6,6 @@ namespace Xabe.FFmpeg
 {
     internal static class EnumExtensions
     {
-
         internal static string GetDescription(this Enum value)
         {
             FieldInfo fi = value.GetType()
