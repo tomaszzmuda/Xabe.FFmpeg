@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xabe.FFmpeg.Model;
@@ -10,17 +9,15 @@ namespace Xabe.FFmpeg
     ///     Get information about media file
     /// </summary>
     // ReSharper disable once InheritdocConsiderUsage
-    internal sealed class FFprobe: FFbase
+    public sealed class FFprobe: FFbase
     {
-        private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
+        public async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
             string jsonStreams =
                 await RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
 
-            var probe =
-                JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
-
-            return new[] {probe.streams?.FirstOrDefault(x => x.codec_type == "video") ?? null, probe.streams?.FirstOrDefault(x => x.codec_type == "audio") ?? null};
+            var probe = JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
+            return probe.streams ?? new ProbeModel.Stream[0];
         }
 
         private double GetVideoFramerate(ProbeModel.Stream vid)
