@@ -101,6 +101,7 @@ namespace Xabe.FFmpeg.Test
             ProbeModel.Stream[] result = await probe.GetStream(Resources.MultipleStream);
 
             Assert.True(result.Length > 2);
+
         }
     }
 }
