@@ -14,7 +14,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
-            Assert.Equal(Extensions.Mp3, mediaInfo.FileInfo.Extension);
+            Assert.Equal(FileExtensions.Mp3, mediaInfo.FileInfo.Extension);
             Assert.Equal("audio.mp3", mediaInfo.FileInfo.Name);
 
             Assert.Equal("mp3", mediaInfo.Properties.AudioFormat);
@@ -43,7 +43,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
-            Assert.Equal(Extensions.Mkv, mediaInfo.FileInfo.Extension);
+            Assert.Equal(FileExtensions.Mkv, mediaInfo.FileInfo.Extension);
             Assert.Equal("SampleVideo_360x240_1mb.mkv", mediaInfo.FileInfo.Name);
 
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
@@ -66,7 +66,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp4WithAudio);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
-            Assert.Equal(Extensions.Mp4, mediaInfo.FileInfo.Extension);
+            Assert.Equal(FileExtensions.Mp4, mediaInfo.FileInfo.Extension);
             Assert.Equal("input.mp4", mediaInfo.FileInfo.Name);
 
             Assert.Equal("aac", mediaInfo.Properties.AudioFormat);

@@ -1,13 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Reflection;
-
-namespace Xabe.FFmpeg.Enums
+﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
-    ///     Video files extensions
+    ///     Files extensions
     /// </summary>
-    public static class Extensions
+    public static class FileExtensions
     {
         /// <summary>
         ///     .mp4
@@ -48,22 +44,5 @@ namespace Xabe.FFmpeg.Enums
         ///     .gif
         /// </summary>
         public const string Gif = ".gif";
-
-        internal static string GetDescription(Enum value)
-        {
-            FieldInfo fi = value.GetType()
-                                .GetField(value.ToString());
-
-            var attributes =
-                (DescriptionAttribute[]) fi.GetCustomAttributes(
-                    typeof(DescriptionAttribute),
-                    false);
-
-            if(attributes != null &&
-               attributes.Length > 0)
-                return attributes[0].Description;
-
-            return value.ToString();
-        }
     }
 }
