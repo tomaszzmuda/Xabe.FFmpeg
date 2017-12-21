@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xunit;
 
@@ -39,8 +39,10 @@ namespace Xabe.FFmpeg.Test
         {
             var mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).Result;
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
-            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
-            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
+            Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
+            Assert.Equal("h264", mediaInfo.Properties.VideoStreams.First().Format);
+            Assert.Equal("aac", mediaInfo.Properties.AudioStreams.First().Format);
             if(conversionNumber == totalConversionsCount)
                 resetEvent.Set();
         }
