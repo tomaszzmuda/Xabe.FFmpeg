@@ -108,10 +108,10 @@ namespace Xabe.FFmpeg
         {
             var mediaProperties = new MediaProperties();
             ProbeModel.Stream[] streams = await GetStream(videoPath);
-            ProbeModel.Stream videoStream = streams[0];
-            ProbeModel.Stream audioStream = streams[1];
-            if(videoStream == null && audioStream == null)
+            if(!streams.Any())
+            {
                 return null;
+            }
 
             FormatModel.Format format = await GetFormat(videoPath);
             mediaProperties.Size = long.Parse(format.size);
