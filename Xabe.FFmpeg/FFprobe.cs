@@ -126,7 +126,12 @@ namespace Xabe.FFmpeg
 
         private static TimeSpan CalculateDuration(IEnumerable<VideoStream> videoStreams, IEnumerable<AudioStream> audioStreams)
         {
-            return TimeSpan.FromSeconds(Math.Max(videoStreams.Max(x=>x.Duration).TotalSeconds, audioStreams.Max(x=>x.Duration).TotalSeconds));
+            return TimeSpan.FromSeconds(Math.Max(GetStreamsTotalSeconds(videoStreams), GetStreamsTotalSeconds(audioStreams)));
+        }
+
+        private static double GetStreamsTotalSeconds(IEnumerable<FfmpegStream> streams)
+        {
+            return streams.Any() ? streams.Max(x => x.Duration.TotalSeconds) : 0;
         }
 
         private IEnumerable<AudioStream> PrepareAudioStreams(IEnumerable<ProbeModel.Stream> audioStreamModels)
