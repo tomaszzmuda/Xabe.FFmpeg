@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xabe.FFmpeg.Model;
@@ -11,11 +13,9 @@ namespace Xabe.FFmpeg
     // ReSharper disable once InheritdocConsiderUsage
     public sealed class FFprobe: FFbase
     {
-        public async Task<ProbeModel.Stream[]> GetStream(string videoPath)
+        private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
-            string jsonStreams =
-                await RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
-
+            string jsonStreams = await RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
             var probe = JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
             return probe.streams ?? new ProbeModel.Stream[0];
         }
@@ -35,8 +35,7 @@ namespace Xabe.FFmpeg
         private TimeSpan GetVideoDuration(FormatModel.Format format, ProbeModel.Stream video)
         {
             video.duration = format.duration;
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            video.bit_rate = format.bitRate == 0 ? video.bit_rate : format.bitRate;
+            video.bit_rate = Math.Abs(format.bitRate) < 0.01 ? video.bit_rate : format.bitRate;
 
             double duration = video.duration;
             TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
@@ -59,7 +58,6 @@ namespace Xabe.FFmpeg
             double duration = audio.duration;
             TimeSpan audioDuration = TimeSpan.FromSeconds(duration);
             audioDuration = audioDuration.Subtract(TimeSpan.FromMilliseconds(audioDuration.Milliseconds));
-
             return audioDuration;
         }
 
@@ -101,36 +99,64 @@ namespace Xabe.FFmpeg
             });
         }
 
+        /// <summary>
+        /// Get proporties prom media file
+        /// </summary>
+        /// <param name="videoPath">Path to file</param>
+        /// <returns>Properties</returns>
         public async Task<MediaProperties> GetProperties(string videoPath)
         {
-            var videoProperties = new MediaProperties();
+            var mediaProperties = new MediaProperties();
             ProbeModel.Stream[] streams = await GetStream(videoPath);
             ProbeModel.Stream videoStream = streams[0];
             ProbeModel.Stream audioStream = streams[1];
-            if(videoStream == null &&
-               audioStream == null)
+            if(videoStream == null && audioStream == null)
                 return null;
 
             FormatModel.Format format = await GetFormat(videoPath);
-            videoProperties.Size = long.Parse(format.size);
+            mediaProperties.Size = long.Parse(format.size);
 
-            if(videoStream != null)
-            {
-                videoProperties.VideoFormat = videoStream.codec_name;
-                videoProperties.VideoDuration = GetVideoDuration(format, videoStream);
-                videoProperties.Width = videoStream.width;
-                videoProperties.Height = videoStream.height;
-                videoProperties.FrameRate = GetVideoFramerate(videoStream);
-                videoProperties.Ratio = GetVideoAspectRatio(videoProperties.Width, videoProperties.Height);
-            }
-            if(audioStream != null)
-            {
-                videoProperties.AudioFormat = audioStream.codec_name;
-                videoProperties.AudioDuration = GetAudioDuration(audioStream);
-            }
+            mediaProperties.VideoStreams = PrepareVideoStreams(streams.Where(x => x.codec_type == "video"), format);
+            mediaProperties.AudioStreams = PrepareAudioStreams(streams.Where(x => x.codec_type == "audio"));
+            //todo: prepare subtitles
 
-            videoProperties.Duration = TimeSpan.FromSeconds(Math.Max(videoProperties.VideoDuration.TotalSeconds, videoProperties.AudioDuration.TotalSeconds));
-            return videoProperties;
+            mediaProperties.Duration = CalculateDuration(mediaProperties.VideoStreams, mediaProperties.AudioStreams);
+            return mediaProperties;
+        }
+
+        private static TimeSpan CalculateDuration(IEnumerable<VideoStream> videoStreams, IEnumerable<AudioStream> audioStreams)
+        {
+            return TimeSpan.FromSeconds(Math.Max(videoStreams.Max(x=>x.Duration).TotalSeconds, audioStreams.Max(x=>x.Duration).TotalSeconds));
+        }
+
+        private IEnumerable<AudioStream> PrepareAudioStreams(IEnumerable<ProbeModel.Stream> audioStreamModels)
+        {
+            foreach (ProbeModel.Stream model in audioStreamModels)
+            {
+                var stream = new AudioStream
+                {
+                    Format = model.codec_name,
+                    Duration = GetAudioDuration(model)
+                };
+                yield return stream;
+            }
+        }
+
+        private IEnumerable<VideoStream> PrepareVideoStreams(IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
+        {
+            foreach(ProbeModel.Stream model in videoStreamModels)
+            {
+                var stream = new VideoStream
+                {
+                    Format = model.codec_name,
+                    Duration = GetVideoDuration(format, model),
+                    Width = model.width,
+                    Height = model.height,
+                    FrameRate = GetVideoFramerate(model),
+                    Ratio = GetVideoAspectRatio(model.width, model.height)
+                };
+                yield return stream;
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Model;
 
@@ -49,18 +50,33 @@ namespace Xabe.FFmpeg
         /// <inheritdoc cref="IMediaInfo.ToString" />
         public override string ToString()
         {
-            return $"Video fullName : {FileInfo.FullName}{Environment.NewLine}" +
-                   $"Video root : {Path.GetDirectoryName(FileInfo.FullName)}{Environment.NewLine}" +
-                   $"Video name: {FileInfo.Name}{Environment.NewLine}" +
-                   $"Video extension : {FileInfo.Extension}{Environment.NewLine}" +
-                   $"Video duration : {Properties.VideoDuration}{Environment.NewLine}" +
-                   $"Video format : {Properties.VideoFormat}{Environment.NewLine}" +
-                   $"Audio format : {Properties.AudioFormat}{Environment.NewLine}" +
-                   $"Audio duration : {Properties.AudioDuration}{Environment.NewLine}" +
-                   $"Aspect Ratio : {Properties.Ratio}{Environment.NewLine}" +
-                   $"Framerate : {Properties.Ratio} fps{Environment.NewLine}" +
-                   $"Resolution : {Properties.Width} x {Properties.Height}{Environment.NewLine}" +
-                   $"Size : {Properties.Size} b";
+            const string margin = "    ";
+            var builder = new StringBuilder();
+            builder.AppendLine($"Video fullName : {FileInfo.FullName}");
+            builder.AppendLine($"Video root : {Path.GetDirectoryName(FileInfo.FullName)}");
+            builder.AppendLine($"Video name: {FileInfo.Name}{Environment.NewLine}");
+            builder.AppendLine($"Video extension : {FileInfo.Extension}{Environment.NewLine}");
+            builder.AppendLine($"Size : {Properties.Size} b");
+
+            builder.AppendLine();
+            builder.AppendLine("Video streams:");
+            foreach(VideoStream videoStream in Properties.VideoStreams)
+            {
+                builder.AppendLine($"{margin}Duration : {Properties.Duration}");
+                builder.AppendLine($"{margin}Format : {videoStream.Format}");
+                builder.AppendLine($"{margin}Aspect Ratio : {videoStream.Ratio}");
+                builder.AppendLine($"{margin}Framerate : {videoStream.FrameRate} fps");
+                builder.AppendLine($"{margin}Resolution : {videoStream.Width} x {videoStream.Height}");
+            }
+
+            builder.AppendLine();
+            builder.AppendLine("Audio streams:");
+            foreach(AudioStream audioStream in Properties.AudioStreams)
+            {
+                builder.AppendLine($"{margin}Format : {audioStream.Format}");
+                builder.AppendLine($"{margin}Duration : {audioStream.Duration}");
+            }
+            return builder.ToString();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Model
 {
     /// <summary>
     ///     Reference to subtitle file

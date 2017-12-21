@@ -2,7 +2,7 @@
 
 namespace Xabe.FFmpeg.Model
 {
-    public class ProbeModel
+    internal class ProbeModel
     {
         public Stream[] streams { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Xabe.FFmpeg.Model
 {
@@ -8,39 +9,9 @@ namespace Xabe.FFmpeg.Model
     public class MediaProperties
     {
         /// <summary>
-        ///     Audio format
-        /// </summary>
-        public string AudioFormat { get; internal set; }
-
-        /// <summary>
         ///     Duration of media
         /// </summary>
         public TimeSpan Duration { get; internal set; }
-
-        /// <summary>
-        ///     Duration of audio
-        /// </summary>
-        public TimeSpan AudioDuration { get; internal set; }
-
-        /// <summary>
-        ///     Duration of video
-        /// </summary>
-        public TimeSpan VideoDuration { get; internal set; }
-
-        /// <summary>
-        ///     Frame rate
-        /// </summary>
-        public double FrameRate { get; internal set; }
-
-        /// <summary>
-        ///     Height
-        /// </summary>
-        public int Height { get; internal set; }
-
-        /// <summary>
-        ///     Screen ratio
-        /// </summary>
-        public string Ratio { get; internal set; }
 
         /// <summary>
         ///     Size of file
@@ -48,13 +19,18 @@ namespace Xabe.FFmpeg.Model
         public long Size { get; internal set; }
 
         /// <summary>
-        ///     Video format
+        ///     Video streams
         /// </summary>
-        public string VideoFormat { get; internal set; }
+        public IEnumerable<VideoStream> VideoStreams { get; internal set; }
 
         /// <summary>
-        ///     Width
+        ///     Audio streams
         /// </summary>
-        public int Width { get; internal set; }
+        public IEnumerable<AudioStream> AudioStreams { get; internal set; }
+
+        /// <summary>
+        ///     Audio streams
+        /// </summary>
+        public IEnumerable<Subtitle> Subtitles { get; internal set; }
     }
 }

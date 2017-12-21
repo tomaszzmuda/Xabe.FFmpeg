@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
-using Xabe.FFmpeg.Model;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -97,11 +97,10 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetMultipleStreamsTest()
         {
-            var probe = new FFprobe();
-            ProbeModel.Stream[] result = await probe.GetStream(Resources.MultipleStream);
+            IMediaInfo videoInfo = await MediaInfo.Get(Resources.Mp4WithAudio);
 
-            Assert.True(result.Length > 2);
-
+            Assert.True(videoInfo.Properties.VideoStreams.Count() == 1);
+            Assert.True(videoInfo.Properties.AudioStreams.Count() > 1);
         }
     }
 }
