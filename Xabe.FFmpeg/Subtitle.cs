@@ -1,12 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg.Model
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Reference to subtitle file
     /// </summary>
-    public class Subtitle
+    public class Subtitle : ISubtitle
     {
         private readonly string _path;
 
@@ -24,11 +25,14 @@ namespace Xabe.FFmpeg.Model
         /// <returns>Conversion result</returns>
         public async Task<bool> Convert(string outputPath, SubtitleFormat subtitleFormat)
         {
-            var description = subtitleFormat.GetDescription();
-            return await Conversion.New().SetInput(_path)
-                                         .SetOutput(outputPath)
-                                         .SetFormat(new VideoFormat(description))
-                                         .Start();
+            //var description = subtitleFormat.GetDescription();
+            //return await Conversion.New().SetInput(_path)
+            //                             .SetOutput(outputPath)
+            //                             .SetFormat(new VideoFormat(description))
+            //                             .Start();
+
+            //todo: subtitles
+            throw  new NotImplementedException();
         }
     }
 }

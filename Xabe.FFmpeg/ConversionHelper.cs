@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
-using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -25,13 +22,21 @@ namespace Xabe.FFmpeg
         public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
             VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
+            IMediaInfo info = MediaInfo.Get(inputPath)
+                                       .Result;
+
+            IVideoStream videoStream = info.Properties.MainVideoStream
+                                           ?.SetScale(size)
+                                           ?.SetCodec(VideoCodec.h264, 2400);
+
+            IAudioStream audioStream = info.Properties.MainAudioStream
+                                           ?.SetAudio(AudioCodec.aac, audioQuality);
+
             return Conversion.New()
-                             .SetInput(inputPath)
+                             .AddVideoStream(videoStream)
+                             .AddAudioStream(audioStream)
                              .UseMultiThread(multithread)
-                             .SetScale(size)
-                             .SetCodec(VideoCodec.h264, 2400)
                              .SetSpeed(speed)
-                             .SetAudio(AudioCodec.aac, audioQuality)
                              .SetOutput(outputPath);
         }
 
@@ -43,12 +48,14 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToTs(string inputPath, string outputPath)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .StreamCopy(Channel.Both)
-                             .SetBitstreamFilter(Channel.Video, BitstreamFilter.H264_Mp4ToAnnexB)
-                             .SetFormat(VideoFormat.mpegts)
-                             .SetOutput(outputPath);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .StreamCopy(Channel.Both)
+            //                 .SetBitstreamFilter(Channel.Video, BitstreamFilter.H264_Mp4ToAnnexB)
+            //                 .SetFormat(VideoFormat.mpegts)
+            //                 .SetOutput(outputPath);
+
+            throw new NotImplementedException();
         }
 
 
@@ -63,13 +70,15 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            return Conversion.New()
-                .SetInput(inputPath)
-                .SetScale(size)
-                .SetCodec(VideoCodec.vp8, 2400)
-                .SetAudio(AudioCodec.libvorbis, audioQuality)
-                .SetOutput(outputPath)
-                .UseMultiThread(multithread);
+            //return Conversion.New()
+            //    .SetInput(inputPath)
+            //    .SetScale(size)
+            //    .SetCodec(VideoCodec.vp8, 2400)
+            //    .SetAudio(AudioCodec.libvorbis, audioQuality)
+            //    .SetOutput(outputPath)
+            //    .UseMultiThread(multithread);
+
+            throw new NotImplementedException();
         }
 
 
@@ -84,13 +93,16 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
         {
-            return Conversion.New()
-                .SetInput(inputPath)
-                .SetScale(size)
-                .SetCodec(VideoCodec.theora, 2400)
-                .SetSpeed(16)
-                .SetAudio(AudioCodec.libvorbis, audioQuality)
-                .SetOutput(outputPath);
+            //return Conversion.New()
+            //    .SetInput(inputPath)
+            //    .SetScale(size)
+            //    .SetCodec(VideoCodec.theora, 2400)
+            //    .SetSpeed(16)
+            //    .SetAudio(AudioCodec.libvorbis, audioQuality)
+            //    .SetOutput(outputPath);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -102,10 +114,13 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ChangeSize(string inputPath, string output, VideoSize size)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .SetScale(size)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .SetScale(size)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -119,11 +134,14 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion AddSubtitle(string inputPath, string output, string subtitlePath, string language)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .AddSubtitle(subtitlePath, language)
-                             .StreamCopy(Channel.Both)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .AddSubtitle(subtitlePath, language)
+            //                 .StreamCopy(Channel.Both)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -136,10 +154,13 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion BurnSubtitle(string inputPath, string output, string subtitlePath)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .SetSubtitle(subtitlePath)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .SetSubtitle(subtitlePath)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -150,11 +171,14 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ExtractVideo(string inputPath, string output)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .StreamCopy(Channel.Both)
-                             .DisableChannel(Channel.Audio)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .StreamCopy(Channel.Both)
+            //                 .DisableChannel(Channel.Audio)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
 
@@ -168,10 +192,13 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion SetWatermark(string inputPath, string inputImage, Position position, string output)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .SetWatermark(inputImage, position)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .SetWatermark(inputImage, position)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -182,10 +209,13 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ExtractAudio(string inputPath, string output)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .DisableChannel(Channel.Video)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .DisableChannel(Channel.Video)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -198,10 +228,13 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToGif(string inputPath, string output, int loop, int delay = 0)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .SetLoop(1, delay)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .SetLoop(1, delay)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -213,11 +246,14 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion AddAudio(string inputPath, string audioFilePath, string output)
         {
-            return Conversion.New()
-                             .SetInput(inputPath, audioFilePath)
-                             .StreamCopy(Channel.Video)
-                             .SetAudio(AudioCodec.aac, AudioQuality.Hd)
-                             .SetOutput(output);
+            //return Conversion.New()
+            //                 .SetInput(inputPath, audioFilePath)
+            //                 .StreamCopy(Channel.Video)
+            //                 .SetAudio(AudioCodec.aac, AudioQuality.Hd)
+            //                 .SetOutput(output);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -230,22 +266,25 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion Snapshot(string inputPath, string outputPath, VideoSize size = null, TimeSpan? captureTime = null)
         {
-            IMediaInfo source = MediaInfo.Get(inputPath)
-                                                   .Result;
+            //IMediaInfo source = MediaInfo.Get(inputPath)
+            //                                       .Result;
             //if (captureTime == null)
             //    captureTime = TimeSpan.FromSeconds(source.Properties.VideoDuration.TotalSeconds / 3);
 
             //todo: snapshot is video stream feature
 
-            size = GetSize(source, size);
+            //size = GetSize(source, size);
 
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .SetCodec(VideoCodec.png)
-                             .SetOutputFramesCount(1)
-                             .SetSeek(captureTime)
-                             .SetSize(size)
-                             .SetOutput(outputPath);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .SetCodec(VideoCodec.png)
+            //                 .SetOutputFramesCount(1)
+            //                 .SetSeek(captureTime)
+            //                 .SetSize(size)
+            //                 .SetOutput(outputPath);
+
+            throw new NotImplementedException();
+
         }
 
         /// <summary>
@@ -256,13 +295,17 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion SaveM3U8Stream(Uri uri, string outputPath)
         {
-            if(uri.Scheme != "http" ||
-               uri.Scheme != "https")
-                throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
+            //if(uri.Scheme != "http" ||
+            //   uri.Scheme != "https")
+            //    throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
 
-            return Conversion.New()
-                             .SetInput(uri)
-                             .SetOutput(outputPath);
+            //return Conversion.New()
+            //                 .SetInput(uri)
+            //                 .SetOutput(outputPath);
+
+            throw new NotImplementedException();
+
+
         }
 
         /// <summary>
@@ -349,10 +392,11 @@ namespace Xabe.FFmpeg
         /// <returns></returns>
         public static IConversion Split(string inputPath, TimeSpan startTime, TimeSpan duration, string outputPath)
         {
-            return Conversion.New()
-                             .SetInput(inputPath)
-                             .Split(startTime, duration)
-                             .SetOutput(outputPath);
+            //return Conversion.New()
+            //                 .SetInput(inputPath)
+            //                 .Split(startTime, duration)
+            //                 .SetOutput(outputPath);
+            throw new NotImplementedException();
         }
     }
 }

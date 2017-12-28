@@ -17,14 +17,11 @@ namespace Xabe.FFmpeg
     {
         private readonly object _builderLock = new object();
         private readonly IList<string> _parameters = new List<string>();
-        private readonly Dictionary<string, string> _subtitles = new Dictionary<string, string>();
         private string _audio;
         private string _audioSpeed;
         private string _bitsreamFilter;
-        private string _burnSubtitles;
         private string _format;
         private string _copy;
-        private string _disabled;
         private IEnumerable<FieldInfo> _fields;
         private string _frameCount;
         private string _input;
@@ -32,16 +29,17 @@ namespace Xabe.FFmpeg
         private string _output;
         private string _reverse;
         private string _rotate;
-        private string _scale;
         private string _seek;
         private string _shortestInput;
-        private string _size;
         private string _speed;
         private string _split;
         private string _threads;
         private string _codec;
+
+        private List<IVideoStream> _videoStreams = new List<IVideoStream>();
+        private List<IAudioStream> _audioStreams = new List<IAudioStream>();
+        private List<ISubtitle> _subtitles = new List<ISubtitle>();
         private string _videoSpeed;
-        private string _watermark;
 
         private Conversion()
         {
@@ -52,34 +50,33 @@ namespace Xabe.FFmpeg
         {
             lock(_builderLock)
             {
-                var builder = new StringBuilder();
-                builder.Append(_input);
-                AddSubtitles(builder);
-                builder.Append("-n ");
-                builder.Append(_watermark);
-                builder.Append(_scale);
-                builder.Append(_codec);
-                builder.Append(_speed);
-                builder.Append(_audio);
-                builder.Append(_threads);
-                builder.Append(_disabled);
-                builder.Append(_size);
-                builder.Append(_format);
-                builder.Append(_bitsreamFilter);
-                builder.Append(_copy);
-                builder.Append(_seek);
-                builder.Append(_frameCount);
-                builder.Append(_loop);
-                builder.Append(_reverse);
-                builder.Append(_rotate);
-                builder.Append(_shortestInput);
-                builder.Append(BuildVideoFilter());
-                builder.Append(BuildAudioFilter());
-                builder.Append(_split);
-                builder.Append(string.Join("", _parameters));
-                builder.Append(_output);
+                if(_videoStreams.Count <= 1 && _audioStreams.Count <= 1)
+                {
+                    FileInfo input = _videoStreams.FirstOrDefault()?.Source;
+                    if(_audioStreams.Count == 0 ||
+                       _audioStreams.First()
+                                    .Source == input)
+                    {
+                        IAudioStream audioStream = _audioStreams.FirstOrDefault();
+                        IVideoStream videoStream = _videoStreams.FirstOrDefault();
+                        string inputPath = videoStream != null ? videoStream.Source.FullName : audioStream.Source.FullName;
+                        inputPath = $"-i \"{inputPath}\" ";
 
-                return builder.ToString();
+                        //todo: refactor this
+
+                        var builder = new StringBuilder();
+                        builder.Append(inputPath);
+                        //AddSubtitles(builder);
+                        builder.Append("-n ");
+                        builder.Append(_threads);
+                        builder.Append(audioStream?.Build());
+                        builder.Append(videoStream?.Build());
+                        builder.Append(_output);
+                        return builder.ToString();
+                    }
+                }
+
+                throw new NotImplementedException("conversion with few streams or stream from another files");
             }
         }
 
@@ -152,45 +149,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion AddSubtitle(string subtitlePath, string language)
         {
-            _subtitles.Add(language, subtitlePath);
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath)
-        {
-            this.SetSubtitle(subtitlePath, "", "", null);
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string encode)
-        {
-            this.SetSubtitle(subtitlePath, encode, "", null);
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string style, VideoSize originalSize)
-        {
-            this.SetSubtitle(subtitlePath, "", style, originalSize);
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetSubtitle(string subtitlePath, string encode, string style, VideoSize originalSize)
-        {
-            _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
-                                                               .Replace(":", "\\:");
-
-            if(!string.IsNullOrEmpty(encode))
-                _burnSubtitles += $":charenc={encode}";
-            if(!string.IsNullOrEmpty(style))
-                _burnSubtitles += $":force_style=\'{style}\'";
-            if(originalSize != null)
-                _burnSubtitles += $":original_size={originalSize}";
-            _burnSubtitles += "\" ";
-
+            //_subtitles.Add(language, subtitlePath);
+            //todo: subtitles
             return this;
         }
 
@@ -198,6 +158,20 @@ namespace Xabe.FFmpeg
         public IConversion AddParameter(string parameter)
         {
             _parameters.Add($"{parameter.Trim()} ");
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddVideoStream(params IVideoStream[] videoStreams)
+        {
+            _videoStreams.AddRange(videoStreams);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddAudioStream(params IAudioStream[] audioStreams)
+        {
+            _audioStreams.AddRange(audioStreams);
             return this;
         }
 
@@ -219,29 +193,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetAudio(AudioCodec codec, AudioQuality bitrate)
-        {
-            return SetAudio(codec.ToString(), bitrate);
-        }
-
-        /// <inheritdoc />
-        public IConversion SetAudio(string codec, AudioQuality bitrate)
-        {
-            _audio = $"-codec:a {codec} -b:a {(int) bitrate}k -strict experimental ";
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetCodec(VideoCodec codec, int bitrate = 0)
-        {
-            _codec = $"-codec:v {codec} ";
-
-            if (bitrate > 0)
-                _codec += $"-b:v {bitrate}k ";
-            return this;
-        }
-
-        /// <inheritdoc />
         public IConversion UseMultiThread(bool multiThread)
         {
             string threadCount = multiThread
@@ -253,71 +204,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetInput(Uri uri)
-        {
-            _input = $"-i \"{uri.AbsoluteUri}\" ";
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion DisableChannel(Channel type)
-        {
-            switch(type)
-            {
-                case Channel.Video:
-                    _disabled = "-vn ";
-                    break;
-                case Channel.Audio:
-                    _disabled = "-an ";
-                    break;
-            }
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetInput(string input)
-        {
-            _input = $"-i \"{input}\" ";
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetInput(FileInfo input)
-        {
-            return SetInput(input.FullName);
-        }
-
-        /// <inheritdoc />
-        public IConversion SetInput(params string[] inputs)
-        {
-            _input = "";
-            foreach(string path in inputs)
-                _input += $"-i \"{path}\" ";
-            return this;
-        }
-
-        /// <inheritdoc />
         public IConversion SetOutput(string outputPath)
         {
             OutputFilePath = outputPath;
             _output = $"\"{outputPath}\"";
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetScale(VideoSize size)
-        {
-            if(size != null)
-                _scale = $"-vf scale={size} ";
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetSize(VideoSize size)
-        {
-            if(size != null)
-                _size = $"-s {size} ";
-
             return this;
         }
 
@@ -368,90 +258,28 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetWatermark(string imagePath, Position position)
+        public IConversion ChangeSpeed(double multiplication)
         {
-            string argument = $"-i \"{imagePath}\" -filter_complex ";
-            switch(position)
-            {
-                case Position.Bottom:
-                    argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
-                    break;
-                case Position.Center:
-                    argument += "\"overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.BottomLeft:
-                    argument += "\"overlay=5:main_h-overlay_h\" ";
-                    break;
-                case Position.UpperLeft:
-                    argument += "\"overlay=5:5\" ";
-                    break;
-                case Position.BottomRight:
-                    argument += "\"overlay=(main_w-overlay_w):main_h-overlay_h\" ";
-                    break;
-                case Position.UpperRight:
-                    argument += "\"overlay=(main_w-overlay_w):5\" ";
-                    break;
-                case Position.Left:
-                    argument += "\"overlay=5:(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.Right:
-                    argument += "\"overlay=(main_w-overlay_w-5):(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.Up:
-                    argument += "\"overlay=(main_w-overlay_w)/2:5\" ";
-                    break;
-            }
-            _watermark = argument;
+            ThrowIfSubtitles();
+            _audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))} ";
+            _videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion ChangeSpeed(Channel channel, double multiplication)
+        public IConversion Reverse()
         {
-            if(multiplication < 0.5 ||
-               multiplication > 2.0)
-                throw new ArgumentOutOfRangeException("Value has to be greater than 0.5 and less than 2.0.");
-
-            double videoMultiplicator = 1;
-            if(multiplication >= 1)
-                videoMultiplicator = 1 - (multiplication - 1) / 2;
-            else
-                videoMultiplicator = 1 + (multiplication - 1) * -2;
-
-            string audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
-            string videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
-            switch(channel)
-            {
-                case Channel.Audio:
-                    _audioSpeed = audioSpeed;
-                    break;
-                case Channel.Video:
-                    _videoSpeed = videoSpeed;
-                    break;
-                case Channel.Both:
-                    _audioSpeed = audioSpeed;
-                    _videoSpeed = videoSpeed;
-                    break;
-            }
+            ThrowIfSubtitles();
+            _reverse = "-vf reverse -af areverse ";
             return this;
         }
 
-        /// <inheritdoc />
-        public IConversion Reverse(Channel type)
+        private void ThrowIfSubtitles()
         {
-            switch(type)
+            if (_subtitles.Any())
             {
-                case Channel.Audio:
-                    _reverse = "-af areverse ";
-                    break;
-                case Channel.Video:
-                    _reverse = "-vf reverse ";
-                    break;
-                case Channel.Both:
-                    _reverse = "-vf reverse -af areverse ";
-                    break;
+                throw new InvalidOperationException("Can not reverse media with subtitles");
             }
-            return this;
         }
 
         /// <inheritdoc />
@@ -509,41 +337,20 @@ namespace Xabe.FFmpeg
 
         private void AddSubtitles(StringBuilder builder)
         {
-            if(!_subtitles.Any())
-                return;
+            //if(!_subtitles.Any())
+            //    return;
 
-            foreach(KeyValuePair<string, string> item in _subtitles)
-                builder.Append($"-i \"{item.Value}\" ");
-            builder.Append("-map 0 ");
-            for(var i = 0; i < _subtitles.Count; i++)
-                builder.Append($"-map {i + 1} ");
-            for(var i = 0; i < _subtitles.Count; i++)
-                builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i) .Key} ");
-        }
+            //foreach(KeyValuePair<string, string> item in _subtitles)
+            //    builder.Append($"-i \"{item.Value}\" ");
+            //builder.Append("-map 0 ");
+            //for(var i = 0; i < _subtitles.Count; i++)
+            //    builder.Append($"-map {i + 1} ");
+            //for(var i = 0; i < _subtitles.Count; i++)
+            //    builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i) .Key} ");
 
-        private string BuildVideoFilter()
-        {
-            var builder = new StringBuilder();
-            builder.Append("-filter:v ");
-            builder.Append(_videoSpeed);
-            builder.Append(_burnSubtitles);
+            //todo: subtitles
+        }       
 
-            string filter = builder.ToString();
-            if(filter == "-filter:v ")
-                return "";
-            return filter;
-        }
-
-        private string BuildAudioFilter()
-        {
-            var builder = new StringBuilder();
-            builder.Append("-filter:a ");
-            builder.Append(_audioSpeed);
-
-            string filter = builder.ToString();
-            if(filter == "-filter:a ")
-                return "";
-            return filter;
-        }
+       
     }
 }

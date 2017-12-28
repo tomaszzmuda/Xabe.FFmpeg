@@ -3,9 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
-using Xabe.FFmpeg.Model;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Xabe.FFmpeg.Test
 {
@@ -21,7 +19,8 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("audio.mp3", mediaInfo.FileInfo.Name);
 
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            Assert.NotNull(audioStream);
             Assert.Equal("mp3", audioStream.Format);
             Assert.Equal(TimeSpan.FromSeconds(13), audioStream.Duration);
 
@@ -47,12 +46,14 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("SampleVideo_360x240_1mb.mkv", mediaInfo.FileInfo.Name);
 
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            Assert.NotNull(audioStream);
             Assert.Equal("aac", audioStream.Format);
             Assert.Equal(TimeSpan.FromSeconds(9), audioStream.Duration);
 
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
             Assert.Equal(25, videoStream.FrameRate);
             Assert.Equal(240, videoStream.Height);
             Assert.Equal(320, videoStream.Width);
@@ -74,12 +75,14 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("input.mp4", mediaInfo.FileInfo.Name);
 
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            Assert.NotNull(audioStream);
             Assert.Equal("aac", audioStream.Format);
             Assert.Equal(TimeSpan.FromSeconds(13), audioStream.Duration);
 
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
             Assert.Equal(25, videoStream.FrameRate);
             Assert.Equal(720, videoStream.Height);
             Assert.Equal(1280, videoStream.Width);

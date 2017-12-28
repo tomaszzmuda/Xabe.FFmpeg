@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg
         {
             if (!File.Exists(fileInfo.FullName))
                 throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
-            MediaProperties properties = await new FFprobe().GetProperties(fileInfo.FullName);
+            MediaProperties properties = await new FFprobe().GetProperties(fileInfo);
             if (properties == null)
                 throw new ArgumentException($"Input file {fileInfo.FullName} doesn't recognized.");
 

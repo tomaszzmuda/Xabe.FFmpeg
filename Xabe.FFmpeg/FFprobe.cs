@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -102,52 +103,51 @@ namespace Xabe.FFmpeg
         /// <summary>
         /// Get proporties prom media file
         /// </summary>
-        /// <param name="videoPath">Path to file</param>
+        /// <param name="fileInfo">Media file info</param>
         /// <returns>Properties</returns>
-        public async Task<MediaProperties> GetProperties(string videoPath)
+        public async Task<MediaProperties> GetProperties(FileInfo fileInfo)
         {
             var mediaProperties = new MediaProperties();
-            ProbeModel.Stream[] streams = await GetStream(videoPath);
+            ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName);
             if(!streams.Any())
             {
                 return null;
             }
 
-            FormatModel.Format format = await GetFormat(videoPath);
+            FormatModel.Format format = await GetFormat(fileInfo.FullName);
             mediaProperties.Size = long.Parse(format.size);
 
-            mediaProperties.VideoStreams = PrepareVideoStreams(streams.Where(x => x.codec_type == "video"), format);
-            mediaProperties.AudioStreams = PrepareAudioStreams(streams.Where(x => x.codec_type == "audio"));
+            mediaProperties.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
+            mediaProperties.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
             //todo: prepare subtitles
 
             mediaProperties.Duration = CalculateDuration(mediaProperties.VideoStreams, mediaProperties.AudioStreams);
             return mediaProperties;
         }
 
-        private static TimeSpan CalculateDuration(IEnumerable<VideoStream> videoStreams, IEnumerable<AudioStream> audioStreams)
+        private static TimeSpan CalculateDuration(IEnumerable<IVideoStream> videoStreams, IEnumerable<IAudioStream> audioStreams)
         {
-            return TimeSpan.FromSeconds(Math.Max(GetStreamsTotalSeconds(videoStreams), GetStreamsTotalSeconds(audioStreams)));
+            double audioMax = audioStreams.Any() ? audioStreams.Max(x => x.Duration.TotalSeconds) : 0;
+            double videoMax = videoStreams.Any() ? videoStreams.Max(x => x.Duration.TotalSeconds) : 0;
+
+            return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private static double GetStreamsTotalSeconds(IEnumerable<FfmpegStream> streams)
-        {
-            return streams.Any() ? streams.Max(x => x.Duration.TotalSeconds) : 0;
-        }
-
-        private IEnumerable<AudioStream> PrepareAudioStreams(IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private IEnumerable<AudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach (ProbeModel.Stream model in audioStreamModels)
             {
                 var stream = new AudioStream
                 {
                     Format = model.codec_name,
-                    Duration = GetAudioDuration(model)
+                    Duration = GetAudioDuration(model),
+                    Source = fileInfo
                 };
                 yield return stream;
             }
         }
 
-        private IEnumerable<VideoStream> PrepareVideoStreams(IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
+        private IEnumerable<VideoStream> PrepareVideoStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
         {
             foreach(ProbeModel.Stream model in videoStreamModels)
             {
@@ -158,7 +158,8 @@ namespace Xabe.FFmpeg
                     Width = model.width,
                     Height = model.height,
                     FrameRate = GetVideoFramerate(model),
-                    Ratio = GetVideoAspectRatio(model.width, model.height)
+                    Ratio = GetVideoAspectRatio(model.width, model.height),
+                    Source = fileInfo
                 };
                 yield return stream;
             }

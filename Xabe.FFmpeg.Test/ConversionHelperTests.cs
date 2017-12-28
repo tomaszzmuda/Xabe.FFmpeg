@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(0), mediaInfo.Properties.Duration);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(0, mediaInfo.Properties.AudioStreams.Count());
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
             Assert.Equal("gif", videoStream.Format);
             Assert.Equal("16:9", videoStream.Ratio);
             Assert.Equal(25, videoStream.FrameRate);
@@ -90,7 +90,8 @@ namespace Xabe.FFmpeg.Test
             Assert.True(result);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);            
             Assert.Equal(640, videoStream.Width);
             Assert.Equal(360, videoStream.Height);
         }
@@ -106,7 +107,8 @@ namespace Xabe.FFmpeg.Test
             var mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(0, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            Assert.NotNull(audioStream);
             Assert.Equal("mp3", audioStream.Format);
         }
 
@@ -122,7 +124,8 @@ namespace Xabe.FFmpeg.Test
             var mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(0, mediaInfo.Properties.AudioStreams.Count());
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
             Assert.Equal("h264", videoStream.Format);
         }
 
@@ -145,7 +148,8 @@ namespace Xabe.FFmpeg.Test
             var mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(duration), mediaInfo.Properties.Duration);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
             Assert.Equal(width, videoStream.Width);
             Assert.Equal(height, videoStream.Width);
         }
@@ -173,8 +177,10 @@ namespace Xabe.FFmpeg.Test
             var mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
             Assert.Equal("aac", audioStream.Format);
             Assert.Equal("h264", videoStream.Format);
             Assert.Equal(TimeSpan.FromSeconds(8), audioStream.Duration);
@@ -195,8 +201,10 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
             Assert.Equal("h264", videoStream.Format);
             Assert.Equal("aac", audioStream.Format);
         }
@@ -214,8 +222,10 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
             Assert.Equal("theora", videoStream.Format);
             Assert.Equal("vorbis", audioStream.Format);
         }
@@ -233,8 +243,10 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Properties.Duration);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
             Assert.Equal("h264", videoStream.Format);
             Assert.Equal("aac", audioStream.Format);
         }
@@ -252,8 +264,10 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Properties.Duration);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
             Assert.Equal("vp8", videoStream.Format);
             Assert.Equal("vorbis", audioStream.Format);
         }
@@ -269,8 +283,10 @@ namespace Xabe.FFmpeg.Test
             var mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            AudioStream audioStream = mediaInfo.Properties.AudioStreams.First();
-            VideoStream videoStream = mediaInfo.Properties.VideoStreams.First();
+            IAudioStream audioStream = mediaInfo.Properties.MainAudioStream;
+            IVideoStream videoStream = mediaInfo.Properties.MainVideoStream;
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
             Assert.Equal("mp3", audioStream.Format);
             Assert.Equal("png", videoStream.Format);
         }
