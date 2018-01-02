@@ -104,10 +104,10 @@ namespace Xabe.FFmpeg
         /// Get proporties prom media file
         /// </summary>
         /// <param name="fileInfo">Media file info</param>
+        /// <param name="mediaInfo">Empty media info</param>
         /// <returns>Properties</returns>
-        public async Task<MediaProperties> GetProperties(FileInfo fileInfo)
+        public async Task<MediaInfo> GetProperties(FileInfo fileInfo, MediaInfo mediaInfo)
         {
-            var mediaProperties = new MediaProperties();
             ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName);
             if(!streams.Any())
             {
@@ -115,14 +115,14 @@ namespace Xabe.FFmpeg
             }
 
             FormatModel.Format format = await GetFormat(fileInfo.FullName);
-            mediaProperties.Size = long.Parse(format.size);
+            mediaInfo.Size = long.Parse(format.size);
 
-            mediaProperties.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
-            mediaProperties.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
+            mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
+            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
             //todo: prepare subtitles
 
-            mediaProperties.Duration = CalculateDuration(mediaProperties.VideoStreams, mediaProperties.AudioStreams);
-            return mediaProperties;
+            mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
+            return mediaInfo;
         }
 
         private static TimeSpan CalculateDuration(IEnumerable<IVideoStream> videoStreams, IEnumerable<IAudioStream> audioStreams)

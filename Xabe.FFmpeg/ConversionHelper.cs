@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
@@ -20,16 +21,16 @@ namespace Xabe.FFmpeg
         /// <param name="multithread">Use multithread</param>
         /// <returns>Conversion result</returns>
         public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
-            VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
+            VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = true)
         {
             IMediaInfo info = MediaInfo.Get(inputPath)
                                        .Result;
 
-            IVideoStream videoStream = info.Properties.MainVideoStream
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetScale(size)
                                            ?.SetCodec(VideoCodec.h264, 2400);
 
-            IAudioStream audioStream = info.Properties.MainAudioStream
+            IAudioStream audioStream = info.AudioStreams.FirstOrDefault()
                                            ?.SetAudio(AudioCodec.aac, audioQuality);
 
             return Conversion.New()
@@ -269,7 +270,7 @@ namespace Xabe.FFmpeg
             //IMediaInfo source = MediaInfo.Get(inputPath)
             //                                       .Result;
             //if (captureTime == null)
-            //    captureTime = TimeSpan.FromSeconds(source.Properties.VideoDuration.TotalSeconds / 3);
+            //    captureTime = TimeSpan.FromSeconds(source.VideoDuration.TotalSeconds / 3);
 
             //todo: snapshot is video stream feature
 
@@ -330,7 +331,7 @@ namespace Xabe.FFmpeg
             //conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
             //conversion.AddParameter($"-filter_complex \"");
 
-            //MediaProperties maxResolutionMedia = mediaInfos.OrderByDescending(x => x.Properties.Width)
+            //MediaProperties maxResolutionMedia = mediaInfos.OrderByDescending(x => x.Width)
             //                                         .First().Properties;
             //for(var i = 0; i < mediaInfos.Count; i++)
             //{
@@ -340,7 +341,7 @@ namespace Xabe.FFmpeg
 
             //for(var i = 0; i < mediaInfos.Count; i++)
             //{
-            //    if(string.IsNullOrEmpty(mediaInfos[i].Properties.AudioFormat))
+            //    if(string.IsNullOrEmpty(mediaInfos[i].AudioFormat))
             //        conversion.AddParameter($"[v{i}][{mediaInfos.Count}:a]");
             //    else
             //        conversion.AddParameter($"[v{i}][{i}:a]");
@@ -358,22 +359,22 @@ namespace Xabe.FFmpeg
         {
             //if(size == null ||
             //   size. Height == 0 && size.Width == 0)
-            //    size = new VideoSize(source.Properties.Width, source.Properties.Height);
+            //    size = new VideoSize(source.Width, source.Height);
 
             //if(size.Width != size.Height)
             //{
             //    if(size.Width == 0)
             //    {
-            //        double ratio = source.Properties.Width / (double) size.Width;
+            //        double ratio = source.Width / (double) size.Width;
 
-            //        size = new VideoSize((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
+            //        size = new VideoSize((int) (source.Width * ratio), (int) (source.Height * ratio));
             //    }
 
             //    if(size.Height == 0)
             //    {
-            //        double ratio = source.Properties.Height / (double) size.Height;
+            //        double ratio = source.Height / (double) size.Height;
 
-            //        size = new VideoSize((int) (source.Properties.Width * ratio), (int) (source.Properties.Height * ratio));
+            //        size = new VideoSize((int) (source.Width * ratio), (int) (source.Height * ratio));
             //    }
             //}
 

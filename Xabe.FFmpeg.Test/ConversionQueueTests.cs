@@ -38,11 +38,11 @@ namespace Xabe.FFmpeg.Test
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
             var mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).Result;
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
-            Assert.Equal(1, mediaInfo.Properties.VideoStreams.Count());
-            Assert.Equal(1, mediaInfo.Properties.AudioStreams.Count());
-            Assert.Equal("h264", mediaInfo.Properties.VideoStreams.First().Format);
-            Assert.Equal("aac", mediaInfo.Properties.AudioStreams.First().Format);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(1, mediaInfo.VideoStreams.Count());
+            Assert.Equal(1, mediaInfo.AudioStreams.Count());
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First().Format);
             if(conversionNumber == totalConversionsCount)
                 resetEvent.Set();
         }
