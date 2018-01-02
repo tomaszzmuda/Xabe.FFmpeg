@@ -117,10 +117,9 @@ namespace Xabe.FFmpeg
             FormatModel.Format format = await GetFormat(fileInfo.FullName);
             mediaInfo.Size = long.Parse(format.size);
 
-            var video = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
-            var audio = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
-            var subtitle = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
-            mediaInfo.Streams = video.Concat<IStream>(audio).Concat<IStream>(subtitle);
+            mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
+            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
+            mediaInfo.SubtitleStreams = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
             //todo: prepare subtitles
 
             mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);

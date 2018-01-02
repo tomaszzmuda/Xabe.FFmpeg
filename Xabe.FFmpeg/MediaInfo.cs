@@ -21,22 +21,23 @@ namespace Xabe.FFmpeg
         /// </summary>
         public long Size { get; internal set; }
 
-        internal IEnumerable<IStream> Streams { private get; set; }
+        public IEnumerable<IStream> Streams => VideoStreams.Concat<IStream>(AudioStreams)
+                                                             .Concat(SubtitleStreams);
 
         /// <summary>
         ///     Video streams
         /// </summary>
-        public IEnumerable<IVideoStream> VideoStreams => Streams.Where(x => x.CodecType == CodecType.Video).Cast<IVideoStream>();
+        public IEnumerable<IVideoStream> VideoStreams { get; internal set; }
 
         /// <summary>
         ///     Audio streams
         /// </summary>
-        public IEnumerable<IAudioStream> AudioStreams => Streams.Where(x => x.CodecType == CodecType.Audio).Cast<IAudioStream>();
+        public IEnumerable<IAudioStream> AudioStreams { get; internal set; }
 
         /// <summary>
         ///     Subtitle streams
         /// </summary>
-        public IEnumerable<ISubtitleStream> SubtitleStreams => Streams.Where(x => x.CodecType == CodecType.Subtitle).Cast<ISubtitleStream>();
+        public IEnumerable<ISubtitleStream> SubtitleStreams { get; internal set; }
 
         /// <summary>
         ///     Get MediaInfo from file
