@@ -37,7 +37,7 @@ namespace Xabe.FFmpeg
         private string _codec;
 
         private List<IStream> _streams = new List<IStream>();
-        private List<ISubtitle> _subtitles = new List<ISubtitle>();
+        private List<ISubtitleStream> _subtitles = new List<ISubtitleStream>();
         private string _videoSpeed;
 
         private Conversion()
@@ -159,16 +159,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion AddVideoStream(params IVideoStream[] videoStreams)
+        public IConversion AddStream(params IStream[] streams)
         {
-            _streams.AddRange(videoStreams);
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion AddAudioStream(params IAudioStream[] audioStreams)
-        {
-            _streams.AddRange(audioStreams);
+            _streams.AddRange(streams);
             return this;
         }
 

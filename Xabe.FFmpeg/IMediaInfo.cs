@@ -39,7 +39,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Audio streams
         /// </summary>
-        IEnumerable<ISubtitle> Subtitles { get; }
+        IEnumerable<ISubtitleStream> SubtitleStreams { get; }
 
         /// <summary>
         ///     Get formated info about video

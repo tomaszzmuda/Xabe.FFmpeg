@@ -21,7 +21,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         public long Size { get; internal set; }
 
-        public IEnumerable<IStream> Streams { get; internal set; }
+        internal IEnumerable<IStream> Streams { private get; set; }
 
         /// <summary>
         ///     Video streams
@@ -34,9 +34,9 @@ namespace Xabe.FFmpeg
         public IEnumerable<IAudioStream> AudioStreams => Streams.Where(x => x.CodecType == CodecType.Audio).Cast<IAudioStream>();
 
         /// <summary>
-        ///     Audio streams
+        ///     Subtitle streams
         /// </summary>
-        public IEnumerable<ISubtitle> Subtitles { get; internal set; }
+        public IEnumerable<ISubtitleStream> SubtitleStreams => Streams.Where(x => x.CodecType == CodecType.Subtitle).Cast<ISubtitleStream>();
 
         /// <summary>
         ///     Get MediaInfo from file
@@ -83,7 +83,7 @@ namespace Xabe.FFmpeg
 
             builder.AppendLine();
             builder.AppendLine("Video streams:");
-            foreach(VideoStream videoStream in VideoStreams)
+            foreach(IVideoStream videoStream in VideoStreams)
             {
                 builder.AppendLine($"{margin}Duration : {Duration}");
                 builder.AppendLine($"{margin}Format : {videoStream.Format}");
@@ -94,7 +94,7 @@ namespace Xabe.FFmpeg
 
             builder.AppendLine();
             builder.AppendLine("Audio streams:");
-            foreach(AudioStream audioStream in AudioStreams)
+            foreach(IAudioStream audioStream in AudioStreams)
             {
                 builder.AppendLine($"{margin}Format : {audioStream.Format}");
                 builder.AppendLine($"{margin}Duration : {audioStream.Duration}");

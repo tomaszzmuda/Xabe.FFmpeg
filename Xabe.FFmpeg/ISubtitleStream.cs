@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Xabe.FFmpeg
 {
-    public interface ISubtitle
+    public interface ISubtitleStream : IStream
     {
     }
 }

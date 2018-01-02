@@ -227,17 +227,10 @@ namespace Xabe.FFmpeg
         IConversion AddParameter(string parameter);
 
         /// <summary>
-        /// Add video streams to output file
+        ///     Add streams to output file
         /// </summary>
-        /// <param name="videoStreams">Video streams to add</param>
+        /// <param name="streams">Streams to add</param>
         /// <returns>IConversion object</returns>
-        IConversion AddVideoStream(params IVideoStream[] videoStreams);
-
-        /// <summary>
-        /// Add audio streams to output file
-        /// </summary>
-        /// <param name="audioStreams">Audio streams to add</param>
-        /// <returns>IConversion object</returns>
-        IConversion AddAudioStream(params IAudioStream[] audioStreams);
+        IConversion AddStream(params IStream[] streams);
     }
 }

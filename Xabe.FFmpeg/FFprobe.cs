@@ -119,7 +119,8 @@ namespace Xabe.FFmpeg
 
             var video = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
             var audio = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
-            mediaInfo.Streams = video.Concat<IStream>(audio);
+            var subtitle = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
+            mediaInfo.Streams = video.Concat<IStream>(audio).Concat<IStream>(subtitle);
             //todo: prepare subtitles
 
             mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
@@ -134,7 +135,7 @@ namespace Xabe.FFmpeg
             return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private IEnumerable<AudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach (ProbeModel.Stream model in audioStreamModels)
             {
@@ -148,7 +149,20 @@ namespace Xabe.FFmpeg
             }
         }
 
-        private IEnumerable<VideoStream> PrepareVideoStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
+        private IEnumerable<ISubtitleStream> PrepareSubtitleStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        {
+            foreach (ProbeModel.Stream model in audioStreamModels)
+            {
+                var stream = new SubtitleStream()
+                {
+                    Format = model.codec_name,
+                    Source = fileInfo
+                };
+                yield return stream;
+            }
+        }
+
+        private IEnumerable<IVideoStream> PrepareVideoStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
         {
             foreach(ProbeModel.Stream model in videoStreamModels)
             {

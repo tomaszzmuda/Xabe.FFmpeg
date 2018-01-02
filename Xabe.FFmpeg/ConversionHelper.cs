@@ -34,8 +34,8 @@ namespace Xabe.FFmpeg
                                            ?.SetAudio(AudioCodec.aac, audioQuality);
 
             return Conversion.New()
-                             .AddVideoStream(videoStream)
-                             .AddAudioStream(audioStream)
+                             .AddStream(videoStream)
+                             .AddStream(audioStream)
                              .UseMultiThread(multithread)
                              .SetSpeed(speed)
                              .SetOutput(outputPath);

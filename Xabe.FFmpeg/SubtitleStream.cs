@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
@@ -7,12 +8,17 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Reference to subtitle file
     /// </summary>
-    public class Subtitle : ISubtitle
+    public class SubtitleStream : ISubtitleStream
     {
+        public SubtitleStream()
+        {
+            
+        }
+
         private readonly string _path;
 
         /// <inheritdoc />
-        public Subtitle(string path)
+        public SubtitleStream(string path)
         {
             _path = path;
         }
@@ -34,5 +40,20 @@ namespace Xabe.FFmpeg
             //todo: subtitles
             throw  new NotImplementedException();
         }
+
+        /// <inheritdoc />
+        public string Format { get; internal set; }
+
+        /// <inheritdoc />
+        public FileInfo Source { get; internal set; }
+
+        /// <inheritdoc />
+        public string Build()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        public CodecType CodecType { get; internal set; }
     }
 }
