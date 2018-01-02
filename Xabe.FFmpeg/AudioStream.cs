@@ -44,6 +44,9 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
+        /// <inheritdoc />
+        public CodecType CodecType { get; } = CodecType.Audio;
+
         private string BuildFilter()
         {
             var builder = new StringBuilder();

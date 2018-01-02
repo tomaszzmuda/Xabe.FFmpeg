@@ -21,5 +21,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <returns>Arguments</returns>
         string Build();
+
+        CodecType CodecType { get; }
     }
 }
