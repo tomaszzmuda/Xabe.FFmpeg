@@ -11,56 +11,6 @@ namespace Xabe.FFmpeg
     public static class ConversionHelper
     {
         /// <summary>
-        ///     Convert file to MP4
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <param name="speed">Conversion speed</param>
-        /// <param name="size">Dimension</param>
-        /// <param name="audioQuality">Audio quality</param>
-        /// <param name="multithread">Use multithread</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToMp4(string inputPath, string outputPath, Speed speed = Speed.SuperFast,
-            VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = true)
-        {
-            IMediaInfo info = MediaInfo.Get(inputPath)
-                                       .Result;
-
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.SetScale(size)
-                                           ?.SetCodec(VideoCodec.h264, 2400);
-
-            IAudioStream audioStream = info.AudioStreams.FirstOrDefault()
-                                           ?.SetAudio(AudioCodec.aac, audioQuality);
-
-            return Conversion.New()
-                             .AddStream(videoStream)
-                             .AddStream(audioStream)
-                             .UseMultiThread(multithread)
-                             .SetSpeed(speed)
-                             .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Convert file to TS
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToTs(string inputPath, string outputPath)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .StreamCopy(Channel.Both)
-            //                 .SetBitstreamFilter(Channel.Video, BitstreamFilter.H264_Mp4ToAnnexB)
-            //                 .SetFormat(VideoFormat.mpegts)
-            //                 .SetOutput(outputPath);
-
-            throw new NotImplementedException();
-        }
-
-
-        /// <summary>
         ///     Convert file to WebM
         /// </summary>
         /// <param name="inputPath">Input path</param>
@@ -75,35 +25,11 @@ namespace Xabe.FFmpeg
             //    .SetInput(inputPath)
             //    .SetScale(size)
             //    .SetCodec(VideoCodec.vp8, 2400)
-            //    .SetAudio(AudioCodec.libvorbis, audioQuality)
+            //    .SetCodec(AudioCodec.libvorbis, audioQuality)
             //    .SetOutput(outputPath)
             //    .UseMultiThread(multithread);
 
             throw new NotImplementedException();
-        }
-
-
-        /// <summary>
-        ///     Convert file to OGV
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <param name="size">Dimension</param>
-        /// <param name="audioQuality">Audio quality</param>
-        /// <param name="multithread">Use multithread</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToOgv(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
-        {
-            //return Conversion.New()
-            //    .SetInput(inputPath)
-            //    .SetScale(size)
-            //    .SetCodec(VideoCodec.theora, 2400)
-            //    .SetSpeed(16)
-            //    .SetAudio(AudioCodec.libvorbis, audioQuality)
-            //    .SetOutput(outputPath);
-
-            throw new NotImplementedException();
-
         }
 
         /// <summary>
@@ -250,7 +176,7 @@ namespace Xabe.FFmpeg
             //return Conversion.New()
             //                 .SetInput(inputPath, audioFilePath)
             //                 .StreamCopy(Channel.Video)
-            //                 .SetAudio(AudioCodec.aac, AudioQuality.Hd)
+            //                 .SetCodec(AudioCodec.aac, AudioQuality.Hd)
             //                 .SetOutput(output);
 
             throw new NotImplementedException();

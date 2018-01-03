@@ -14,15 +14,14 @@ namespace Xabe.FFmpeg
         /// <param name="codec">Audio odec</param>
         /// <param name="bitrate">Audio bitrade</param>
         /// <returns>IConversion object</returns>
-        IAudioStream SetAudio(AudioCodec codec, AudioQuality bitrate);
+        IAudioStream SetCodec(AudioCodec codec, AudioQuality bitrate);
 
         /// <summary>
-        ///     Set audio codec and bitrate
+        ///     Set filter
         /// </summary>
-        /// <param name="codec">Audio odec</param>
-        /// <param name="bitrate">Audio bitrade</param>
-        /// <returns>IConversion object</returns>
-        IAudioStream SetAudio(string codec, AudioQuality bitrate);
+        /// <param name="filter">Filter</param>
+        /// <returns>IVideoStream object</returns>
+        IAudioStream SetBitstreamFilter(BitstreamFilter filter);
 
         /// <summary>
         ///     Duration

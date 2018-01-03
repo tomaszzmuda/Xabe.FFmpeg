@@ -14,6 +14,8 @@ namespace Xabe.FFmpeg
         private string _scale;
         private string _size;
         private string _codec;
+        private string _bitsreamFilter;
+        private string _copy;
 
         /// <inheritdoc />
         public int Width { get; internal set; }
@@ -41,8 +43,8 @@ namespace Xabe.FFmpeg
             //builder.Append(_speed);
             //builder.Append(_audio);
             //builder.Append(_format);
-            //builder.Append(_bitsreamFilter);
-            //builder.Append(_copy);
+            builder.Append(_bitsreamFilter);
+            builder.Append(_copy);
             //builder.Append(_seek);
             //builder.Append(_frameCount);
             //builder.Append(_loop);
@@ -70,6 +72,16 @@ namespace Xabe.FFmpeg
             if (filter == "-filter:v ")
                 return "";
             return filter;
+        }
+
+        /// <summary>
+        /// Set stream to copy with orginal codec
+        /// </summary>
+        /// <returns>IVideoStream object</returns>
+        public IVideoStream CopyStream()
+        {
+            _copy = "-c copy ";
+            return this;
         }
 
         /// <summary>
@@ -199,6 +211,13 @@ namespace Xabe.FFmpeg
 
             if (bitrate > 0)
                 _codec += $"-b:v {bitrate}k ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetBitstreamFilter(BitstreamFilter filter)
+        {
+            _bitsreamFilter = $"-bsf:v {filter} ";
             return this;
         }
 

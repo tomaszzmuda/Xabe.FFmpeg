@@ -4,7 +4,7 @@ namespace Xabe.FFmpeg.Enums
     /// <summary>
     ///     Video format ("ffmpeg -formats")
     /// </summary>
-    public class VideoFormat
+    public class MediaFormat
     {
         /// <summary>
         ///     Video codec
@@ -14,62 +14,62 @@ namespace Xabe.FFmpeg.Enums
         /// <summary>
         ///     AVI (Audio Video Interleaved)
         /// </summary>
-        public static VideoFormat avi => new VideoFormat("avi");
+        public static MediaFormat avi => new MediaFormat("avi");
 
         /// <summary>
         ///     MPEG-2 PS (DVD VOB)
         /// </summary>
-        public static VideoFormat dvd => new VideoFormat("dvd");
+        public static MediaFormat dvd => new MediaFormat("dvd");
 
         /// <summary>
         ///     FLV (Flash Video)
         /// </summary>
-        public static VideoFormat flv => new VideoFormat("flv");
+        public static MediaFormat flv => new MediaFormat("flv");
 
         /// <summary>
         ///     raw H.264 video
         /// </summary>
-        public static VideoFormat h264 => new VideoFormat("h264");
+        public static MediaFormat h264 => new MediaFormat("h264");
 
         /// <summary>
         ///     raw HEVC video
         /// </summary>
-        public static VideoFormat hevc => new VideoFormat("h264");
+        public static MediaFormat hevc => new MediaFormat("h264");
 
         /// <summary>
         ///     Matroska
         /// </summary>
-        public static VideoFormat matroska => new VideoFormat("matroska");
+        public static MediaFormat matroska => new MediaFormat("matroska");
 
         /// <summary>
         ///     Quicktime / MOV
         /// </summary>
-        public static VideoFormat mov => new VideoFormat("mov");
+        public static MediaFormat mov => new MediaFormat("mov");
 
         /// <summary>
         ///     MP4 (MPEG-4 Part 14)
         /// </summary>
-        public static VideoFormat mp4 => new VideoFormat("mp4");
+        public static MediaFormat mp4 => new MediaFormat("mp4");
 
         /// <summary>
         ///     MPEG-1 Systems / MPEG program stream
         /// </summary>
-        public static VideoFormat mpeg => new VideoFormat("mpeg");
+        public static MediaFormat mpeg => new MediaFormat("mpeg");
 
         /// <summary>
         ///     MPEG-TS (MPEG-2 Transport Stream)
         /// </summary>
-        public static VideoFormat mpegts => new VideoFormat("mpegts");
+        public static MediaFormat mpegts => new MediaFormat("mpegts");
 
         /// <summary>
         ///     Ogg
         /// </summary>
-        public static VideoFormat ogg => new VideoFormat("ogg");
+        public static MediaFormat ogg => new MediaFormat("ogg");
 
         /// <summary>
         ///     Raw video
         /// </summary>
-        public static VideoFormat rawvideo => new VideoFormat("rawvideo");
+        public static MediaFormat rawvideo => new MediaFormat("rawvideo");
 
         /// <inheritdoc />
         public override string ToString()
@@ -78,7 +78,7 @@ namespace Xabe.FFmpeg.Enums
         }
 
         /// <inheritdoc />
-        public VideoFormat(string format)
+        public MediaFormat(string format)
         {
             Format = format;
         }

@@ -10,6 +10,7 @@ namespace Xabe.FFmpeg
         private string _reverse;
         private string _speed;
         private string _audio;
+        private string _bitsreamFilter;
 
         /// <inheritdoc />
         public IAudioStream Reverse()
@@ -30,7 +31,7 @@ namespace Xabe.FFmpeg
             builder.Append(_audio);
             //builder.Append(_threads);
             //builder.Append(_format);
-            //builder.Append(_bitsreamFilter);
+            builder.Append(_bitsreamFilter);
             //builder.Append(_copy);
             //builder.Append(_seek);
             //builder.Append(_frameCount);
@@ -60,13 +61,20 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IAudioStream SetAudio(AudioCodec codec, AudioQuality bitrate)
+        public IAudioStream SetBitstreamFilter(BitstreamFilter filter)
         {
-            return SetAudio(codec.ToString(), bitrate);
+            _bitsreamFilter = $"-bsf:a {filter} ";
+            return this;
         }
 
         /// <inheritdoc />
-        public IAudioStream SetAudio(string codec, AudioQuality bitrate)
+        public IAudioStream SetCodec(AudioCodec codec, AudioQuality bitrate)
+        {
+            return SetCodec(codec.ToString(), bitrate);
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetCodec(string codec, AudioQuality bitrate)
         {
             _audio = $"-codec:a {codec} -b:a {(int)bitrate}k -strict experimental ";
             return this;

@@ -34,7 +34,7 @@ namespace Xabe.FFmpeg
             //var description = subtitleFormat.GetDescription();
             //return await Conversion.New().SetInput(_path)
             //                             .SetOutput(outputPath)
-            //                             .SetFormat(new VideoFormat(description))
+            //                             .SetFormat(new MediaFormat(description))
             //                             .Start();
 
             //todo: subtitles

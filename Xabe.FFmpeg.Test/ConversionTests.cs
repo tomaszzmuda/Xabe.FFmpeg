@@ -25,7 +25,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -51,7 +51,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -68,7 +68,7 @@
 //                                                    .UseMultiThread(true)
 //                                                    .SetOutput(outputPath)
 //                                                    .SetCodec(VideoCodec.h264, 2400)
-//                                                    .SetAudio(AudioCodec.aac, AudioQuality.Ultra)
+//                                                    .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
 //                                                    .ChangeSpeed(channel, speed)
 //                                                    .Start();
 
@@ -77,7 +77,7 @@
 //            Assert.Equal(TimeSpan.FromSeconds(expectedDuration), mediaInfo.Duration);
 //            Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), mediaInfo.AudioDuration);
 //            Assert.Equal(TimeSpan.FromSeconds(expectedVideoDuration), mediaInfo.VideoDuration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -94,7 +94,7 @@
 //                                                                                              .UseMultiThread(true)
 //                                                                                              .SetOutput(outputPath)
 //                                                                                              .SetCodec(VideoCodec.h264, 2400)
-//                                                                                              .SetAudio(AudioCodec.aac, AudioQuality.Ultra)
+//                                                                                              .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
 //                                                                                              .ChangeSpeed(Channel.Both, multiplication)
 //                                                                                              .Start());
 //        }
@@ -131,7 +131,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(3071), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -148,7 +148,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -168,7 +168,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //            Assert.Equal($"-i \"{Resources.MkvWithAudio}\" -n -filter:v \"subtitles='{subtitle}':charenc=UTF-8:force_style='Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30':original_size=1024x768\" \"{outputPath}\"", conversion.Build());
 //        }
@@ -186,7 +186,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(2), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //            Assert.Equal(50, mediaInfo.Duration.TotalSeconds * mediaInfo.FrameRate);
 //        }
@@ -212,7 +212,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -250,7 +250,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(26), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -261,7 +261,7 @@
 //            IConversion conversion = Conversion.New()
 //                                               .SetInput(Resources.MkvWithAudio)
 //                                               .SetOutput(outputPath)
-//                                               .SetFormat(VideoFormat.mpegts);
+//                                               .SetFormat(MediaFormat.mpegts);
 
 //            TimeSpan currentProgress;
 //            TimeSpan videoLength;
@@ -292,7 +292,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Null(mediaInfo.AudioFormat);
 //        }
 
@@ -309,7 +309,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Null(mediaInfo.VideoFormat);
+//            Assert.Null(mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -320,7 +320,7 @@
 //            IConversion conversion = Conversion.New()
 //                                               .SetInput(Resources.MkvWithAudio)
 //                                               .SetOutput(outputPath)
-//                                               .SetFormat(VideoFormat.mpegts);
+//                                               .SetFormat(MediaFormat.mpegts);
 
 //            var ffmpegOuput = "";
 
@@ -355,7 +355,7 @@
 //                                    .SetInput(Resources.MkvWithAudio)
 //                                    .SetOutput(outputPath)
 //                                    .SetCodec(VideoCodec.h264, 2400)
-//                                    .SetAudio(AudioCodec.aac, AudioQuality.Ultra)
+//                                    .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
 //                                    .Reverse(Channel.Both)
 //                                    .StreamCopy(Channel.Both)
 //                                    .Start();
@@ -386,7 +386,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(0), mediaInfo.Duration);
-//            Assert.Equal("gif", mediaInfo.VideoFormat);
+//            Assert.Equal("gif", mediaInfo.MediaFormat);
 //            Assert.Null(mediaInfo.AudioFormat);
 //            Assert.Equal("16:9", mediaInfo.Ratio);
 //            Assert.Equal(25, mediaInfo.FrameRate);
@@ -423,7 +423,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -437,14 +437,14 @@
 //                                                    .UseMultiThread(true)
 //                                                    .SetOutput(outputPath)
 //                                                    .SetCodec(VideoCodec.h264, 2400)
-//                                                    .SetAudio(AudioCodec.aac, AudioQuality.Ultra)
+//                                                    .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
 //                                                    .Reverse(Channel.Both)
 //                                                    .Start();
 
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -459,13 +459,13 @@
 //                                                    .SetOutput(outputPath)
 //                                                    .SetScale(VideoSize.Sqcif)
 //                                                    .SetCodec(VideoCodec.h264, 2400)
-//                                                    .SetAudio(AudioCodec.aac, AudioQuality.Ultra)
+//                                                    .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
 //                                                    .Start();
 
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //            Assert.Equal(128, mediaInfo.Width);
 //            Assert.Equal(96, mediaInfo.Height);
@@ -508,7 +508,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -525,7 +525,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("hevc", mediaInfo.VideoFormat);
+//            Assert.Equal("hevc", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //        }
 
@@ -542,7 +542,7 @@
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("h264", mediaInfo.VideoFormat);
+//            Assert.Equal("h264", mediaInfo.MediaFormat);
 //            Assert.Equal("aac", mediaInfo.AudioFormat);
 //            Assert.Equal(640, mediaInfo.Width);
 //            Assert.Equal(480, mediaInfo.Height);
@@ -576,7 +576,7 @@
 //                .SetInput(Resources.MkvWithAudio)
 //                .SetScale(VideoSize.Uhd4320)
 //                .SetCodec(VideoCodec.theora, 2400)
-//                .SetAudio(AudioCodec.libvorbis, AudioQuality.Ultra)
+//                .SetCodec(AudioCodec.libvorbis, AudioQuality.Ultra)
 //                .SetOutput(outputPath)
 //                .SetSpeed(Speed.VerySlow)
 //                .UseMultiThread(false)
@@ -597,7 +597,7 @@
 //                .SetInput(Resources.MkvWithAudio)
 //                .SetScale(VideoSize.Uhd4320)
 //                .SetCodec(VideoCodec.theora, 2400)
-//                .SetAudio(AudioCodec.libvorbis, AudioQuality.Ultra)
+//                .SetCodec(AudioCodec.libvorbis, AudioQuality.Ultra)
 //                .SetOutput(outputPath)
 //                .SetSpeed(Speed.VerySlow)
 //                .UseMultiThread(false)
@@ -613,13 +613,13 @@
 //            bool conversionResult = await Conversion.New()
 //                                                    .SetInput(Resources.MkvWithAudio)
 //                                                    .SetOutput(outputPath)
-//                                                    .SetFormat(VideoFormat.mpegts)
+//                                                    .SetFormat(MediaFormat.mpegts)
 //                                                    .Start();
 
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-//            Assert.Equal("mpeg2video", mediaInfo.VideoFormat);
+//            Assert.Equal("mpeg2video", mediaInfo.MediaFormat);
 //            Assert.Equal("mp2", mediaInfo.AudioFormat);
 //        }
 

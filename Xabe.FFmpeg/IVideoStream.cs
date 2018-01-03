@@ -20,14 +20,14 @@ namespace Xabe.FFmpeg
         ///     Set size of video
         /// </summary>
         /// <param name="size">VideoSize</param>
-        /// <returns>IConversion object</returns>
+        /// <returns>IVideoStream object</returns>
         IVideoStream SetScale(VideoSize size);
 
         /// <summary>
         ///     Set size of video
         /// </summary>
         /// <param name="size">VideoSize</param>
-        /// <returns>IConversion object</returns>
+        /// <returns>IVideoStream object</returns>
         IVideoStream SetSize(VideoSize size);
 
         /// <summary>
@@ -35,8 +35,21 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="codec">Video codec</param>
         /// <param name="bitrate">Video bitrate</param>
-        /// <returns>IConversion object</returns>
+        /// <returns>IVideoStream object</returns>
         IVideoStream SetCodec(VideoCodec codec, int bitrate = 0);
+
+        /// <summary>
+        /// Set stream to copy with orginal codec
+        /// </summary>
+        /// <returns>IVideoStream object</returns>
+        IVideoStream CopyStream();
+
+        /// <summary>
+        ///     Set filter
+        /// </summary>
+        /// <param name="filter">Filter</param>
+        /// <returns>IVideoStream object</returns>
+        IVideoStream SetBitstreamFilter(BitstreamFilter filter);
 
         /// <summary>
         ///     Duration

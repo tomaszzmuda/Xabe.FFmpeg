@@ -68,29 +68,6 @@ namespace Xabe.FFmpeg
         event DataReceivedEventHandler OnDataReceived;
 
         /// <summary>
-        ///     Set video codec
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns>IConversion object</returns>
-        IConversion SetFormat(VideoFormat format);
-
-        /// <summary>
-        ///     Set filter
-        /// </summary>
-        /// <param name="type">Channel type</param>
-        /// <param name="bitstreamFilter">Filter</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetBitstreamFilter(Channel type, BitstreamFilter bitstreamFilter);
-
-        /// <summary>
-        ///     Set filter
-        /// </summary>
-        /// <param name="type">Channel type</param>
-        /// <param name="filter">Filter</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetBitstreamFilter(Channel type, string filter);
-
-        /// <summary>
         ///     It makes FFmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing.
         ///     It is useful for changing the container format or modifying container-level metadata.
         ///     Cannot be used with operations which require encoding and decoding video (scaling, changing codecs etc.)
@@ -113,6 +90,13 @@ namespace Xabe.FFmpeg
         /// <param name="seek">Position</param>
         /// <returns>IConversion object</returns>
         IConversion SetSeek(TimeSpan? seek);
+
+        /// <summary>
+        ///     Set media format
+        /// </summary>
+        /// <param name="format">Media format</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetFormat(MediaFormat format);
 
         /// <summary>
         ///     Set output frames count

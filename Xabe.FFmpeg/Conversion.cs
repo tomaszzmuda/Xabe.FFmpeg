@@ -13,7 +13,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
-    public class Conversion: IConversion
+    public partial class Conversion: IConversion
     {
         private readonly object _builderLock = new object();
         private readonly IList<string> _parameters = new List<string>();
@@ -66,6 +66,7 @@ namespace Xabe.FFmpeg
                 //AddSubtitles(builder);
                 builder.Append("-n ");
                 builder.Append(_threads);
+                builder.Append(_format);
                 foreach(IStream stream in _streams)
                 {
                     builder.Append(stream.Build());
@@ -202,32 +203,11 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetFormat(VideoFormat format)
+        public IConversion SetFormat(MediaFormat format)
         {
             _format = $"-f {format} ";
             return this;
-        }   
-
-        /// <inheritdoc />
-        public IConversion SetBitstreamFilter(Channel type, BitstreamFilter bitstreamFilter)
-        {
-            return SetBitstreamFilter(type, bitstreamFilter.ToString());
-        }
-
-        /// <inheritdoc />
-        public IConversion SetBitstreamFilter(Channel type, string filter)
-        {
-            switch(type)
-            {
-                case Channel.Audio:
-                    _bitsreamFilter = $"-bsf:a {filter.ToLower()} ";
-                    break;
-                case Channel.Video:
-                    _bitsreamFilter = $"-bsf:v {filter.ToLower()} ";
-                    break;
-            }
-            return this;
-        }
+        } 
 
         /// <inheritdoc />
         public IConversion StreamCopy(Channel type)

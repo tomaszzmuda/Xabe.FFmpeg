@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
-using Xabe.FFmpeg.Model;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -193,8 +192,8 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            bool result = await ConversionHelper.ToMp4(Resources.MkvWithAudio, output)
-                                                .Start();
+            bool result = await Conversion.ToMp4(Resources.MkvWithAudio, output)
+                                          .Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);
@@ -214,8 +213,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ogv);
 
-            bool result = await ConversionHelper.ToOgv(Resources.MkvWithAudio, output)
-                                                .Start();
+            bool result = await Conversion.ToOgv(Resources.MkvWithAudio, output).Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);
@@ -235,8 +233,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
 
-            bool result = await ConversionHelper.ToTs(Resources.Mp4WithAudio, output)
-                                                .Start();
+            bool result = await Conversion.ToTs(Resources.Mp4WithAudio, output).Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);
