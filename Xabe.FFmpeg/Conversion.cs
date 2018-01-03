@@ -36,9 +36,8 @@ namespace Xabe.FFmpeg
         private string _threads;
         private string _codec;
 
-        private List<IVideoStream> _videoStreams = new List<IVideoStream>();
-        private List<IAudioStream> _audioStreams = new List<IAudioStream>();
-        private List<ISubtitle> _subtitles = new List<ISubtitle>();
+        private List<IStream> _streams = new List<IStream>();
+        private List<ISubtitleStream> _subtitles = new List<ISubtitleStream>();
         private string _videoSpeed;
 
         private Conversion()
@@ -50,31 +49,29 @@ namespace Xabe.FFmpeg
         {
             lock(_builderLock)
             {
-                if(_videoStreams.Count <= 1 && _audioStreams.Count <= 1)
+                if(_streams.Count < 1)
                 {
-                    FileInfo input = _videoStreams.FirstOrDefault()?.Source;
-                    if(_audioStreams.Count == 0 ||
-                       _audioStreams.First()
-                                    .Source == input)
-                    {
-                        IAudioStream audioStream = _audioStreams.FirstOrDefault();
-                        IVideoStream videoStream = _videoStreams.FirstOrDefault();
-                        string inputPath = videoStream != null ? videoStream.Source.FullName : audioStream.Source.FullName;
-                        inputPath = $"-i \"{inputPath}\" ";
-
-                        //todo: refactor this
-
-                        var builder = new StringBuilder();
-                        builder.Append(inputPath);
-                        //AddSubtitles(builder);
-                        builder.Append("-n ");
-                        builder.Append(_threads);
-                        builder.Append(audioStream?.Build());
-                        builder.Append(videoStream?.Build());
-                        builder.Append(_output);
-                        return builder.ToString();
-                    }
+                    return "";
                 }
+                FileInfo input = _streams.FirstOrDefault()
+                                         ?.Source;
+                string inputPath = _streams.First()
+                                           .Source.FullName;
+                inputPath = $"-i \"{inputPath}\" ";
+
+                //todo: refactor this
+
+                var builder = new StringBuilder();
+                builder.Append(inputPath);
+                //AddSubtitles(builder);
+                builder.Append("-n ");
+                builder.Append(_threads);
+                foreach(IStream stream in _streams)
+                {
+                    builder.Append(stream.Build());
+                }
+                builder.Append(_output);
+                return builder.ToString();
 
                 throw new NotImplementedException("conversion with few streams or stream from another files");
             }
@@ -162,16 +159,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion AddVideoStream(params IVideoStream[] videoStreams)
+        public IConversion AddStream(params IStream[] streams)
         {
-            _videoStreams.AddRange(videoStreams);
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion AddAudioStream(params IAudioStream[] audioStreams)
-        {
-            _audioStreams.AddRange(audioStreams);
+            _streams.AddRange(streams);
             return this;
         }
 

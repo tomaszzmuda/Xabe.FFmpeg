@@ -4,7 +4,7 @@ using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
-    public interface IVideoStream
+    public interface IVideoStream : IStream
     {
         /// <summary>
         ///     Melt watermark into video file
@@ -44,11 +44,6 @@ namespace Xabe.FFmpeg
         TimeSpan Duration { get; }
 
         /// <summary>
-        ///     Video format
-        /// </summary>
-        string Format { get; }
-
-        /// <summary>
         ///     Width
         /// </summary>
         int Width { get; }
@@ -67,16 +62,5 @@ namespace Xabe.FFmpeg
         ///     Screen ratio
         /// </summary>
         string Ratio { get; }
-
-        /// <summary>
-        /// File source of stream
-        /// </summary>
-        FileInfo Source { get; }
-
-        /// <summary>
-        ///     Build FFmpeg arguments
-        /// </summary>
-        /// <returns>Arguments</returns>
-        string Build();
     }
 }

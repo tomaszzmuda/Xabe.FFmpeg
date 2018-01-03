@@ -15,7 +15,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ConvertTest(SubtitleFormat subtitleFormat)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), "");
-            bool conversionResult = await new Subtitle(Resources.SubtitleSrt).Convert(outputPath, subtitleFormat);
+            bool conversionResult = await new SubtitleStream(Resources.SubtitleSrt).Convert(outputPath, subtitleFormat);
 
             Assert.True(conversionResult);
         }

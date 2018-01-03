@@ -104,10 +104,10 @@ namespace Xabe.FFmpeg
         /// Get proporties prom media file
         /// </summary>
         /// <param name="fileInfo">Media file info</param>
+        /// <param name="mediaInfo">Empty media info</param>
         /// <returns>Properties</returns>
-        public async Task<MediaProperties> GetProperties(FileInfo fileInfo)
+        public async Task<MediaInfo> GetProperties(FileInfo fileInfo, MediaInfo mediaInfo)
         {
-            var mediaProperties = new MediaProperties();
             ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName);
             if(!streams.Any())
             {
@@ -115,14 +115,15 @@ namespace Xabe.FFmpeg
             }
 
             FormatModel.Format format = await GetFormat(fileInfo.FullName);
-            mediaProperties.Size = long.Parse(format.size);
+            mediaInfo.Size = long.Parse(format.size);
 
-            mediaProperties.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
-            mediaProperties.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
+            mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
+            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
+            mediaInfo.SubtitleStreams = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
             //todo: prepare subtitles
 
-            mediaProperties.Duration = CalculateDuration(mediaProperties.VideoStreams, mediaProperties.AudioStreams);
-            return mediaProperties;
+            mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
+            return mediaInfo;
         }
 
         private static TimeSpan CalculateDuration(IEnumerable<IVideoStream> videoStreams, IEnumerable<IAudioStream> audioStreams)
@@ -133,7 +134,7 @@ namespace Xabe.FFmpeg
             return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private IEnumerable<AudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach (ProbeModel.Stream model in audioStreamModels)
             {
@@ -147,7 +148,20 @@ namespace Xabe.FFmpeg
             }
         }
 
-        private IEnumerable<VideoStream> PrepareVideoStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
+        private IEnumerable<ISubtitleStream> PrepareSubtitleStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        {
+            foreach (ProbeModel.Stream model in audioStreamModels)
+            {
+                var stream = new SubtitleStream()
+                {
+                    Format = model.codec_name,
+                    Source = fileInfo
+                };
+                yield return stream;
+            }
+        }
+
+        private IEnumerable<IVideoStream> PrepareVideoStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
         {
             foreach(ProbeModel.Stream model in videoStreamModels)
             {

@@ -1,19 +1,43 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IMediaInfo" />
     public class MediaInfo: IMediaInfo
     {
-        private MediaInfo(FileInfo fileInfo, MediaProperties properties)
-        {
-            FileInfo = fileInfo;
-            Properties = properties;
-        }
+        /// <summary>
+        ///     Duration of media
+        /// </summary>
+        public TimeSpan Duration { get; internal set; }
+
+        /// <summary>
+        ///     Size of file
+        /// </summary>
+        public long Size { get; internal set; }
+
+        public IEnumerable<IStream> Streams => VideoStreams.Concat<IStream>(AudioStreams)
+                                                             .Concat(SubtitleStreams);
+
+        /// <summary>
+        ///     Video streams
+        /// </summary>
+        public IEnumerable<IVideoStream> VideoStreams { get; internal set; }
+
+        /// <summary>
+        ///     Audio streams
+        /// </summary>
+        public IEnumerable<IAudioStream> AudioStreams { get; internal set; }
+
+        /// <summary>
+        ///     Subtitle streams
+        /// </summary>
+        public IEnumerable<ISubtitleStream> SubtitleStreams { get; internal set; }
 
         /// <summary>
         ///     Get MediaInfo from file
@@ -24,6 +48,11 @@ namespace Xabe.FFmpeg
             return await Get(new FileInfo(filePath));
         }
 
+        private MediaInfo(FileInfo fileInfo)
+        {
+            FileInfo = fileInfo;
+        }
+
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
@@ -32,17 +61,12 @@ namespace Xabe.FFmpeg
         {
             if (!File.Exists(fileInfo.FullName))
                 throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
-            MediaProperties properties = await new FFprobe().GetProperties(fileInfo);
-            if (properties == null)
-                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't recognized.");
 
-            var mediaInfo = new MediaInfo(fileInfo, properties);
+            var mediaInfo = new MediaInfo(fileInfo);
+            mediaInfo = await new FFprobe().GetProperties(fileInfo, mediaInfo);
+
             return mediaInfo;
-
         }
-
-        /// <inheritdoc />
-        public MediaProperties Properties { get; }
 
         /// <inheritdoc />
         public FileInfo FileInfo { get; }
@@ -56,13 +80,13 @@ namespace Xabe.FFmpeg
             builder.AppendLine($"Video root : {Path.GetDirectoryName(FileInfo.FullName)}");
             builder.AppendLine($"Video name: {FileInfo.Name}{Environment.NewLine}");
             builder.AppendLine($"Video extension : {FileInfo.Extension}{Environment.NewLine}");
-            builder.AppendLine($"Size : {Properties.Size} b");
+            builder.AppendLine($"Size : {Size} b");
 
             builder.AppendLine();
             builder.AppendLine("Video streams:");
-            foreach(VideoStream videoStream in Properties.VideoStreams)
+            foreach(IVideoStream videoStream in VideoStreams)
             {
-                builder.AppendLine($"{margin}Duration : {Properties.Duration}");
+                builder.AppendLine($"{margin}Duration : {Duration}");
                 builder.AppendLine($"{margin}Format : {videoStream.Format}");
                 builder.AppendLine($"{margin}Aspect Ratio : {videoStream.Ratio}");
                 builder.AppendLine($"{margin}Framerate : {videoStream.FrameRate} fps");
@@ -71,7 +95,7 @@ namespace Xabe.FFmpeg
 
             builder.AppendLine();
             builder.AppendLine("Audio streams:");
-            foreach(AudioStream audioStream in Properties.AudioStreams)
+            foreach(IAudioStream audioStream in AudioStreams)
             {
                 builder.AppendLine($"{margin}Format : {audioStream.Format}");
                 builder.AppendLine($"{margin}Duration : {audioStream.Duration}");

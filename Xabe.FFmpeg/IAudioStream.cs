@@ -4,7 +4,7 @@ using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
-    public interface IAudioStream
+    public interface IAudioStream : IStream
     {
         IAudioStream Reverse();
 
@@ -28,21 +28,5 @@ namespace Xabe.FFmpeg
         ///     Duration
         /// </summary>
         TimeSpan Duration { get; }
-
-        /// <summary>
-        ///     Video format
-        /// </summary>
-        string Format { get; }
-
-        /// <summary>
-        /// File source of stream
-        /// </summary>
-        FileInfo Source { get; }
-
-        /// <summary>
-        ///     Build FFmpeg arguments
-        /// </summary>
-        /// <returns>Arguments</returns>
-        string Build();
     }
 }
