@@ -111,7 +111,7 @@ namespace Xabe.FFmpeg
             ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName);
             if(!streams.Any())
             {
-                return null;
+                throw new ArgumentException($"Invalid file. Cannot load file {fileInfo.Name}");
             }
 
             FormatModel.Format format = await GetFormat(fileInfo.FullName);
