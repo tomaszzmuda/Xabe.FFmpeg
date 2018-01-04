@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
@@ -51,46 +49,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Add audio to file
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="audioFilePath">Audio file</param>
-        /// <param name="output">Output file</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion AddAudio(string inputPath, string audioFilePath, string output)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath, audioFilePath)
-            //                 .StreamCopy(Channel.Video)
-            //                 .SetCodec(AudioCodec.aac, AudioQuality.Hd)
-            //                 .SetOutput(output);
-
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
-        ///     Records M3U8 streams to the specified output.
-        /// </summary>
-        /// <param name="uri">URI to stream.</param>
-        /// <param name="outputPath">Output file</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion SaveM3U8Stream(Uri uri, string outputPath)
-        {
-            //if(uri.Scheme != "http" ||
-            //   uri.Scheme != "https")
-            //    throw new ArgumentException($"Invalid uri {uri.AbsolutePath}");
-
-            //return Conversion.New()
-            //                 .SetInput(uri)
-            //                 .SetOutput(outputPath);
-
-            throw new NotImplementedException();
-
-
-        }
-
-        /// <summary>
         ///     Concat multiple inputVideos.
         /// </summary>
         /// <param name="output">Concatenated inputVideos</param>
@@ -134,34 +92,6 @@ namespace Xabe.FFmpeg
             //todo: implementantion
 
             throw new NotImplementedException();
-        }
-
-        private static VideoSize GetSize(IMediaInfo source, VideoSize size)
-        {
-            //if(size == null ||
-            //   size. Height == 0 && size.Width == 0)
-            //    size = new VideoSize(source.Width, source.Height);
-
-            //if(size.Width != size.Height)
-            //{
-            //    if(size.Width == 0)
-            //    {
-            //        double ratio = source.Width / (double) size.Width;
-
-            //        size = new VideoSize((int) (source.Width * ratio), (int) (source.Height * ratio));
-            //    }
-
-            //    if(size.Height == 0)
-            //    {
-            //        double ratio = source.Height / (double) size.Height;
-
-            //        size = new VideoSize((int) (source.Width * ratio), (int) (source.Height * ratio));
-            //    }
-            //}
-
-            //todo: implementation to video stream class
-
-            return size;
         }
     }
 }

@@ -223,5 +223,24 @@ namespace Xabe.FFmpeg
                 .Split(startTime, duration)
                 .SetOutput(outputPath);
         }
+
+        /// <summary>
+        ///     Add audio stream to video file
+        /// </summary>
+        /// <param name="videoPath">Video</param>
+        /// <param name="audioPath">Audio</param>
+        /// <param name="outputPath">Output file</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> AddAudio(string videoPath, string audioPath, string outputPath)
+        {
+            IMediaInfo videoInfo = await MediaInfo.Get(videoPath);
+            IMediaInfo audioInfo = await MediaInfo.Get(audioPath);
+
+            return New()
+                .AddStream(videoInfo.VideoStreams.FirstOrDefault())
+                .AddStream(audioInfo.AudioStreams.FirstOrDefault())
+                .AddStream(videoInfo.SubtitleStreams.ToArray())
+                .SetOutput(outputPath);
+        }
     }
 }

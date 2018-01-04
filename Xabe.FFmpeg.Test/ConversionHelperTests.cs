@@ -38,13 +38,13 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-            bool result = await ConversionHelper.AddAudio(Resources.Mp4, Resources.Mp3, output)
-                                                .Start();
+            bool result = await Conversion.AddAudio(Resources.Mp4, Resources.Mp3, output).Execute();
 
             Assert.True(result);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.AudioStreams.Count());
             Assert.Equal("aac", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
         }
 

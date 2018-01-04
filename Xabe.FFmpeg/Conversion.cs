@@ -40,6 +40,8 @@ namespace Xabe.FFmpeg
         private List<ISubtitleStream> _subtitles = new List<ISubtitleStream>();
         private string _videoSpeed;
 
+        private Dictionary<FileInfo, int> _inputFileMap = new Dictionary<FileInfo, int>();
+
         private Conversion()
         {
         }
@@ -53,13 +55,9 @@ namespace Xabe.FFmpeg
                 {
                     return "";
                 }
-                string inputPath = _streams.First().Source.FullName;
-                inputPath = $"-i \"{inputPath}\" ";
-
-                //todo: refactor this
 
                 var builder = new StringBuilder();
-                builder.Append(inputPath);
+                builder.Append(BuildInput());
                 //AddSubtitles(builder);
                 builder.Append("-n ");
                 builder.Append(_threads);
@@ -71,7 +69,9 @@ namespace Xabe.FFmpeg
                 }
                 builder.Append(BuildMap());
                 builder.Append(_output);
-                return builder.ToString();
+                string command = builder.ToString();
+                Debug.Write(command);
+                return command;
 
                 throw new NotImplementedException("conversion with few streams or stream from another files");
             }
@@ -80,13 +80,29 @@ namespace Xabe.FFmpeg
         /// <summary>
         /// Create map for selected streams
         /// </summary>
-        /// <returns>map argument</returns>
+        /// <returns>Map argument</returns>
         private string BuildMap()
         {
             var builder = new StringBuilder();
             foreach(IStream stream in _streams)
             {
-                builder.Append($"-map 0:{stream.Index} ");
+                builder.Append($"-map {_inputFileMap[stream.Source]}:{stream.Index} ");
+            }
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Create input string for all streams
+        /// </summary>
+        /// <returns>Input argument</returns>
+        private string BuildInput()
+        {
+            var builder = new StringBuilder();
+            int index = 0;
+            foreach(FileInfo source in _streams.Select(x=>x.Source).Distinct())
+            {
+                _inputFileMap[source] = index++;
+                builder.Append($"-i \"{source.FullName}\" ");
             }
             return builder.ToString();
         }
