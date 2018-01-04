@@ -266,22 +266,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetSeek(TimeSpan? seek)
-        {
-            if(seek.HasValue)
-                _seek = $"-ss {seek} ";
-
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetOutputFramesCount(int number)
-        {
-            _frameCount = $"-frames:v {number} ";
-            return this;
-        }
-
-        /// <inheritdoc />
         public IConversion UseShortest(bool useShortest)
         {
             if(!useShortest)

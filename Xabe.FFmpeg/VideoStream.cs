@@ -17,6 +17,8 @@ namespace Xabe.FFmpeg
         private string _bitsreamFilter;
         private string _copy;
         private string _loop;
+        private string _seek;
+        private string _frameCount;
 
         /// <inheritdoc />
         public int Width { get; internal set; }
@@ -42,20 +44,16 @@ namespace Xabe.FFmpeg
             builder.Append(_scale);
             builder.Append(_codec);
             //builder.Append(_speed);
-            //builder.Append(_audio);
-            //builder.Append(_format);
             builder.Append(_bitsreamFilter);
             builder.Append(_copy);
-            //builder.Append(_seek);
-            //builder.Append(_frameCount);
+            builder.Append(_seek);
+            builder.Append(_frameCount);
             builder.Append(_loop);
             builder.Append(_reverse);
             //builder.Append(_rotate);
             //builder.Append(_shortestInput);
             builder.Append(BuildFilter());
             //builder.Append(_split);
-            //builder.Append(_output);
-
             return builder.ToString();
         }
 
@@ -225,6 +223,27 @@ namespace Xabe.FFmpeg
         public IVideoStream SetBitstreamFilter(BitstreamFilter filter)
         {
             _bitsreamFilter = $"-bsf:v {filter} ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetSeek(TimeSpan seek)
+        {
+            if(seek != null)
+            {
+                if(seek > Duration)
+                {
+                    throw new ArgumentException("Seek can not be greater than video duration");
+                }
+                _seek = $"-ss {seek} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetOutputFramesCount(int number)
+        {
+            _frameCount = $"-frames:v {number} ";
             return this;
         }
 

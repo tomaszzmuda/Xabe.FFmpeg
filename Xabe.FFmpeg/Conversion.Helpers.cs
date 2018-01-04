@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 
@@ -156,6 +157,28 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IAudioStream videoStream = info.AudioStreams.FirstOrDefault();
+
+            return New()
+                .AddStream(videoStream)
+                .SetOutput(outputPath);
+        }
+
+        /// <summary>
+        ///     Saves snapshot of video
+        /// </summary>
+        /// <param name="inputPath">Video</param>
+        /// <param name="outputPath">Output file</param>
+        /// <param name="captureTime"></param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
+        {
+
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                .SetCodec(VideoCodec.png)
+                .SetOutputFramesCount(1)
+                .SetSeek(captureTime);
 
             return New()
                 .AddStream(videoStream)

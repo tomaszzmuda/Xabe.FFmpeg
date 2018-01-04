@@ -60,6 +60,20 @@ namespace Xabe.FFmpeg
         IVideoStream SetLoop(int count, int delay = 0);
 
         /// <summary>
+        ///     Set output frames count
+        /// </summary>
+        /// <param name="number">Number of frames</param>
+        /// <returns>IConversion object</returns>
+        IVideoStream SetOutputFramesCount(int number);
+
+        /// <summary>
+        ///     Seeks in input file to position. (-ss argument)
+        /// </summary>
+        /// <param name="seek">Position</param>
+        /// <returns>IConversion object</returns>
+        IVideoStream SetSeek(TimeSpan seek);
+
+        /// <summary>
         ///     Duration
         /// </summary>
         TimeSpan Duration { get; }

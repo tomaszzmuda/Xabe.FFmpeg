@@ -88,37 +88,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Saves snapshot of video
-        /// </summary>
-        /// <param name="inputPath">Video</param>
-        /// <param name="outputPath">Output file</param>
-        /// <param name="size">Dimension of snapshot</param>
-        /// <param name="captureTime"></param>
-        /// <returns>Conversion result</returns>
-        public static IConversion Snapshot(string inputPath, string outputPath, VideoSize size = null, TimeSpan? captureTime = null)
-        {
-            //IMediaInfo source = MediaInfo.Get(inputPath)
-            //                                       .Result;
-            //if (captureTime == null)
-            //    captureTime = TimeSpan.FromSeconds(source.VideoDuration.TotalSeconds / 3);
-
-            //todo: snapshot is video stream feature
-
-            //size = GetSize(source, size);
-
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .SetCodec(VideoCodec.png)
-            //                 .SetOutputFramesCount(1)
-            //                 .SetSeek(captureTime)
-            //                 .SetSize(size)
-            //                 .SetOutput(outputPath);
-
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
         ///     Records M3U8 streams to the specified output.
         /// </summary>
         /// <param name="uri">URI to stream.</param>

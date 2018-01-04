@@ -85,25 +85,11 @@ namespace Xabe.FFmpeg
         IConversion ChangeSpeed(double multiplaction);
 
         /// <summary>
-        ///     Seeks in input file to position. (-ss argument)
-        /// </summary>
-        /// <param name="seek">Position</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetSeek(TimeSpan? seek);
-
-        /// <summary>
         ///     Set media format
         /// </summary>
         /// <param name="format">Media format</param>
         /// <returns>IConversion object</returns>
         IConversion SetFormat(MediaFormat format);
-
-        /// <summary>
-        ///     Set output frames count
-        /// </summary>
-        /// <param name="number">Number of frames</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetOutputFramesCount(int number);
 
         /// <summary>
         ///     Finish encoding when the shortest input stream ends. (-shortest)

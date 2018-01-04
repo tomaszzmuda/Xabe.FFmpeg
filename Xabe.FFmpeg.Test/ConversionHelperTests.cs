@@ -154,12 +154,18 @@ namespace Xabe.FFmpeg.Test
         public async Task SnapshotTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
-            bool result = await ConversionHelper.Snapshot(Resources.Mp4WithAudio, output)
-                                                .Start();
+            bool result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0)).Execute();
 
             Assert.True(result);
             Assert.True(File.Exists(output));
-            Assert.Equal(1890492, (await File.ReadAllBytesAsync(output)).LongLength);
+            Assert.Equal(1825653, (await File.ReadAllBytesAsync(output)).LongLength);
+        }
+
+        [Fact]
+        public async Task SnapshotInvalidArgumentTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
+            await Assert.ThrowsAsync<ArgumentException>(async () => await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(999)).Execute());
         }
 
         [Fact]
