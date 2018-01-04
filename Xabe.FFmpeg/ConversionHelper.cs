@@ -11,24 +11,6 @@ namespace Xabe.FFmpeg
     public static class ConversionHelper
     {
         /// <summary>
-        ///     Change video size
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="output">Output path</param>
-        /// <param name="size">Expected size</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ChangeSize(string inputPath, string output, VideoSize size)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .SetScale(size)
-            //                 .SetOutput(output);
-
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
         ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
         ///     SetSubtitles method.
         /// </summary>

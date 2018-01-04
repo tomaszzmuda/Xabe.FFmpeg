@@ -13,7 +13,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
-    public partial class Conversion: IConversion
+    public partial class Conversion : IConversion
     {
         private readonly object _builderLock = new object();
         private readonly IList<string> _parameters = new List<string>();
@@ -53,8 +53,7 @@ namespace Xabe.FFmpeg
                 {
                     return "";
                 }
-                string inputPath = _streams.First()
-                                           .Source.FullName;
+                string inputPath = _streams.First().Source.FullName;
                 inputPath = $"-i \"{inputPath}\" ";
 
                 //todo: refactor this
@@ -173,9 +172,12 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion AddStream(params IStream[] streams)
+        public IConversion AddStream<T>(params T[] streams) where T : IStream
         {
-            _streams.AddRange(streams);
+            foreach(T stream in streams)
+            {
+                _streams.Add(stream);
+            }
             return this;
         }
 

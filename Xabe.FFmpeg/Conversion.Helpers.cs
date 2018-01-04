@@ -17,9 +17,9 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+            IStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetCodec(VideoCodec.h264, 2400);
-            IAudioStream audioStream = info.AudioStreams.FirstOrDefault()
+            IStream audioStream = info.AudioStreams.FirstOrDefault()
                                            ?.SetCodec(AudioCodec.aac, AudioQuality.Normal);
 
             return New()
@@ -37,10 +37,10 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+            IStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.CopyStream()
                                            ?.SetBitstreamFilter(BitstreamFilter.H264_Mp4ToAnnexB);
-            IAudioStream audioStream = info.AudioStreams.FirstOrDefault();
+            IStream audioStream = info.AudioStreams.FirstOrDefault();
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -58,9 +58,9 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+            IStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetCodec(VideoCodec.theora, 2400);
-            IAudioStream audioStream = info.AudioStreams.FirstOrDefault()
+            IStream audioStream = info.AudioStreams.FirstOrDefault()
                 ?.SetCodec(AudioCodec.libvorbis, AudioQuality.Normal);
 
             return New()
@@ -78,9 +78,9 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+            IStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetCodec(VideoCodec.vp8, 2400);
-            IAudioStream audioStream = info.AudioStreams.FirstOrDefault()
+            IStream audioStream = info.AudioStreams.FirstOrDefault()
                                            ?.SetCodec(AudioCodec.libvorbis, AudioQuality.Normal);
 
             return New()
@@ -172,7 +172,6 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static async Task<IConversion> Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
-
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
@@ -185,5 +184,25 @@ namespace Xabe.FFmpeg
                 .SetOutput(outputPath);
         }
 
+        /// <summary>
+        ///     Change video size
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output path</param>
+        /// <param name="size">Expected size</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> ChangeSize(string inputPath, string outputPath, VideoSize size)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           .SetScale(size);
+            return New()
+                .AddStream(videoStream)
+                .AddStream(info.AudioStreams.ToArray())
+                .AddStream(info.SubtitleStreams.ToArray())
+                .SetOutput(outputPath);
+
+        }
     }
 }
