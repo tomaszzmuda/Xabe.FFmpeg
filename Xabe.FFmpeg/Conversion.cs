@@ -64,6 +64,7 @@ namespace Xabe.FFmpeg
                 builder.Append("-n ");
                 builder.Append(_threads);
                 builder.Append(_format);
+                builder.Append(_split);
                 foreach(IStream stream in _streams)
                 {
                     builder.Append(stream.Build());

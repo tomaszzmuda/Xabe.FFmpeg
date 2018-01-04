@@ -171,8 +171,7 @@ namespace Xabe.FFmpeg.Test
         public async Task SplitVideoTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-            bool result = await ConversionHelper.Split(Resources.Mp4WithAudio, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8), output)
-                                                .Start();
+            bool result = await Conversion.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8)).Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);

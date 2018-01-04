@@ -202,7 +202,26 @@ namespace Xabe.FFmpeg
                 .AddStream(info.AudioStreams.ToArray())
                 .AddStream(info.SubtitleStreams.ToArray())
                 .SetOutput(outputPath);
+        }
 
+        /// <summary>
+        ///     Get part of video
+        /// </summary>
+        /// <param name="inputPath">Video</param>
+        /// <param name="outputPath">Output file</param>
+        /// <param name="startTime">Start point</param>
+        /// <param name="duration">Duration of new video</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            return New()
+                .AddStream(info.VideoStreams.ToArray())
+                .AddStream(info.AudioStreams.ToArray())
+                .AddStream(info.SubtitleStreams.ToArray())
+                .Split(startTime, duration)
+                .SetOutput(outputPath);
         }
     }
 }
