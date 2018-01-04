@@ -142,7 +142,8 @@ namespace Xabe.FFmpeg
                 {
                     Format = model.codec_name,
                     Duration = GetAudioDuration(model),
-                    Source = fileInfo
+                    Source = fileInfo,
+                    Index = model.index
                 };
                 yield return stream;
             }
@@ -173,7 +174,8 @@ namespace Xabe.FFmpeg
                     Height = model.height,
                     FrameRate = GetVideoFramerate(model),
                     Ratio = GetVideoAspectRatio(model.width, model.height),
-                    Source = fileInfo
+                    Source = fileInfo,
+                    Index = model.index
                 };
                 yield return stream;
             }

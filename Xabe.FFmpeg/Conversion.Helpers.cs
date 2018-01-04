@@ -107,5 +107,61 @@ namespace Xabe.FFmpeg
                 .AddStream(videoStream)
                 .SetOutput(outputPath);
         }
+
+        /// <summary>
+        ///     Melt watermark into video
+        /// </summary>
+        /// <param name="inputPath">Input video path</param>
+        /// <param name="position">Position of watermark</param>
+        /// <param name="outputPath">Output file</param>
+        /// <param name="inputImage">Watermark</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           ?.SetWatermark(inputImage, position);
+
+            return New()
+                .AddStream(videoStream)
+                .SetOutput(outputPath);
+
+        }
+
+        /// <summary>
+        ///     Extract video from file
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output audio stream</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> ExtractVideo(string inputPath, string outputPath)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
+
+            return New()
+                .AddStream(videoStream)
+                .SetOutput(outputPath);
+        }
+
+        /// <summary>
+        ///     Extract audio from file
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output video stream</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> ExtractAudio(string inputPath, string outputPath)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            IAudioStream videoStream = info.AudioStreams.FirstOrDefault();
+
+            return New()
+                .AddStream(videoStream)
+                .SetOutput(outputPath);
+        }
+
     }
 }

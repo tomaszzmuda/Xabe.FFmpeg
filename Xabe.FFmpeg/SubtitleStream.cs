@@ -55,5 +55,8 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public CodecType CodecType { get; internal set; }
+
+        /// <inheritdoc />
+        public int Index { get; internal set; }
     }
 }

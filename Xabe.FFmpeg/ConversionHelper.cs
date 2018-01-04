@@ -69,60 +69,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Extract video from file
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="output">Output audio stream</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ExtractVideo(string inputPath, string output)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .StreamCopy(Channel.Both)
-            //                 .DisableChannel(Channel.Audio)
-            //                 .SetOutput(output);
-
-            throw new NotImplementedException();
-
-        }
-
-
-        /// <summary>
-        ///     Melt watermark into video
-        /// </summary>
-        /// <param name="inputPath">Input video path</param>
-        /// <param name="position">Position of watermark</param>
-        /// <param name="output">Output file</param>
-        /// <param name="inputImage">Watermark</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion SetWatermark(string inputPath, string inputImage, Position position, string output)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .SetWatermark(inputImage, position)
-            //                 .SetOutput(output);
-
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
-        ///     Extract audio from file
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="output">Output video stream</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ExtractAudio(string inputPath, string output)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .DisableChannel(Channel.Video)
-            //                 .SetOutput(output);
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         ///     Add audio to file
         /// </summary>
         /// <param name="inputPath">Input path</param>

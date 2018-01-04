@@ -98,8 +98,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractAudio()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
-            bool result = await ConversionHelper.ExtractAudio(Resources.Mp4WithAudio, output)
-                                                .Start();
+            bool result = await Conversion.ExtractAudio(Resources.Mp4WithAudio, output).Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);
@@ -115,8 +114,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(Resources.Mp4WithAudio));
 
-            bool result = await ConversionHelper.ExtractVideo(Resources.Mp4WithAudio, output)
-                                                .Start();
+            bool result = await Conversion.ExtractVideo(Resources.Mp4WithAudio, output).Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);
@@ -271,8 +269,7 @@ namespace Xabe.FFmpeg.Test
         public async Task WatermarkTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
-            bool result = await ConversionHelper.SetWatermark(Resources.Mp4WithAudio, Resources.PngSample, Position.Center, output)
-                                                .Start();
+            bool result = await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center).Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);

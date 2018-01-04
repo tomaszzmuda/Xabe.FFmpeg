@@ -23,5 +23,10 @@ namespace Xabe.FFmpeg
         string Build();
 
         CodecType CodecType { get; }
+
+        /// <summary>
+        /// Index of stream
+        /// </summary>
+        int Index { get; }
     }
 }

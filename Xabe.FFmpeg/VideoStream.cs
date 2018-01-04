@@ -233,5 +233,8 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public string Format { get; internal set; }
+
+        /// <inheritdoc />
+        public int Index { get; internal set; }
     }
 }

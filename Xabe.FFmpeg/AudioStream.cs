@@ -80,6 +80,9 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <inheritdoc />
+        public int Index { get; internal set; }
+
         /// <summary>
         ///     Duration
         /// </summary>

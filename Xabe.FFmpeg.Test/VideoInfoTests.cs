@@ -49,11 +49,13 @@ namespace Xabe.FFmpeg.Test
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
             Assert.NotNull(audioStream);
             Assert.Equal("aac", audioStream.Format);
+            Assert.Equal(1, audioStream.Index);
             Assert.Equal(TimeSpan.FromSeconds(9), audioStream.Duration);
 
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.NotNull(videoStream);
+            Assert.Equal(0, videoStream.Index);
             Assert.Equal(25, videoStream.FrameRate);
             Assert.Equal(240, videoStream.Height);
             Assert.Equal(320, videoStream.Width);

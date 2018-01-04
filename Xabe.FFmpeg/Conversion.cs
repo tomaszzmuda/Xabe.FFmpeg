@@ -53,8 +53,6 @@ namespace Xabe.FFmpeg
                 {
                     return "";
                 }
-                FileInfo input = _streams.FirstOrDefault()
-                                         ?.Source;
                 string inputPath = _streams.First()
                                            .Source.FullName;
                 inputPath = $"-i \"{inputPath}\" ";
@@ -71,11 +69,26 @@ namespace Xabe.FFmpeg
                 {
                     builder.Append(stream.Build());
                 }
+                builder.Append(BuildMap());
                 builder.Append(_output);
                 return builder.ToString();
 
                 throw new NotImplementedException("conversion with few streams or stream from another files");
             }
+        }
+
+        /// <summary>
+        /// Create map for selected streams
+        /// </summary>
+        /// <returns>map argument</returns>
+        private string BuildMap()
+        {
+            var builder = new StringBuilder();
+            foreach(IStream stream in _streams)
+            {
+                builder.Append($"-map 0:{stream.Index} ");
+            }
+            return builder.ToString();
         }
 
         /// <inheritdoc cref="IConversion.OnProgress" />
