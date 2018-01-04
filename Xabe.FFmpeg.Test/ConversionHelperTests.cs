@@ -68,8 +68,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             string input = Resources.Mp4;
 
-            bool result = await ConversionHelper.BurnSubtitle(input, output, Resources.SubtitleSrt)
-                                                .Start();
+            bool result = await Conversion.AddSubtitles(input, output, Resources.SubtitleSrt).Execute();
 
             Assert.True(result);
             var outputInfo = await MediaInfo.Get(output);

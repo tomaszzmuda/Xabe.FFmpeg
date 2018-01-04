@@ -21,27 +21,8 @@ namespace Xabe.FFmpeg
         {
             //return Conversion.New()
             //                 .SetInput(inputPath)
-            //                 .AddSubtitle(subtitlePath, language)
+            //                 .AddSubtitles(subtitlePath, language)
             //                 .StreamCopy(Channel.Both)
-            //                 .SetOutput(output);
-
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
-        ///     Burn subtitle into video. If you want to add subtitle as new stream (like in .mkv) you should use AddSubtitle
-        ///     method.
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="output">Output path</param>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion BurnSubtitle(string inputPath, string output, string subtitlePath)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .SetSubtitle(subtitlePath)
             //                 .SetOutput(output);
 
             throw new NotImplementedException();

@@ -89,48 +89,8 @@ namespace Xabe.FFmpeg
             return this;
         }
 
-        /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <returns>Conversion result</returns>
-        public void SetSubtitle(string subtitlePath)
-        {
-            SetSubtitle(subtitlePath, "", "", null);
-        }
-
-        /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
-        /// <returns>Conversion result</returns>
-        public void SetSubtitle(string subtitlePath, string encode)
-        {
-            SetSubtitle(subtitlePath, encode, "", null);
-        }
-
-        /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
-        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
-        /// <returns>Conversion result</returns>
-        public void SetSubtitle(string subtitlePath, string style, VideoSize originalSize)
-        {
-            SetSubtitle(subtitlePath, "", style, originalSize);
-        }
-
-        /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
-        /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
-        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
-        /// <returns>Conversion result</returns>
-        public void SetSubtitle(string subtitlePath, string encode, string style, VideoSize originalSize)
+        /// <inheritdoc />
+        public IVideoStream AddSubtitles(string subtitlePath, string encode, string style, VideoSize originalSize)
         {
             _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                             .Replace(":", "\\:");
@@ -142,6 +102,7 @@ namespace Xabe.FFmpeg
             if (originalSize != null)
                 _burnSubtitles += $":original_size={originalSize}";
             _burnSubtitles += "\" ";
+            return this;
         }
 
         /// <inheritdoc />

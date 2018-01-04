@@ -242,5 +242,24 @@ namespace Xabe.FFmpeg
                 .AddStream(videoInfo.SubtitleStreams.ToArray())
                 .SetOutput(outputPath);
         }
+
+        /// <summary>
+        ///     Add subtitles to video stream
+        /// </summary>
+        /// <param name="inputPath">Video</param>
+        /// <param name="subtitlesPath">Subtitles</param>
+        /// <param name="outputPath">Output file</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+            var videoStream = info.VideoStreams.FirstOrDefault()
+                                  ?.AddSubtitles(subtitlesPath);
+
+            return New()
+                .AddStream(videoStream)
+                .AddStream(info.AudioStreams.FirstOrDefault())
+                .SetOutput(outputPath);
+        }
     }
 }

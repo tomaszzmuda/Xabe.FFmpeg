@@ -122,8 +122,8 @@
 //            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
 //            bool conversionResult = await Conversion.New()
 //                .SetInput(Resources.MkvWithAudio)
-//                .AddSubtitle(Resources.SubtitleSrt, "ger")
-//                .AddSubtitle(Resources.SubtitleSrt, "eng")
+//                .AddSubtitles(Resources.SubtitleSrt, "ger")
+//                .AddSubtitles(Resources.SubtitleSrt, "eng")
 //                .StreamCopy(Channel.Both)
 //                .SetOutput(outputPath)
 //                .Start();

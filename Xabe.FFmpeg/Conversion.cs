@@ -78,7 +78,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        /// Create map for selected streams
+        /// Create map for included streams
         /// </summary>
         /// <returns>Map argument</returns>
         private string BuildMap()
@@ -193,7 +193,10 @@ namespace Xabe.FFmpeg
         {
             foreach(T stream in streams)
             {
-                _streams.Add(stream);
+                if(stream != null)
+                {
+                    _streams.Add(stream);
+                }
             }
             return this;
         }
