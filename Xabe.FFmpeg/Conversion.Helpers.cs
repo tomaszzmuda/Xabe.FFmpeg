@@ -87,5 +87,25 @@ namespace Xabe.FFmpeg
                 .AddStream(videoStream, audioStream)
                 .SetOutput(outputPath);
         }
+
+        /// <summary>
+        ///     Convert image video stream to gif
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output path</param>
+        /// <param name="loop">Number of repeats</param>
+        /// <param name="delay">Delay between repeats (in seconds)</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> ToGif(string inputPath, string outputPath, int loop, int delay = 0)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           ?.SetLoop(loop, delay);
+
+            return New()
+                .AddStream(videoStream)
+                .SetOutput(outputPath);
+        }
     }
 }

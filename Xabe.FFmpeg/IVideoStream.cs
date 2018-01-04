@@ -52,6 +52,14 @@ namespace Xabe.FFmpeg
         IVideoStream SetBitstreamFilter(BitstreamFilter filter);
 
         /// <summary>
+        ///     Loop over the input stream.(-loop)
+        /// </summary>
+        /// <param name="count">Number of repeats</param>
+        /// <param name="delay">Delay between repeats (in seconds)</param>
+        /// <returns>IVideoStream object</returns>
+        IVideoStream SetLoop(int count, int delay = 0);
+
+        /// <summary>
         ///     Duration
         /// </summary>
         TimeSpan Duration { get; }

@@ -106,14 +106,6 @@ namespace Xabe.FFmpeg
         IConversion SetOutputFramesCount(int number);
 
         /// <summary>
-        ///     Loop over the input stream. Currently it works only for image streams. (-loop)
-        /// </summary>
-        /// <param name="count">Number of repeats</param>
-        /// <param name="delay">Delay between repeats (in seconds)</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetLoop(int count, int delay = 0);
-
-        /// <summary>
         ///     Finish encoding when the shortest input stream ends. (-shortest)
         /// </summary>
         /// <param name="useShortest"></param>

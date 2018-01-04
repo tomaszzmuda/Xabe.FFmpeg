@@ -16,6 +16,7 @@ namespace Xabe.FFmpeg
         private string _codec;
         private string _bitsreamFilter;
         private string _copy;
+        private string _loop;
 
         /// <inheritdoc />
         public int Width { get; internal set; }
@@ -47,7 +48,7 @@ namespace Xabe.FFmpeg
             builder.Append(_copy);
             //builder.Append(_seek);
             //builder.Append(_frameCount);
-            //builder.Append(_loop);
+            builder.Append(_loop);
             builder.Append(_reverse);
             //builder.Append(_rotate);
             //builder.Append(_shortestInput);
@@ -74,13 +75,19 @@ namespace Xabe.FFmpeg
             return filter;
         }
 
-        /// <summary>
-        /// Set stream to copy with orginal codec
-        /// </summary>
-        /// <returns>IVideoStream object</returns>
+        // <inheritdoc />
         public IVideoStream CopyStream()
         {
             _copy = "-c copy ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetLoop(int count, int delay)
+        {
+            _loop = $"-loop {count} ";
+            if (delay > 0)
+                _loop += $"-final_delay {delay / 100} ";
             return this;
         }
 

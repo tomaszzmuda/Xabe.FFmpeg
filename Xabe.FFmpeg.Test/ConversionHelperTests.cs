@@ -18,8 +18,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
 
-            bool result = await ConversionHelper.ToGif(Resources.Mp4, output, loopCount, delay)
-                                                .Start();
+            bool result = await Conversion.ToGif(Resources.Mp4, output, loopCount, delay).Execute();
 
             Assert.True(result);
             var mediaInfo = await MediaInfo.Get(output);
