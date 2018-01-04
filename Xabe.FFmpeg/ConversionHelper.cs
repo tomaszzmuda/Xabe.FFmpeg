@@ -11,28 +11,6 @@ namespace Xabe.FFmpeg
     public static class ConversionHelper
     {
         /// <summary>
-        ///     Convert file to WebM
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <param name="size">Dimension</param>
-        /// <param name="audioQuality">Audio quality</param>
-        /// <param name="multithread">Use multithread</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToWebM(string inputPath, string outputPath, VideoSize size = null, AudioQuality audioQuality = AudioQuality.Normal, bool multithread = false)
-        {
-            //return Conversion.New()
-            //    .SetInput(inputPath)
-            //    .SetScale(size)
-            //    .SetCodec(VideoCodec.vp8, 2400)
-            //    .SetCodec(AudioCodec.libvorbis, audioQuality)
-            //    .SetOutput(outputPath)
-            //    .UseMultiThread(multithread);
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         ///     Change video size
         /// </summary>
         /// <param name="inputPath">Input path</param>

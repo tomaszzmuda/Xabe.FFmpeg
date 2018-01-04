@@ -67,5 +67,25 @@ namespace Xabe.FFmpeg
                 .AddStream(videoStream, audioStream)
                 .SetOutput(outputPath);
         }
+
+        /// <summary>
+        ///     Convert file to WebM
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Destination file</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> ToWebM(string inputPath, string outputPath)
+        {
+            IMediaInfo info = await MediaInfo.Get(inputPath);
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           ?.SetCodec(VideoCodec.vp8, 2400);
+            IAudioStream audioStream = info.AudioStreams.FirstOrDefault()
+                                           ?.SetCodec(AudioCodec.libvorbis, AudioQuality.Normal);
+
+            return New()
+                .AddStream(videoStream, audioStream)
+                .SetOutput(outputPath);
+        }
     }
 }

@@ -231,8 +231,8 @@ namespace Xabe.FFmpeg
         public IConversion ChangeSpeed(double multiplication)
         {
             ThrowIfSubtitles();
-            _audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))} ";
-            _videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
+            _audioSpeed = $"atempo={String.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))} ";
+            _videoSpeed = $"setpts={String.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
             return this;
         }
 
@@ -319,8 +319,6 @@ namespace Xabe.FFmpeg
             //    builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i) .Key} ");
 
             //todo: subtitles
-        }       
-
-       
+        }
     }
 }
