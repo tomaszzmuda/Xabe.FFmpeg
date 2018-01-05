@@ -261,5 +261,28 @@ namespace Xabe.FFmpeg
                 .AddStream(info.AudioStreams.FirstOrDefault())
                 .SetOutput(outputPath);
         }
+
+        /// <summary>
+        ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
+        ///     SetSubtitles method.
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output path</param>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
+        {
+            IMediaInfo mediaInfo = await MediaInfo.Get(inputPath);
+            IMediaInfo subtitleInfo = await MediaInfo.Get(subtitlePath);
+
+            var subtitleStream = subtitleInfo.SubtitleStreams.First().SetLanguage(language);
+
+            return New()
+                .AddStream(mediaInfo.VideoStreams.ToArray())
+                .AddStream(mediaInfo.AudioStreams.ToArray())
+                .AddStream(subtitleStream)
+                .SetOutput(outputPath);
+        }
     }
 }

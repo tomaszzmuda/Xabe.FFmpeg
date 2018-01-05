@@ -16,6 +16,7 @@ namespace Xabe.FFmpeg.Model
             public double duration { get; set; }
             public double bit_rate { get; set; }
             public int index { get; set; }
+            public Tags tags { get; set; }
 
             //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
             //            public string codec_long_name { get; set; }
@@ -41,6 +42,11 @@ namespace Xabe.FFmpeg.Model
             //            public int duration_ts { get; set; }
             //            public string nb_frames { get; set; }
             //            public Disposition disposition { get; set; }
+        }
+
+        public class Tags
+        {
+            public string language { get; set; }
         }
 
         //        NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT

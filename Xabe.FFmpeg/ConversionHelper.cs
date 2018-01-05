@@ -9,27 +9,6 @@ namespace Xabe.FFmpeg
     public static class ConversionHelper
     {
         /// <summary>
-        ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
-        ///     SetSubtitles method.
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="output">Output path</param>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion AddSubtitle(string inputPath, string output, string subtitlePath, string language)
-        {
-            //return Conversion.New()
-            //                 .SetInput(inputPath)
-            //                 .AddSubtitles(subtitlePath, language)
-            //                 .StreamCopy(Channel.Both)
-            //                 .SetOutput(output);
-
-            throw new NotImplementedException();
-
-        }
-
-        /// <summary>
         ///     Concat multiple inputVideos.
         /// </summary>
         /// <param name="output">Concatenated inputVideos</param>

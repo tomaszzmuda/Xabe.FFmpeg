@@ -1,6 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.IO;
+using System.Text;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
@@ -10,35 +9,16 @@ namespace Xabe.FFmpeg
     /// </summary>
     public class SubtitleStream : ISubtitleStream
     {
-        public SubtitleStream()
+        private string _format;
+        private string _language;
+
+        public ISubtitleStream SetFormat(SubtitleFormat format)
         {
-            
-        }
-
-        private readonly string _path;
-
-        /// <inheritdoc />
-        public SubtitleStream(string path)
-        {
-            _path = path;
-        }
-
-        /// <summary>
-        ///     Convert subtitle to specific format
-        /// </summary>
-        /// <param name="outputPath"></param>
-        /// <param name="subtitleFormat"></param>
-        /// <returns>Conversion result</returns>
-        public async Task<bool> Convert(string outputPath, SubtitleFormat subtitleFormat)
-        {
-            //var description = subtitleFormat.GetDescription();
-            //return await Conversion.New().SetInput(_path)
-            //                             .SetOutput(outputPath)
-            //                             .SetFormat(new MediaFormat(description))
-            //                             .Start();
-
-            //todo: subtitles
-            throw  new NotImplementedException();
+            if(!string.IsNullOrEmpty(_format))
+            {
+                _format = $"-f {format} ";
+            }
+            return this;
         }
 
         /// <inheritdoc />
@@ -50,13 +30,26 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string Build()
         {
-            return null;
+            var builder = new StringBuilder();
+            builder.Append(_format);
+            builder.Append(_language);
+            return builder.ToString();
         }
 
         /// <inheritdoc />
-        public CodecType CodecType { get; internal set; }
+        public int Index { get; internal set; }
 
         /// <inheritdoc />
-        public int Index { get; internal set; }
+        public string Language { get; internal set; }
+
+        /// <inheritdoc />
+        public ISubtitleStream SetLanguage(string lang)
+        {
+            if(string.IsNullOrEmpty(lang))
+            {
+                _language = $"-metadata:s:{Index} language={lang} ";
+            }
+            return this;
+        }
     }
 }

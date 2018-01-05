@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Xabe.FFmpeg.Enums;
+﻿using System.IO;
 
 namespace Xabe.FFmpeg
 {
@@ -21,8 +19,6 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <returns>Arguments</returns>
         string Build();
-
-        CodecType CodecType { get; }
 
         /// <summary>
         /// Index of stream

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
@@ -27,5 +26,7 @@ namespace Xabe.FFmpeg
         ///     Duration
         /// </summary>
         TimeSpan Duration { get; }
+
+        CodecType CodecType { get; }
     }
 }

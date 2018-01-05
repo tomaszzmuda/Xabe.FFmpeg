@@ -96,7 +96,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(2107842, mediaInfo.Size);
         }
 
-        [Fact(Skip = "Result will change in the nearest future")]
+        [Fact(Skip = "Results will change in the nearest future")]
         public async Task ToStringTest()
         {
             IMediaInfo videoInfo = await MediaInfo.Get(Resources.Mp4WithAudio);

@@ -37,7 +37,6 @@ namespace Xabe.FFmpeg
         private string _codec;
 
         private List<IStream> _streams = new List<IStream>();
-        private List<ISubtitleStream> _subtitles = new List<ISubtitleStream>();
         private string _videoSpeed;
 
         private Dictionary<FileInfo, int> _inputFileMap = new Dictionary<FileInfo, int>();
@@ -145,7 +144,6 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public void Clear()
         {
-            _subtitles.Clear();
             _parameters.Clear();
             if(_fields == null)
                 _fields = GetType()
@@ -265,7 +263,6 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion ChangeSpeed(double multiplication)
         {
-            ThrowIfSubtitles();
             _audioSpeed = $"atempo={String.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))} ";
             _videoSpeed = $"setpts={String.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
             return this;
@@ -274,17 +271,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion Reverse()
         {
-            ThrowIfSubtitles();
             _reverse = "-vf reverse -af areverse ";
             return this;
-        }
-
-        private void ThrowIfSubtitles()
-        {
-            if (_subtitles.Any())
-            {
-                throw new InvalidOperationException("Can not reverse media with subtitles");
-            }
         }
 
         /// <inheritdoc />
@@ -313,22 +301,6 @@ namespace Xabe.FFmpeg
         public static IConversion New()
         {
             return new Conversion();
-        }
-
-        private void AddSubtitles(StringBuilder builder)
-        {
-            //if(!_subtitles.Any())
-            //    return;
-
-            //foreach(KeyValuePair<string, string> item in _subtitles)
-            //    builder.Append($"-i \"{item.Value}\" ");
-            //builder.Append("-map 0 ");
-            //for(var i = 0; i < _subtitles.Count; i++)
-            //    builder.Append($"-map {i + 1} ");
-            //for(var i = 0; i < _subtitles.Count; i++)
-            //    builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i) .Key} ");
-
-            //todo: subtitles
         }
     }
 }

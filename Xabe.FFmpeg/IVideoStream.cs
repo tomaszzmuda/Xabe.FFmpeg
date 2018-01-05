@@ -107,5 +107,7 @@ namespace Xabe.FFmpeg
         ///     Screen ratio
         /// </summary>
         string Ratio { get; }
+
+        CodecType CodecType { get; }
     }
 }
