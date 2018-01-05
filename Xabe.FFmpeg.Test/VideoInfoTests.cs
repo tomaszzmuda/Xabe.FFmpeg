@@ -111,8 +111,10 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo videoInfo = await MediaInfo.Get(Resources.MultipleStream);
 
-            Assert.True(videoInfo.VideoStreams.Count() == 1);
-            Assert.True(videoInfo.AudioStreams.Count() > 1);
+            Assert.Equal(1, videoInfo.VideoStreams.Count());
+            Assert.Equal(2, videoInfo.AudioStreams.Count());
+            Assert.Equal(8, videoInfo.SubtitleStreams.Count());
         }
+      
     }
 }

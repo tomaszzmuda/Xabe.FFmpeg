@@ -120,7 +120,6 @@ namespace Xabe.FFmpeg
             mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
             mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
             mediaInfo.SubtitleStreams = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
-            //todo: prepare subtitles
 
             mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
             return mediaInfo;
@@ -149,14 +148,15 @@ namespace Xabe.FFmpeg
             }
         }
 
-        private IEnumerable<ISubtitleStream> PrepareSubtitleStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach (ProbeModel.Stream model in audioStreamModels)
             {
-                var stream = new SubtitleStream()
+                var stream = new SubtitleStream
                 {
                     Format = model.codec_name,
-                    Source = fileInfo
+                    Source = fileInfo,
+                    Index = model.index
                 };
                 yield return stream;
             }
