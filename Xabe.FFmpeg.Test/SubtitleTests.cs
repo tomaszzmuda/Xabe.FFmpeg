@@ -9,10 +9,10 @@ namespace Xabe.FFmpeg.Test
     public class SubtitleTests
     {
         [Theory]
-        [InlineData("ass", "ass")]
-        [InlineData("WebVTT", "vtt")]
-        [InlineData("subrip", "srt")]
-        public async Task ConvertTest(string format, string extension)
+        [InlineData("Ass", "ass", "ass")]
+        [InlineData("WebVTT", "vtt", "webvtt")]
+        [InlineData("Srt", "srt", "subrip")]
+        public async Task ConvertTest(string format, string extension, string expectedFormat)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), extension);
 
@@ -30,7 +30,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(1, resultInfo.SubtitleStreams.Count());
             ISubtitleStream resultSteam = resultInfo.SubtitleStreams.First();
-            Assert.Equal(format.ToLower(), resultSteam.Format.ToLower());
+            Assert.Equal(expectedFormat, resultSteam.Format.ToLower());
         }
     }
 }
