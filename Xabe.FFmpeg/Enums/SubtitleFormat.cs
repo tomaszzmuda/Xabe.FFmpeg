@@ -14,16 +14,16 @@
         /// <summary>
         ///     SubRip
         /// </summary>
-        public static MediaFormat Srt => new MediaFormat("srt");
+        public static SubtitleFormat Srt => new SubtitleFormat("srt");
 
         /// <summary>
         ///     SubRip
         /// </summary>
-        public static MediaFormat WebVtt => new MediaFormat("webvtt");
+        public static SubtitleFormat WebVtt => new SubtitleFormat("webvtt");
 
         /// <summary>
         ///     SubRip
         /// </summary>
-        public static MediaFormat Ass => new MediaFormat("ass");
+        public static SubtitleFormat Ass => new SubtitleFormat("ass");
     }
 }

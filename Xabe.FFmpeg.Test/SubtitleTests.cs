@@ -9,12 +9,12 @@ namespace Xabe.FFmpeg.Test
     public class SubtitleTests
     {
         [Theory]
-        [InlineData("Ass")]
-        [InlineData("WebVtt", Skip = "Bad output format, why?")]
-        [InlineData("Srt", Skip = "Bad output format, why?")]
-        public async Task ConvertTest(string format)
+        [InlineData("ass", "ass")]
+        [InlineData("WebVTT", "vtt")]
+        [InlineData("subrip", "srt")]
+        public async Task ConvertTest(string format, string extension)
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), format);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), extension);
 
             IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt);
 
@@ -23,8 +23,8 @@ namespace Xabe.FFmpeg.Test
 
             bool result = await Conversion.New()
                 .AddStream(subtitleStream)
-                .AddStream(info.AudioStreams.ToArray())
-                .SetOutput(outputPath).Start();
+                .SetOutput(outputPath)
+                .Start();
 
             Assert.True(result);
             IMediaInfo resultInfo = await MediaInfo.Get(outputPath);

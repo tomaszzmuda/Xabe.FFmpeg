@@ -14,7 +14,7 @@ namespace Xabe.FFmpeg
 
         public ISubtitleStream SetFormat(SubtitleFormat format)
         {
-            if(!string.IsNullOrEmpty(_format))
+            if(!string.IsNullOrEmpty(format.Format))
             {
                 _format = $"-f {format} ";
             }
