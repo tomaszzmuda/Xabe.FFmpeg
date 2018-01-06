@@ -44,10 +44,7 @@ namespace Xabe.FFmpeg
 
             for(var i = 0; i < mediaInfos.Count; i++)
             {
-                if(mediaInfos[i].AudioStreams.Any())
-                    conversion.AddParameter($"[v{i}][{mediaInfos.Count}:a]");
-                else
-                    conversion.AddParameter($"[v{i}][{i}:a]");
+                conversion.AddParameter(!mediaInfos[i].AudioStreams.Any() ? $"[v{i}]" : $"[v{i}][{i}:a]");
             }
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
