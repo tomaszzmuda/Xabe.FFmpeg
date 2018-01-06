@@ -45,9 +45,9 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public ISubtitleStream SetLanguage(string lang)
         {
-            if(string.IsNullOrEmpty(lang))
+            if(!string.IsNullOrEmpty(lang))
             {
-                _language = $"-metadata:s:{Index} language={lang} ";
+                _language = $"-metadata:s:s:{Index} language={lang} ";
             }
             return this;
         }

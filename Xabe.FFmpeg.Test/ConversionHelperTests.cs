@@ -64,7 +64,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(1, outputInfo.AudioStreams.Count());
         }
 
-        [Fact(Skip = "I don't know why SetLangueage on ISubtitleStream doesnt work")]
+        [Fact]
         public async Task AddSubtitleWithLangTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
