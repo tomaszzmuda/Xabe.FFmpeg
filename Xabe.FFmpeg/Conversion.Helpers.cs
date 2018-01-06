@@ -125,6 +125,7 @@ namespace Xabe.FFmpeg
 
             return New()
                 .AddStream(videoStream)
+                .AddStream(info.AudioStreams.ToArray())
                 .SetOutput(outputPath);
 
         }

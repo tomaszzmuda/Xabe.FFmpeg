@@ -288,10 +288,10 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("vorbis", audioStream.Format);
         }
 
-        [Fact(Skip = "Some problem with mapping - don't know why")]
+        [Fact]
         public async Task WatermarkTest()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             bool result = await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center).Execute();
 
             Assert.True(result);
@@ -302,8 +302,8 @@ namespace Xabe.FFmpeg.Test
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.NotNull(videoStream);
             Assert.NotNull(audioStream);
-            Assert.Equal("mp3", audioStream.Format);
-            Assert.Equal("png", videoStream.Format);
+            Assert.Equal("aac", audioStream.Format);
+            Assert.Equal("h264", videoStream.Format);
         }
     }
 }
