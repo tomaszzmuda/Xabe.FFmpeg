@@ -50,11 +50,6 @@ namespace Xabe.FFmpeg
         {
             lock(_builderLock)
             {
-                if(_streams.Count < 1)
-                {
-                    return "";
-                }
-
                 var builder = new StringBuilder();
                 builder.Append(BuildInput());
                 //AddSubtitles(builder);
@@ -67,6 +62,7 @@ namespace Xabe.FFmpeg
                     builder.Append(stream.Build());
                 }
                 builder.Append(BuildMap());
+                builder.Append(string.Join("", _parameters));
                 builder.Append(_output);
                 string command = builder.ToString();
                 Debug.Write(command);

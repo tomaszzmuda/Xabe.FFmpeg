@@ -150,7 +150,7 @@ namespace Xabe.FFmpeg.Test
             new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720 }
         };
 
-        [Theory(Skip = "Is not implemented")]
+        [Theory]
         [MemberData(nameof(JoinFiles))]
         public async Task JoinWith(string firstFile, string secondFile, int duration, int width, int height)
         {
@@ -165,7 +165,7 @@ namespace Xabe.FFmpeg.Test
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.NotNull(videoStream);
             Assert.Equal(width, videoStream.Width);
-            Assert.Equal(height, videoStream.Width);
+            Assert.Equal(height, videoStream.Height);
         }
 
         [Fact]
