@@ -51,7 +51,6 @@ namespace Xabe.FFmpeg
             {
                 var builder = new StringBuilder();
                 builder.Append(BuildInput());
-                //AddSubtitles(builder);
                 builder.Append("-n ");
                 builder.Append(_threads);
                 builder.Append(_format);
@@ -64,10 +63,7 @@ namespace Xabe.FFmpeg
                 builder.Append(string.Join("", _parameters));
                 builder.Append(_output);
                 string command = builder.ToString();
-                Debug.Write(command);
                 return command;
-
-                throw new NotImplementedException("conversion with few streams or stream from another files");
             }
         }
 

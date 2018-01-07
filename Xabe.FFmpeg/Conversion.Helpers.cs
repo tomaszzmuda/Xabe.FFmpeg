@@ -157,10 +157,10 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IAudioStream videoStream = info.AudioStreams.FirstOrDefault();
+            IAudioStream audioStream = info.AudioStreams.FirstOrDefault();
 
             return New()
-                .AddStream(videoStream)
+                .AddStream(audioStream)
                 .SetOutput(outputPath);
         }
 
