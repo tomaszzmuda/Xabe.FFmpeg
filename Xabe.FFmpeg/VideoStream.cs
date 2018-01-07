@@ -73,10 +73,10 @@ namespace Xabe.FFmpeg
             return filter;
         }
 
-        // <inheritdoc />
+        /// <inheritdoc />
         public IVideoStream CopyStream()
         {
-            _copy = "-c copy ";
+            _codec = "-c:v copy ";
             return this;
         }
 

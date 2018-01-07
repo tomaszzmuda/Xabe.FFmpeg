@@ -264,8 +264,8 @@ namespace Xabe.FFmpeg.Test
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.NotNull(videoStream);
             Assert.NotNull(audioStream);
-            Assert.Equal("h264", videoStream.Format);
-            Assert.Equal("aac", audioStream.Format);
+            Assert.Equal("mpeg2video", videoStream.Format);
+            Assert.Equal("mp2", audioStream.Format);
         }
 
         [Fact]

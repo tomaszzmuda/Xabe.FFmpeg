@@ -34,7 +34,6 @@ namespace Xabe.FFmpeg
         private string _speed;
         private string _split;
         private string _threads;
-        private string _codec;
 
         private List<IStream> _streams = new List<IStream>();
         private string _videoSpeed;

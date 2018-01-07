@@ -5,6 +5,14 @@ namespace Xabe.FFmpeg
 {
     public interface IAudioStream : IStream
     {
+
+
+        /// <summary>
+        ///     Set stream to copy with orginal codec
+        /// </summary>
+        /// <returns>IAudioStream object</returns>
+        IAudioStream CopyStream();
+
         IAudioStream Reverse();
 
         /// <summary>

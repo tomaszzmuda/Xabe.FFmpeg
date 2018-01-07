@@ -9,6 +9,7 @@ namespace Xabe.FFmpeg
     {
         private string _reverse;
         private string _speed;
+        private string _codec;
         private string _audio;
         private string _bitsreamFilter;
 
@@ -24,25 +25,24 @@ namespace Xabe.FFmpeg
         {
             //todo: all params
             var builder = new StringBuilder();
-            //builder.Append(_watermark);
-            //builder.Append(_scale);
-            //builder.Append(_codec);
+            builder.Append(_codec);
             builder.Append(_speed);
             builder.Append(_audio);
-            //builder.Append(_threads);
             //builder.Append(_format);
             builder.Append(_bitsreamFilter);
             //builder.Append(_copy);
             //builder.Append(_seek);
-            //builder.Append(_frameCount);
-            //builder.Append(_loop);
             builder.Append(_reverse);
-            //builder.Append(_rotate);
-            //builder.Append(_shortestInput);
             builder.Append(BuildFilter());
             //builder.Append(_split);
-            //builder.Append(_output);
             return builder.ToString();
+        }
+
+        /// <inheritdoc />
+        public IAudioStream CopyStream()
+        {
+            _codec = "-c:v copy ";
+            return this;
         }
 
         /// <inheritdoc />
@@ -69,12 +69,6 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public IAudioStream SetCodec(AudioCodec codec, AudioQuality bitrate)
-        {
-            return SetCodec(codec.ToString(), bitrate);
-        }
-
-        /// <inheritdoc />
-        public IAudioStream SetCodec(string codec, AudioQuality bitrate)
         {
             _audio = $"-codec:a {codec} -b:a {(int)bitrate}k -strict experimental ";
             return this;

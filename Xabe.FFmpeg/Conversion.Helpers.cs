@@ -38,9 +38,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.CopyStream()
-                                           ?.SetBitstreamFilter(BitstreamFilter.H264_Mp4ToAnnexB);
-            IStream audioStream = info.AudioStreams.FirstOrDefault();
+                                      ?.SetCodec(new VideoCodec("mpeg2video"));
+            IStream audioStream = info.AudioStreams.FirstOrDefault()
+                                      ?.SetCodec(new AudioCodec("mp2"), AudioQuality.Hd);
 
             return New()
                 .AddStream(videoStream, audioStream)
