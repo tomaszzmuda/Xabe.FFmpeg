@@ -3,8 +3,14 @@ using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
-    public interface IAudioStream : IStream
+    public interface IAudioStream: IStream
     {
+        /// <summary>
+        ///     Duration
+        /// </summary>
+        TimeSpan Duration { get; }
+
+        CodecType CodecType { get; }
 
 
         /// <summary>
@@ -29,12 +35,5 @@ namespace Xabe.FFmpeg
         /// <param name="filter">Filter</param>
         /// <returns>IVideoStream object</returns>
         IAudioStream SetBitstreamFilter(BitstreamFilter filter);
-
-        /// <summary>
-        ///     Duration
-        /// </summary>
-        TimeSpan Duration { get; }
-
-        CodecType CodecType { get; }
     }
 }

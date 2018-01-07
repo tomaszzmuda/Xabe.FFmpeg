@@ -23,8 +23,8 @@ namespace Xabe.FFmpeg
 
             var mediaInfos = new List<IMediaInfo>();
 
-            var conversion = Conversion.New();
-            foreach (string inputVideo in inputVideos)
+            IConversion conversion = Conversion.New();
+            foreach(string inputVideo in inputVideos)
             {
                 mediaInfos.Add(await MediaInfo.Get(inputVideo));
                 conversion.AddParameter($"-i \"{inputVideo}\" ");
@@ -33,19 +33,15 @@ namespace Xabe.FFmpeg
             conversion.AddParameter($"-filter_complex \"");
 
             IVideoStream maxResolutionMedia = mediaInfos.Select(x => x.VideoStreams.OrderByDescending(z => z.Width)
-                                                                         .First())
-                                                           .OrderByDescending(x => x.Width)
-                                                           .First();
+                                                                      .First())
+                                                        .OrderByDescending(x => x.Width)
+                                                        .First();
             for(var i = 0; i < mediaInfos.Count; i++)
-            {
-                    conversion.AddParameter(
-                        $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
-            }
+                conversion.AddParameter(
+                    $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
 
             for(var i = 0; i < mediaInfos.Count; i++)
-            {
                 conversion.AddParameter(!mediaInfos[i].AudioStreams.Any() ? $"[v{i}]" : $"[v{i}][{i}:a]");
-            }
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
             conversion.SetOutput(output);

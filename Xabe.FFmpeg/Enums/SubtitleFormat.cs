@@ -3,12 +3,10 @@
     /// <summary>
     ///     Output subtitle format
     /// </summary>
-    public class SubtitleFormat : MediaFormat
+    public class SubtitleFormat: MediaFormat
     {
-
-        public SubtitleFormat(string format) : base(format)
+        public SubtitleFormat(string format): base(format)
         {
-            
         }
 
         /// <summary>

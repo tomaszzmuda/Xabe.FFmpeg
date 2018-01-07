@@ -13,18 +13,20 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
-    public partial class Conversion : IConversion
+    public partial class Conversion: IConversion
     {
         private readonly object _builderLock = new object();
         private readonly IList<string> _parameters = new List<string>();
         private string _audio;
         private string _audioSpeed;
         private string _bitsreamFilter;
-        private string _format;
         private string _copy;
         private IEnumerable<FieldInfo> _fields;
+        private string _format;
         private string _frameCount;
         private string _input;
+
+        private readonly Dictionary<FileInfo, int> _inputFileMap = new Dictionary<FileInfo, int>();
         private string _loop;
         private string _output;
         private string _reverse;
@@ -33,12 +35,10 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private string _speed;
         private string _split;
+
+        private readonly List<IStream> _streams = new List<IStream>();
         private string _threads;
-
-        private List<IStream> _streams = new List<IStream>();
         private string _videoSpeed;
-
-        private Dictionary<FileInfo, int> _inputFileMap = new Dictionary<FileInfo, int>();
 
         private Conversion()
         {
@@ -56,45 +56,13 @@ namespace Xabe.FFmpeg
                 builder.Append(_format);
                 builder.Append(_split);
                 foreach(IStream stream in _streams)
-                {
                     builder.Append(stream.Build());
-                }
                 builder.Append(BuildMap());
                 builder.Append(string.Join("", _parameters));
                 builder.Append(_output);
                 string command = builder.ToString();
                 return command;
             }
-        }
-
-        /// <summary>
-        /// Create map for included streams
-        /// </summary>
-        /// <returns>Map argument</returns>
-        private string BuildMap()
-        {
-            var builder = new StringBuilder();
-            foreach(IStream stream in _streams)
-            {
-                builder.Append($"-map {_inputFileMap[stream.Source]}:{stream.Index} ");
-            }
-            return builder.ToString();
-        }
-
-        /// <summary>
-        /// Create input string for all streams
-        /// </summary>
-        /// <returns>Input argument</returns>
-        private string BuildInput()
-        {
-            var builder = new StringBuilder();
-            int index = 0;
-            foreach(FileInfo source in _streams.Select(x=>x.Source).Distinct())
-            {
-                _inputFileMap[source] = index++;
-                builder.Append($"-i \"{source.FullName}\" ");
-            }
-            return builder.ToString();
         }
 
         /// <inheritdoc cref="IConversion.OnProgress" />
@@ -181,12 +149,8 @@ namespace Xabe.FFmpeg
         public IConversion AddStream<T>(params T[] streams) where T : IStream
         {
             foreach(T stream in streams)
-            {
                 if(stream != null)
-                {
                     _streams.Add(stream);
-                }
-            }
             return this;
         }
 
@@ -231,7 +195,7 @@ namespace Xabe.FFmpeg
         {
             _format = $"-f {format} ";
             return this;
-        } 
+        }
 
         /// <inheritdoc />
         public IConversion StreamCopy(Channel type)
@@ -254,8 +218,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion ChangeSpeed(double multiplication)
         {
-            _audioSpeed = $"atempo={String.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))} ";
-            _videoSpeed = $"setpts={String.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
+            _audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))} ";
+            _videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
             return this;
         }
 
@@ -283,6 +247,35 @@ namespace Xabe.FFmpeg
 
             _input = $"-f concat -safe 0 -i \"{tmpFile}\" -c copy ";
             return this;
+        }
+
+        /// <summary>
+        ///     Create map for included streams
+        /// </summary>
+        /// <returns>Map argument</returns>
+        private string BuildMap()
+        {
+            var builder = new StringBuilder();
+            foreach(IStream stream in _streams)
+                builder.Append($"-map {_inputFileMap[stream.Source]}:{stream.Index} ");
+            return builder.ToString();
+        }
+
+        /// <summary>
+        ///     Create input string for all streams
+        /// </summary>
+        /// <returns>Input argument</returns>
+        private string BuildInput()
+        {
+            var builder = new StringBuilder();
+            var index = 0;
+            foreach(FileInfo source in _streams.Select(x => x.Source)
+                                               .Distinct())
+            {
+                _inputFileMap[source] = index++;
+                builder.Append($"-i \"{source.FullName}\" ");
+            }
+            return builder.ToString();
         }
 
         /// <summary>

@@ -101,7 +101,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        /// Get proporties prom media file
+        ///     Get proporties prom media file
         /// </summary>
         /// <param name="fileInfo">Media file info</param>
         /// <param name="mediaInfo">Empty media info</param>
@@ -110,9 +110,7 @@ namespace Xabe.FFmpeg
         {
             ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName);
             if(!streams.Any())
-            {
                 throw new ArgumentException($"Invalid file. Cannot load file {fileInfo.Name}");
-            }
 
             FormatModel.Format format = await GetFormat(fileInfo.FullName);
             mediaInfo.Size = long.Parse(format.size);
@@ -135,7 +133,7 @@ namespace Xabe.FFmpeg
 
         private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
-            foreach (ProbeModel.Stream model in audioStreamModels)
+            foreach(ProbeModel.Stream model in audioStreamModels)
             {
                 var stream = new AudioStream
                 {
@@ -150,7 +148,7 @@ namespace Xabe.FFmpeg
 
         private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
-            foreach (ProbeModel.Stream model in audioStreamModels)
+            foreach(ProbeModel.Stream model in audioStreamModels)
             {
                 var stream = new SubtitleStream
                 {

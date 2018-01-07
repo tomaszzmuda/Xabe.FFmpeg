@@ -7,7 +7,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Reference to subtitle file
     /// </summary>
-    public class SubtitleStream : ISubtitleStream
+    public class SubtitleStream: ISubtitleStream
     {
         private string _format;
         private string _language;
@@ -15,9 +15,7 @@ namespace Xabe.FFmpeg
         public ISubtitleStream SetFormat(SubtitleFormat format)
         {
             if(!string.IsNullOrEmpty(format.Format))
-            {
                 _format = $"-f {format} ";
-            }
             return this;
         }
 
@@ -46,9 +44,7 @@ namespace Xabe.FFmpeg
         public ISubtitleStream SetLanguage(string lang)
         {
             if(!string.IsNullOrEmpty(lang))
-            {
                 _language = $"-metadata:s:s:{Index} language={lang} ";
-            }
             return this;
         }
     }

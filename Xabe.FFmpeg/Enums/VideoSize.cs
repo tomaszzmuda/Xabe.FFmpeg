@@ -8,8 +8,6 @@ namespace Xabe.FFmpeg.Enums
     /// </summary>
     public class VideoSize
     {
-        private string _resoulution;
-
         /// <summary>
         ///     FFmpeg resolution height
         /// </summary>
@@ -20,6 +18,8 @@ namespace Xabe.FFmpeg.Enums
         /// </summary>
         internal readonly int Width;
 
+        private string _resoulution;
+
         /// <summary>
         ///     VideoSize in FFmpeg format
         /// </summary>
@@ -29,15 +29,6 @@ namespace Xabe.FFmpeg.Enums
         {
             Width = width;
             Height = height;
-        }
-
-        /// <summary>
-        /// Convert video size to string format
-        /// </summary>
-        /// <returns>Formatted video size</returns>
-        public override string ToString()
-        {
-            return _resoulution ?? (_resoulution = $"{Width}x{Height}");
         }
 
         /// <summary>
@@ -304,5 +295,14 @@ namespace Xabe.FFmpeg.Enums
         ///     7680x4320
         /// </summary>
         public static VideoSize Uhd4320 => new VideoSize(7680, 4320);
+
+        /// <summary>
+        ///     Convert video size to string format
+        /// </summary>
+        /// <returns>Formatted video size</returns>
+        public override string ToString()
+        {
+            return _resoulution ?? (_resoulution = $"{Width}x{Height}");
+        }
     }
 }

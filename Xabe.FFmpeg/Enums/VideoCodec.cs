@@ -1,4 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
+
 namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
@@ -7,12 +8,8 @@ namespace Xabe.FFmpeg.Enums
     public class VideoCodec
     {
         /// <summary>
-        ///     Video codec
-        /// </summary>
-        public string Codec { get; }
-
-        /// <summary>
-        ///     H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (decoders: h264 h264_crystalhd h264_vdpau ) (encoders: libx264 libx264rgb )
+        ///     H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (decoders: h264 h264_crystalhd h264_vdpau ) (encoders: libx264 libx264rgb
+        ///     )
         /// </summary>
         public static VideoCodec h264 = new VideoCodec("h264");
 
@@ -22,7 +19,7 @@ namespace Xabe.FFmpeg.Enums
         public static VideoCodec hevc = new VideoCodec("hevc");
 
         /// <summary>
-        ///      MPEG-4 part 2 (decoders: mpeg4 mpeg4_crystalhd mpeg4_vdpau ) (encoders: mpeg4 libxvid )
+        ///     MPEG-4 part 2 (decoders: mpeg4 mpeg4_crystalhd mpeg4_vdpau ) (encoders: mpeg4 libxvid )
         /// </summary>
         public static VideoCodec mpeg4 = new VideoCodec("mpeg4");
 
@@ -47,15 +44,20 @@ namespace Xabe.FFmpeg.Enums
         public static VideoCodec vp8 = new VideoCodec("vp8");
 
         /// <inheritdoc />
-        public override string ToString()
-        {
-            return Codec;
-        }
-
-        /// <inheritdoc />
         public VideoCodec(string format)
         {
             Codec = format;
+        }
+
+        /// <summary>
+        ///     Video codec
+        /// </summary>
+        public string Codec { get; }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return Codec;
         }
     }
 }

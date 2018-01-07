@@ -18,9 +18,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.SetCodec(VideoCodec.h264, 2400);
+                                      ?.SetCodec(VideoCodec.h264, 2400);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                           ?.SetCodec(AudioCodec.aac, AudioQuality.Normal);
+                                      ?.SetCodec(AudioCodec.aac, AudioQuality.Normal);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -59,9 +59,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.SetCodec(VideoCodec.theora, 2400);
+                                      ?.SetCodec(VideoCodec.theora, 2400);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                ?.SetCodec(AudioCodec.libvorbis, AudioQuality.Normal);
+                                      ?.SetCodec(AudioCodec.libvorbis, AudioQuality.Normal);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -79,9 +79,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.SetCodec(VideoCodec.vp8, 2400);
+                                      ?.SetCodec(VideoCodec.vp8, 2400);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                           ?.SetCodec(AudioCodec.libvorbis, AudioQuality.Normal);
+                                      ?.SetCodec(AudioCodec.libvorbis, AudioQuality.Normal);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -127,7 +127,6 @@ namespace Xabe.FFmpeg
                 .AddStream(videoStream)
                 .AddStream(info.AudioStreams.ToArray())
                 .SetOutput(outputPath);
-
         }
 
         /// <summary>
@@ -176,9 +175,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                .SetCodec(VideoCodec.png)
-                .SetOutputFramesCount(1)
-                .SetSeek(captureTime);
+                                           .SetCodec(VideoCodec.png)
+                                           .SetOutputFramesCount(1)
+                                           .SetSeek(captureTime);
 
             return New()
                 .AddStream(videoStream)
@@ -254,8 +253,8 @@ namespace Xabe.FFmpeg
         public static async Task<IConversion> AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
-            var videoStream = info.VideoStreams.FirstOrDefault()
-                                  ?.AddSubtitles(subtitlesPath);
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           ?.AddSubtitles(subtitlesPath);
 
             return New()
                 .AddStream(videoStream)
@@ -277,7 +276,8 @@ namespace Xabe.FFmpeg
             IMediaInfo mediaInfo = await MediaInfo.Get(inputPath);
             IMediaInfo subtitleInfo = await MediaInfo.Get(subtitlePath);
 
-            var subtitleStream = subtitleInfo.SubtitleStreams.First().SetLanguage(language);
+            ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
+                                                         .SetLanguage(language);
 
             return New()
                 .AddStream(mediaInfo.VideoStreams.ToArray())

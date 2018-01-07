@@ -1,4 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
+
 namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
@@ -6,6 +7,12 @@ namespace Xabe.FFmpeg.Enums
     /// </summary>
     public class MediaFormat
     {
+        /// <inheritdoc />
+        public MediaFormat(string format)
+        {
+            Format = format;
+        }
+
         /// <summary>
         ///     Video codec
         /// </summary>
@@ -75,12 +82,6 @@ namespace Xabe.FFmpeg.Enums
         public override string ToString()
         {
             return Format;
-        }
-
-        /// <inheritdoc />
-        public MediaFormat(string format)
-        {
-            Format = format;
         }
     }
 }

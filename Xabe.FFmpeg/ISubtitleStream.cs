@@ -2,11 +2,10 @@
 
 namespace Xabe.FFmpeg
 {
-    public interface ISubtitleStream : IStream
+    public interface ISubtitleStream: IStream
     {
-        ISubtitleStream SetFormat(SubtitleFormat format);
-
         string Language { get; }
+        ISubtitleStream SetFormat(SubtitleFormat format);
 
         ISubtitleStream SetLanguage(string lang);
     }

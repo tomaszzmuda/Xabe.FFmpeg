@@ -18,7 +18,7 @@ namespace Xabe.FFmpeg.Test
         {
             var queue = new ConversionQueue(parallel);
 
-            for(var i = 0; i < 2; i++)  
+            for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 Task<IConversion> conversion = Conversion.ToTs(Resources.Mp4, output);
@@ -38,12 +38,15 @@ namespace Xabe.FFmpeg.Test
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
-            var mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).Result;
+            IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath)
+                                            .Result;
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.AudioStreams.Count());
-            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
-            Assert.Equal("aac", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First()
+                                          .Format);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First()
+                                         .Format);
             if(conversionNumber == totalConversionsCount)
                 resetEvent.Set();
         }
@@ -80,7 +83,7 @@ namespace Xabe.FFmpeg.Test
             var currentItemNumber = 0;
             var totalItemsCount = 0;
 
-            for (var i = 0; i < 2; i++)
+            for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
@@ -93,7 +96,8 @@ namespace Xabe.FFmpeg.Test
             {
                 totalItemsCount = count;
                 currentItemNumber = number;
-                if (number == count) resetEvent.Set();
+                if(number == count)
+                    resetEvent.Set();
             };
             queue.Start();
             Assert.True(resetEvent.WaitOne(10000));

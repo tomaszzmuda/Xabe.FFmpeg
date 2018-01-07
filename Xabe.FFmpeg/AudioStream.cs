@@ -5,13 +5,13 @@ using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
-    public class AudioStream : IAudioStream
+    public class AudioStream: IAudioStream
     {
-        private string _reverse;
-        private string _speed;
-        private string _codec;
         private string _audio;
         private string _bitsreamFilter;
+        private string _codec;
+        private string _reverse;
+        private string _speed;
 
         /// <inheritdoc />
         public IAudioStream Reverse()
@@ -48,18 +48,6 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public CodecType CodecType { get; } = CodecType.Audio;
 
-        private string BuildFilter()
-        {
-            var builder = new StringBuilder();
-            builder.Append("-filter:a ");
-            builder.Append(_speed);
-
-            string filter = builder.ToString();
-            if (filter == "-filter:a ")
-                return "";
-            return filter;
-        }
-
         /// <inheritdoc />
         public IAudioStream SetBitstreamFilter(BitstreamFilter filter)
         {
@@ -70,7 +58,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetCodec(AudioCodec codec, AudioQuality bitrate)
         {
-            _audio = $"-codec:a {codec} -b:a {(int)bitrate}k -strict experimental ";
+            _audio = $"-codec:a {codec} -b:a {(int) bitrate}k -strict experimental ";
             return this;
         }
 
@@ -89,5 +77,17 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public FileInfo Source { get; internal set; }
+
+        private string BuildFilter()
+        {
+            var builder = new StringBuilder();
+            builder.Append("-filter:a ");
+            builder.Append(_speed);
+
+            string filter = builder.ToString();
+            if(filter == "-filter:a ")
+                return "";
+            return filter;
+        }
     }
 }

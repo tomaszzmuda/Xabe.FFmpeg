@@ -19,12 +19,12 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault()
-                                           .SetFormat(new SubtitleFormat(format));
+                                                 .SetFormat(new SubtitleFormat(format));
 
             bool result = await Conversion.New()
-                .AddStream(subtitleStream)
-                .SetOutput(outputPath)
-                .Start();
+                                          .AddStream(subtitleStream)
+                                          .SetOutput(outputPath)
+                                          .Start();
 
             Assert.True(result);
             IMediaInfo resultInfo = await MediaInfo.Get(outputPath);

@@ -164,7 +164,7 @@
 //                .SetSubtitle(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new VideoSize(1024, 768))
 //                .SetOutput(outputPath);
 //            bool conversionResult = await conversion.Start();
-            
+
 //            Assert.True(conversionResult);
 //            var mediaInfo = await MediaInfo.Get(outputPath);
 //            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
@@ -634,3 +634,5 @@
 //        }
 //    }
 //}
+
+

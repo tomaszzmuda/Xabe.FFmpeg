@@ -10,19 +10,19 @@ namespace Xabe.FFmpeg
         string Format { get; }
 
         /// <summary>
-        /// File source of stream
+        ///     File source of stream
         /// </summary>
         FileInfo Source { get; }
+
+        /// <summary>
+        ///     Index of stream
+        /// </summary>
+        int Index { get; }
 
         /// <summary>
         ///     Build FFmpeg arguments
         /// </summary>
         /// <returns>Arguments</returns>
         string Build();
-
-        /// <summary>
-        /// Index of stream
-        /// </summary>
-        int Index { get; }
     }
 }

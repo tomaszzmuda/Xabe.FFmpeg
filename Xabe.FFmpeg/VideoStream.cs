@@ -5,20 +5,20 @@ using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
-    public class VideoStream : IVideoStream
+    public class VideoStream: IVideoStream
     {
+        private string _bitsreamFilter;
         private string _burnSubtitles;
-        private string _videoSpeed;
-        private string _watermark;
+        private string _codec;
+        private string _copy;
+        private string _frameCount;
+        private string _loop;
         private string _reverse;
         private string _scale;
-        private string _size;
-        private string _codec;
-        private string _bitsreamFilter;
-        private string _copy;
-        private string _loop;
         private string _seek;
-        private string _frameCount;
+        private string _size;
+        private string _videoSpeed;
+        private string _watermark;
 
         /// <inheritdoc />
         public int Width { get; internal set; }
@@ -60,19 +60,6 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public CodecType CodecType { get; } = CodecType.Video;
 
-        private string BuildFilter()
-        {
-            var builder = new StringBuilder();
-            builder.Append("-filter:v ");
-            builder.Append(_videoSpeed);
-            builder.Append(_burnSubtitles);
-
-            string filter = builder.ToString();
-            if (filter == "-filter:v ")
-                return "";
-            return filter;
-        }
-
         /// <inheritdoc />
         public IVideoStream CopyStream()
         {
@@ -84,7 +71,7 @@ namespace Xabe.FFmpeg
         public IVideoStream SetLoop(int count, int delay)
         {
             _loop = $"-loop {count} ";
-            if (delay > 0)
+            if(delay > 0)
                 _loop += $"-final_delay {delay / 100} ";
             return this;
         }
@@ -95,11 +82,11 @@ namespace Xabe.FFmpeg
             _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                             .Replace(":", "\\:");
 
-            if (!string.IsNullOrEmpty(encode))
+            if(!string.IsNullOrEmpty(encode))
                 _burnSubtitles += $":charenc={encode}";
-            if (!string.IsNullOrEmpty(style))
+            if(!string.IsNullOrEmpty(style))
                 _burnSubtitles += $":force_style=\'{style}\'";
-            if (originalSize != null)
+            if(originalSize != null)
                 _burnSubtitles += $":original_size={originalSize}";
             _burnSubtitles += "\" ";
             return this;
@@ -109,7 +96,7 @@ namespace Xabe.FFmpeg
         public IVideoStream SetWatermark(string imagePath, Position position)
         {
             string argument = $"-i \"{imagePath}\" -filter_complex ";
-            switch (position)
+            switch(position)
             {
                 case Position.Bottom:
                     argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
@@ -154,9 +141,7 @@ namespace Xabe.FFmpeg
         public IVideoStream SetScale(VideoSize size)
         {
             if(size != null)
-            {
                 _scale = $"-vf scale={size} ";
-            }
             return this;
         }
 
@@ -164,9 +149,7 @@ namespace Xabe.FFmpeg
         public IVideoStream SetSize(VideoSize size)
         {
             if(size != null)
-            {
                 _size = $"-s {size} ";
-            }
             return this;
         }
 
@@ -175,7 +158,7 @@ namespace Xabe.FFmpeg
         {
             _codec = $"-codec:v {codec} ";
 
-            if (bitrate > 0)
+            if(bitrate > 0)
                 _codec += $"-b:v {bitrate}k ";
             return this;
         }
@@ -193,9 +176,7 @@ namespace Xabe.FFmpeg
             if(seek != null)
             {
                 if(seek > Duration)
-                {
                     throw new ArgumentException("Seek can not be greater than video duration");
-                }
                 _seek = $"-ss {seek} ";
             }
             return this;
@@ -216,5 +197,18 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public int Index { get; internal set; }
+
+        private string BuildFilter()
+        {
+            var builder = new StringBuilder();
+            builder.Append("-filter:v ");
+            builder.Append(_videoSpeed);
+            builder.Append(_burnSubtitles);
+
+            string filter = builder.ToString();
+            if(filter == "-filter:v ")
+                return "";
+            return filter;
+        }
     }
 }

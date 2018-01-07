@@ -1,11 +1,37 @@
 ﻿using System;
-using System.IO;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
-    public interface IVideoStream : IStream
+    public interface IVideoStream: IStream
     {
+        /// <summary>
+        ///     Duration
+        /// </summary>
+        TimeSpan Duration { get; }
+
+        /// <summary>
+        ///     Width
+        /// </summary>
+        int Width { get; }
+
+        /// <summary>
+        ///     Height
+        /// </summary>
+        int Height { get; }
+
+        /// <summary>
+        ///     Frame rate
+        /// </summary>
+        double FrameRate { get; }
+
+        /// <summary>
+        ///     Screen ratio
+        /// </summary>
+        string Ratio { get; }
+
+        CodecType CodecType { get; }
+
         /// <summary>
         ///     Melt watermark into video file
         /// </summary>
@@ -39,7 +65,7 @@ namespace Xabe.FFmpeg
         IVideoStream SetCodec(VideoCodec codec, int bitrate = 0);
 
         /// <summary>
-        /// Set stream to copy with orginal codec
+        ///     Set stream to copy with orginal codec
         /// </summary>
         /// <returns>IVideoStream object</returns>
         IVideoStream CopyStream();
@@ -78,36 +104,15 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
-        /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
-        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
+        /// <param name="style">
+        ///     Override default style or script info parameters of the subtitles. It accepts a string containing
+        ///     ASS style format KEY=VALUE couples separated by ","
+        /// </param>
+        /// <param name="originalSize">
+        ///     Specify the size of the original video, the video for which the ASS style was composed. This
+        ///     is necessary to correctly scale the fonts if the aspect ratio has been changed.
+        /// </param>
         /// <returns>Conversion result</returns>
         IVideoStream AddSubtitles(string subtitlePath, string encode = null, string style = null, VideoSize originalSize = null);
-
-        /// <summary>
-        ///     Duration
-        /// </summary>
-        TimeSpan Duration { get; }
-
-        /// <summary>
-        ///     Width
-        /// </summary>
-        int Width { get; }
-
-        /// <summary>
-        ///     Height
-        /// </summary>
-        int Height { get; }
-
-        /// <summary>
-        ///     Frame rate
-        /// </summary>
-        double FrameRate { get; }
-
-        /// <summary>
-        ///     Screen ratio
-        /// </summary>
-        string Ratio { get; }
-
-        CodecType CodecType { get; }
     }
 }

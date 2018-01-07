@@ -31,9 +31,19 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task GetMultipleStreamsTest()
+        {
+            IMediaInfo videoInfo = await MediaInfo.Get(Resources.MultipleStream);
+
+            Assert.Equal(1, videoInfo.VideoStreams.Count());
+            Assert.Equal(2, videoInfo.AudioStreams.Count());
+            Assert.Equal(8, videoInfo.SubtitleStreams.Count());
+        }
+
+        [Fact]
         public async Task IncorrectFormatTest()
         {
-            await Assert.ThrowsAsync<ArgumentException>(async() => await MediaInfo.Get(Resources.Dll));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await MediaInfo.Get(Resources.Dll));
         }
 
         [Fact]
@@ -105,16 +115,5 @@ namespace Xabe.FFmpeg.Test
                 $"Video name: input.mp4{Environment.NewLine}Video extension : .mp4{Environment.NewLine}Video duration : 00:00:13{Environment.NewLine}Video format : h264{Environment.NewLine}Audio format : aac{Environment.NewLine}Audio duration : 00:00:13{Environment.NewLine}Aspect Ratio : 16:9{Environment.NewLine}Framerate : 16:9 fps{Environment.NewLine}Resolution : 1280 x 720{Environment.NewLine}Size : 2107842 b";
             Assert.EndsWith(expectedOutput, output);
         }
-
-        [Fact]
-        public async Task GetMultipleStreamsTest()
-        {
-            IMediaInfo videoInfo = await MediaInfo.Get(Resources.MultipleStream);
-
-            Assert.Equal(1, videoInfo.VideoStreams.Count());
-            Assert.Equal(2, videoInfo.AudioStreams.Count());
-            Assert.Equal(8, videoInfo.SubtitleStreams.Count());
-        }
-      
     }
 }

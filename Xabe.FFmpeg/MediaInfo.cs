@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +10,14 @@ namespace Xabe.FFmpeg
     /// <inheritdoc cref="IMediaInfo" />
     public class MediaInfo: IMediaInfo
     {
+        private MediaInfo(FileInfo fileInfo)
+        {
+            FileInfo = fileInfo;
+        }
+
+        public IEnumerable<IStream> Streams => VideoStreams.Concat<IStream>(AudioStreams)
+                                                           .Concat(SubtitleStreams);
+
         /// <summary>
         ///     Duration of media
         /// </summary>
@@ -20,9 +27,6 @@ namespace Xabe.FFmpeg
         ///     Size of file
         /// </summary>
         public long Size { get; internal set; }
-
-        public IEnumerable<IStream> Streams => VideoStreams.Concat<IStream>(AudioStreams)
-                                                             .Concat(SubtitleStreams);
 
         /// <summary>
         ///     Video streams
@@ -38,35 +42,6 @@ namespace Xabe.FFmpeg
         ///     Subtitle streams
         /// </summary>
         public IEnumerable<ISubtitleStream> SubtitleStreams { get; internal set; }
-
-        /// <summary>
-        ///     Get MediaInfo from file
-        /// </summary>
-        /// <param name="filePath">FullPath to file</param>
-        public static async Task<IMediaInfo> Get(string filePath)
-        {
-            return await Get(new FileInfo(filePath));
-        }
-
-        private MediaInfo(FileInfo fileInfo)
-        {
-            FileInfo = fileInfo;
-        }
-
-        /// <summary>
-        ///     Get MediaInfo from file
-        /// </summary>
-        /// <param name="fileInfo">FileInfo</param>
-        public static async Task<IMediaInfo> Get(FileInfo fileInfo)
-        {
-            if (!File.Exists(fileInfo.FullName))
-                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
-
-            var mediaInfo = new MediaInfo(fileInfo);
-            mediaInfo = await new FFprobe().GetProperties(fileInfo, mediaInfo);
-
-            return mediaInfo;
-        }
 
         /// <inheritdoc />
         public FileInfo FileInfo { get; }
@@ -101,6 +76,30 @@ namespace Xabe.FFmpeg
                 builder.AppendLine($"{margin}Duration : {audioStream.Duration}");
             }
             return builder.ToString();
+        }
+
+        /// <summary>
+        ///     Get MediaInfo from file
+        /// </summary>
+        /// <param name="filePath">FullPath to file</param>
+        public static async Task<IMediaInfo> Get(string filePath)
+        {
+            return await Get(new FileInfo(filePath));
+        }
+
+        /// <summary>
+        ///     Get MediaInfo from file
+        /// </summary>
+        /// <param name="fileInfo">FileInfo</param>
+        public static async Task<IMediaInfo> Get(FileInfo fileInfo)
+        {
+            if(!File.Exists(fileInfo.FullName))
+                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
+
+            var mediaInfo = new MediaInfo(fileInfo);
+            mediaInfo = await new FFprobe().GetProperties(fileInfo, mediaInfo);
+
+            return mediaInfo;
         }
     }
 }
