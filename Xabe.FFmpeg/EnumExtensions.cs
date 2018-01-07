@@ -16,7 +16,7 @@ namespace Xabe.FFmpeg
                 dic = new Dictionary<Enum, string>();
                 _enums.Add(value.GetType(), dic);
             }
-            else if (dic.TryGetValue(value, out string description))
+            else if(dic.TryGetValue(value, out string description))
             {
                 return description;
             }
@@ -25,7 +25,7 @@ namespace Xabe.FFmpeg
                                 .GetField(value.ToString());
 
             var attributes =
-                (DescriptionAttribute[])fi.GetCustomAttributes(
+                (DescriptionAttribute[]) fi.GetCustomAttributes(
                     typeof(DescriptionAttribute),
                     false);
 

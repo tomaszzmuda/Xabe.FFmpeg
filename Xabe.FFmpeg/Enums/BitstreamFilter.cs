@@ -3,18 +3,35 @@
     /// <summary>
     ///     Bistream filter
     /// </summary>
-    public enum BitstreamFilter
+    public class BitstreamFilter
     {
+        /// <summary>
+        ///     Create filter
+        /// </summary>
+        /// <param name="filter">Filter string</param>
+        public BitstreamFilter(string filter)
+        {
+            Filter = filter;
+        }
+
+        /// <summary>
+        ///     Bistream filter
+        /// </summary>
+        public string Filter { get; }
+
         /// <summary>
         ///     H264_Mp4ToAnnexB
         /// </summary>
-        // ReSharper disable once InconsistentNaming
-        H264_Mp4ToAnnexB,
+        public static BitstreamFilter H264_Mp4ToAnnexB => new BitstreamFilter("H264_Mp4ToAnnexB");
 
         /// <summary>
         ///     Aac_AdtstoAsc
         /// </summary>
-        // ReSharper disable once InconsistentNaming
-        Aac_AdtstoAsc
+        public static BitstreamFilter Aac_AdtstoAsc => new BitstreamFilter("Aac_AdtstoAsc");
+
+        public override string ToString()
+        {
+            return Filter.ToLower();
+        }
     }
 }

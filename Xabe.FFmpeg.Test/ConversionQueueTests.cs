@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
@@ -13,15 +14,15 @@ namespace Xabe.FFmpeg.Test
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void QueueTest(bool parallel)
+        public async Task QueueTest(bool parallel)
         {
             var queue = new ConversionQueue(parallel);
 
-            for(var i = 0; i < 2; i++)  
+            for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-                IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
-                queue.Add(conversion);
+                Task<IConversion> conversion = Conversion.ToTs(Resources.Mp4, output);
+                await queue.Add(conversion);
             }
 
             queue.Start();
@@ -37,16 +38,21 @@ namespace Xabe.FFmpeg.Test
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
-            var mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).Result;
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
-            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
-            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath)
+                                            .Result;
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(1, mediaInfo.VideoStreams.Count());
+            Assert.Equal(1, mediaInfo.AudioStreams.Count());
+            Assert.Equal("h264", mediaInfo.VideoStreams.First()
+                                          .Format);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First()
+                                         .Format);
             if(conversionNumber == totalConversionsCount)
                 resetEvent.Set();
         }
 
         [Fact]
-        public void QueueExceptionTest()
+        public async Task QueueExceptionTest()
         {
             var queue = new ConversionQueue();
             var exceptionOccures = false;
@@ -55,8 +61,8 @@ namespace Xabe.FFmpeg.Test
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
-                IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
-                queue.Add(conversion);
+                Task<IConversion> conversion = Conversion.ToMp4(Resources.MkvWithAudio, output);
+                await queue.Add(conversion);
             }
 
             var resetEvent = new AutoResetEvent(false);
@@ -71,18 +77,18 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public void QueueNumberIncrementExceptionTest()
+        public async Task QueueNumberIncrementExceptionTest()
         {
             var queue = new ConversionQueue();
             var currentItemNumber = 0;
             var totalItemsCount = 0;
 
-            for (var i = 0; i < 2; i++)
+            for(var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
-                IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
-                queue.Add(conversion);
+                Task<IConversion> conversion = Conversion.ToMp4(Resources.MkvWithAudio, output);
+                await queue.Add(conversion);
             }
 
             var resetEvent = new AutoResetEvent(false);
@@ -90,7 +96,8 @@ namespace Xabe.FFmpeg.Test
             {
                 totalItemsCount = count;
                 currentItemNumber = number;
-                if (number == count) resetEvent.Set();
+                if(number == count)
+                    resetEvent.Set();
             };
             queue.Start();
             Assert.True(resetEvent.WaitOne(10000));

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
@@ -24,11 +23,10 @@ namespace Xabe.FFmpeg
         void Clear();
 
         /// <summary>
-        ///     Reverse media
+        ///     Reverse all streams in media
         /// </summary>
-        /// <param name="type">Channel type</param>
         /// <returns>IConversion object</returns>
-        IConversion Reverse(Channel type);
+        IConversion Reverse();
 
         /// <summary>
         ///     Set speed of IConversion. Slower speed equals better compression and quality.
@@ -45,30 +43,6 @@ namespace Xabe.FFmpeg
         IConversion SetSpeed(int cpu);
 
         /// <summary>
-        ///     Set audio codec and bitrate
-        /// </summary>
-        /// <param name="codec">Audio odec</param>
-        /// <param name="bitrate">Audio bitrade</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetAudio(AudioCodec codec, AudioQuality bitrate);
-
-        /// <summary>
-        ///     Set audio codec and bitrate
-        /// </summary>
-        /// <param name="codec">Audio odec</param>
-        /// <param name="bitrate">Audio bitrade</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetAudio(string codec, AudioQuality bitrate);
-
-        /// <summary>
-        ///     Set video codec and bitrate
-        /// </summary>
-        /// <param name="codec">Video codec</param>
-        /// <param name="bitrate">Video bitrate</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetCodec(VideoCodec codec, int bitrate = 0);
-
-        /// <summary>
         ///     Defines if converter should use all CPU cores
         /// </summary>
         /// <param name="multiThread">Use all CPU cores</param>
@@ -76,60 +50,11 @@ namespace Xabe.FFmpeg
         IConversion UseMultiThread(bool multiThread);
 
         /// <summary>
-        ///     Set URI of stream
-        /// </summary>
-        /// <param name="uri">URI</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetInput(Uri uri);
-
-        /// <summary>
-        ///     Disable channel. Can remove audio or video from media file.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns>IConversion object</returns>
-        IConversion DisableChannel(Channel type);
-
-        /// <summary>
-        ///     Set input file
-        /// </summary>
-        /// <param name="input">Media file to convert</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetInput(string input);
-
-        /// <summary>
-        ///     Set input file
-        /// </summary>
-        /// <param name="input">Media file to convert</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetInput(FileInfo input);
-
-        /// <summary>
-        ///     Set input files
-        /// </summary>
-        /// <param name="inputs">Media files to convert</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetInput(params string[] inputs);
-
-        /// <summary>
         ///     Set output path
         /// </summary>
         /// <param name="outputPath">Output media file</param>
         /// <returns>IConversion object</returns>
         IConversion SetOutput(string outputPath);
-
-        /// <summary>
-        ///     Set size of video
-        /// </summary>
-        /// <param name="size">VideoSize</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetScale(VideoSize size);
-
-        /// <summary>
-        ///     Set size of video
-        /// </summary>
-        /// <param name="size">VideoSize</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetSize(VideoSize size);
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
@@ -142,29 +67,6 @@ namespace Xabe.FFmpeg
         event DataReceivedEventHandler OnDataReceived;
 
         /// <summary>
-        ///     Set video codec
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns>IConversion object</returns>
-        IConversion SetFormat(VideoFormat format);
-
-        /// <summary>
-        ///     Set filter
-        /// </summary>
-        /// <param name="type">Channel type</param>
-        /// <param name="bitstreamFilter">Filter</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetBitstreamFilter(Channel type, BitstreamFilter bitstreamFilter);
-
-        /// <summary>
-        ///     Set filter
-        /// </summary>
-        /// <param name="type">Channel type</param>
-        /// <param name="filter">Filter</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetBitstreamFilter(Channel type, string filter);
-
-        /// <summary>
         ///     It makes FFmpeg omit the decoding and encoding step for the specified stream, so it does only demuxing and muxing.
         ///     It is useful for changing the container format or modifying container-level metadata.
         ///     Cannot be used with operations which require encoding and decoding video (scaling, changing codecs etc.)
@@ -174,43 +76,19 @@ namespace Xabe.FFmpeg
         IConversion StreamCopy(Channel type);
 
         /// <summary>
-        ///     Melt watermark into video file
-        /// </summary>
-        /// <param name="imagePath">Watermark</param>
-        /// <param name="position">Position of watermark</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetWatermark(string imagePath, Position position);
-
-        /// <summary>
         ///     Change speed of media
         /// </summary>
-        /// <param name="channel">Channel</param>
         /// <param name="multiplaction">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
         /// <returns>IConversion object</returns>
         /// <exception cref="ArgumentOutOfRangeException">When speed isn't between 0.5 - 2.0.</exception>
-        IConversion ChangeSpeed(Channel channel, double multiplaction);
+        IConversion ChangeSpeed(double multiplaction);
 
         /// <summary>
-        ///     Seeks in input file to position. (-ss argument)
+        ///     Set media format
         /// </summary>
-        /// <param name="seek">Position</param>
+        /// <param name="format">Media format</param>
         /// <returns>IConversion object</returns>
-        IConversion SetSeek(TimeSpan? seek);
-
-        /// <summary>
-        ///     Set output frames count
-        /// </summary>
-        /// <param name="number">Number of frames</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetOutputFramesCount(int number);
-
-        /// <summary>
-        ///     Loop over the input stream. Currently it works only for image streams. (-loop)
-        /// </summary>
-        /// <param name="count">Number of repeats</param>
-        /// <param name="delay">Delay between repeats (in seconds)</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetLoop(int count, int delay = 0);
+        IConversion SetFormat(MediaFormat format);
 
         /// <summary>
         ///     Finish encoding when the shortest input stream ends. (-shortest)
@@ -303,44 +181,17 @@ namespace Xabe.FFmpeg
         IConversion AddSubtitle(string subtitlePath, string language);
 
         /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath);
-
-        /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
-        /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath, string encode);
-
-        /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
-        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
-        /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath, string style, VideoSize originalSize);
-
-        /// <summary>
-        ///     Burn subtitle into file
-        /// </summary>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
-        /// <param name="style">Override default style or script info parameters of the subtitles. It accepts a string containing ASS style format KEY=VALUE couples separated by ","</param>
-        /// <param name="originalSize">Specify the size of the original video, the video for which the ASS style was composed. This is necessary to correctly scale the fonts if the aspect ratio has been changed.</param>
-        /// <returns>Conversion result</returns>
-        IConversion SetSubtitle(string subtitlePath, string encode, string style, VideoSize originalSize);
-
-        /// <summary>
         ///     Add additional parameters for the conversion (They must be well formed)
         /// </summary>
         /// <param name="parameter"> Parameter to set</param>
         /// <returns>IConversion object</returns>
         IConversion AddParameter(string parameter);
+
+        /// <summary>
+        ///     Add streams to output file
+        /// </summary>
+        /// <param name="streams">Streams to add</param>
+        /// <returns>IConversion object</returns>
+        IConversion AddStream<T>(params T[] streams) where T : IStream;
     }
 }

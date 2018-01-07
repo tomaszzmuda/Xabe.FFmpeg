@@ -111,5 +111,14 @@ namespace Xabe.FFmpeg
             Interlocked.Increment(ref _totalItems);
             _list.Add(conversion);
         }
+
+        /// <summary>
+        ///     Add conversion to queue
+        /// </summary>
+        /// <param name="conversion">Defined conversion</param>
+        public async Task Add(Task<IConversion> conversion)
+        {
+            Add(await conversion);
+        }
     }
 }

@@ -80,8 +80,8 @@ namespace Xabe.FFmpeg
 
                 FindProgramsFromPath(workingDirectory);
 
-                if (FFmpegPath != null &&
-                    FFprobePath != null)
+                if(FFmpegPath != null &&
+                   FFprobePath != null)
                     return;
             }
 
