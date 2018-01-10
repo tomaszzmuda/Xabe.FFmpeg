@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
@@ -16,6 +17,13 @@ namespace Xabe.FFmpeg
     {
         private static string _ffmpegPath;
         private static string _ffprobePath;
+
+        /// <summary>
+        ///     Mode of FFbase
+        /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnassignedField.Global
+        public static Mode FFmode = Mode.All;
 
         /// <summary>
         ///     Directory contains FFmpeg and FFprobe
@@ -60,14 +68,21 @@ namespace Xabe.FFmpeg
 
             if(!string.IsNullOrWhiteSpace(FFmpegDir))
             {
-                FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                          .FirstOrDefault(x => x.Name.ToLower()
-                                                                                .Contains(FFprobeExecutableName.ToLower()))
-                                                          .FullName;
-                FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
-                                                         .FirstOrDefault(x => x.Name.ToLower()
-                                                                               .Contains(FFmpegExecutableName.ToLower()))
-                                                         .FullName;
+                if (FFmode == Mode.All || FFmode == Mode.FFprobe) {
+                    FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
+                                          .FirstOrDefault(x => x.Name.ToLower()
+                                                                .Contains(FFprobeExecutableName.ToLower()))
+                                          .FullName;
+                }
+
+                if (FFmode == Mode.All || FFmode == Mode.FFmpeg)
+                {
+                    FFmpegPath = new DirectoryInfo(FFmpegDir).GetFiles()
+                                                             .FirstOrDefault(x => x.Name.ToLower()
+                                                                                   .Contains(FFmpegExecutableName.ToLower()))
+                                                             .FullName;
+                }
+
                 ValidateExecutables();
                 return;
             }
@@ -80,9 +95,18 @@ namespace Xabe.FFmpeg
 
                 FindProgramsFromPath(workingDirectory);
 
-                if (FFmpegPath != null &&
-                    FFprobePath != null)
-                    return;
+                switch (FFmode)
+                {
+                    case Mode.All:
+                        if (FFmpegPath != null && FFprobePath != null) return;
+                        break;
+                    case Mode.FFmpeg:
+                        if (FFmpegPath != null) return;
+                        break;
+                    case Mode.FFprobe:
+                        if (FFprobePath != null) return;
+                        break;
+                }
             }
 
             char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
@@ -94,9 +118,18 @@ namespace Xabe.FFmpeg
             {
                 FindProgramsFromPath(path);
 
-                if(FFmpegPath != null &&
-                   FFprobePath != null)
-                    break;
+                switch (FFmode)
+                {
+                    case Mode.All:
+                        if (FFmpegPath != null && FFprobePath != null) return;
+                        break;
+                    case Mode.FFmpeg:
+                        if (FFmpegPath != null) return;
+                        break;
+                    case Mode.FFprobe:
+                        if (FFprobePath != null) return;
+                        break;
+                }
             }
 
             ValidateExecutables();
@@ -146,9 +179,18 @@ namespace Xabe.FFmpeg
 
         private void ValidateExecutables()
         {
-            if(FFmpegPath != null &&
-               FFprobePath != null)
-                return;
+            switch (FFmode) {
+                case Mode.All: 
+                    if (FFmpegPath != null && FFprobePath != null) return;
+                    break;
+                case Mode.FFmpeg:
+                    if (FFmpegPath != null) return;
+                    break;
+                case Mode.FFprobe:
+                    if (FFprobePath != null) return;
+                    break;
+            }
+
 
             string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? "" : string.Format(FFmpegDir + " or ");
             string exceptionMessage =

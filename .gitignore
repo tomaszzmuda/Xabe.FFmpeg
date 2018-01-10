@@ -14,3 +14,4 @@
 /.vs/*
 *.nupkg
 *.user
+*.userprefs
