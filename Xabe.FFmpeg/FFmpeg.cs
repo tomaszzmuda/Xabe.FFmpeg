@@ -91,7 +91,7 @@ namespace Xabe.FFmpeg
             {
                 Match match = regex.Match(e.Data);
                 if(match.Success)
-                    OnProgress(TimeSpan.Parse(match.Value), _totalTime);
+                    OnProgress(ParseDuration(match.Value), _totalTime);
             }
         }
 
@@ -100,17 +100,17 @@ namespace Xabe.FFmpeg
             string t = GetArgumentValue("-t", args);
             if(!string.IsNullOrWhiteSpace(t))
             {
-                _totalTime = TimeSpan.Parse(t);
+                _totalTime = ParseDuration(t);
                 return;
             }
 
             Match match = regex.Match(e.Data);
-            _totalTime = TimeSpan.Parse(match.Value);
+            _totalTime = ParseDuration(match.Value);
 
 
             string ss = GetArgumentValue("-ss", args);
             if(!string.IsNullOrWhiteSpace(ss))
-                _totalTime -= TimeSpan.Parse(ss);
+                _totalTime -= ParseDuration(ss);
         }
 
         private string GetArgumentValue(string option, string args)
@@ -121,6 +121,30 @@ namespace Xabe.FFmpeg
             if(index >= 0)
                 return words[index + 1];
             return "";
+        }
+
+        private TimeSpan ParseDuration(string duration)
+        {
+            List<string> parts = duration.Split(':').Reverse().ToList();
+
+            int milliseconds = 0;
+            int seconds = 0;
+
+            if (parts[0].Contains('.'))
+            {
+                string[] secondsSplit = parts[0].Split('.');
+                seconds = int.Parse(secondsSplit[0]);
+                milliseconds = int.Parse(secondsSplit[1]);
+            }
+            else
+            {
+                seconds = int.Parse(parts[0]);
+            }
+
+            int minutes = int.Parse(parts[1]);
+            int hours = int.Parse(parts[2]);
+
+            return new TimeSpan(0, hours, minutes, seconds, milliseconds);
         }
     }
 }
