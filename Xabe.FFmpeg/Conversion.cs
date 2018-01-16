@@ -14,7 +14,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
-    public class Conversion: IConversion
+    public class Conversion : IConversion
     {
         private readonly object _builderLock = new object();
         private readonly IList<string> _parameters = new List<string>();
@@ -47,7 +47,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string Build()
         {
-            lock(_builderLock)
+            lock (_builderLock)
             {
                 var builder = new StringBuilder();
                 builder.Append(_input);
@@ -120,29 +120,29 @@ namespace Xabe.FFmpeg
         {
             _subtitles.Clear();
             _parameters.Clear();
-            if(_fields == null)
+            if (_fields == null)
                 _fields = GetType()
                     .GetFields(BindingFlags.NonPublic |
                                BindingFlags.Instance)
                     .Where(x => x.FieldType == typeof(string));
-            foreach(FieldInfo fieldinfo in _fields)
+            foreach (FieldInfo fieldinfo in _fields)
                 fieldinfo.SetValue(this, null);
         }
 
         /// <inheritdoc />
         public IConversion Rotate(RotateDegrees rotateDegrees)
         {
-            if(rotateDegrees == RotateDegrees.Invert)
+            if (rotateDegrees == RotateDegrees.Invert)
                 _rotate = "-vf \"transpose=2,transpose=2\" ";
             else
-                _rotate = $"-vf \"transpose={(int) rotateDegrees}\" ";
+                _rotate = $"-vf \"transpose={(int)rotateDegrees}\" ";
             return this;
         }
 
         /// <inheritdoc />
         public IConversion Split(TimeSpan startTime, TimeSpan duration)
         {
-            _split = $"-ss {startTime} -t {duration} ";
+            _split = $"-ss {startTime.ToFFmpeg()} -t {duration.ToFFmpeg()} ";
             return this;
         }
 
@@ -180,11 +180,11 @@ namespace Xabe.FFmpeg
             _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
                                                                .Replace(":", "\\:");
 
-            if(!string.IsNullOrEmpty(encode))
+            if (!string.IsNullOrEmpty(encode))
                 _burnSubtitles += $":charenc={encode}";
-            if(!string.IsNullOrEmpty(style))
+            if (!string.IsNullOrEmpty(style))
                 _burnSubtitles += $":force_style=\'{style}\'";
-            if(originalSize != default(Size))
+            if (originalSize != default(Size))
                 _burnSubtitles += $":original_size={originalSize.Width}x{originalSize.Height}";
             _burnSubtitles += "\" ";
 
@@ -197,7 +197,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
         {
-            _speed = $"-preset {speed.ToString() .ToLower()} ";
+            _speed = $"-preset {speed.ToString().ToLower()} ";
             return this;
         }
 
@@ -217,7 +217,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetAudio(string codec, AudioQuality bitrate)
         {
-            _audio = $"-codec:a {codec.ToLower()} -b:a {(int) bitrate}k -strict experimental ";
+            _audio = $"-codec:a {codec.ToLower()} -b:a {(int)bitrate}k -strict experimental ";
             return this;
         }
 
@@ -232,7 +232,7 @@ namespace Xabe.FFmpeg
         {
             _video = $"-codec:v {codec.ToLower()} ";
 
-            if(bitrate > 0)
+            if (bitrate > 0)
                 _video += $"-b:v {bitrate}k ";
             return this;
         }
@@ -258,7 +258,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion DisableChannel(Channel type)
         {
-            switch(type)
+            switch (type)
             {
                 case Channel.Video:
                     _disabled = "-vn ";
@@ -287,7 +287,7 @@ namespace Xabe.FFmpeg
         public IConversion SetInput(params string[] inputs)
         {
             _input = "";
-            foreach(string path in inputs)
+            foreach (string path in inputs)
                 _input += $"-i \"{path}\" ";
             return this;
         }
@@ -303,7 +303,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetScale(VideoSize size)
         {
-            if(!string.IsNullOrWhiteSpace(size?.Resolution))
+            if (!string.IsNullOrWhiteSpace(size?.Resolution))
                 _scale = $"-vf scale={size.Resolution} ";
             return this;
         }
@@ -311,7 +311,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSize(Size? size)
         {
-            if(size.HasValue)
+            if (size.HasValue)
                 _size = $"-s {size.Value.Width}x{size.Value.Height} ";
 
             return this;
@@ -339,7 +339,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetBitstreamFilter(Channel type, string filter)
         {
-            switch(type)
+            switch (type)
             {
                 case Channel.Audio:
                     _bitsreamFilter = $"-bsf:a {filter.ToLower()} ";
@@ -354,7 +354,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion StreamCopy(Channel type)
         {
-            switch(type)
+            switch (type)
             {
                 case Channel.Audio:
                     _copy = "-c:a copy ";
@@ -373,7 +373,7 @@ namespace Xabe.FFmpeg
         public IConversion SetWatermark(string imagePath, Position position)
         {
             string argument = $"-i \"{imagePath}\" -filter_complex ";
-            switch(position)
+            switch (position)
             {
                 case Position.Bottom:
                     argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
@@ -410,19 +410,19 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion ChangeSpeed(Channel channel, double multiplication)
         {
-            if(multiplication < 0.5 ||
+            if (multiplication < 0.5 ||
                multiplication > 2.0)
                 throw new ArgumentOutOfRangeException("Value has to be greater than 0.5 and less than 2.0.");
 
             double videoMultiplicator = 1;
-            if(multiplication >= 1)
+            if (multiplication >= 1)
                 videoMultiplicator = 1 - (multiplication - 1) / 2;
             else
                 videoMultiplicator = 1 + (multiplication - 1) * -2;
 
             string audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
             string videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
-            switch(channel)
+            switch (channel)
             {
                 case Channel.Audio:
                     _audioSpeed = audioSpeed;
@@ -441,7 +441,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion Reverse(Channel type)
         {
-            switch(type)
+            switch (type)
             {
                 case Channel.Audio:
                     _reverse = "-af areverse ";
@@ -459,8 +459,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSeek(TimeSpan? seek)
         {
-            if(seek.HasValue)
-                _seek = $"-ss {seek} ";
+            if (seek.HasValue)
+                _seek = $"-ss {seek.Value.ToFFmpeg()} ";
 
             return this;
         }
@@ -476,7 +476,7 @@ namespace Xabe.FFmpeg
         public IConversion SetLoop(int count, int delay)
         {
             _loop = $"-loop {count} ";
-            if(delay > 0)
+            if (delay > 0)
                 _loop += $"-final_delay {delay / 100} ";
             return this;
         }
@@ -484,7 +484,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion UseShortest(bool useShortest)
         {
-            if(!useShortest)
+            if (!useShortest)
                 return this;
             _shortestInput = "-shortest ";
             return this;
@@ -499,7 +499,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion Concatenate(params string[] paths)
         {
-            if(paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
+            if (paths.Select(x => new MediaInfo(x).Properties.VideoFormat)
                     .Distinct()
                     .Count() != 1)
                 throw new ArgumentException("All files have to be in the same format!");
@@ -520,16 +520,16 @@ namespace Xabe.FFmpeg
 
         private void AddSubtitles(StringBuilder builder)
         {
-            if(!_subtitles.Any())
+            if (!_subtitles.Any())
                 return;
 
-            foreach(KeyValuePair<string, string> item in _subtitles)
+            foreach (KeyValuePair<string, string> item in _subtitles)
                 builder.Append($"-i \"{item.Value}\" ");
             builder.Append("-map 0 ");
-            for(var i = 0; i < _subtitles.Count; i++)
+            for (var i = 0; i < _subtitles.Count; i++)
                 builder.Append($"-map {i + 1} ");
-            for(var i = 0; i < _subtitles.Count; i++)
-                builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i) .Key} ");
+            for (var i = 0; i < _subtitles.Count; i++)
+                builder.Append($"-metadata:s:s:{i} language={_subtitles.ElementAt(i).Key} ");
         }
 
         private string BuildVideoFilter()
@@ -540,7 +540,7 @@ namespace Xabe.FFmpeg
             builder.Append(_burnSubtitles);
 
             string filter = builder.ToString();
-            if(filter == "-filter:v ")
+            if (filter == "-filter:v ")
                 return "";
             return filter;
         }
@@ -552,7 +552,7 @@ namespace Xabe.FFmpeg
             builder.Append(_audioSpeed);
 
             string filter = builder.ToString();
-            if(filter == "-filter:a ")
+            if (filter == "-filter:a ")
                 return "";
             return filter;
         }
