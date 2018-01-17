@@ -75,7 +75,12 @@ namespace Xabe.FFmpeg.Enums
         /// <returns>FFmpeg formated time</returns>
         public static string ToFFmpeg(this TimeSpan ts)
         {
-            return ts.ToString();
+            int milliseconds = ts.Milliseconds;
+            int seconds = ts.Seconds;
+            int minutes = ts.Minutes;
+            int hours = (int) ts.TotalHours;
+
+            return $"{hours:D}:{minutes:D2}:{seconds:D2}.{milliseconds:D3}";
         }
 
         /// <summary>
