@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
@@ -21,7 +22,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Wrapper for FFmpeg
     /// </summary>
-    internal class FFmpeg: FFbase
+    internal class FFmpeg : FFbase
     {
         private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
         private List<string> _outputLog;
@@ -45,17 +46,17 @@ namespace Xabe.FFmpeg
 
                 RunProcess(args, FFmpegPath, true, true, true);
 
-                using(Process)
+                using (Process)
                 {
                     Process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     Process.BeginErrorReadLine();
                     cancellationToken.Register(() => { Process.StandardInput.Write("q"); });
                     Process.WaitForExit();
 
-                    if(cancellationToken.IsCancellationRequested)
+                    if (cancellationToken.IsCancellationRequested)
                         return false;
 
-                    if(Process.ExitCode != 0)
+                    if (Process.ExitCode != 0)
                         throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
                 }
                 return true;
@@ -64,14 +65,14 @@ namespace Xabe.FFmpeg
 
         private void ProcessOutputData(DataReceivedEventArgs e, string args)
         {
-            if(e.Data == null)
+            if (e.Data == null)
                 return;
 
             OnDataReceived?.Invoke(this, e);
 
             _outputLog.Add(e.Data);
 
-            if(OnProgress == null)
+            if (OnProgress == null)
                 return;
 
             CalculateTime(e, args);
@@ -79,38 +80,38 @@ namespace Xabe.FFmpeg
 
         private void CalculateTime(DataReceivedEventArgs e, string args)
         {
-            if(e.Data.Contains("Duration: N/A"))
+            if (e.Data.Contains("Duration: N/A"))
                 return;
 
             var regex = new Regex(TimeFormatRegex);
-            if(e.Data.Contains("Duration"))
+            if (e.Data.Contains("Duration"))
             {
                 GetDuration(e, regex, args);
             }
-            else if(e.Data.Contains("frame"))
+            else if (e.Data.Contains("frame"))
             {
                 Match match = regex.Match(e.Data);
-                if(match.Success)
-                    OnProgress(TimeSpan.Parse(match.Value), _totalTime);
+                if (match.Success)
+                    OnProgress(match.Value.ParseFFmpegTime(), _totalTime);
             }
         }
 
         private void GetDuration(DataReceivedEventArgs e, Regex regex, string args)
         {
             string t = GetArgumentValue("-t", args);
-            if(!string.IsNullOrWhiteSpace(t))
+            if (!string.IsNullOrWhiteSpace(t))
             {
-                _totalTime = TimeSpan.Parse(t);
+                _totalTime = t.ParseFFmpegTime();
                 return;
             }
 
             Match match = regex.Match(e.Data);
-            _totalTime = TimeSpan.Parse(match.Value);
+            _totalTime = match.Value.ParseFFmpegTime();
 
 
             string ss = GetArgumentValue("-ss", args);
-            if(!string.IsNullOrWhiteSpace(ss))
-                _totalTime -= TimeSpan.Parse(ss);
+            if (!string.IsNullOrWhiteSpace(ss))
+                _totalTime -= ss.ParseFFmpegTime();
         }
 
         private string GetArgumentValue(string option, string args)
@@ -118,7 +119,7 @@ namespace Xabe.FFmpeg
             List<string> words = args.Split(' ')
                                      .ToList();
             int index = words.IndexOf(option);
-            if(index >= 0)
+            if (index >= 0)
                 return words[index + 1];
             return "";
         }
