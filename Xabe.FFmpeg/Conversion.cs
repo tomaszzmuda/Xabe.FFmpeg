@@ -13,7 +13,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
-    public partial class Conversion: IConversion
+    public partial class Conversion : IConversion
     {
         private readonly object _builderLock = new object();
         private readonly IList<string> _parameters = new List<string>();
@@ -72,31 +72,35 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
-        public async Task<bool> Start()
+        public async Task<ConversionResult> Start()
         {
             return await Start(Build());
         }
 
         /// <inheritdoc />
-        public async Task<bool> Start(CancellationToken cancellationToken)
+        public async Task<ConversionResult> Start(CancellationToken cancellationToken)
         {
             return await Start(Build(), cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<bool> Start(string parameters)
+        public async Task<ConversionResult> Start(string parameters)
         {
             return await Start(parameters, new CancellationToken());
         }
 
         /// <inheritdoc />
-        public async Task<bool> Start(string parameters, CancellationToken cancellationToken)
+        public async Task<ConversionResult> Start(string parameters, CancellationToken cancellationToken)
         {
             var ffmpeg = new FFmpeg();
             ffmpeg.OnProgress += OnProgress;
             ffmpeg.OnDataReceived += OnDataReceived;
-            bool processing = await ffmpeg.RunProcess(parameters, cancellationToken);
-            return processing;
+            var result = new ConversionResult();
+            result.StartTime = DateTime.Now;
+            result.Result = await ffmpeg.RunProcess(parameters, cancellationToken);
+            result.EndTime = DateTime.Now;
+            result.MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath).Result);
+            return result;
         }
 
 
@@ -119,7 +123,7 @@ namespace Xabe.FFmpeg
             if(rotateDegrees == RotateDegrees.Invert)
                 _rotate = "-vf \"transpose=2,transpose=2\" ";
             else
-                _rotate = $"-vf \"transpose={(int) rotateDegrees}\" ";
+                _rotate = $"-vf \"transpose={(int)rotateDegrees}\" ";
             return this;
         }
 
@@ -160,7 +164,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetSpeed(Speed speed)
         {
-            _speed = $"-preset {speed.ToString() .ToLower()} ";
+            _speed = $"-preset {speed.ToString().ToLower()} ";
             return this;
         }
 
