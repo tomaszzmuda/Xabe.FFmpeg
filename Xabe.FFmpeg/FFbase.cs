@@ -54,11 +54,11 @@ namespace Xabe.FFmpeg
         /// </summary>
         protected FFbase()
         {
-            if(!string.IsNullOrWhiteSpace(FFprobePath) &&
+            if (!string.IsNullOrWhiteSpace(FFprobePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
                 return;
 
-            if(!string.IsNullOrWhiteSpace(FFmpegDir))
+            if (!string.IsNullOrWhiteSpace(FFmpegDir))
             {
                 FFprobePath = new DirectoryInfo(FFmpegDir).GetFiles()
                                                           .FirstOrDefault(x => x.Name.ToLower()
@@ -74,27 +74,25 @@ namespace Xabe.FFmpeg
 
             Assembly entryAssembly = Assembly.GetEntryAssembly();
 
-            if(entryAssembly != null)
+            if (entryAssembly != null)
             {
                 string workingDirectory = Path.GetDirectoryName(entryAssembly.Location);
 
                 FindProgramsFromPath(workingDirectory);
 
-                if(FFmpegPath != null &&
+                if (FFmpegPath != null &&
                    FFprobePath != null)
                     return;
             }
 
-            char splitChar = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? ':' : ';';
-
             string[] paths = Environment.GetEnvironmentVariable("PATH")
-                                        .Split(splitChar);
+                                        .Split(Path.PathSeparator);
 
-            foreach(string path in paths)
+            foreach (string path in paths)
             {
                 FindProgramsFromPath(path);
 
-                if(FFmpegPath != null &&
+                if (FFmpegPath != null &&
                    FFprobePath != null)
                     break;
             }
@@ -109,14 +107,14 @@ namespace Xabe.FFmpeg
         {
             get
             {
-                lock(_ffmpegPathLock)
+                lock (_ffmpegPathLock)
                 {
                     return _ffmpegPath;
                 }
             }
             private set
             {
-                lock(_ffmpegPathLock)
+                lock (_ffmpegPathLock)
                 {
                     _ffmpegPath = value;
                 }
@@ -130,14 +128,14 @@ namespace Xabe.FFmpeg
         {
             get
             {
-                lock(_ffprobePathLock)
+                lock (_ffprobePathLock)
                 {
                     return _ffprobePath;
                 }
             }
             private set
             {
-                lock(_ffprobePathLock)
+                lock (_ffprobePathLock)
                 {
                     _ffprobePath = value;
                 }
@@ -146,7 +144,7 @@ namespace Xabe.FFmpeg
 
         private void ValidateExecutables()
         {
-            if(FFmpegPath != null &&
+            if (FFmpegPath != null &&
                FFprobePath != null)
                 return;
 
@@ -158,7 +156,7 @@ namespace Xabe.FFmpeg
 
         private void FindProgramsFromPath(string path)
         {
-            if(!Directory.Exists(path))
+            if (!Directory.Exists(path))
                 return;
             FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
