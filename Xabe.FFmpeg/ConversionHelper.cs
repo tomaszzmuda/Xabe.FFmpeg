@@ -16,7 +16,7 @@ namespace Xabe.FFmpeg
         /// <param name="output">Concatenated inputVideos</param>
         /// <param name="inputVideos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        public static async Task<bool> Concatenate(string output, params string[] inputVideos)
+        public static async Task<IConversionResult> Concatenate(string output, params string[] inputVideos)
         {
             if(inputVideos.Length <= 1)
                 throw new ArgumentException("You must provide at least 2 files for the concatenation to work", "inputVideos");

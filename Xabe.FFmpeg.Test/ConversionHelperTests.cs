@@ -18,10 +18,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
 
-            bool result = await Conversion.ToGif(Resources.Mp4, output, loopCount, delay)
+            IConversionResult result = await Conversion.ToGif(Resources.Mp4, output, loopCount, delay)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(0), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
@@ -47,9 +47,9 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-            bool result = await ConversionHelper.Concatenate(output, firstFile, secondFile);
+            IConversionResult result = await ConversionHelper.Concatenate(output, firstFile, secondFile);
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(duration), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
@@ -64,10 +64,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-            bool result = await Conversion.AddAudio(Resources.Mp4, Resources.Mp3, output)
+            IConversionResult result = await Conversion.AddAudio(Resources.Mp4, Resources.Mp3, output)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.AudioStreams.Count());
             Assert.Equal("aac", mediaInfo.AudioStreams.First()
@@ -82,10 +82,10 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             string input = Resources.MkvWithAudio;
 
-            bool result = await Conversion.AddSubtitle(input, output, Resources.SubtitleSrt)
+            IConversionResult result = await Conversion.AddSubtitle(input, output, Resources.SubtitleSrt)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo outputInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
             Assert.Equal(1, outputInfo.SubtitleStreams.Count());
@@ -100,10 +100,10 @@ namespace Xabe.FFmpeg.Test
             string input = Resources.MkvWithAudio;
 
             var language = "pol";
-            bool result = await Conversion.AddSubtitle(input, output, Resources.SubtitleSrt, language)
+            IConversionResult result = await Conversion.AddSubtitle(input, output, Resources.SubtitleSrt, language)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo outputInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
             Assert.Equal(1, outputInfo.SubtitleStreams.Count());
@@ -119,10 +119,10 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             string input = Resources.Mp4;
 
-            bool result = await Conversion.AddSubtitles(input, output, Resources.SubtitleSrt)
+            IConversionResult result = await Conversion.AddSubtitles(input, output, Resources.SubtitleSrt)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo outputInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(13), outputInfo.Duration);
         }
@@ -133,10 +133,10 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             string input = Resources.MkvWithAudio;
 
-            bool result = await Conversion.ChangeSize(input, output, new VideoSize(640, 360))
+            IConversionResult result = await Conversion.ChangeSize(input, output, new VideoSize(640, 360))
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
@@ -149,10 +149,10 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractAudio()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
-            bool result = await Conversion.ExtractAudio(Resources.Mp4WithAudio, output)
+            IConversionResult result = await Conversion.ExtractAudio(Resources.Mp4WithAudio, output)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(0, mediaInfo.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.AudioStreams.Count());
@@ -166,10 +166,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(Resources.Mp4WithAudio));
 
-            bool result = await Conversion.ExtractVideo(Resources.Mp4WithAudio, output)
+            IConversionResult result = await Conversion.ExtractVideo(Resources.Mp4WithAudio, output)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(0, mediaInfo.AudioStreams.Count());
@@ -190,10 +190,10 @@ namespace Xabe.FFmpeg.Test
         public async Task SnapshotTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
-            bool result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0))
+            IConversionResult result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0))
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             Assert.True(File.Exists(output));
             Assert.Equal(1825653, (await File.ReadAllBytesAsync(output)).LongLength);
         }
@@ -202,10 +202,10 @@ namespace Xabe.FFmpeg.Test
         public async Task SplitVideoTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-            bool result = await Conversion.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8))
+            IConversionResult result = await Conversion.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8))
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.AudioStreams.Count());
@@ -225,10 +225,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            bool result = await Conversion.ToMp4(Resources.MkvWithAudio, output)
+            IConversionResult result = await Conversion.ToMp4(Resources.MkvWithAudio, output)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
@@ -246,10 +246,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ogv);
 
-            bool result = await Conversion.ToOgv(Resources.MkvWithAudio, output)
+            IConversionResult result = await Conversion.ToOgv(Resources.MkvWithAudio, output)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
@@ -267,10 +267,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
 
-            bool result = await Conversion.ToTs(Resources.Mp4WithAudio, output)
+            IConversionResult result = await Conversion.ToTs(Resources.Mp4WithAudio, output)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
@@ -288,10 +288,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
 
-            bool result = await Conversion.ToWebM(Resources.Mp4WithAudio, output)
+            IConversionResult result = await Conversion.ToWebM(Resources.Mp4WithAudio, output)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
@@ -308,10 +308,10 @@ namespace Xabe.FFmpeg.Test
         public async Task WatermarkTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-            bool result = await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center)
+            IConversionResult result = await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center)
                                           .Execute();
 
-            Assert.True(result);
+            Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.AudioStreams.Count());
