@@ -119,7 +119,7 @@ namespace Xabe.FFmpeg
         /// <exception cref="ArgumentException">Occurs when no FFmpeg executables were found.</exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
-        Task<ConversionResult> Start();
+        Task<IConversionResult> Start();
 
         /// <summary>
         ///     Start conversion
@@ -131,7 +131,7 @@ namespace Xabe.FFmpeg
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="TaskCanceledException">Occurs when task was cancalled.</exception>
-        Task<ConversionResult> Start(CancellationToken cancellationToken);
+        Task<IConversionResult> Start(CancellationToken cancellationToken);
 
         /// <summary>
         ///     Start an FFmpeg process with specified arguments
@@ -142,7 +142,7 @@ namespace Xabe.FFmpeg
         /// <exception cref="ArgumentException">Occurs when no FFmpeg executables were found.</exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
-        Task<ConversionResult> Start(string parameters);
+        Task<IConversionResult> Start(string parameters);
 
         /// <summary>
         ///     Start an FFmpeg process with specified arguments
@@ -155,7 +155,7 @@ namespace Xabe.FFmpeg
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="TaskCanceledException">Occurs when task was cancalled.</exception>
-        Task<ConversionResult> Start(string parameters, CancellationToken cancellationToken);
+        Task<IConversionResult> Start(string parameters, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Rotate video

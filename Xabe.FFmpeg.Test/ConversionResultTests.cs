@@ -14,9 +14,9 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt);
 
-            ConversionResult result = await (await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)).Start();
+            IConversionResult result = await (await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)).Start();
 
-            Assert.True(result.Result);
+            Assert.True(result.Success);
             Assert.NotNull(result.MediaInfo.Value);
             Assert.True(result.StartTime != DateTime.MinValue);
             Assert.True(result.EndTime != DateTime.MinValue);

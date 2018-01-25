@@ -5,7 +5,7 @@ namespace Xabe.FFmpeg
 {
     public static class ConversionExtensions
     {
-        public static async Task<ConversionResult> Execute(this Task<IConversion> conversionTask)
+        public static async Task<IConversionResult> Execute(this Task<IConversion> conversionTask)
         {
             IConversion conversion = await conversionTask;
             return await conversion.Start();

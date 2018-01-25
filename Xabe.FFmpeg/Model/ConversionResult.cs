@@ -1,42 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace Xabe.FFmpeg
 {
-    /// <summary>
-    ///     Information about conversion
-    /// </summary>
-    public class ConversionResult
+    /// <inheritdoc />
+    internal class ConversionResult : IConversionResult
     {
-        internal ConversionResult()
-        {
-        }
+        /// <inheritdoc />
+        public bool Success { get; internal set; }
 
-        /// <summary>
-        ///     Result of conversion
-        /// </summary>
-        public bool Result { get; internal set; }
-
-        /// <summary>
-        ///     Output IMediaInfo
-        /// </summary>
+        /// <inheritdoc />
         public Lazy<IMediaInfo> MediaInfo { get; internal set; }
 
-        /// <summary>
-        ///     Date and time of starting conversion
-        /// </summary>
+        /// <inheritdoc />
         public DateTime StartTime { get; internal set; }
 
-        /// <summary>
-        ///     Date and time of starting conversion
-        /// </summary>
+        /// <inheritdoc />
         public DateTime EndTime { get; internal set; }
 
-        /// <summary>
-        ///     Conversion duration
-        /// </summary>
+        /// <inheritdoc />
         public TimeSpan Duration => EndTime - StartTime;
     }
 }
