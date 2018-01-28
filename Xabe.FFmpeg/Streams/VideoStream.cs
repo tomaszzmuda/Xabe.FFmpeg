@@ -1,24 +1,28 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
-    public class VideoStream: IVideoStream
+    /// <inheritdoc />
+    public class VideoStream : IVideoStream
     {
         private string _bitsreamFilter;
         private string _burnSubtitles;
         private string _codec;
-        private string _copy;
         private string _frameCount;
         private string _loop;
         private string _reverse;
         private string _scale;
         private string _seek;
         private string _size;
-        private string _videoSpeed;
+        private string _preset;
         private string _watermark;
+        private string _split;
+        private string _speed;
+        private string _rotate;
 
         /// <inheritdoc />
         public int Width { get; internal set; }
@@ -38,23 +42,45 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string Build()
         {
-            //todo: all params
             var builder = new StringBuilder();
             builder.Append(_watermark);
             builder.Append(_scale);
             builder.Append(_codec);
-            //builder.Append(_speed);
+            builder.Append(_preset);
             builder.Append(_bitsreamFilter);
-            builder.Append(_copy);
             builder.Append(_seek);
             builder.Append(_frameCount);
             builder.Append(_loop);
+            builder.Append(_split);
+            builder.Append(_speed);
             builder.Append(_reverse);
-            //builder.Append(_rotate);
-            //builder.Append(_shortestInput);
+            builder.Append(_rotate);
             builder.Append(BuildFilter());
-            //builder.Append(_split);
             return builder.ToString();
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetPresset(ConversionSpeed speed)
+        {
+            _preset = $"-preset {speed.ToString().ToLower()} ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream ChangeSpeed(double multiplication)
+        {
+            _speed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream Rotate(RotateDegrees rotateDegrees)
+        {
+            if(rotateDegrees == RotateDegrees.Invert)
+                _rotate = "-vf \"transpose=2,transpose=2\" ";
+            else
+                _rotate = $"-vf \"transpose={(int)rotateDegrees}\" ";
+            return this;
         }
 
         /// <inheritdoc />
@@ -202,13 +228,25 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             builder.Append("-filter:v ");
-            builder.Append(_videoSpeed);
+            builder.Append(_preset);
             builder.Append(_burnSubtitles);
 
             string filter = builder.ToString();
             if(filter == "-filter:v ")
                 return "";
             return filter;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream Split(TimeSpan startTime, TimeSpan duration)
+        {
+            _split = $"-ss {startTime.ToFFmpeg()} -t {duration.ToFFmpeg()} ";
+            return this;
+        }
+
+        void IStream.Split(TimeSpan startTime, TimeSpan duration)
+        {
+            Split(startTime, duration);
         }
     }
 }

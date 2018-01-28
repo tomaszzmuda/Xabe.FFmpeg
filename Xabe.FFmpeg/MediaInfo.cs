@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IMediaInfo" />
-    public class MediaInfo: IMediaInfo
+    public class MediaInfo : IMediaInfo
     {
         private MediaInfo(FileInfo fileInfo)
         {
             FileInfo = fileInfo;
         }
 
+        /// <summary>
+        ///     All file streams
+        /// </summary>
         public IEnumerable<IStream> Streams => VideoStreams.Concat<IStream>(AudioStreams)
                                                            .Concat(SubtitleStreams);
 

@@ -3,7 +3,7 @@
     /// <summary>
     ///     Speed of conversion. Faster speed causes worse optimization and quality.
     /// </summary>
-    public enum Speed
+    public enum ConversionSpeed
     {
         /// <summary>
         ///     Very slow

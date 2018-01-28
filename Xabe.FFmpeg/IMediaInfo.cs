@@ -10,6 +10,11 @@ namespace Xabe.FFmpeg
     public interface IMediaInfo
     {
         /// <summary>
+        ///     All file streams
+        /// </summary>
+        IEnumerable<IStream> Streams { get; }
+
+        /// <summary>
         ///     Source file info
         /// </summary>
         FileInfo FileInfo { get; }

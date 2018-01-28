@@ -44,7 +44,6 @@ namespace Xabe.FFmpeg
 
             return New()
                 .AddStream(videoStream, audioStream)
-                .SetFormat(MediaFormat.mpegts)
                 .SetOutput(outputPath);
         }
 
@@ -215,12 +214,14 @@ namespace Xabe.FFmpeg
         public static async Task<IConversion> Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
+            var streams = info.Streams.ToArray();
+            foreach(IStream stream in streams)
+            {
+                stream.Split(startTime, duration);
+            }
 
             return New()
-                .AddStream(info.VideoStreams.ToArray())
-                .AddStream(info.AudioStreams.ToArray())
-                .AddStream(info.SubtitleStreams.ToArray())
-                .Split(startTime, duration)
+                .AddStream(streams)
                 .SetOutput(outputPath);
         }
 
