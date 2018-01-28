@@ -44,9 +44,9 @@ namespace Xabe.FFmpeg.Enums
         public static VideoCodec vp8 = new VideoCodec("vp8");
 
         /// <inheritdoc />
-        public VideoCodec(string format)
+        public VideoCodec(string codec)
         {
-            Codec = format;
+            Codec = codec;
         }
 
         /// <summary>

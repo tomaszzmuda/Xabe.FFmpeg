@@ -29,6 +29,10 @@
         /// </summary>
         public static BitstreamFilter Aac_AdtstoAsc => new BitstreamFilter("Aac_AdtstoAsc");
 
+        /// <summary>
+        ///     Return bitstream filter in ffmpeg format
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Filter.ToLower();

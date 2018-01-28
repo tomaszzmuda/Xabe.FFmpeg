@@ -1,7 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Xabe.FFmpeg
 {
+    /// <summary>
+    ///     Base stream class
+    /// </summary>
     public interface IStream
     {
         /// <summary>
@@ -24,5 +28,13 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <returns>Arguments</returns>
         string Build();
+
+        /// <summary>
+        ///     Get part of video
+        /// </summary>
+        /// <param name="startTime">Start point</param>
+        /// <param name="duration">Duration of new video</param>
+        /// <returns>IVideoStream</returns>
+        void Split(TimeSpan startTime, TimeSpan duration);
     }
 }

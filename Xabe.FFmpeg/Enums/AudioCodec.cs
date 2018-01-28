@@ -18,9 +18,9 @@ namespace Xabe.FFmpeg.Enums
         public static AudioCodec libvorbis = new AudioCodec("libvorbis");
 
         /// <inheritdoc />
-        public AudioCodec(string format)
+        public AudioCodec(string codec)
         {
-            Codec = format;
+            Codec = codec;
         }
 
         /// <summary>
