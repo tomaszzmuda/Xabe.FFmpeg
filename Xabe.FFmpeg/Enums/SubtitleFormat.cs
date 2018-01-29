@@ -3,9 +3,13 @@
     /// <summary>
     ///     Output subtitle format
     /// </summary>
-    public class SubtitleFormat: MediaFormat
+    public class SubtitleFormat : MediaFormat
     {
-        public SubtitleFormat(string format): base(format)
+        /// <summary>
+        ///     Subtitle format
+        /// </summary>
+        /// <param name="format"></param>
+        public SubtitleFormat(string format) : base(format)
         {
         }
 

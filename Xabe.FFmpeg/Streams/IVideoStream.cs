@@ -55,14 +55,6 @@ namespace Xabe.FFmpeg
         CodecType CodecType { get; }
 
         /// <summary>
-        ///     Melt watermark into video file
-        /// </summary>
-        /// <param name="imagePath">Watermark</param>
-        /// <param name="position">Position of watermark</param>
-        /// <returns>IVideoStream</returns>
-        IVideoStream SetWatermark(string imagePath, Position position);
-
-        /// <summary>
         ///     Reverse video
         /// </summary>
         /// <returns>IVideoStream</returns>

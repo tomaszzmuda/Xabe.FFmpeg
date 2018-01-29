@@ -19,6 +19,14 @@ namespace Xabe.FFmpeg
         string OutputFilePath { get; }
 
         /// <summary>
+        ///     Melt watermark into video
+        /// </summary>
+        /// <param name="imagePath">Watermark</param>
+        /// <param name="position">Position of watermark</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetWatermark(string imagePath, Position position);
+
+        /// <summary>
         ///     Clear saved parameters
         /// </summary>
         void Clear();

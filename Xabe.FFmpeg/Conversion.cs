@@ -24,6 +24,45 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private string _conversionSpeed;
         private string _threads;
+        private string _watermark;
+
+        /// <inheritdoc />
+        public IConversion SetWatermark(string imagePath, Position position)
+        {
+            string argument = $"-i \"{imagePath}\" -filter_complex ";
+            switch(position)
+            {
+                case Position.Bottom:
+                    argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
+                    break;
+                case Position.Center:
+                    argument += "\"overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2\" ";
+                    break;
+                case Position.BottomLeft:
+                    argument += "\"overlay=5:main_h-overlay_h\" ";
+                    break;
+                case Position.UpperLeft:
+                    argument += "\"overlay=5:5\" ";
+                    break;
+                case Position.BottomRight:
+                    argument += "\"overlay=(main_w-overlay_w):main_h-overlay_h\" ";
+                    break;
+                case Position.UpperRight:
+                    argument += "\"overlay=(main_w-overlay_w):5\" ";
+                    break;
+                case Position.Left:
+                    argument += "\"overlay=5:(main_h-overlay_h)/2\" ";
+                    break;
+                case Position.Right:
+                    argument += "\"overlay=(main_w-overlay_w-5):(main_h-overlay_h)/2\" ";
+                    break;
+                case Position.Up:
+                    argument += "\"overlay=(main_w-overlay_w)/2:5\" ";
+                    break;
+            }
+            _watermark = argument;
+            return this;
+        }
 
         private Conversion()
         {
@@ -40,6 +79,7 @@ namespace Xabe.FFmpeg
                 builder.Append(_threads);
                 builder.Append(_conversionSpeed);
                 builder.Append(_shortestInput);
+                builder.Append(_watermark);
 
                 foreach(IStream stream in _streams)
                     builder.Append(stream.Build());
