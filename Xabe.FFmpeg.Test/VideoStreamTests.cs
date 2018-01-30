@@ -134,77 +134,80 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(50, mediaInfo.Duration.TotalSeconds * mediaInfo.VideoStreams.First().FrameRate);
         }
 
-        //    [Fact]
-        //    public async Task IncompatibleParametersTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //        await Assert.ThrowsAsync<ConversionException>(async () =>
-        //        {
-        //            try
-        //            {
-        //                await Conversion.New()
-        //                                .SetInput(Resources.MkvWithAudio)
-        //                                .SetOutput(outputPath)
-        //                                .SetCodec(VideoCodec.h264, 2400)
-        //                                .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
-        //                                .Reverse(Channel.Both)
-        //                                .StreamCopy(Channel.Both)
-        //                                .Start();
-        //            }
-        //            catch(ConversionException e)
-        //            {
-        //                Assert.Equal(
-        //                    $"-i \"{Resources.MkvWithAudio}\" -n -codec:v h264 -b:v 2400k -codec:a aac -b:a 384k -strict experimental -c copy -vf reverse -af areverse \"{outputPath}\"",
-        //                    e.InputParameters);
-        //                Assert.EndsWith(
-        //                    $"Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.{Environment.NewLine}Filtering and streamcopy cannot be used together.",
-        //                    e.Message);
-        //                throw;
-        //            }
-        //        });
-        //    }
+        [Fact]
+        public async Task IncompatibleParametersTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-        //    [Fact]
-        //    public async Task LoopTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Gif);
-        //         IConversionResult conversionResult = await Conversion.New()
-        //                                                .SetInput(Resources.Mp4)
-        //                                                .SetLoop(1)
-        //                                                .SetOutput(outputPath)
-        //                                                .Start();
+            await Assert.ThrowsAsync<ConversionException>(async () =>
+            {
+                try
+                {
+                    await Conversion.New()
+                                    .AddStream(inputFile.VideoStreams.First()
+                                                                     .SetCodec(VideoCodec.h264, 2400)
+                                                                     .Reverse()
+                                                                     .CopyStream())
+                                    .SetOutput(outputPath)
+                                    .Start();
+                }
+                catch(ConversionException e)
+                {
+                    Assert.Contains("-c:v copy", e.InputParameters);
+                    Assert.Contains("-vf reverse", e.InputParameters);
+                    Assert.EndsWith(
+                        $"Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.{Environment.NewLine}Filtering and streamcopy cannot be used together.",
+                        e.Message);
+                    throw;
+                }
+            });
+        }
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(TimeSpan.FromSeconds(0), mediaInfo.Duration);
-        //        Assert.Equal("gif", mediaInfo.MediaFormat);
-        //        Assert.Null(mediaInfo.AudioFormat);
-        //        Assert.Equal("16:9", mediaInfo.Ratio);
-        //        Assert.Equal(25, mediaInfo.FrameRate);
-        //        Assert.Equal(1280, mediaInfo.Width);
-        //        Assert.Equal(720, mediaInfo.Height);
-        //    }
+        [Fact]
+        public async Task LoopTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Gif);
 
-        //    [Fact]
-        //    public async Task ReverseTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //         IConversionResult conversionResult = await Conversion.New()
-        //                                                .SetInput(Resources.MkvWithAudio)
-        //                                                .SetSpeed(Speed.UltraFast)
-        //                                                .UseMultiThread(true)
-        //                                                .SetOutput(outputPath)
-        //                                                .SetCodec(VideoCodec.h264, 2400)
-        //                                                .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
-        //                                                .Reverse(Channel.Both)
-        //                                                .Start();
+            IConversionResult conversionResult = await Conversion.New()
+                                                   .AddStream(inputFile.VideoStreams.First()
+                                                                                    .SetLoop(1))
+                                                   .SetOutput(outputPath)
+                                                   .Start();
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-        //        Assert.Equal("h264", mediaInfo.MediaFormat);
-        //        Assert.Equal("aac", mediaInfo.AudioFormat);
-        //    }
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(0), mediaInfo.Duration);
+            Assert.Equal("gif", mediaInfo.VideoStreams.First().Format);
+            Assert.Equal("16:9", mediaInfo.VideoStreams.First().Ratio);
+            Assert.Equal(25, mediaInfo.VideoStreams.First().FrameRate);
+            Assert.Equal(1280, mediaInfo.VideoStreams.First().Width);
+            Assert.Equal(720, mediaInfo.VideoStreams.First().Height);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
+        [Fact]
+        public async Task ReverseTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                   .AddStream(inputFile.VideoStreams.First()
+                                                                                    .SetCodec(VideoCodec.h264, 2400)
+                                                                                    .Reverse())
+                                                   .SetSpeed(ConversionSpeed.UltraFast)
+                                                   .UseMultiThread(true)
+                                                   .SetOutput(outputPath)
+                                                   .Start();
+
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
 
         //    [Fact]
         //    public async Task ScaleTest()
