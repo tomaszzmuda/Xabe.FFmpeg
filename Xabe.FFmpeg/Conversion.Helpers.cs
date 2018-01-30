@@ -119,12 +119,12 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.SetWatermark(inputImage, position);
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
 
             return New()
                 .AddStream(videoStream)
                 .AddStream(info.AudioStreams.ToArray())
+                .SetWatermark(inputImage, position)
                 .SetOutput(outputPath);
         }
 

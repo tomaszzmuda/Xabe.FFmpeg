@@ -18,8 +18,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
 
-            IConversionResult result = await Conversion.ToGif(Resources.Mp4, output, loopCount, delay)
-                                          .Execute();
+            IConversionResult result = await (await Conversion.ToGif(Resources.Mp4, output, loopCount, delay))
+                                             .UseMultiThread(true)
+                                             .SetSpeed(ConversionSpeed.UltraFast)
+                                             .Start();
 
             Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
@@ -94,14 +96,16 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task AddSubtitleWithLangTest()
+        public async Task AddSubtitleWithLanguageTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             string input = Resources.MkvWithAudio;
 
             var language = "pol";
-            IConversionResult result = await Conversion.AddSubtitle(input, output, Resources.SubtitleSrt, language)
-                                          .Execute();
+            IConversionResult result = await (await Conversion.AddSubtitle(input, output, Resources.SubtitleSrt, language))
+                                             .UseMultiThread(true)
+                                             .SetSpeed(ConversionSpeed.UltraFast)
+                                             .Start();
 
             Assert.True(result.Success);
             IMediaInfo outputInfo = await MediaInfo.Get(output);
@@ -119,8 +123,10 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             string input = Resources.Mp4;
 
-            IConversionResult result = await Conversion.AddSubtitles(input, output, Resources.SubtitleSrt)
-                                          .Execute();
+            IConversionResult result = await (await Conversion.AddSubtitles(input, output, Resources.SubtitleSrt))
+                                             .UseMultiThread(true)
+                                             .SetSpeed(ConversionSpeed.UltraFast)
+                                             .Start();
 
             Assert.True(result.Success);
             IMediaInfo outputInfo = await MediaInfo.Get(output);
@@ -288,8 +294,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
 
-            IConversionResult result = await Conversion.ToWebM(Resources.Mp4WithAudio, output)
-                                          .Execute();
+            IConversionResult result = await (await Conversion.ToWebM(Resources.Mp4WithAudio, output))
+                                             .SetSpeed(ConversionSpeed.UltraFast)
+                                             .UseMultiThread(true)
+                                             .Start();
 
             Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
@@ -308,8 +316,9 @@ namespace Xabe.FFmpeg.Test
         public async Task WatermarkTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-            IConversionResult result = await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center)
-                                          .Execute();
+            IConversionResult result = await (await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center))
+                                             .UseMultiThread(true)
+                                             .Start();
 
             Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);

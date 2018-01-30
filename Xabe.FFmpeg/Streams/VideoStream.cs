@@ -19,7 +19,6 @@ namespace Xabe.FFmpeg
         private string _seek;
         private string _size;
         private string _preset;
-        private string _watermark;
         private string _split;
         private string _speed;
         private string _rotate;
@@ -43,7 +42,6 @@ namespace Xabe.FFmpeg
         public string Build()
         {
             var builder = new StringBuilder();
-            builder.Append(_watermark);
             builder.Append(_scale);
             builder.Append(_codec);
             builder.Append(_preset);
@@ -52,7 +50,6 @@ namespace Xabe.FFmpeg
             builder.Append(_frameCount);
             builder.Append(_loop);
             builder.Append(_split);
-            builder.Append(_speed);
             builder.Append(_reverse);
             builder.Append(_rotate);
             builder.Append(BuildFilter());
@@ -69,7 +66,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream ChangeSpeed(double multiplication)
         {
-            _speed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetVideoSpeed(multiplication))}*PTS ";
+            _speed = MediaSpeedHelper.GetVideoSpeed(multiplication);
             return this;
         }
 
@@ -115,44 +112,6 @@ namespace Xabe.FFmpeg
             if(originalSize != null)
                 _burnSubtitles += $":original_size={originalSize}";
             _burnSubtitles += "\" ";
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IVideoStream SetWatermark(string imagePath, Position position)
-        {
-            string argument = $"-i \"{imagePath}\" -filter_complex ";
-            switch(position)
-            {
-                case Position.Bottom:
-                    argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
-                    break;
-                case Position.Center:
-                    argument += "\"overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.BottomLeft:
-                    argument += "\"overlay=5:main_h-overlay_h\" ";
-                    break;
-                case Position.UpperLeft:
-                    argument += "\"overlay=5:5\" ";
-                    break;
-                case Position.BottomRight:
-                    argument += "\"overlay=(main_w-overlay_w):main_h-overlay_h\" ";
-                    break;
-                case Position.UpperRight:
-                    argument += "\"overlay=(main_w-overlay_w):5\" ";
-                    break;
-                case Position.Left:
-                    argument += "\"overlay=5:(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.Right:
-                    argument += "\"overlay=(main_w-overlay_w-5):(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.Up:
-                    argument += "\"overlay=(main_w-overlay_w)/2:5\" ";
-                    break;
-            }
-            _watermark = argument;
             return this;
         }
 
@@ -230,6 +189,7 @@ namespace Xabe.FFmpeg
             builder.Append("-filter:v ");
             builder.Append(_preset);
             builder.Append(_burnSubtitles);
+            builder.Append(_speed);
 
             string filter = builder.ToString();
             if(filter == "-filter:v ")
