@@ -52,6 +52,7 @@ namespace Xabe.FFmpeg
             builder.Append(_split);
             builder.Append(_reverse);
             builder.Append(_rotate);
+            builder.Append(_size);
             builder.Append(BuildFilter());
             return builder.ToString();
         }

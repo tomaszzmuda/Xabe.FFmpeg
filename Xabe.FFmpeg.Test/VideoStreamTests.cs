@@ -209,140 +209,151 @@ namespace Xabe.FFmpeg.Test
             Assert.False(mediaInfo.AudioStreams.Any());
         }
 
-        //    [Fact]
-        //    public async Task ScaleTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //         IConversionResult conversionResult = await Conversion.New()
-        //                                                .SetInput(Resources.MkvWithAudio)
-        //                                                .SetSpeed(Speed.UltraFast)
-        //                                                .UseMultiThread(true)
-        //                                                .SetOutput(outputPath)
-        //                                                .SetScale(VideoSize.Sqcif)
-        //                                                .SetCodec(VideoCodec.h264, 2400)
-        //                                                .SetCodec(AudioCodec.aac, AudioQuality.Ultra)
-        //                                                .Start();
+        [Fact]
+        public async Task ScaleTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-        //        Assert.Equal("h264", mediaInfo.MediaFormat);
-        //        Assert.Equal("aac", mediaInfo.AudioFormat);
-        //        Assert.Equal(128, mediaInfo.Width);
-        //        Assert.Equal(96, mediaInfo.Height);
-        //    }
+            IConversionResult conversionResult = await Conversion.New()
+                                                   .AddStream(inputFile.VideoStreams.First()
+                                                                                     .SetScale(VideoSize.Sqcif)
+                                                                                     .SetCodec(VideoCodec.h264, 2400))
+                                                   .SetSpeed(ConversionSpeed.UltraFast)
+                                                   .UseMultiThread(true)
+                                                   .SetOutput(outputPath)
+                                                   .Start();
 
-        //    [Fact]
-        //    public async Task SeekLengthTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //        IConversion conversion = Conversion.New()
-        //                                           .SetInput(Resources.MkvWithAudio)
-        //                                           .SetSeek(TimeSpan.FromSeconds(2))
-        //                                           .SetOutput(outputPath);
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.Equal(128, mediaInfo.VideoStreams.First().Width);
+            Assert.Equal(96, mediaInfo.VideoStreams.First().Height);
+        }
 
+        [Fact]
+        public async Task SeekLengthTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-        //        TimeSpan currentProgress;
-        //        TimeSpan videoLength;
-        //        conversion.OnProgress += (sender, e) =>
-        //        {
-        //            currentProgress = e.Duration;
-        //            videoLength = e.TotalLength;
-        //        };
+            IConversion conversion = Conversion.New()
+                                               .AddStream(inputFile.VideoStreams.First()
+                                                                                .SetSeek(TimeSpan.FromSeconds(2)))
+                                               .SetOutput(outputPath);
 
-        //        await conversion.Start();
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+            conversion.OnProgress += (sender, e) =>
+            {
+                currentProgress = e.Duration;
+                videoLength = e.TotalLength;
+            };
 
-        //        Assert.True(currentProgress > TimeSpan.Zero);
-        //        Assert.True(currentProgress <= videoLength);
-        //        Assert.True(videoLength == TimeSpan.FromSeconds(7));
-        //    }
+            await conversion.Start();
 
-        //    [Fact]
-        //    public async Task SimpleConversionTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //         IConversionResult conversionResult = await Conversion.New()
-        //                                                .SetInput(Resources.MkvWithAudio)
-        //                                                .SetOutput(outputPath)
-        //                                                .Start();
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(7));
+        }
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-        //        Assert.Equal("h264", mediaInfo.MediaFormat);
-        //        Assert.Equal("aac", mediaInfo.AudioFormat);
-        //    }
+        [Fact]
+        public async Task SimpleConversionTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-        //    [Fact]
-        //    public async Task X265Test()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //         IConversionResult conversionResult = await Conversion.New()
-        //            .SetInput(Resources.MkvWithAudio)
-        //            .SetCodec(VideoCodec.hevc)
-        //            .SetOutput(outputPath)
-        //            .Start();
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(inputFile.VideoStreams.First())
+                                                                 .SetOutput(outputPath)
+                                                                 .Start();
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-        //        Assert.Equal("hevc", mediaInfo.MediaFormat);
-        //        Assert.Equal("aac", mediaInfo.AudioFormat);
-        //    }
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
 
-        //    [Fact]
-        //    public async Task SizeTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //         IConversionResult conversionResult = await Conversion.New()
-        //                                                .SetInput(Resources.MkvWithAudio)
-        //                                                .SetOutput(outputPath)
-        //                                                .SetSize(new VideoSize(640, 480))
-        //                                                .Start();
+        [Fact]
+        public async Task X265Test()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-        //        Assert.Equal("h264", mediaInfo.MediaFormat);
-        //        Assert.Equal("aac", mediaInfo.AudioFormat);
-        //        Assert.Equal(640, mediaInfo.Width);
-        //        Assert.Equal(480, mediaInfo.Height);
-        //    }
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(inputFile.VideoStreams.First()
+                                                                                                  .SetCodec(VideoCodec.hevc))
+               .SetOutput(outputPath)
+               .Start();
 
-        //    [Fact]
-        //    public async Task SetNullSizeTest()
-        //    {
-        //        string inputPath = Resources.MkvWithAudio;
-        //        var inputMediaInfo = await MediaInfo.Get(inputPath);
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-        //         IConversionResult conversionResult = await Conversion.New()
-        //                                                .SetInput(inputPath)
-        //                                                .SetOutput(outputPath)
-        //                                                .SetSize(null)
-        //                                                .Start();
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("hevc", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(inputMediaInfo.Width, mediaInfo.Width);
-        //        Assert.Equal(inputMediaInfo.Height, mediaInfo.Height);
-        //    }
+        [Fact]
+        public async Task SizeTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-        //    [Fact]
-        //    public async Task VideoCodecTest()
-        //    {
-        //        string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
-        //         IConversionResult conversionResult = await Conversion.New()
-        //                                                .SetInput(Resources.MkvWithAudio)
-        //                                                .SetOutput(outputPath)
-        //                                                .SetFormat(MediaFormat.mpegts)
-        //                                                .Start();
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(inputFile.VideoStreams.First()
+                                                                                                  .SetSize(new VideoSize(640, 480)))
+                                                                 .SetOutput(outputPath)
+                                                                 .Start();
 
-        //        Assert.True(conversionResult);
-        //        var mediaInfo = await MediaInfo.Get(outputPath);
-        //        Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-        //        Assert.Equal("mpeg2video", mediaInfo.MediaFormat);
-        //        Assert.Equal("mp2", mediaInfo.AudioFormat);
-        //    }
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+            Assert.Equal(640, mediaInfo.VideoStreams.First().Width);
+            Assert.Equal(480, mediaInfo.VideoStreams.First().Height);
+        }
+
+        [Fact]
+        public async Task SetNullSizeTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string inputPath = Resources.MkvWithAudio;
+
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(inputFile.VideoStreams.First()
+                                                                                                  .SetSize(null))
+                                                   .SetOutput(outputPath)
+                                                   .Start();
+
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(inputFile.VideoStreams.First().Width, mediaInfo.VideoStreams.First().Width);
+            Assert.Equal(inputFile.VideoStreams.First().Height, mediaInfo.VideoStreams.First().Height);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
+        [Fact]
+        public async Task VideoCodecTest()
+        {
+            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".ts");
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(inputFile.VideoStreams.First()
+                                                                 .SetCodec(new VideoCodec("mpeg2video")))
+                                                   .SetOutput(outputPath)
+                                                   .Start();
+
+            Assert.True(conversionResult.Success);
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("mpeg2video", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
     }
 }
 
