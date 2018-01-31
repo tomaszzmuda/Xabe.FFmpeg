@@ -26,7 +26,7 @@ namespace Xabe.FFmpeg.Model
 //            public int probeScore { get; set; }
 //            public Tags tags { get; set; }
             public string size { get; set; }
-            public double bitRate { get; set; }
+            public double bit_Rate { get; set; }
             public double duration { get; set; }
         }
 

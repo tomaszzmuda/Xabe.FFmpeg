@@ -55,6 +55,11 @@ namespace Xabe.FFmpeg
         CodecType CodecType { get; }
 
         /// <summary>
+        /// Video bitrate
+        /// </summary>
+        double Bitrate { get; }
+
+        /// <summary>
         ///     Reverse video
         /// </summary>
         /// <returns>IVideoStream</returns>
