@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using Xabe.FFmpeg.Enums;
@@ -83,6 +82,9 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public CodecType CodecType { get; } = CodecType.Video;
+
+        /// <inheritdoc />
+        public double Bitrate { get; internal set; }
 
         /// <inheritdoc />
         public IVideoStream CopyStream()
