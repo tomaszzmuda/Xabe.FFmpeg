@@ -104,7 +104,7 @@ namespace Xabe.FFmpeg
             mediaInfo.Size = long.Parse(format.size);
 
             mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
-            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
+            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"), format);
             mediaInfo.SubtitleStreams = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
 
             mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
@@ -119,7 +119,7 @@ namespace Xabe.FFmpeg
             return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels, FormatModel.Format format)
         {
             foreach(ProbeModel.Stream model in audioStreamModels)
             {
@@ -128,7 +128,7 @@ namespace Xabe.FFmpeg
                     Format = model.codec_name,
                     Duration = GetAudioDuration(model),
                     Source = fileInfo,
-                    Index = model.index
+                    Index = model.index,
                 };
                 yield return stream;
             }

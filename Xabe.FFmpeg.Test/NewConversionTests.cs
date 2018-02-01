@@ -38,10 +38,8 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task SetCodecTest()
+        public async Task SetVideoCodecTest()
         {
-            const int bitrate = 2400;
-
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
@@ -54,6 +52,23 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Format);
+        }
+
+        [Fact]
+        public async Task SetAudioCodecTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.ac3);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("ac3", resultFile.AudioStreams.First().Format);
         }
     }
 }
