@@ -37,14 +37,14 @@ namespace Xabe.FFmpeg.Test
             Assert.False(mediaInfo.AudioStreams.Any());
         }
 
-        [Fact(Skip = "Did not test and work in past !!")]
+        [Fact]
         public async Task SetCodecTest()
         {
             const int bitrate = 2400;
 
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
-            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.h264, bitrate);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
@@ -53,7 +53,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
-            Assert.Equal(bitrate, resultFile.VideoStreams.First().Bitrate);
+            Assert.Equal("mpeg4", resultFile.VideoStreams.First().Format);
         }
     }
 }

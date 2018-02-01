@@ -33,23 +33,6 @@ namespace Xabe.FFmpeg
             return width / cd + ":" + heigght / cd;
         }
 
-        private TimeSpan GetVideoDuration(FormatModel.Format format, ProbeModel.Stream video)
-        {
-            video.duration = format.duration;
-            video.bit_rate = GetVideoBitrate(format, video);
-
-            double duration = video.duration;
-            TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
-            videoDuration = videoDuration.Subtract(TimeSpan.FromMilliseconds(videoDuration.Milliseconds));
-
-            return videoDuration;
-        }
-
-        private double GetVideoBitrate(FormatModel.Format format, ProbeModel.Stream video)
-        {
-            return Math.Abs(format.bit_Rate) < 0.01 ? video.bit_rate : format.bit_Rate;
-        }
-
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
             string jsonFormat =
@@ -173,15 +156,15 @@ namespace Xabe.FFmpeg
                 var stream = new VideoStream
                 {
                     Format = model.codec_name,
-                    Duration = GetVideoDuration(format, model),
+                    Duration = TimeSpan.FromMilliseconds(model.duration > 0.01 ? model.duration : format.duration),
                     Width = model.width,
                     Height = model.height,
                     FrameRate = GetVideoFramerate(model),
                     Ratio = GetVideoAspectRatio(model.width, model.height),
                     Source = fileInfo,
                     Index = model.index,
-                    Bitrate = GetVideoBitrate(format, model)
-                };
+                    Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate
+            };
                 yield return stream;
             }
         }

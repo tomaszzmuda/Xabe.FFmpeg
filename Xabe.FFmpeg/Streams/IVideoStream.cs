@@ -83,9 +83,8 @@ namespace Xabe.FFmpeg
         ///     Set video codec and bitrate
         /// </summary>
         /// <param name="codec">Video codec</param>
-        /// <param name="bitrate">Video bitrate</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetCodec(VideoCodec codec, int bitrate = 0);
+        IVideoStream SetCodec(VideoCodec codec);
 
         /// <summary>
         ///     Set stream to copy with orginal codec

@@ -43,10 +43,10 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetBitrateTest()
         {
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IMediaInfo info = await MediaInfo.Get(@"C:\tmp\input.mp4");
             IVideoStream videoStream = info.VideoStreams.First();
 
-            Assert.Equal(860233, videoStream.Bitrate);
+            Assert.Equal(862991, videoStream.Bitrate);
         }
 
         [Fact]

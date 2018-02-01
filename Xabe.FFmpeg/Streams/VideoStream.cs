@@ -142,12 +142,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IVideoStream SetCodec(VideoCodec codec, int bitrate = 0)
+        public IVideoStream SetCodec(VideoCodec codec)
         {
             _codec = $"-codec:v {codec} ";
-
-            if(bitrate > 0)
-                _codec += $"-b:v {bitrate}k ";
             return this;
         }
 
