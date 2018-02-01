@@ -80,9 +80,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IAudioStream SetCodec(AudioCodec codec, AudioQuality bitrate)
+        public IAudioStream SetCodec(AudioCodec codec)
         {
-            _audio = $"-codec:a {codec} -b:a {(int)bitrate}k -strict experimental ";
+            _audio = $"-codec:a {codec} ";
             return this;
         }
 

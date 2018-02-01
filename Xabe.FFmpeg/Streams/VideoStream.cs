@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using Xabe.FFmpeg.Enums;
@@ -85,6 +84,9 @@ namespace Xabe.FFmpeg
         public CodecType CodecType { get; } = CodecType.Video;
 
         /// <inheritdoc />
+        public double Bitrate { get; internal set; }
+
+        /// <inheritdoc />
         public IVideoStream CopyStream()
         {
             _codec = "-c:v copy ";
@@ -140,12 +142,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IVideoStream SetCodec(VideoCodec codec, int bitrate = 0)
+        public IVideoStream SetCodec(VideoCodec codec)
         {
             _codec = $"-codec:v {codec} ";
-
-            if(bitrate > 0)
-                _codec += $"-b:v {bitrate}k ";
             return this;
         }
 

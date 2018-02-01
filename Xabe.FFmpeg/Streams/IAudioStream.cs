@@ -34,9 +34,8 @@ namespace Xabe.FFmpeg
         ///     Set audio codec and bitrate
         /// </summary>
         /// <param name="codec">Audio odec</param>
-        /// <param name="bitrate">Audio bitrade</param>
         /// <returns>IAudioStream</returns>
-        IAudioStream SetCodec(AudioCodec codec, AudioQuality bitrate);
+        IAudioStream SetCodec(AudioCodec codec);
 
         /// <summary>
         ///     Set filter

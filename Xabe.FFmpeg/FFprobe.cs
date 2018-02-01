@@ -33,18 +33,6 @@ namespace Xabe.FFmpeg
             return width / cd + ":" + heigght / cd;
         }
 
-        private TimeSpan GetVideoDuration(FormatModel.Format format, ProbeModel.Stream video)
-        {
-            video.duration = format.duration;
-            video.bit_rate = Math.Abs(format.bitRate) < 0.01 ? video.bit_rate : format.bitRate;
-
-            double duration = video.duration;
-            TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
-            videoDuration = videoDuration.Subtract(TimeSpan.FromMilliseconds(videoDuration.Milliseconds));
-
-            return videoDuration;
-        }
-
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
             string jsonFormat =
@@ -60,6 +48,14 @@ namespace Xabe.FFmpeg
             TimeSpan audioDuration = TimeSpan.FromSeconds(duration);
             audioDuration = audioDuration.Subtract(TimeSpan.FromMilliseconds(audioDuration.Milliseconds));
             return audioDuration;
+        }
+
+        private TimeSpan GetVideoDuration(ProbeModel.Stream video, FormatModel.Format format)
+        {
+            double duration = video.duration > 0.01 ? video.duration : format.duration;
+            TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
+            videoDuration = videoDuration.Subtract(TimeSpan.FromMilliseconds(videoDuration.Milliseconds));
+            return videoDuration;
         }
 
         private int GetGcd(int width, int height)
@@ -116,7 +112,7 @@ namespace Xabe.FFmpeg
             mediaInfo.Size = long.Parse(format.size);
 
             mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
-            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
+            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"), format);
             mediaInfo.SubtitleStreams = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
 
             mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
@@ -131,7 +127,7 @@ namespace Xabe.FFmpeg
             return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels, FormatModel.Format format)
         {
             foreach(ProbeModel.Stream model in audioStreamModels)
             {
@@ -140,7 +136,7 @@ namespace Xabe.FFmpeg
                     Format = model.codec_name,
                     Duration = GetAudioDuration(model),
                     Source = fileInfo,
-                    Index = model.index
+                    Index = model.index,
                 };
                 yield return stream;
             }
@@ -168,14 +164,15 @@ namespace Xabe.FFmpeg
                 var stream = new VideoStream
                 {
                     Format = model.codec_name,
-                    Duration = GetVideoDuration(format, model),
+                    Duration = GetVideoDuration(model, format),
                     Width = model.width,
                     Height = model.height,
                     FrameRate = GetVideoFramerate(model),
                     Ratio = GetVideoAspectRatio(model.width, model.height),
                     Source = fileInfo,
-                    Index = model.index
-                };
+                    Index = model.index,
+                    Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate
+            };
                 yield return stream;
             }
         }
