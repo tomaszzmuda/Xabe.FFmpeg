@@ -50,6 +50,14 @@ namespace Xabe.FFmpeg
             return audioDuration;
         }
 
+        private TimeSpan GetVideoDuration(ProbeModel.Stream video, FormatModel.Format format)
+        {
+            double duration = video.duration > 0.01 ? video.duration : format.duration;
+            TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
+            videoDuration = videoDuration.Subtract(TimeSpan.FromMilliseconds(videoDuration.Milliseconds));
+            return videoDuration;
+        }
+
         private int GetGcd(int width, int height)
         {
             while(width != 0 &&
@@ -156,7 +164,7 @@ namespace Xabe.FFmpeg
                 var stream = new VideoStream
                 {
                     Format = model.codec_name,
-                    Duration = TimeSpan.FromMilliseconds(model.duration > 0.01 ? model.duration : format.duration),
+                    Duration = GetVideoDuration(model, format),
                     Width = model.width,
                     Height = model.height,
                     FrameRate = GetVideoFramerate(model),
