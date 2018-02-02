@@ -24,8 +24,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await Conversion.New()
                                           .AddStream(subtitleStream)
                                           .SetOutput(outputPath)
-                                          .UseMultiThread(true)
-                                          .SetSpeed(ConversionSpeed.UltraFast)
+                                          .SetPreset(ConversionPreset.UltraFast)
                                           .Start();
 
             Assert.True(result.Success);

@@ -64,7 +64,7 @@
 //            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 //            bool conversionResult = await Conversion.New()
 //                                                    .SetInput(Resources.MkvWithAudio)
-//                                                    .SetSpeed(Speed.UltraFast)
+//                                                    .SetPreset(Speed.UltraFast)
 //                                                    .UseMultiThread(true)
 //                                                    .SetOutput(outputPath)
 //                                                    .SetCodec(VideoCodec.h264, 2400)
@@ -90,7 +90,7 @@
 
 //            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await Conversion.New()
 //                                                                                              .SetInput(Resources.MkvWithAudio)
-//                                                                                              .SetSpeed(Speed.UltraFast)
+//                                                                                              .SetPreset(Speed.UltraFast)
 //                                                                                              .UseMultiThread(true)
 //                                                                                              .SetOutput(outputPath)
 //                                                                                              .SetCodec(VideoCodec.h264, 2400)
@@ -433,7 +433,7 @@
 //            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 //            bool conversionResult = await Conversion.New()
 //                                                    .SetInput(Resources.MkvWithAudio)
-//                                                    .SetSpeed(Speed.UltraFast)
+//                                                    .SetPreset(Speed.UltraFast)
 //                                                    .UseMultiThread(true)
 //                                                    .SetOutput(outputPath)
 //                                                    .SetCodec(VideoCodec.h264, 2400)
@@ -454,7 +454,7 @@
 //            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 //            bool conversionResult = await Conversion.New()
 //                                                    .SetInput(Resources.MkvWithAudio)
-//                                                    .SetSpeed(Speed.UltraFast)
+//                                                    .SetPreset(Speed.UltraFast)
 //                                                    .UseMultiThread(true)
 //                                                    .SetOutput(outputPath)
 //                                                    .SetScale(VideoSize.Sqcif)
@@ -578,7 +578,7 @@
 //                .SetCodec(VideoCodec.theora, 2400)
 //                .SetCodec(AudioCodec.libvorbis, AudioQuality.Ultra)
 //                .SetOutput(outputPath)
-//                .SetSpeed(Speed.VerySlow)
+//                .SetPreset(Speed.VerySlow)
 //                .UseMultiThread(false)
 //                .Start(cancellationTokenSource.Token);
 
@@ -599,7 +599,7 @@
 //                .SetCodec(VideoCodec.theora, 2400)
 //                .SetCodec(AudioCodec.libvorbis, AudioQuality.Ultra)
 //                .SetOutput(outputPath)
-//                .SetSpeed(Speed.VerySlow)
+//                .SetPreset(Speed.VerySlow)
 //                .UseMultiThread(false)
 //                .Start(cancellationTokenSource.Token);
 
