@@ -12,7 +12,7 @@ namespace Xabe.FFmpeg
             return audioSpeed;
         }
 
-        internal static string GetVideoSpeed(double multiplication)
+        internal static string GetVideoSpeedFilter(double multiplication)
         {
             CheckMultiplicationRange(multiplication);
             double videoMultiplicator = 1;
@@ -20,8 +20,7 @@ namespace Xabe.FFmpeg
                 videoMultiplicator = 1 - (multiplication - 1) / 2;
             else
                 videoMultiplicator = 1 + (multiplication - 1) * -2;
-            string videoSpeed = $"setpts={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
-            return videoSpeed;
+            return $"{string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
         }
 
         private static void CheckMultiplicationRange(double multiplication)

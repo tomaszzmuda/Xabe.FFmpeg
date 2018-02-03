@@ -1,7 +1,7 @@
 ﻿using System;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Streams
 {
     /// <summary>
     ///     Video Stream
@@ -23,6 +23,13 @@ namespace Xabe.FFmpeg
         /// <exception cref="ArgumentOutOfRangeException">When speed isn't between 0.5 - 2.0.</exception>
         IVideoStream ChangeSpeed(double multiplaction);
 
+        /// <summary>
+        ///     Melt watermark into video
+        /// </summary>
+        /// <param name="imagePath">Watermark</param>
+        /// <param name="position">Position of watermark</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetWatermark(string imagePath, Position position);
 
         /// <summary>
         ///     Duration

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {
@@ -119,12 +120,11 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault().SetWatermark(inputImage, position);
 
             return New()
                 .AddStream(videoStream)
                 .AddStream(info.AudioStreams.ToArray())
-                .SetWatermark(inputImage, position)
                 .SetOutput(outputPath);
         }
 

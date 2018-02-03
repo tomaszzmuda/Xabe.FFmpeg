@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xabe.FFmpeg.Model;
+using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Xabe.FFmpeg
 {
@@ -52,6 +51,20 @@ namespace Xabe.FFmpeg
             int hours = int.Parse(parts[2]);
 
             return new TimeSpan(0, hours, minutes, seconds, milliseconds);
+        }
+
+        /// <summary>
+        /// Add item to list if current doesnt exist
+        /// </summary>
+        /// <typeparam name="T">Item type</typeparam>
+        /// <param name="collection">Collection to modify</param>
+        /// <param name="item">Item to add</param>
+        public static void AddIfNotExists<T>(this List<T> collection, T item)
+        {
+            if(!collection.Contains(item))
+            {
+                collection.Add(item);
+            }
         }
     }
 }

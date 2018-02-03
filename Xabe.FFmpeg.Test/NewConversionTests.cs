@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Streams;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -21,17 +22,20 @@ namespace Xabe.FFmpeg.Test
         [InlineData(Position.Bottom)]
         public async Task WatermarkTest(Position position)
         {
-            var inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IVideoStream stream = inputFile.VideoStreams.First()
+                                  .SetWatermark(Resources.PngSample, position);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                    .AddStream(inputFile.VideoStreams.First())
-                                                    .SetWatermark(Resources.PngSample, position)
+                                                    .AddStream(stream)
                                                     .SetOutput(outputPath)
                                                     .Start();
 
             Assert.True(conversionResult.Success);
-            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Contains("overlay", conversionResult.ConversionParameters);
+            Assert.Contains(Resources.PngSample, conversionResult.ConversionParameters);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
             Assert.False(mediaInfo.AudioStreams.Any());

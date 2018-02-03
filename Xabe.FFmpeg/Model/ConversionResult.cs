@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Model
 {
     /// <inheritdoc />
     internal class ConversionResult : IConversionResult
@@ -19,5 +19,8 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public TimeSpan Duration => EndTime - StartTime;
+
+        /// <inheritdoc />
+        public string ConversionParameters { get; internal set; }
     }
 }
