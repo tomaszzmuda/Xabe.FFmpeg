@@ -1,9 +1,9 @@
 ﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
-    ///     Speed of conversion. Faster speed causes worse optimization and quality.
+    ///     Preset of conversion. Faster speed causes worse optimization and quality.
     /// </summary>
-    public enum ConversionSpeed
+    public enum ConversionPreset
     {
         /// <summary>
         ///     Very slow

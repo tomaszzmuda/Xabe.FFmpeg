@@ -57,13 +57,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IVideoStream SetPresset(ConversionSpeed speed)
-        {
-            _preset = $"-preset {speed.ToString().ToLower()} ";
-            return this;
-        }
-
-        /// <inheritdoc />
         public IVideoStream ChangeSpeed(double multiplication)
         {
             _speed = MediaSpeedHelper.GetVideoSpeed(multiplication);

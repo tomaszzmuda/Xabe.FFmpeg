@@ -15,35 +15,23 @@ namespace Xabe.FFmpeg
             FileInfo = fileInfo;
         }
 
-        /// <summary>
-        ///     All file streams
-        /// </summary>
+        /// <inheritdoc />
         public IEnumerable<IStream> Streams => VideoStreams.Concat<IStream>(AudioStreams)
                                                            .Concat(SubtitleStreams);
 
-        /// <summary>
-        ///     Duration of media
-        /// </summary>
+        /// <inheritdoc />
         public TimeSpan Duration { get; internal set; }
 
-        /// <summary>
-        ///     Size of file
-        /// </summary>
+        /// <inheritdoc />
         public long Size { get; internal set; }
 
-        /// <summary>
-        ///     Video streams
-        /// </summary>
+        /// <inheritdoc />
         public IEnumerable<IVideoStream> VideoStreams { get; internal set; }
 
-        /// <summary>
-        ///     Audio streams
-        /// </summary>
+        /// <inheritdoc />
         public IEnumerable<IAudioStream> AudioStreams { get; internal set; }
 
-        /// <summary>
-        ///     Subtitle streams
-        /// </summary>
+        /// <inheritdoc />
         public IEnumerable<ISubtitleStream> SubtitleStreams { get; internal set; }
 
         /// <inheritdoc />

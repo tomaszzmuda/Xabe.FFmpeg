@@ -42,8 +42,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.h264).ChangeSpeed(speed))
-                                                    .SetSpeed(ConversionSpeed.UltraFast)
-                                                    .UseMultiThread(true)
+                                                    .SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start();
 
@@ -67,8 +66,7 @@ namespace Xabe.FFmpeg.Test
                                                                                               .AddStream(inputFile.VideoStreams.First()
                                                                                                                   .SetCodec(VideoCodec.h264)
                                                                                                                   .ChangeSpeed(multiplication))
-                                                                                              .SetSpeed(ConversionSpeed.UltraFast)
-                                                                                              .UseMultiThread(true)
+                                                                                              .SetPreset(ConversionPreset.UltraFast)
                                                                                               .SetOutput(outputPath)
                                                                                               .Start());
         }
@@ -197,8 +195,7 @@ namespace Xabe.FFmpeg.Test
                                                    .AddStream(inputFile.VideoStreams.First()
                                                                                     .SetCodec(VideoCodec.h264)
                                                                                     .Reverse())
-                                                   .SetSpeed(ConversionSpeed.UltraFast)
-                                                   .UseMultiThread(true)
+                                                   .SetPreset(ConversionPreset.UltraFast)
                                                    .SetOutput(outputPath)
                                                    .Start();
 
@@ -219,8 +216,7 @@ namespace Xabe.FFmpeg.Test
                                                    .AddStream(inputFile.VideoStreams.First()
                                                                                      .SetScale(VideoSize.Sqcif)
                                                                                      .SetCodec(VideoCodec.h264))
-                                                   .SetSpeed(ConversionSpeed.UltraFast)
-                                                   .UseMultiThread(true)
+                                                   .SetPreset(ConversionPreset.UltraFast)
                                                    .SetOutput(outputPath)
                                                    .Start();
 

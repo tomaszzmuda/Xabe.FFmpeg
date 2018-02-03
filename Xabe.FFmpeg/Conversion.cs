@@ -22,8 +22,8 @@ namespace Xabe.FFmpeg
         private IEnumerable<FieldInfo> _fields;
         private string _output;
         private string _shortestInput;
-        private string _conversionSpeed;
-        private string _threads;
+        private string _preset;
+        private bool _useMultiThreads = true;
         private string _watermark;
 
         /// <inheritdoc />
@@ -76,8 +76,8 @@ namespace Xabe.FFmpeg
                 var builder = new StringBuilder();
                 builder.Append(BuildInput());
                 builder.Append("-n ");
-                builder.Append(_threads);
-                builder.Append(_conversionSpeed);
+                builder.Append(BuildThreadsArgument(_useMultiThreads));
+                builder.Append(_preset);
                 builder.Append(_shortestInput);
                 builder.Append(_watermark);
 
@@ -121,11 +121,14 @@ namespace Xabe.FFmpeg
             var ffmpeg = new FFmpeg();
             ffmpeg.OnProgress += OnProgress;
             ffmpeg.OnDataReceived += OnDataReceived;
-            var result = new ConversionResult();
-            result.StartTime = DateTime.Now;
-            result.Success = await ffmpeg.RunProcess(parameters, cancellationToken);
-            result.EndTime = DateTime.Now;
-            result.MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath).Result);
+            var result = new ConversionResult
+            {
+                StartTime = DateTime.Now,
+                Success = await ffmpeg.RunProcess(parameters, cancellationToken),
+                EndTime = DateTime.Now,
+                MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
+                                                                .Result)
+            };
             return result;
         }
 
@@ -163,21 +166,31 @@ namespace Xabe.FFmpeg
         public string OutputFilePath { get; private set; }
 
         /// <inheritdoc />
-        public IConversion SetSpeed(ConversionSpeed speed)
+        public IConversion SetPreset(ConversionPreset preset)
         {
-            _conversionSpeed = $"-preset {speed.ToString().ToLower()} ";
+            _preset = $"-preset {preset.ToString().ToLower()} ";
             return this;
         }
 
         /// <inheritdoc />
         public IConversion UseMultiThread(bool multiThread)
         {
+            _useMultiThreads = multiThread;
+            return this;
+        }
+
+        /// <summary>
+        /// Create arhument for ffmpeg with thread configuration
+        /// </summary>
+        /// <param name="multiThread">Use multi thread</param>
+        /// <returns>Build parameter argument</returns>
+        private static string BuildThreadsArgument(bool multiThread)
+        {
             string threadCount = multiThread
                 ? Environment.ProcessorCount.ToString()
                 : "1";
 
-            _threads = $"-threads {threadCount} ";
-            return this;
+            return $"-threads {threadCount} ";
         }
 
         /// <inheritdoc />
@@ -191,9 +204,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion UseShortest(bool useShortest)
         {
-            if(!useShortest)
-                return this;
-            _shortestInput = "-shortest ";
+            _shortestInput = !useShortest ? string.Empty : "-shortest ";
             return this;
         }
 
@@ -205,7 +216,9 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             foreach(IStream stream in _streams)
+            {
                 builder.Append($"-map {_inputFileMap[stream.Source]}:{stream.Index} ");
+            }
             return builder.ToString();
         }
 

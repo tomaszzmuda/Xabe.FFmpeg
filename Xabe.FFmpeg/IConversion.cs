@@ -32,11 +32,11 @@ namespace Xabe.FFmpeg
         void Clear();
 
         /// <summary>
-        ///     Set speed of IConversion. Slower speed equals better compression and quality.
+        ///     Set preset of IConversion. Slower speed equals better compression and quality.
         /// </summary>
-        /// <param name="speed">Speed</param>
+        /// <param name="preset">Preset</param>
         /// <returns>IConversion object</returns>
-        IConversion SetSpeed(ConversionSpeed speed);
+        IConversion SetPreset(ConversionPreset preset);
 
         /// <summary>
         ///     Defines if converter should use all CPU cores

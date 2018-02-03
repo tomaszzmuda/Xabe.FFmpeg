@@ -19,8 +19,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
 
             IConversionResult result = await (await Conversion.ToGif(Resources.Mp4, output, loopCount, delay))
-                                             .UseMultiThread(true)
-                                             .SetSpeed(ConversionSpeed.UltraFast)
+                                             .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
             Assert.True(result.Success);
@@ -103,8 +102,7 @@ namespace Xabe.FFmpeg.Test
 
             var language = "pol";
             IConversionResult result = await (await Conversion.AddSubtitle(input, output, Resources.SubtitleSrt, language))
-                                             .UseMultiThread(true)
-                                             .SetSpeed(ConversionSpeed.UltraFast)
+                                             .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
             Assert.True(result.Success);
@@ -124,8 +122,7 @@ namespace Xabe.FFmpeg.Test
             string input = Resources.Mp4;
 
             IConversionResult result = await (await Conversion.AddSubtitles(input, output, Resources.SubtitleSrt))
-                                             .UseMultiThread(true)
-                                             .SetSpeed(ConversionSpeed.UltraFast)
+                                             .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
             Assert.True(result.Success);
@@ -295,8 +292,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
 
             IConversionResult result = await (await Conversion.ToWebM(Resources.Mp4WithAudio, output))
-                                             .SetSpeed(ConversionSpeed.UltraFast)
-                                             .UseMultiThread(true)
+                                             .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
             Assert.True(result.Success);
@@ -317,7 +313,6 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             IConversionResult result = await (await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center))
-                                             .UseMultiThread(true)
                                              .Start();
 
             Assert.True(result.Success);
