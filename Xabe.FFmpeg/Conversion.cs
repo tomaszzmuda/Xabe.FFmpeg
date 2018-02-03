@@ -74,12 +74,14 @@ namespace Xabe.FFmpeg
                 builder.Append($"{filterGroup.Key} \"");
                 foreach (FilterConfiguration configuration in configurations.Where(x=>x.FilterType == filterGroup.Key))
                 {
+                    var values = new List<string>();
                     foreach(KeyValuePair<string, string> filter in configuration.Filters)
                     {
                         string map = $"[{configuration.StreamNumber}]";
                         string value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
-                        builder.Append($"{map} {value}; ");
+                        values.Add($"{map} {value} ");
                     }
+                    builder.Append(string.Join(";", values));
                 }
                 builder.Append("\" ");
             }
