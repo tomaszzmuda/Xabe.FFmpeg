@@ -185,7 +185,7 @@ namespace Xabe.FFmpeg.Streams
             {
                 yield return new FilterConfiguration
                 {
-                    FilterType = "-vf",
+                    FilterType = "-filter_complex",
                     StreamNumber = Index,
                     Filters = _videoFilters
                 };
@@ -197,7 +197,7 @@ namespace Xabe.FFmpeg.Streams
         {
             _parameters.Add($"-i \"{imagePath}\" ");
             string argument = string.Empty;
-            switch (position)
+            switch(position)
             {
                 case Position.Bottom:
                     argument += "(main_w-overlay_w)/2:main_h-overlay_h";
