@@ -127,11 +127,11 @@ namespace Xabe.FFmpeg
                 Success = await ffmpeg.RunProcess(parameters, cancellationToken),
                 EndTime = DateTime.Now,
                 MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
-                                                                .Result)
+                                                                .Result),
+                Arguments = parameters
             };
             return result;
         }
-
 
         /// <inheritdoc />
         public void Clear()

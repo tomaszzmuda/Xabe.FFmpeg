@@ -19,5 +19,8 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public TimeSpan Duration => EndTime - StartTime;
+
+        /// <inheritdoc />
+        public string Arguments { get; internal set; }
     }
 }
