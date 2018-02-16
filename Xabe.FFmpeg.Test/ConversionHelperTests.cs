@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Streams;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -316,6 +317,8 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
             Assert.True(result.Success);
+            Assert.Contains("overlay=", result.ConversionParameters);
+            Assert.Contains(Resources.Mp4WithAudio, result.ConversionParameters);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.AudioStreams.Count());

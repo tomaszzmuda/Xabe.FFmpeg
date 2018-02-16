@@ -1,22 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Streams
 {
-    /// <inheritdoc />
-    public class AudioStream : IAudioStream
+    /// <inheritdoc cref="IAudioStream" />
+    public class AudioStream : IAudioStream, IFilterable
     {
+        private readonly Dictionary<string, string> _audioFilters = new Dictionary<string, string>();
         private string _audio;
         private string _bitsreamFilter;
-        private string _codec;
         private string _reverse;
-        private string _speed;
         private string _split;
         private string _seek;
-        private string _format;
 
         /// <inheritdoc />
         public IAudioStream Reverse()
@@ -29,23 +29,12 @@ namespace Xabe.FFmpeg
         public string Build()
         {
             var builder = new StringBuilder();
-            builder.Append(_codec);
-            builder.Append(_speed);
             builder.Append(_audio);
-            builder.Append(_format);
             builder.Append(_bitsreamFilter);
             builder.Append(_seek);
             builder.Append(_reverse);
-            builder.Append(BuildFilter());
             builder.Append(_split);
             return builder.ToString();
-        }
-
-        /// <inheritdoc />
-        public IAudioStream SetFormat(AudioFormat format)
-        {
-            _format = $"-f {format} ";
-            return this;
         }
 
         /// <inheritdoc />
@@ -58,7 +47,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream CopyStream()
         {
-            _codec = "-c:v copy ";
+            _audioFilters["-c:v copy"] = "";
             return this;
         }
 
@@ -75,7 +64,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream ChangeSpeed(double multiplication)
         {
-            _speed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))} ";
+            _audioFilters["atempo"] = $"{ string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))}";
             return this;
         }
 
@@ -97,18 +86,19 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public FileInfo Source { get; internal set; }
-
-        private string BuildFilter()
+        
+        /// <inheritdoc />
+        public IEnumerable<FilterConfiguration> GetFilters()
         {
-            var builder = new StringBuilder();
-            builder.Append("-filter:a ");
-            builder.Append(_speed);
-            builder.Append(_codec);
-
-            string filter = builder.ToString();
-            if(filter == "-filter:a ")
-                return "";
-            return filter;
+            if(_audioFilters.Any())
+            {
+                yield return new FilterConfiguration
+                {
+                    FilterType = ":a",
+                    StreamNumber = Index,
+                    Filters = _audioFilters
+                };
+            }
         }
 
         /// <inheritdoc />
