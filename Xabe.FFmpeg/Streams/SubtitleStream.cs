@@ -3,11 +3,9 @@ using System.IO;
 using System.Text;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Streams
 {
-    /// <summary>
-    ///     Reference to subtitle file
-    /// </summary>
+    /// <inheritdoc />
     public class SubtitleStream : ISubtitleStream
     {
         private string _format;
@@ -72,13 +70,12 @@ namespace Xabe.FFmpeg
             return this;
         }
 
-        /// <inheritdoc />
-        public ISubtitleStream Split(TimeSpan startTime, TimeSpan duration)
+        private void Split(TimeSpan startTime, TimeSpan duration)
         {
             _split = $"-ss {startTime.ToFFmpeg()} -t {duration.ToFFmpeg()} ";
-            return this;
         }
 
+        /// <inheritdoc />
         void IStream.Split(TimeSpan startTime, TimeSpan duration)
         {
             Split(startTime, duration);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Model
 {
     /// <inheritdoc />
     internal class ConversionResult : IConversionResult

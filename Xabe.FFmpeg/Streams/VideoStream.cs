@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Streams
 {
-    /// <inheritdoc />
-    public class VideoStream : IVideoStream
+    /// <inheritdoc cref="IVideoStream" />
+    public class VideoStream : IVideoStream, IFilterable
     {
+        private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
+        private readonly List<string> _parameters = new List<string>();
         private string _bitsreamFilter;
-        private string _burnSubtitles;
         private string _codec;
         private string _frameCount;
         private string _loop;
@@ -17,9 +20,7 @@ namespace Xabe.FFmpeg
         private string _scale;
         private string _seek;
         private string _size;
-        private string _preset;
         private string _split;
-        private string _speed;
         private string _rotate;
 
         /// <inheritdoc />
@@ -41,9 +42,9 @@ namespace Xabe.FFmpeg
         public string Build()
         {
             var builder = new StringBuilder();
+            builder.Append(string.Join(" ", _parameters));
             builder.Append(_scale);
             builder.Append(_codec);
-            builder.Append(_preset);
             builder.Append(_bitsreamFilter);
             builder.Append(_seek);
             builder.Append(_frameCount);
@@ -52,24 +53,20 @@ namespace Xabe.FFmpeg
             builder.Append(_reverse);
             builder.Append(_rotate);
             builder.Append(_size);
-            builder.Append(BuildFilter());
             return builder.ToString();
         }
 
         /// <inheritdoc />
         public IVideoStream ChangeSpeed(double multiplication)
         {
-            _speed = MediaSpeedHelper.GetVideoSpeed(multiplication);
+            _videoFilters["setpts"] = MediaSpeedHelper.GetVideoSpeedFilter(multiplication);
             return this;
         }
 
         /// <inheritdoc />
         public IVideoStream Rotate(RotateDegrees rotateDegrees)
         {
-            if(rotateDegrees == RotateDegrees.Invert)
-                _rotate = "-vf \"transpose=2,transpose=2\" ";
-            else
-                _rotate = $"-vf \"transpose={(int)rotateDegrees}\" ";
+            _rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int)rotateDegrees}\" ";
             return this;
         }
 
@@ -98,16 +95,21 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream AddSubtitles(string subtitlePath, string encode, string style, VideoSize originalSize)
         {
-            _burnSubtitles = $"\"subtitles='{subtitlePath}'".Replace("\\", "\\\\")
-                                                            .Replace(":", "\\:");
-
+            string filter = $"'{subtitlePath}'".Replace("\\", "\\\\")
+                                               .Replace(":", "\\:");
             if(!string.IsNullOrEmpty(encode))
-                _burnSubtitles += $":charenc={encode}";
+            {
+                filter += $":charenc={encode}";
+            }
             if(!string.IsNullOrEmpty(style))
-                _burnSubtitles += $":force_style=\'{style}\'";
+            {
+                filter += $":force_style=\'{style}\'";
+            }
             if(originalSize != null)
-                _burnSubtitles += $":original_size={originalSize}";
-            _burnSubtitles += "\" ";
+            {
+                filter += $":original_size={originalSize}";
+            }
+            _videoFilters.Add("subtitles", filter);
             return this;
         }
 
@@ -176,18 +178,57 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public int Index { get; internal set; }
 
-        private string BuildFilter()
+        /// <inheritdoc />
+        public IEnumerable<FilterConfiguration> GetFilters()
         {
-            var builder = new StringBuilder();
-            builder.Append("-filter:v ");
-            builder.Append(_preset);
-            builder.Append(_burnSubtitles);
-            builder.Append(_speed);
+            if(_videoFilters.Any())
+            {
+                yield return new FilterConfiguration
+                {
+                    FilterType = "-filter_complex",
+                    StreamNumber = Index,
+                    Filters = _videoFilters
+                };
+            }
+        }
 
-            string filter = builder.ToString();
-            if(filter == "-filter:v ")
-                return "";
-            return filter;
+        /// <inheritdoc />
+        public IVideoStream SetWatermark(string imagePath, Position position)
+        {
+            _parameters.Add($"-i \"{imagePath}\" ");
+            string argument = string.Empty;
+            switch(position)
+            {
+                case Position.Bottom:
+                    argument += "(main_w-overlay_w)/2:main_h-overlay_h";
+                    break;
+                case Position.Center:
+                    argument += "x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2";
+                    break;
+                case Position.BottomLeft:
+                    argument += "5:main_h-overlay_h";
+                    break;
+                case Position.UpperLeft:
+                    argument += "5:5";
+                    break;
+                case Position.BottomRight:
+                    argument += "(main_w-overlay_w):main_h-overlay_h";
+                    break;
+                case Position.UpperRight:
+                    argument += "(main_w-overlay_w):5";
+                    break;
+                case Position.Left:
+                    argument += "5:(main_h-overlay_h)/2";
+                    break;
+                case Position.Right:
+                    argument += "(main_w-overlay_w-5):(main_h-overlay_h)/2";
+                    break;
+                case Position.Up:
+                    argument += "(main_w-overlay_w)/2:5";
+                    break;
+            }
+            _videoFilters["overlay"] = argument;
+            return this;
         }
 
         /// <inheritdoc />

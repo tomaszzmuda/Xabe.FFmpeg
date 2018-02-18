@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
+using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {
@@ -24,49 +26,6 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private string _preset;
         private bool _useMultiThreads = true;
-        private string _watermark;
-
-        /// <inheritdoc />
-        public IConversion SetWatermark(string imagePath, Position position)
-        {
-            string argument = $"-i \"{imagePath}\" -filter_complex ";
-            switch(position)
-            {
-                case Position.Bottom:
-                    argument += "\"overlay=(main_w-overlay_w)/2:main_h-overlay_h\" ";
-                    break;
-                case Position.Center:
-                    argument += "\"overlay=x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.BottomLeft:
-                    argument += "\"overlay=5:main_h-overlay_h\" ";
-                    break;
-                case Position.UpperLeft:
-                    argument += "\"overlay=5:5\" ";
-                    break;
-                case Position.BottomRight:
-                    argument += "\"overlay=(main_w-overlay_w):main_h-overlay_h\" ";
-                    break;
-                case Position.UpperRight:
-                    argument += "\"overlay=(main_w-overlay_w):5\" ";
-                    break;
-                case Position.Left:
-                    argument += "\"overlay=5:(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.Right:
-                    argument += "\"overlay=(main_w-overlay_w-5):(main_h-overlay_h)/2\" ";
-                    break;
-                case Position.Up:
-                    argument += "\"overlay=(main_w-overlay_w)/2:5\" ";
-                    break;
-            }
-            _watermark = argument;
-            return this;
-        }
-
-        private Conversion()
-        {
-        }
 
         /// <inheritdoc />
         public string Build()
@@ -79,11 +38,8 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
                 builder.Append(_preset);
                 builder.Append(_shortestInput);
-                builder.Append(_watermark);
-
-                foreach(IStream stream in _streams)
-                    builder.Append(stream.Build());
-
+                builder.Append(BuildStreamParameters());
+                builder.Append(BuildFilters());
                 builder.Append(BuildMap());
                 builder.Append(string.Join("", _parameters));
                 builder.Append(_output);
@@ -91,10 +47,49 @@ namespace Xabe.FFmpeg
             }
         }
 
-        /// <inheritdoc cref="IConversion.OnProgress" />
+        private string BuildStreamParameters()
+        {
+            var builder = new StringBuilder();
+            foreach (IStream stream in _streams)
+            {
+                builder.Append(stream.Build());
+            }
+            return builder.ToString();
+        }
+
+        private string BuildFilters()
+        {
+            var builder = new StringBuilder();
+            var configurations = new List<FilterConfiguration>();
+            foreach(IStream stream in _streams)
+            {
+                if(stream is IFilterable filterable)
+                {
+                    configurations.AddRange(filterable.GetFilters());
+                }
+            }
+            IEnumerable<IGrouping<string, FilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
+            foreach(IGrouping<string, FilterConfiguration> filterGroup in filterGroups)
+            {
+                builder.Append($"{filterGroup.Key} \"");
+                foreach (FilterConfiguration configuration in configurations.Where(x=>x.FilterType == filterGroup.Key))
+                {
+                    var values = new List<string>();
+                    foreach(KeyValuePair<string, string> filter in configuration.Filters)
+                    {
+                        string map = $"[{configuration.StreamNumber}]";
+                        string value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
+                        values.Add($"{map} {value} ");
+                    }
+                    builder.Append(string.Join(";", values));
+                }
+                builder.Append("\" ");
+            }
+            return builder.ToString();
+        }
+
         public event ConversionProgressEventHandler OnProgress;
 
-        /// <inheritdoc cref="IConversion.OnDataReceived" />
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
