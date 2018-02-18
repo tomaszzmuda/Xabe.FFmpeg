@@ -21,6 +21,6 @@ namespace Xabe.FFmpeg.Model
         public TimeSpan Duration => EndTime - StartTime;
 
         /// <inheritdoc />
-        public string ConversionParameters { get; internal set; }
+        public string Arguments { get; internal set; }
     }
 }

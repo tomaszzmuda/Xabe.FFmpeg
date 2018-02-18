@@ -33,8 +33,8 @@ namespace Xabe.FFmpeg
         TimeSpan Duration { get; }
 
         /// <summary>
-        /// Used arguments
+        ///     Arguments passed to ffmpeg
         /// </summary>
-        string ConversionParameters { get; }
+        string Arguments { get; }
     }
 }

@@ -123,11 +123,10 @@ namespace Xabe.FFmpeg
                 EndTime = DateTime.Now,
                 MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
                                                                 .Result),
-                ConversionParameters = parameters
+                Arguments = parameters
             };
             return result;
         }
-
 
         /// <inheritdoc />
         public void Clear()

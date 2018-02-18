@@ -317,8 +317,8 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
             Assert.True(result.Success);
-            Assert.Contains("overlay=", result.ConversionParameters);
-            Assert.Contains(Resources.Mp4WithAudio, result.ConversionParameters);
+            Assert.Contains("overlay=", result.Arguments);
+            Assert.Contains(Resources.Mp4WithAudio, result.Arguments);
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.AudioStreams.Count());
