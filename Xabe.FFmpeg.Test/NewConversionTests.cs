@@ -33,8 +33,8 @@ namespace Xabe.FFmpeg.Test
                                                     .Start();
 
             Assert.True(conversionResult.Success);
-            Assert.Contains("overlay", conversionResult.ConversionParameters);
-            Assert.Contains(Resources.PngSample, conversionResult.ConversionParameters);
+            Assert.Contains("overlay", conversionResult.Arguments);
+            Assert.Contains(Resources.PngSample, conversionResult.Arguments);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);

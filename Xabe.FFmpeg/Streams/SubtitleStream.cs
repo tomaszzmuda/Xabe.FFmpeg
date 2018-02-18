@@ -9,7 +9,7 @@ namespace Xabe.FFmpeg.Streams
     public class SubtitleStream : ISubtitleStream
     {
         private string _format;
-        private string _language;
+        private string _configuredLanguage;
         private string _split;
 
         /// <inheritdoc />
@@ -39,14 +39,7 @@ namespace Xabe.FFmpeg.Streams
         private string BuildLanguage()
         {
             string language = string.Empty;
-            if(!string.IsNullOrEmpty(_language))
-            {
-                language = _language;
-            }
-            else if(!string.IsNullOrEmpty(Language))
-            {
-                language = Language;
-            }
+            language = !string.IsNullOrEmpty(_configuredLanguage) ? _configuredLanguage : Language;
             if(!string.IsNullOrEmpty(language))
             {
                 language = $"-metadata:s:s:{Index} language={language} ";
@@ -65,7 +58,7 @@ namespace Xabe.FFmpeg.Streams
         {
             if(!string.IsNullOrEmpty(lang))
             {
-                _language = lang;
+                _configuredLanguage = lang;
             }
             return this;
         }
