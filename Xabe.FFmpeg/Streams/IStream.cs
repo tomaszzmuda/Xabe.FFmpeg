@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Streams
 {
     /// <summary>
     ///     Base stream class

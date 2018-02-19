@@ -13,7 +13,7 @@ namespace Xabe.FFmpeg.Enums
         public static AudioCodec aac = new AudioCodec("aac");
 
         /// <summary>
-        /// AC3 (Dolby Digital audio codec)
+        ///     AC3 (Dolby Digital audio codec)
         /// </summary>
         public static AudioCodec ac3 = new AudioCodec("ac3");
 

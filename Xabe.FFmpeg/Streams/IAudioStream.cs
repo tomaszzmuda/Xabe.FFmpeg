@@ -1,7 +1,7 @@
 ﻿using System;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Streams
 {
     /// <summary>
     ///     Audio stream

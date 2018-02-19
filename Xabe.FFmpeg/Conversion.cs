@@ -88,8 +88,10 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
+        /// <inheritdoc />
         public event ConversionProgressEventHandler OnProgress;
 
+        /// <inheritdoc/>
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />

@@ -25,9 +25,8 @@ namespace Xabe.FFmpeg
 
         private static void CheckMultiplicationRange(double multiplication)
         {
-            if(multiplication < 0.5 ||
-               multiplication > 2.0)
-                throw new ArgumentOutOfRangeException("Value has to be greater than 0.5 and less than 2.0.");
+            if(multiplication < 0.5 || multiplication > 2.0)
+                throw new ArgumentOutOfRangeException(nameof(multiplication), "Value has to be greater than 0.5 and less than 2.0.");
         }
     }
 }
