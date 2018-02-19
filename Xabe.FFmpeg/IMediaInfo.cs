@@ -44,11 +44,5 @@ namespace Xabe.FFmpeg
         ///     Audio streams
         /// </summary>
         IEnumerable<ISubtitleStream> SubtitleStreams { get; }
-
-        /// <summary>
-        ///     Get formated info about video
-        /// </summary>
-        /// <returns>Formated info about vidoe</returns>
-        string ToString();
     }
 }

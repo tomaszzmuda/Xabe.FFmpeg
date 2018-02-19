@@ -6,6 +6,7 @@ using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {
+    /// <inheritdoc />
     public partial class Conversion
     {
         /// <summary>
@@ -19,9 +20,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.h264);
+                                      ?.SetCodec(VideoCodec.H264);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.aac);
+                                      ?.SetCodec(AudioCodec.Aac);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -59,9 +60,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.theora);
+                                      ?.SetCodec(VideoCodec.Theora);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.libvorbis);
+                                      ?.SetCodec(AudioCodec.Libvorbis);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -79,9 +80,9 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.vp8);
+                                      ?.SetCodec(VideoCodec.Vp8);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.libvorbis);
+                                      ?.SetCodec(AudioCodec.Libvorbis);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -112,15 +113,16 @@ namespace Xabe.FFmpeg
         ///     Melt watermark into video
         /// </summary>
         /// <param name="inputPath">Input video path</param>
-        /// <param name="position">Position of watermark</param>
         /// <param name="outputPath">Output file</param>
         /// <param name="inputImage">Watermark</param>
+        /// <param name="position">Position of watermark</param>
         /// <returns>Conversion result</returns>
         public static async Task<IConversion> SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault().SetWatermark(inputImage, position);
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           .SetWatermark(inputImage, position);
 
             return New()
                 .AddStream(videoStream)
@@ -167,14 +169,14 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputPath">Video</param>
         /// <param name="outputPath">Output file</param>
-        /// <param name="captureTime"></param>
+        /// <param name="captureTime">TimeSpan of snapshot</param>
         /// <returns>Conversion result</returns>
         public static async Task<IConversion> Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           .SetCodec(VideoCodec.png)
+                                           .SetCodec(VideoCodec.Png)
                                            .SetOutputFramesCount(1)
                                            .SetSeek(captureTime);
 
@@ -214,7 +216,7 @@ namespace Xabe.FFmpeg
         public static async Task<IConversion> Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
             IMediaInfo info = await MediaInfo.Get(inputPath);
-            var streams = info.Streams.ToArray();
+            IStream[] streams = info.Streams.ToArray();
             foreach(IStream stream in streams)
             {
                 stream.Split(startTime, duration);
@@ -248,8 +250,8 @@ namespace Xabe.FFmpeg
         ///     Add subtitles to video stream
         /// </summary>
         /// <param name="inputPath">Video</param>
-        /// <param name="subtitlesPath">Subtitles</param>
         /// <param name="outputPath">Output file</param>
+        /// <param name="subtitlesPath">Subtitles</param>
         /// <returns>Conversion result</returns>
         public static async Task<IConversion> AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
         {

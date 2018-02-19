@@ -10,7 +10,7 @@ namespace Xabe.FFmpeg
     public static class Extensions
     {
         /// <summary>
-        ///     Return ffmpeg formated time
+        ///     Return ffmpeg formatted time
         /// </summary>
         /// <param name="ts">TimeSpan</param>
         /// <returns>FFmpeg formated time</returns>
@@ -19,7 +19,7 @@ namespace Xabe.FFmpeg
             int milliseconds = ts.Milliseconds;
             int seconds = ts.Seconds;
             int minutes = ts.Minutes;
-            int hours = (int)ts.TotalHours;
+            var hours = (int) ts.TotalHours;
 
             return $"{hours:D}:{minutes:D2}:{seconds:D2}.{milliseconds:D3}";
         }
@@ -31,10 +31,12 @@ namespace Xabe.FFmpeg
         /// <returns>TimeSpan</returns>
         public static TimeSpan ParseFFmpegTime(this string text)
         {
-            List<string> parts = text.Split(':').Reverse().ToList();
+            List<string> parts = text.Split(':')
+                                     .Reverse()
+                                     .ToList();
 
-            int milliseconds = 0;
-            int seconds = 0;
+            var milliseconds = 0;
+            var seconds = 0;
 
             if(parts[0].Contains('.'))
             {
@@ -54,7 +56,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        /// Add item to list if current doesnt exist
+        ///     Add item to list if current doesnt exist
         /// </summary>
         /// <typeparam name="T">Item type</typeparam>
         /// <param name="collection">Collection to modify</param>

@@ -8,20 +8,34 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg.Streams
 {
     /// <inheritdoc cref="IVideoStream" />
-    public class VideoStream : IVideoStream, IFilterable
+    public class VideoStream: IVideoStream, IFilterable
     {
-        private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
         private readonly List<string> _parameters = new List<string>();
+        private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
         private string _bitsreamFilter;
         private string _codec;
         private string _frameCount;
         private string _loop;
         private string _reverse;
+        private string _rotate;
         private string _scale;
         private string _seek;
         private string _size;
         private string _split;
-        private string _rotate;
+
+        /// <inheritdoc />
+        public IEnumerable<FilterConfiguration> GetFilters()
+        {
+            if(_videoFilters.Any())
+            {
+                yield return new FilterConfiguration
+                {
+                    FilterType = "-filter_complex",
+                    StreamNumber = Index,
+                    Filters = _videoFilters
+                };
+            }
+        }
 
         /// <inheritdoc />
         public int Width { get; internal set; }
@@ -66,7 +80,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream Rotate(RotateDegrees rotateDegrees)
         {
-            _rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int)rotateDegrees}\" ";
+            _rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int) rotateDegrees}\" ";
             return this;
         }
 
@@ -88,7 +102,9 @@ namespace Xabe.FFmpeg.Streams
         {
             _loop = $"-loop {count} ";
             if(delay > 0)
+            {
                 _loop += $"-final_delay {delay / 100} ";
+            }
             return this;
         }
 
@@ -124,7 +140,9 @@ namespace Xabe.FFmpeg.Streams
         public IVideoStream SetScale(VideoSize size)
         {
             if(size != null)
+            {
                 _scale = $"-vf scale={size} ";
+            }
             return this;
         }
 
@@ -132,12 +150,14 @@ namespace Xabe.FFmpeg.Streams
         public IVideoStream SetSize(VideoSize size)
         {
             if(size != null)
+            {
                 _size = $"-s {size} ";
+            }
             return this;
         }
 
         /// <inheritdoc />
-        public IVideoStream SetCodec(VideoCodec codec)
+        public IVideoStream SetCodec(IVideoCodec codec)
         {
             _codec = $"-codec:v {codec} ";
             return this;
@@ -156,7 +176,9 @@ namespace Xabe.FFmpeg.Streams
             if(seek != null)
             {
                 if(seek > Duration)
+                {
                     throw new ArgumentException("Seek can not be greater than video duration");
+                }
                 _seek = $"-ss {seek} ";
             }
             return this;
@@ -177,20 +199,6 @@ namespace Xabe.FFmpeg.Streams
 
         /// <inheritdoc />
         public int Index { get; internal set; }
-
-        /// <inheritdoc />
-        public IEnumerable<FilterConfiguration> GetFilters()
-        {
-            if(_videoFilters.Any())
-            {
-                yield return new FilterConfiguration
-                {
-                    FilterType = "-filter_complex",
-                    StreamNumber = Index,
-                    Filters = _videoFilters
-                };
-            }
-        }
 
         /// <inheritdoc />
         public IVideoStream SetWatermark(string imagePath, Position position)

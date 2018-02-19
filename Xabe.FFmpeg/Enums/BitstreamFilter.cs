@@ -22,17 +22,17 @@
         /// <summary>
         ///     H264_Mp4ToAnnexB
         /// </summary>
-        public static BitstreamFilter H264_Mp4ToAnnexB => new BitstreamFilter("H264_Mp4ToAnnexB");
+        public static BitstreamFilter H264Mp4ToAnnexB => new BitstreamFilter("H264_Mp4ToAnnexB");
 
         /// <summary>
         ///     Aac_AdtstoAsc
         /// </summary>
-        public static BitstreamFilter Aac_AdtstoAsc => new BitstreamFilter("Aac_AdtstoAsc");
+        public static BitstreamFilter AacAdtstoAsc => new BitstreamFilter("Aac_AdtstoAsc");
 
         /// <summary>
         ///     Return bitstream filter in ffmpeg format
         /// </summary>
-        /// <returns></returns>
+        /// <returns>string formatted filter</returns>
         public override string ToString()
         {
             return Filter.ToLower();

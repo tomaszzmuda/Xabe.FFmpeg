@@ -37,10 +37,16 @@ namespace Xabe.FFmpeg
             _parallel = parallel;
 
             if(!_parallel)
+            {
                 Task.Run(() => Worker(_cancellationTokenSource.Token));
+            }
             else
+            {
                 for(var i = 0; i < Environment.ProcessorCount; i++)
+                {
                     Task.Run(() => Worker(_cancellationTokenSource.Token));
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -88,6 +94,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Start converting media in queue
         /// </summary>
+        /// <param name="cancellationTokenSource">Cancelation token</param>
         public void Start(CancellationTokenSource cancellationTokenSource = null)
         {
             _cancellationTokenSource = cancellationTokenSource ?? new CancellationTokenSource();

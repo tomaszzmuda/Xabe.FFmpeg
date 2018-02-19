@@ -1,11 +1,11 @@
 ﻿using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Streams
 {
     /// <summary>
     ///     Subtitle stream
     /// </summary>
-    public interface ISubtitleStream : IStream
+    public interface ISubtitleStream: IStream
     {
         /// <summary>
         ///     Subtitle language

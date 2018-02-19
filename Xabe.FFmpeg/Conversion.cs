@@ -14,17 +14,17 @@ using Xabe.FFmpeg.Streams;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
-    public partial class Conversion : IConversion
+    public partial class Conversion: IConversion
     {
         private readonly object _builderLock = new object();
-        private readonly IList<string> _parameters = new List<string>();
         private readonly Dictionary<FileInfo, int> _inputFileMap = new Dictionary<FileInfo, int>();
+        private readonly IList<string> _parameters = new List<string>();
         private readonly List<IStream> _streams = new List<IStream>();
 
         private IEnumerable<FieldInfo> _fields;
         private string _output;
-        private string _shortestInput;
         private string _preset;
+        private string _shortestInput;
         private bool _useMultiThreads = true;
 
         /// <inheritdoc />
@@ -41,55 +41,16 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
-                builder.Append(string.Join("", _parameters));
+                builder.Append(string.Join(string.Empty, _parameters));
                 builder.Append(_output);
                 return builder.ToString();
             }
         }
 
-        private string BuildStreamParameters()
-        {
-            var builder = new StringBuilder();
-            foreach (IStream stream in _streams)
-            {
-                builder.Append(stream.Build());
-            }
-            return builder.ToString();
-        }
-
-        private string BuildFilters()
-        {
-            var builder = new StringBuilder();
-            var configurations = new List<FilterConfiguration>();
-            foreach(IStream stream in _streams)
-            {
-                if(stream is IFilterable filterable)
-                {
-                    configurations.AddRange(filterable.GetFilters());
-                }
-            }
-            IEnumerable<IGrouping<string, FilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
-            foreach(IGrouping<string, FilterConfiguration> filterGroup in filterGroups)
-            {
-                builder.Append($"{filterGroup.Key} \"");
-                foreach (FilterConfiguration configuration in configurations.Where(x=>x.FilterType == filterGroup.Key))
-                {
-                    var values = new List<string>();
-                    foreach(KeyValuePair<string, string> filter in configuration.Filters)
-                    {
-                        string map = $"[{configuration.StreamNumber}]";
-                        string value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
-                        values.Add($"{map} {value} ");
-                    }
-                    builder.Append(string.Join(";", values));
-                }
-                builder.Append("\" ");
-            }
-            return builder.ToString();
-        }
-
+        /// <inheritdoc />
         public event ConversionProgressEventHandler OnProgress;
 
+        /// <inheritdoc />
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
@@ -133,12 +94,16 @@ namespace Xabe.FFmpeg
         {
             _parameters.Clear();
             if(_fields == null)
+            {
                 _fields = GetType()
                     .GetFields(BindingFlags.NonPublic |
                                BindingFlags.Instance)
                     .Where(x => x.FieldType == typeof(string));
+            }
             foreach(FieldInfo fieldinfo in _fields)
+            {
                 fieldinfo.SetValue(this, null);
+            }
         }
 
         /// <inheritdoc />
@@ -152,8 +117,12 @@ namespace Xabe.FFmpeg
         public IConversion AddStream<T>(params T[] streams) where T : IStream
         {
             foreach(T stream in streams)
+            {
                 if(stream != null)
+                {
                     _streams.Add(stream);
+                }
+            }
             return this;
         }
 
@@ -163,7 +132,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetPreset(ConversionPreset preset)
         {
-            _preset = $"-preset {preset.ToString().ToLower()} ";
+            _preset = $"-preset {preset.ToString() .ToLower()} ";
             return this;
         }
 
@@ -172,20 +141,6 @@ namespace Xabe.FFmpeg
         {
             _useMultiThreads = multiThread;
             return this;
-        }
-
-        /// <summary>
-        /// Create arhument for ffmpeg with thread configuration
-        /// </summary>
-        /// <param name="multiThread">Use multi thread</param>
-        /// <returns>Build parameter argument</returns>
-        private static string BuildThreadsArgument(bool multiThread)
-        {
-            string threadCount = multiThread
-                ? Environment.ProcessorCount.ToString()
-                : "1";
-
-            return $"-threads {threadCount} ";
         }
 
         /// <inheritdoc />
@@ -201,6 +156,61 @@ namespace Xabe.FFmpeg
         {
             _shortestInput = !useShortest ? string.Empty : "-shortest ";
             return this;
+        }
+
+        private string BuildStreamParameters()
+        {
+            var builder = new StringBuilder();
+            foreach(IStream stream in _streams)
+            {
+                builder.Append(stream.Build());
+            }
+            return builder.ToString();
+        }
+
+        private string BuildFilters()
+        {
+            var builder = new StringBuilder();
+            var configurations = new List<FilterConfiguration>();
+            foreach(IStream stream in _streams)
+            {
+                if(stream is IFilterable filterable)
+                {
+                    configurations.AddRange(filterable.GetFilters());
+                }
+            }
+            IEnumerable<IGrouping<string, FilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
+            foreach(IGrouping<string, FilterConfiguration> filterGroup in filterGroups)
+            {
+                builder.Append($"{filterGroup.Key} \"");
+                foreach(FilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
+                {
+                    var values = new List<string>();
+                    foreach(KeyValuePair<string, string> filter in configuration.Filters)
+                    {
+                        string map = $"[{configuration.StreamNumber}]";
+                        string value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
+                        values.Add($"{map} {value} ");
+                    }
+                    builder.Append(string.Join(";", values));
+                }
+                builder.Append("\" ");
+            }
+            return builder.ToString();
+        }
+
+        /// <summary>
+        ///     Create arhument for ffmpeg with thread configuration
+        /// </summary>
+        /// <param name="multiThread">Use multi thread</param>
+        /// <returns>Build parameter argument</returns>
+        private static string BuildThreadsArgument(bool multiThread)
+        {
+            string threadCount = multiThread
+                ? Environment.ProcessorCount.ToString()
+                : "1";
+
+            return $"-threads {threadCount} ";
         }
 
         /// <summary>

@@ -63,19 +63,24 @@ namespace Xabe.FFmpeg
         {
             while(width != 0 &&
                   height != 0)
+            {
                 if(width > height)
+                {
                     width -= height;
+                }
                 else
+                {
                     height -= width;
+                }
+            }
             return width == 0 ? height : width;
         }
-
 
         private async Task<string> RunProcess(string args)
         {
             return await Task.Run(() =>
             {
-                RunProcess(args, FFprobePath, rStandardOutput: true);
+                RunProcess(args, FFprobePath, standardOutput: true);
 
                 string output;
 
@@ -85,7 +90,7 @@ namespace Xabe.FFmpeg
                 }
                 catch(Exception)
                 {
-                    output = "";
+                    output = string.Empty;
                 }
                 finally
                 {
@@ -107,13 +112,15 @@ namespace Xabe.FFmpeg
         {
             ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName);
             if(!streams.Any())
+            {
                 throw new ArgumentException($"Invalid file. Cannot load file {fileInfo.Name}");
+            }
 
             FormatModel.Format format = await GetFormat(fileInfo.FullName);
             mediaInfo.Size = long.Parse(format.size);
 
             mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
-            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"), format);
+            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
             mediaInfo.SubtitleStreams = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
 
             mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
@@ -128,7 +135,7 @@ namespace Xabe.FFmpeg
             return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels, FormatModel.Format format)
+        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach(ProbeModel.Stream model in audioStreamModels)
             {
@@ -137,7 +144,7 @@ namespace Xabe.FFmpeg
                     Format = model.codec_name,
                     Duration = GetAudioDuration(model),
                     Source = fileInfo,
-                    Index = model.index,
+                    Index = model.index
                 };
                 yield return stream;
             }
@@ -173,7 +180,7 @@ namespace Xabe.FFmpeg
                     Source = fileInfo,
                     Index = model.index,
                     Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate
-            };
+                };
                 yield return stream;
             }
         }

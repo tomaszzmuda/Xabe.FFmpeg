@@ -6,31 +6,8 @@ namespace Xabe.FFmpeg.Streams
     /// <summary>
     ///     Video Stream
     /// </summary>
-    public interface IVideoStream : IStream
+    public interface IVideoStream: IStream
     {
-        /// <summary>
-        ///     Rotate video
-        /// </summary>
-        /// <param name="rotateDegrees">Rotate type</param>
-        /// <returns>IVideoStream</returns>
-        IVideoStream Rotate(RotateDegrees rotateDegrees);
-
-        /// <summary>
-        ///     Change speed of video
-        /// </summary>
-        /// <param name="multiplaction">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
-        /// <returns>IVideoStream</returns>
-        /// <exception cref="ArgumentOutOfRangeException">When speed isn't between 0.5 - 2.0.</exception>
-        IVideoStream ChangeSpeed(double multiplaction);
-
-        /// <summary>
-        ///     Melt watermark into video
-        /// </summary>
-        /// <param name="imagePath">Watermark</param>
-        /// <param name="position">Position of watermark</param>
-        /// <returns>IVideoStream</returns>
-        IVideoStream SetWatermark(string imagePath, Position position);
-
         /// <summary>
         ///     Duration
         /// </summary>
@@ -57,14 +34,37 @@ namespace Xabe.FFmpeg.Streams
         string Ratio { get; }
 
         /// <summary>
-        ///  Codec type
+        ///     Codec type
         /// </summary>
         CodecType CodecType { get; }
 
         /// <summary>
-        /// Video bitrate
+        ///     Video bitrate
         /// </summary>
         double Bitrate { get; }
+
+        /// <summary>
+        ///     Rotate video
+        /// </summary>
+        /// <param name="rotateDegrees">Rotate type</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream Rotate(RotateDegrees rotateDegrees);
+
+        /// <summary>
+        ///     Change speed of video
+        /// </summary>
+        /// <param name="multiplaction">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
+        /// <returns>IVideoStream</returns>
+        /// <exception cref="ArgumentOutOfRangeException">When speed isn't between 0.5 - 2.0.</exception>
+        IVideoStream ChangeSpeed(double multiplaction);
+
+        /// <summary>
+        ///     Melt watermark into video
+        /// </summary>
+        /// <param name="imagePath">Watermark</param>
+        /// <param name="position">Position of watermark</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetWatermark(string imagePath, Position position);
 
         /// <summary>
         ///     Reverse video
@@ -91,7 +91,7 @@ namespace Xabe.FFmpeg.Streams
         /// </summary>
         /// <param name="codec">Video codec</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetCodec(VideoCodec codec);
+        IVideoStream SetCodec(IVideoCodec codec);
 
         /// <summary>
         ///     Set stream to copy with orginal codec
