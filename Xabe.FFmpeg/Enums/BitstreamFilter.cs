@@ -32,7 +32,7 @@
         /// <summary>
         ///     Return bitstream filter in ffmpeg format
         /// </summary>
-        /// <returns></returns>
+        /// <returns>string formatted filter</returns>
         public override string ToString()
         {
             return Filter.ToLower();

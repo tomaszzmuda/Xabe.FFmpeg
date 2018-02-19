@@ -1,52 +1,48 @@
-﻿// ReSharper disable InconsistentNaming
-
-namespace Xabe.FFmpeg.Enums
+﻿namespace Xabe.FFmpeg.Enums
 {
-    /// <summary>
-    ///     Video codec ("ffmpeg -codecs")
-    /// </summary>
-    public class VideoCodec
+    /// <inheritdoc />
+    public class VideoCodec: IVideoCodec
     {
         /// <summary>
         ///     H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (decoders: h264 h264_crystalhd h264_vdpau ) (encoders: libx264 libx264rgb
         ///     )
         /// </summary>
-        public static VideoCodec h264 = new VideoCodec("h264");
+        public static readonly IVideoCodec H264 = new VideoCodec("h264");
 
         /// <summary>
         ///     H.265 / HEVC (High Efficiency Video Coding) (encoders: libx265 )
         /// </summary>
-        public static VideoCodec hevc = new VideoCodec("hevc");
+        public static readonly IVideoCodec Hevc = new VideoCodec("hevc");
 
         /// <summary>
         ///     MPEG-4 part 2 (decoders: mpeg4 mpeg4_crystalhd mpeg4_vdpau ) (encoders: mpeg4 libxvid )
         /// </summary>
-        public static VideoCodec mpeg4 = new VideoCodec("mpeg4");
+        public static readonly IVideoCodec Mpeg4 = new VideoCodec("mpeg4");
 
         /// <summary>
         ///     PNG (Portable Network Graphics) image
         /// </summary>
-        public static VideoCodec png = new VideoCodec("png");
+        public static readonly IVideoCodec Png = new VideoCodec("png");
 
         /// <summary>
         ///     Theora (encoders: libtheora )
         /// </summary>
-        public static VideoCodec theora = new VideoCodec("theora");
+        public static readonly IVideoCodec Theora = new VideoCodec("theora");
 
         /// <summary>
         ///     TIFF image
         /// </summary>
-        public static VideoCodec tiff = new VideoCodec("tiff");
+        public static readonly IVideoCodec Tiff = new VideoCodec("tiff");
 
         /// <summary>
         ///     On2 VP8 (decoders: vp8 libvpx ) (encoders: libvpx )
         /// </summary>
-        public static VideoCodec vp8 = new VideoCodec("vp8");
+        public static readonly IVideoCodec Vp8 = new VideoCodec("vp8");
 
         /// <summary>
         ///     Free x264 codec
         /// </summary>
-        public static VideoCodec libx264 = new VideoCodec("libx264");
+        public static readonly IVideoCodec Libx264 = new VideoCodec("libx264");
 
         /// <inheritdoc />
         public VideoCodec(string codec)
@@ -54,9 +50,7 @@ namespace Xabe.FFmpeg.Enums
             Codec = codec;
         }
 
-        /// <summary>
-        ///     Video codec
-        /// </summary>
+        /// <inheritdoc />
         public string Codec { get; }
 
         /// <inheritdoc />

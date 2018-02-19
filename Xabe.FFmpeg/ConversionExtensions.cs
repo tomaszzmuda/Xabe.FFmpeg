@@ -9,7 +9,7 @@ namespace Xabe.FFmpeg
     public static class ConversionExtensions
     {
         /// <summary>
-        /// Execute conversion task
+        ///     Execute conversion task
         /// </summary>
         /// <param name="conversionTask">Task to execute</param>
         /// <returns>IConversionResult</returns>

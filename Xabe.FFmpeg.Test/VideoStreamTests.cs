@@ -41,7 +41,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.h264).ChangeSpeed(speed))
+                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.H264).ChangeSpeed(speed))
                                                     .SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -64,7 +64,7 @@ namespace Xabe.FFmpeg.Test
 
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await Conversion.New()
                                                                                               .AddStream(inputFile.VideoStreams.First()
-                                                                                                                  .SetCodec(VideoCodec.h264)
+                                                                                                                  .SetCodec(VideoCodec.H264)
                                                                                                                   .ChangeSpeed(multiplication))
                                                                                               .SetPreset(ConversionPreset.UltraFast)
                                                                                               .SetOutput(outputPath)
@@ -142,7 +142,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     await Conversion.New()
                                     .AddStream(inputFile.VideoStreams.First()
-                                                                     .SetCodec(VideoCodec.h264)
+                                                                     .SetCodec(VideoCodec.H264)
                                                                      .Reverse()
                                                                      .CopyStream())
                                     .SetOutput(outputPath)
@@ -191,7 +191,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                    .AddStream(inputFile.VideoStreams.First()
-                                                                                    .SetCodec(VideoCodec.h264)
+                                                                                    .SetCodec(VideoCodec.H264)
                                                                                     .Reverse())
                                                    .SetPreset(ConversionPreset.UltraFast)
                                                    .SetOutput(outputPath)
@@ -213,7 +213,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult conversionResult = await Conversion.New()
                                                    .AddStream(inputFile.VideoStreams.First()
                                                                                      .SetScale(VideoSize.Sqcif)
-                                                                                     .SetCodec(VideoCodec.h264))
+                                                                                     .SetCodec(VideoCodec.H264))
                                                    .SetPreset(ConversionPreset.UltraFast)
                                                    .SetOutput(outputPath)
                                                    .Start();
@@ -278,7 +278,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(inputFile.VideoStreams.First()
-                                                                                                  .SetCodec(VideoCodec.hevc))
+                                                                                                  .SetCodec(VideoCodec.Hevc))
                .SetOutput(outputPath)
                .Start();
 

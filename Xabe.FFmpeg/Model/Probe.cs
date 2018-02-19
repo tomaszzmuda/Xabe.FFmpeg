@@ -1,5 +1,4 @@
 ﻿// ReSharper disable InconsistentNaming
-
 namespace Xabe.FFmpeg.Model
 {
     internal class ProbeModel
@@ -9,13 +8,21 @@ namespace Xabe.FFmpeg.Model
         public class Stream
         {
             public string codec_name { get; set; }
+
             public int height { get; set; }
+
             public int width { get; set; }
+
             public string codec_type { get; set; }
+
             public string r_frame_rate { get; set; }
+
             public double duration { get; set; }
+
             public double bit_rate { get; set; }
+
             public int index { get; set; }
+
             public Tags tags { get; set; }
 
             //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT

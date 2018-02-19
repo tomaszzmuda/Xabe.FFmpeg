@@ -47,7 +47,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
-            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
@@ -64,7 +64,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
-            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.ac3);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Ac3);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(audioStream)

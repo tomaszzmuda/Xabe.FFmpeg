@@ -9,7 +9,7 @@ using Xabe.FFmpeg.Streams;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IMediaInfo" />
-    public class MediaInfo : IMediaInfo
+    public class MediaInfo: IMediaInfo
     {
         private MediaInfo(FileInfo fileInfo)
         {
@@ -86,7 +86,9 @@ namespace Xabe.FFmpeg
         public static async Task<IMediaInfo> Get(FileInfo fileInfo)
         {
             if(!File.Exists(fileInfo.FullName))
+            {
                 throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
+            }
 
             var mediaInfo = new MediaInfo(fileInfo);
             mediaInfo = await new FFprobe().GetProperties(fileInfo, mediaInfo);

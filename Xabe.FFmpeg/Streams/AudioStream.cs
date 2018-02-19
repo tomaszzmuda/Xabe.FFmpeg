@@ -9,14 +9,14 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg.Streams
 {
     /// <inheritdoc cref="IAudioStream" />
-    public class AudioStream : IAudioStream, IFilterable
+    public class AudioStream: IAudioStream, IFilterable
     {
         private readonly Dictionary<string, string> _audioFilters = new Dictionary<string, string>();
         private string _audio;
         private string _bitsreamFilter;
         private string _reverse;
-        private string _split;
         private string _seek;
+        private string _split;
 
         /// <inheritdoc />
         public IAudioStream Reverse()
@@ -47,7 +47,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IAudioStream CopyStream()
         {
-            _audioFilters["-c:v copy"] = "";
+            _audioFilters["-c:v copy"] = string.Empty;
             return this;
         }
 
@@ -64,7 +64,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IAudioStream ChangeSpeed(double multiplication)
         {
-            _audioFilters["atempo"] = $"{ string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))}";
+            _audioFilters["atempo"] = $"{string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))}";
             return this;
         }
 
@@ -86,7 +86,22 @@ namespace Xabe.FFmpeg.Streams
 
         /// <inheritdoc />
         public FileInfo Source { get; internal set; }
-        
+
+        /// <inheritdoc />
+        public IAudioStream SetSeek(TimeSpan? seek)
+        {
+            if(seek.HasValue)
+            {
+                _seek = $"-ss {seek.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        void IStream.Split(TimeSpan startTime, TimeSpan duration)
+        {
+            Split(startTime, duration);
+        }
+
         /// <inheritdoc />
         public IEnumerable<FilterConfiguration> GetFilters()
         {
@@ -99,19 +114,6 @@ namespace Xabe.FFmpeg.Streams
                     Filters = _audioFilters
                 };
             }
-        }
-
-        /// <inheritdoc />
-        public IAudioStream SetSeek(TimeSpan? seek)
-        {
-            if(seek.HasValue)
-                _seek = $"-ss {seek.Value.ToFFmpeg()} ";
-            return this;
-        }
-
-        void IStream.Split(TimeSpan startTime, TimeSpan duration)
-        {
-            Split(startTime, duration);
         }
     }
 }
