@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Model;
 using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
@@ -15,9 +17,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ToMp4(string inputPath, string outputPath)
+        public static IConversion ToMp4(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.H264);
@@ -35,9 +37,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ToTs(string inputPath, string outputPath)
+        public static IConversion ToTs(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(new VideoCodec("mpeg2video"));
@@ -55,9 +57,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ToOgv(string inputPath, string outputPath)
+        public static IConversion ToOgv(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.Theora);
@@ -75,9 +77,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ToWebM(string inputPath, string outputPath)
+        public static IConversion ToWebM(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.Vp8);
@@ -97,9 +99,9 @@ namespace Xabe.FFmpeg
         /// <param name="loop">Number of repeats</param>
         /// <param name="delay">Delay between repeats (in seconds)</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ToGif(string inputPath, string outputPath, int loop, int delay = 0)
+        public static IConversion ToGif(string inputPath, string outputPath, int loop, int delay = 0)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetLoop(loop, delay);
@@ -117,9 +119,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputImage">Watermark</param>
         /// <param name="position">Position of watermark</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
+        public static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetWatermark(inputImage, position);
@@ -136,9 +138,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output audio stream</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ExtractVideo(string inputPath, string outputPath)
+        public static IConversion ExtractVideo(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
 
@@ -153,9 +155,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output video stream</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ExtractAudio(string inputPath, string outputPath)
+        public static IConversion ExtractAudio(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IAudioStream audioStream = info.AudioStreams.FirstOrDefault();
 
@@ -171,9 +173,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output file</param>
         /// <param name="captureTime">TimeSpan of snapshot</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
+        public static IConversion Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetCodec(VideoCodec.Png)
@@ -192,9 +194,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output path</param>
         /// <param name="size">Expected size</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ChangeSize(string inputPath, string outputPath, VideoSize size)
+        public static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetScale(size);
@@ -213,9 +215,10 @@ namespace Xabe.FFmpeg
         /// <param name="startTime">Start point</param>
         /// <param name="duration">Duration of new video</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
+        public static IConversion Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
+
             IStream[] streams = info.Streams.ToArray();
             foreach(IStream stream in streams)
             {
@@ -234,10 +237,11 @@ namespace Xabe.FFmpeg
         /// <param name="audioPath">Audio</param>
         /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> AddAudio(string videoPath, string audioPath, string outputPath)
+        public static IConversion AddAudio(string videoPath, string audioPath, string outputPath)
         {
-            IMediaInfo videoInfo = await MediaInfo.Get(videoPath);
-            IMediaInfo audioInfo = await MediaInfo.Get(audioPath);
+            IMediaInfo videoInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(videoPath));
+
+            IMediaInfo audioInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(audioPath));
 
             return New()
                 .AddStream(videoInfo.VideoStreams.FirstOrDefault())
@@ -253,9 +257,10 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output file</param>
         /// <param name="subtitlesPath">Subtitles</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
+        public static IConversion AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
+
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.AddSubtitles(subtitlesPath);
 
@@ -274,10 +279,10 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
+        public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(inputPath);
-            IMediaInfo subtitleInfo = await MediaInfo.Get(subtitlePath);
+            IMediaInfo mediaInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
+            IMediaInfo subtitleInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(subtitlePath));
 
             ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
                                                          .SetLanguage(language);
@@ -287,6 +292,52 @@ namespace Xabe.FFmpeg
                 .AddStream(mediaInfo.AudioStreams.ToArray())
                 .AddStream(subtitleStream)
                 .SetOutput(outputPath);
+        }
+
+        /// <summary>
+        ///     Concat multiple inputVideos.
+        /// </summary>
+        /// <param name="output">Concatenated inputVideos</param>
+        /// <param name="inputVideos">Videos to add</param>
+        /// <returns>Conversion result</returns>
+        public static async Task<IConversionResult> Concatenate(string output, params string[] inputVideos)
+        {
+            if(inputVideos.Length <= 1)
+            {
+                throw new ArgumentException("You must provide at least 2 files for the concatenation to work", "inputVideos");
+            }
+
+            var mediaInfos = new List<IMediaInfo>();
+
+            IConversion conversion = New();
+            foreach(string inputVideo in inputVideos)
+            {
+                IMediaInfo mediaInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(inputVideo));
+
+                mediaInfos.Add(mediaInfo);
+                conversion.AddParameter($"-i \"{inputVideo}\" ");
+            }
+            conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
+            conversion.AddParameter($"-filter_complex \"");
+
+            IVideoStream maxResolutionMedia = mediaInfos.Select(x => x.VideoStreams.OrderByDescending(z => z.Width)
+                                                                      .First())
+                                                        .OrderByDescending(x => x.Width)
+                                                        .First();
+            for(var i = 0; i < mediaInfos.Count; i++)
+            {
+                conversion.AddParameter(
+                    $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
+            }
+
+            for(var i = 0; i < mediaInfos.Count; i++)
+            {
+                conversion.AddParameter(!mediaInfos[i].AudioStreams.Any() ? $"[v{i}]" : $"[v{i}][{i}:a]");
+            }
+
+            conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
+            conversion.SetOutput(output);
+            return await conversion.Start();
         }
     }
 }
