@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class VideoInfoTests
+    public class MediaInfoTests
     {
         [Fact]
         public async Task AudioPopertiesTest()

@@ -14,3 +14,5 @@
 /.vs/*
 *.nupkg
 *.user
+/coverage.xml
+/coverage
