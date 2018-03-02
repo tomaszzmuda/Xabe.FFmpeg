@@ -19,7 +19,7 @@ namespace Xabe.FFmpeg
             int milliseconds = ts.Milliseconds;
             int seconds = ts.Seconds;
             int minutes = ts.Minutes;
-            var hours = (int) ts.TotalHours;
+            var hours = (int)ts.TotalHours;
 
             return $"{hours:D}:{minutes:D2}:{seconds:D2}.{milliseconds:D3}";
         }
@@ -53,20 +53,6 @@ namespace Xabe.FFmpeg
             int hours = int.Parse(parts[2]);
 
             return new TimeSpan(0, hours, minutes, seconds, milliseconds);
-        }
-
-        /// <summary>
-        ///     Add item to list if current doesnt exist
-        /// </summary>
-        /// <typeparam name="T">Item type</typeparam>
-        /// <param name="collection">Collection to modify</param>
-        /// <param name="item">Item to add</param>
-        public static void AddIfNotExists<T>(this List<T> collection, T item)
-        {
-            if(!collection.Contains(item))
-            {
-                collection.Add(item);
-            }
         }
     }
 }

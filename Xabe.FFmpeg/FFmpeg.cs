@@ -15,7 +15,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Wrapper for FFmpeg
     /// </summary>
-    internal class FFmpeg: FFbase
+    internal class FFmpeg : FFbase
     {
         private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
         private List<string> _outputLog;

@@ -10,7 +10,6 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Base FFmpeg class
     /// </summary>
-    // ReSharper disable once InheritdocConsiderUsage
     public abstract class FFbase
     {
         private static string _ffmpegPath;
@@ -85,24 +84,16 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Directory contains FFmpeg and FFprobe
         /// </summary>
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once UnassignedField.Global
         public static string FFmpegDir { get; set; }
 
         /// <summary>
         ///     Name of FFmpeg executable name (Case insensitive)
         /// </summary>
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once ConvertToConstant.Global
-        // ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static string FFmpegExecutableName { get; } = "ffmpeg";
 
         /// <summary>
         ///     Name of FFprobe executable name (Case insensitive)
         /// </summary>
-        // ReSharper disable once MemberCanBePrivate.Global
-        // ReSharper disable once ConvertToConstant.Global
-        // ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static string FFprobeExecutableName { get; } = "ffprobe";
 
         /// <summary>

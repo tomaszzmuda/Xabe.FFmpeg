@@ -6,7 +6,7 @@ namespace Xabe.FFmpeg.Streams
     /// <summary>
     ///     Video Stream
     /// </summary>
-    public interface IVideoStream: IStream
+    public interface IVideoStream : IStream
     {
         /// <summary>
         ///     Duration
@@ -91,7 +91,7 @@ namespace Xabe.FFmpeg.Streams
         /// </summary>
         /// <param name="codec">Video codec</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetCodec(IVideoCodec codec);
+        IVideoStream SetCodec(VideoCodec codec);
 
         /// <summary>
         ///     Set stream to copy with orginal codec
