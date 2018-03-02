@@ -7,7 +7,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Extension methods
     /// </summary>
-    public static class Extensions
+    public static class TimeExtensions
     {
         /// <summary>
         ///     Return ffmpeg formatted time

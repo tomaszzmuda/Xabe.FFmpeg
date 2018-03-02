@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Model;
 using Xabe.FFmpeg.Streams;
 
