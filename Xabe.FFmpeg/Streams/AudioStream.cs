@@ -103,7 +103,7 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public IEnumerable<FilterConfiguration> GetFilters()
+        public IEnumerable<IFilterConfiguration> GetFilters()
         {
             if(_audioFilters.Any())
             {

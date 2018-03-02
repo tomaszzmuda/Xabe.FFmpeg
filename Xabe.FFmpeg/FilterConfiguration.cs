@@ -2,24 +2,16 @@
 
 namespace Xabe.FFmpeg
 {
-    /// <summary>
-    ///     Stream filter configuration
-    /// </summary>
-    public class FilterConfiguration
+    /// <inheritdoc />
+    internal class FilterConfiguration : IFilterConfiguration
     {
-        /// <summary>
-        ///     Type of filter
-        /// </summary>
+        /// <inheritdoc />
         public string FilterType { get; set; }
 
-        /// <summary>
-        ///     Stream filter number
-        /// </summary>
+        /// <inheritdoc />
         public int StreamNumber { get; set; }
 
-        /// <summary>
-        ///     Filter with name and values
-        /// </summary>
+        /// <inheritdoc />
         public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
     }
 }

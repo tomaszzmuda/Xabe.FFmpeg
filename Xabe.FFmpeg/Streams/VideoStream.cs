@@ -24,7 +24,7 @@ namespace Xabe.FFmpeg.Streams
         private string _split;
 
         /// <inheritdoc />
-        public IEnumerable<FilterConfiguration> GetFilters()
+        public IEnumerable<IFilterConfiguration> GetFilters()
         {
             if(_videoFilters.Any())
             {
