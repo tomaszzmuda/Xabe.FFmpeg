@@ -19,9 +19,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToMp4(string inputPath, string outputPath)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.H264);
@@ -41,9 +39,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToTs(string inputPath, string outputPath)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(new VideoCodec("mpeg2video"));
@@ -63,9 +59,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToOgv(string inputPath, string outputPath)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.Theora);
@@ -85,9 +79,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToWebM(string inputPath, string outputPath)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.Vp8);
@@ -109,9 +101,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ToGif(string inputPath, string outputPath, int loop, int delay = 0)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetLoop(loop, delay);
@@ -131,9 +121,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetWatermark(inputImage, position);
@@ -152,9 +140,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ExtractVideo(string inputPath, string outputPath)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
 
@@ -171,9 +157,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ExtractAudio(string inputPath, string outputPath)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IAudioStream audioStream = info.AudioStreams.FirstOrDefault();
 
@@ -191,9 +175,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetCodec(VideoCodec.Png)
@@ -214,9 +196,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetScale(size);
@@ -237,9 +217,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream[] streams = info.Streams.ToArray();
             foreach(IStream stream in streams)
@@ -261,13 +239,9 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion AddAudio(string videoPath, string audioPath, string outputPath)
         {
-            var task = MediaInfo.Get(videoPath);
-            task.RunSynchronously();
-            IMediaInfo videoInfo = task.Result;
+            IMediaInfo videoInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(videoPath));
 
-            task = MediaInfo.Get(audioPath);
-            task.RunSynchronously();
-            IMediaInfo audioInfo = task.Result;
+            IMediaInfo audioInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(audioPath));
 
             return New()
                 .AddStream(videoInfo.VideoStreams.FirstOrDefault())
@@ -285,9 +259,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo info = task.Result;
+            IMediaInfo info = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.AddSubtitles(subtitlesPath);
@@ -309,13 +281,8 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
         {
-            var task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo mediaInfo = task.Result;
-
-            task = MediaInfo.Get(inputPath);
-            task.RunSynchronously();
-            IMediaInfo subtitleInfo = task.Result;
+            IMediaInfo mediaInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(inputPath));
+            IMediaInfo subtitleInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(subtitlePath));
 
             ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
                                                          .SetLanguage(language);
@@ -345,10 +312,9 @@ namespace Xabe.FFmpeg
             IConversion conversion = New();
             foreach(string inputVideo in inputVideos)
             {
-                var task = MediaInfo.Get(inputVideo);
-                task.RunSynchronously();
+                IMediaInfo mediaInfo = AsyncHelpers.RunSync(() => MediaInfo.Get(inputVideo));
 
-                mediaInfos.Add(task.Result);
+                mediaInfos.Add(mediaInfo);
                 conversion.AddParameter($"-i \"{inputVideo}\" ");
             }
             conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
