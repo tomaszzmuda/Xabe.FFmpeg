@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <DebugType>full</DebugType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Xabe.FFmpeg</AssemblyName>
     <RootNamespace>Xabe.FFmpeg</RootNamespace>
