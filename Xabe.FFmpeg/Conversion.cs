@@ -14,7 +14,7 @@ using Xabe.FFmpeg.Streams;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
-    public partial class Conversion: IConversion
+    public partial class Conversion : IConversion
     {
         private readonly object _builderLock = new object();
         private readonly Dictionary<FileInfo, int> _inputFileMap = new Dictionary<FileInfo, int>();
@@ -132,7 +132,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetPreset(ConversionPreset preset)
         {
-            _preset = $"-preset {preset.ToString() .ToLower()} ";
+            _preset = $"-preset {preset.ToString().ToLower()} ";
             return this;
         }
 

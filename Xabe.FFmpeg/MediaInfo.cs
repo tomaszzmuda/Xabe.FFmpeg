@@ -8,7 +8,7 @@ using Xabe.FFmpeg.Streams;
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IMediaInfo" />
-    public class MediaInfo: IMediaInfo
+    public class MediaInfo : IMediaInfo
     {
         private MediaInfo(FileInfo fileInfo)
         {
@@ -36,7 +36,7 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public FileInfo FileInfo { get; }
-        
+
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>

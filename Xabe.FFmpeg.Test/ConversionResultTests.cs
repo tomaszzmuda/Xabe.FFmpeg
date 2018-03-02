@@ -13,7 +13,7 @@ namespace Xabe.FFmpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 
-            IConversionResult result = await (await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath))
+            IConversionResult result = await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)
                                              .SetPreset(Enums.ConversionPreset.UltraFast)
                                              .Start();
 
