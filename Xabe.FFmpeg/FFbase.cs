@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {
@@ -151,7 +152,7 @@ namespace Xabe.FFmpeg
             string ffmpegDir = string.IsNullOrWhiteSpace(FFmpegDir) ? string.Empty : string.Format(FFmpegDir + " or ");
             string exceptionMessage =
                 $"Cannot find FFmpeg in {ffmpegDir}PATH. This package needs installed FFmpeg. Please add it to your PATH variable or specify path to DIRECTORY with FFmpeg executables in {nameof(FFbase)}.{nameof(FFmpegDir)}";
-            throw new ArgumentException(exceptionMessage);
+            throw new FFmpegNotFoundException(exceptionMessage);
         }
 
         private void FindProgramsFromPath(string path)
