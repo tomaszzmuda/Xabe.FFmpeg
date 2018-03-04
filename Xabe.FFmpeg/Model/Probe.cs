@@ -51,7 +51,7 @@ namespace Xabe.FFmpeg.Model
             //            public Disposition disposition { get; set; }
         }
 
-        public class Tags
+        internal class Tags
         {
             public string language { get; set; }
         }

@@ -13,7 +13,7 @@ namespace Xabe.FFmpeg
     ///     Get information about media file
     /// </summary>
     // ReSharper disable once InheritdocConsiderUsage
-    public sealed class FFprobe: FFbase
+    internal sealed class FFprobe : FFbase
     {
         private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {

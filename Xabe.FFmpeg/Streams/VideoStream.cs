@@ -8,7 +8,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg.Streams
 {
     /// <inheritdoc cref="IVideoStream" />
-    public class VideoStream: IVideoStream, IFilterable
+    public class VideoStream : IVideoStream, IFilterable
     {
         private readonly List<string> _parameters = new List<string>();
         private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
@@ -24,7 +24,7 @@ namespace Xabe.FFmpeg.Streams
         private string _split;
 
         /// <inheritdoc />
-        public IEnumerable<FilterConfiguration> GetFilters()
+        public IEnumerable<IFilterConfiguration> GetFilters()
         {
             if(_videoFilters.Any())
             {
@@ -80,7 +80,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream Rotate(RotateDegrees rotateDegrees)
         {
-            _rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int) rotateDegrees}\" ";
+            _rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int)rotateDegrees}\" ";
             return this;
         }
 
@@ -157,7 +157,7 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public IVideoStream SetCodec(IVideoCodec codec)
+        public IVideoStream SetCodec(VideoCodec codec)
         {
             _codec = $"-codec:v {codec} ";
             return this;

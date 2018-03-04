@@ -1,7 +1,9 @@
 ﻿namespace Xabe.FFmpeg.Enums
 {
-    /// <inheritdoc />
-    public class AudioCodec: IAudioCodec
+    /// <summary>
+    ///     Audio codec ("ffmpeg -codecs")
+    /// </summary>
+    public class AudioCodec
     {
         /// <summary>
         ///     AAC (Advanced Audio Coding) (decoders: aac aac_fixed ) (encoders: aac libvo_aacenc )
@@ -24,10 +26,15 @@
             Codec = codec;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Audio codec
+        /// </summary>
         public string Codec { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Format to string
+        /// </summary>
+        /// <returns>Codec as string</returns>
         public override string ToString()
         {
             return Codec;

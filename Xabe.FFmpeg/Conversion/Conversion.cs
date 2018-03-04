@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Model;
 using Xabe.FFmpeg.Streams;
 
@@ -171,7 +172,7 @@ namespace Xabe.FFmpeg
         private string BuildFilters()
         {
             var builder = new StringBuilder();
-            var configurations = new List<FilterConfiguration>();
+            var configurations = new List<IFilterConfiguration>();
             foreach(IStream stream in _streams)
             {
                 if(stream is IFilterable filterable)
@@ -179,11 +180,11 @@ namespace Xabe.FFmpeg
                     configurations.AddRange(filterable.GetFilters());
                 }
             }
-            IEnumerable<IGrouping<string, FilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
-            foreach(IGrouping<string, FilterConfiguration> filterGroup in filterGroups)
+            IEnumerable<IGrouping<string, IFilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
+            foreach(IGrouping<string, IFilterConfiguration> filterGroup in filterGroups)
             {
                 builder.Append($"{filterGroup.Key} \"");
-                foreach(FilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
+                foreach(IFilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
                 {
                     var values = new List<string>();
                     foreach(KeyValuePair<string, string> filter in configuration.Filters)

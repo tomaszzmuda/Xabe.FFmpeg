@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
@@ -15,7 +16,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Wrapper for FFmpeg
     /// </summary>
-    internal class FFmpeg: FFbase
+    internal class FFmpeg : FFbase
     {
         private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
         private List<string> _outputLog;

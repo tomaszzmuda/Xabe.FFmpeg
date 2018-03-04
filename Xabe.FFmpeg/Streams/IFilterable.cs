@@ -4,6 +4,6 @@ namespace Xabe.FFmpeg.Streams
 {
     internal interface IFilterable
     {
-        IEnumerable<FilterConfiguration> GetFilters();
+        IEnumerable<IFilterConfiguration> GetFilters();
     }
 }

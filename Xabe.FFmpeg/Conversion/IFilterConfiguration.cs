@@ -5,21 +5,21 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Stream filter configuration
     /// </summary>
-    public class FilterConfiguration
+    public interface IFilterConfiguration
     {
         /// <summary>
         ///     Type of filter
         /// </summary>
-        public string FilterType { get; set; }
+        string FilterType { get; }
 
         /// <summary>
         ///     Stream filter number
         /// </summary>
-        public int StreamNumber { get; set; }
+        int StreamNumber { get; }
 
         /// <summary>
         ///     Filter with name and values
         /// </summary>
-        public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
+        Dictionary<string, string> Filters { get; }
     }
 }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Xabe.FFmpeg
 {
     /// <summary>
-    /// 
+    ///     Handling async code synchronously
     /// </summary>
-    internal static class AsyncHelpers
+    internal static class AsyncHelper
     {
         /// <summary>
         /// Execute's an async Task method which has a void return value synchronously

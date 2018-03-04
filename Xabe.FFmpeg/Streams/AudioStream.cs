@@ -9,7 +9,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg.Streams
 {
     /// <inheritdoc cref="IAudioStream" />
-    public class AudioStream: IAudioStream, IFilterable
+    public class AudioStream : IAudioStream, IFilterable
     {
         private readonly Dictionary<string, string> _audioFilters = new Dictionary<string, string>();
         private string _audio;
@@ -103,7 +103,7 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public IEnumerable<FilterConfiguration> GetFilters()
+        public IEnumerable<IFilterConfiguration> GetFilters()
         {
             if(_audioFilters.Any())
             {

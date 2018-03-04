@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Events
 {
     /// <summary>
     ///     Info about conversion progress
@@ -12,7 +12,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Conversion information
     /// </summary>
-    public class ConversionProgressEventArgs: EventArgs
+    public class ConversionProgressEventArgs : EventArgs
     {
         /// <inheritdoc />
         public ConversionProgressEventArgs(TimeSpan timeSpan, TimeSpan totalTime)
@@ -34,6 +34,6 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Percent of conversion
         /// </summary>
-        public int Percent => (int) (Math.Round(Duration.TotalSeconds / TotalLength.TotalSeconds, 2) * 100);
+        public int Percent => (int)(Math.Round(Duration.TotalSeconds / TotalLength.TotalSeconds, 2) * 100);
     }
 }
