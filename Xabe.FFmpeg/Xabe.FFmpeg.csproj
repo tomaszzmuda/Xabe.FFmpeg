@@ -5,12 +5,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Xabe.FFmpeg</AssemblyName>
     <RootNamespace>Xabe.FFmpeg</RootNamespace>
-    <Authors>Tomasz Żmuda</Authors>
-    <Company>Xabe</Company>
+    <Authors>Tomasz Żmuda, Łukasz Kischler</Authors>
+    <Company>Xabe Tomasz Żmuda</Company>
     <Description>Cross-platform wrapper for FFmpeg.</Description>
-    <Copyright>Copyright 2017 (c) Tomasz Zmuda.</Copyright>
-    <PackageLicenseUrl>https://github.com/tomaszzmuda/Xabe.FFMpeg/blob/master/LICENSE.md</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</PackageProjectUrl>
+    <Copyright>Copyright 2017-2018 (c) Xabe Tomasz Zmuda.</Copyright>
+    <PackageLicenseUrl>https://xabe.net/product/xabe_ffmpeg/#license</PackageLicenseUrl>
+    <PackageProjectUrl>https://xabe.net/product/xabe_ffmpeg/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
     <RepositoryType>Dependency</RepositoryType>
     <PackageTags>media converter audio ffmpeg wrapper core video encode decode</PackageTags>
@@ -18,7 +18,7 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIconUrl>https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/Assets/icon_white.png</PackageIconUrl>
+    <PackageIconUrl>https://xabe.net/assets/Xabe_logo_100x100_black.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
