@@ -85,6 +85,12 @@ namespace Xabe.FFmpeg.Streams
         public string Format { get; internal set; }
 
         /// <inheritdoc />
+        public string GetSource()
+        {
+            return Source.FullName;
+        }
+
+        /// <inheritdoc />
         public FileInfo Source { get; internal set; }
 
         /// <inheritdoc />
@@ -97,7 +103,7 @@ namespace Xabe.FFmpeg.Streams
             return this;
         }
 
-        void IStream.Split(TimeSpan startTime, TimeSpan duration)
+        void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)
         {
             Split(startTime, duration);
         }

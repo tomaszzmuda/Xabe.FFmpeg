@@ -246,7 +246,13 @@ namespace Xabe.FFmpeg.Streams
             return this;
         }
 
-        void IStream.Split(TimeSpan startTime, TimeSpan duration)
+        /// <inheritdoc />
+        public string GetSource()
+        {
+            return Source.FullName;
+        }
+
+        void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)
         {
             Split(startTime, duration);
         }

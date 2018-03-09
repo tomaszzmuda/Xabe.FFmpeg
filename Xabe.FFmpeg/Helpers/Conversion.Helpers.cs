@@ -222,7 +222,10 @@ namespace Xabe.FFmpeg
             IStream[] streams = info.Streams.ToArray();
             foreach(IStream stream in streams)
             {
-                stream.Split(startTime, duration);
+                if(stream is ILocalStream localStream)
+                {
+                    localStream.Split(startTime, duration);
+                }
             }
 
             return New()
@@ -291,6 +294,21 @@ namespace Xabe.FFmpeg
                 .AddStream(mediaInfo.VideoStreams.ToArray())
                 .AddStream(mediaInfo.AudioStreams.ToArray())
                 .AddStream(subtitleStream)
+                .SetOutput(outputPath);
+        }
+
+        /// <summary>
+        /// Save M3U8 stream
+        /// </summary>
+        /// <param name="uri">Uri to stream</param>
+        /// <param name="outputPath">Output path</param>
+        /// <param name="duration">Duration of stream</param>
+        /// <returns>Conversion result</returns>
+        public static IConversion SaveM3U8Stream(Uri uri, string outputPath, int duration)
+        {
+            var stream = new WebStream(uri, "M3U8", duration);
+            return New()
+                .AddStream(stream)
                 .SetOutput(outputPath);
         }
 

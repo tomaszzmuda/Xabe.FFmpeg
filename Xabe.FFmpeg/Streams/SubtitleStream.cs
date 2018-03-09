@@ -55,9 +55,15 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        void IStream.Split(TimeSpan startTime, TimeSpan duration)
+        void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)
         {
             Split(startTime, duration);
+        }
+
+        /// <inheritdoc />
+        public string GetSource()
+        {
+            return Source.FullName;
         }
 
         private string BuildLanguage()

@@ -6,7 +6,7 @@ namespace Xabe.FFmpeg.Streams
     /// <summary>
     ///     Video Stream
     /// </summary>
-    public interface IVideoStream : IStream
+    public interface IVideoStream : ILocalStream
     {
         /// <summary>
         ///     Duration

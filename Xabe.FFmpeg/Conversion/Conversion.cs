@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -18,7 +17,7 @@ namespace Xabe.FFmpeg
     public partial class Conversion : IConversion
     {
         private readonly object _builderLock = new object();
-        private readonly Dictionary<FileInfo, int> _inputFileMap = new Dictionary<FileInfo, int>();
+        private readonly Dictionary<string, int> _inputFileMap = new Dictionary<string, int>();
         private readonly IList<string> _parameters = new List<string>();
         private readonly List<IStream> _streams = new List<IStream>();
 
@@ -223,7 +222,7 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             foreach(IStream stream in _streams)
             {
-                builder.Append($"-map {_inputFileMap[stream.Source]}:{stream.Index} ");
+                    builder.Append($"-map {_inputFileMap[stream.GetSource()]}:{stream.Index} ");
             }
             return builder.ToString();
         }
@@ -236,11 +235,11 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             var index = 0;
-            foreach(FileInfo source in _streams.Select(x => x.Source)
+            foreach(string source in _streams.Select(x => x.GetSource())
                                                .Distinct())
             {
                 _inputFileMap[source] = index++;
-                builder.Append($"-i \"{source.FullName}\" ");
+                builder.Append($"-i \"{source}\" ");
             }
             return builder.ToString();
         }
