@@ -304,7 +304,7 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output path</param>
         /// <param name="duration">Duration of stream</param>
         /// <returns>Conversion result</returns>
-        public static IConversion SaveM3U8Stream(Uri uri, string outputPath, int duration)
+        public static IConversion SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
         {
             var stream = new WebStream(uri, "M3U8", duration);
             return New()

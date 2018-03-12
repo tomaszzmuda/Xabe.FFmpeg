@@ -8,7 +8,7 @@ namespace Xabe.FFmpeg.Streams
     public class WebStream : IStream
     {
         private readonly Uri _uri;
-        private readonly int? _duration;
+        private readonly TimeSpan? _duration;
 
         /// <summary>
         /// Create web stream
@@ -16,7 +16,7 @@ namespace Xabe.FFmpeg.Streams
         /// <param name="uri">File uri</param>
         /// <param name="format">Stream format</param>
         /// <param name="duration">Duration of video</param>
-        public WebStream(Uri uri, string format, int? duration)
+        public WebStream(Uri uri, string format, TimeSpan? duration)
         {
             Format = format;
             _uri = uri;
@@ -26,7 +26,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public string Build()
         {
-            return _duration.HasValue ? $"-t {_duration} " : null;
+            return _duration.HasValue ? $"-t {_duration.Value.Seconds} " : null;
         }
 
         /// <inheritdoc />

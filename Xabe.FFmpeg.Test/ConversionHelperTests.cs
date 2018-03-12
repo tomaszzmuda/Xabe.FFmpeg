@@ -338,7 +338,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
 
-            Task<IConversionResult> ConversionAction() => Conversion.SaveM3U8Stream(new Uri(input), output, 1)
+            Task<IConversionResult> ConversionAction() => Conversion.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1))
                                                                     .Start();
 
             if(success)
