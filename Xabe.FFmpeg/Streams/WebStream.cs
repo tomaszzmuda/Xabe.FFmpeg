@@ -3,7 +3,7 @@
 namespace Xabe.FFmpeg.Streams
 {
     /// <summary>
-    ///     Stream with foreign web source
+    ///     Stream with web source
     /// </summary>
     public class WebStream : IStream
     {
@@ -26,7 +26,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public string Build()
         {
-            return _duration.HasValue ? $"-t {_duration.Value.Seconds} " : null;
+            return _duration.HasValue ? $"-t {_duration.Value.ToFFmpeg()} " : null;
         }
 
         /// <inheritdoc />
