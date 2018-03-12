@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace Xabe.FFmpeg.Streams
+﻿namespace Xabe.FFmpeg.Streams
 {
     /// <summary>
     ///     Base stream class
@@ -9,14 +6,10 @@ namespace Xabe.FFmpeg.Streams
     public interface IStream
     {
         /// <summary>
-        ///     Format
+        ///     Build FFmpeg arguments
         /// </summary>
-        string Format { get; }
-
-        /// <summary>
-        ///     File source of stream
-        /// </summary>
-        FileInfo Source { get; }
+        /// <returns>Arguments</returns>
+        string Build();
 
         /// <summary>
         ///     Index of stream
@@ -24,16 +17,14 @@ namespace Xabe.FFmpeg.Streams
         int Index { get; }
 
         /// <summary>
-        ///     Build FFmpeg arguments
+        ///     Format
         /// </summary>
-        /// <returns>Arguments</returns>
-        string Build();
+        string Format { get; }
 
         /// <summary>
-        ///     Get part of media
+        ///     Get stream input
         /// </summary>
-        /// <param name="startTime">Start point</param>
-        /// <param name="duration">Duration of new video</param>
-        void Split(TimeSpan startTime, TimeSpan duration);
+        /// <returns>Input path</returns>
+        string GetSource();
     }
 }

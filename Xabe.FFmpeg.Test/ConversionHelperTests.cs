@@ -330,5 +330,26 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", audioStream.Format);
             Assert.Equal("h264", videoStream.Format);
         }
+
+        [Theory]
+        [InlineData("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", true)]
+        [InlineData("www.bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", false)]
+        public async Task SaveM3U8Stream(string input, bool success)
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+
+            Task<IConversionResult> ConversionAction() => Conversion.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1))
+                                                                    .Start();
+
+            if(success)
+            {
+                IConversionResult result = await ConversionAction();
+                Assert.True(result.Success);
+            }
+            else
+            {
+                await Assert.ThrowsAsync<UriFormatException>(ConversionAction);
+            }
+        }
     }
 }

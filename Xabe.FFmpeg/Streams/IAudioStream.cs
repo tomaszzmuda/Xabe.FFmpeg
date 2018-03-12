@@ -6,7 +6,7 @@ namespace Xabe.FFmpeg.Streams
     /// <summary>
     ///     Audio stream
     /// </summary>
-    public interface IAudioStream: IStream
+    public interface IAudioStream: ILocalStream
     {
         /// <summary>
         ///     Duration
