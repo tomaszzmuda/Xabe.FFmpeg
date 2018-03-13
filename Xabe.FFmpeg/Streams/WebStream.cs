@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Xabe.FFmpeg.Streams
 {
@@ -26,7 +27,12 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public string Build()
         {
-            return _duration.HasValue ? $"-t {_duration.Value.ToFFmpeg()} " : null;
+            var builder = new StringBuilder();
+            builder.Append(_duration.HasValue ? $"-t {_duration.Value.ToFFmpeg()} " : null);
+            builder.Append("-timeout 5 ");
+            builder.Append("-stimeout 500000 ");
+            builder.Append("-max_delay 500000 ");
+            return builder.ToString();
         }
 
         /// <inheritdoc />
