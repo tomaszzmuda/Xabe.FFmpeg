@@ -35,7 +35,7 @@ namespace Xabe.FFmpeg.Test
             var input = new WebStream(new Uri("rtsp://192.168.1.123:554/"), "", null);
             var token = new CancellationTokenSource();
 
-            await Task.Factory.StartNew(() =>
+            await Task.Run(() =>
             {
                 IConversionResult result = Conversion.New()
                           .AddStream(input)
