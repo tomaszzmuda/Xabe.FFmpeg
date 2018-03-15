@@ -1,0 +1,25 @@
+#documentation .chapter-content p {
+    text-align: justify;
+}
+
+#documentation h2.chapter-header {
+    padding-bottom: 0.3em;
+    font-size: 1.5em;
+    border-bottom: 1px solid #eaecef;
+}
+
+#documentation span.mark {
+    font-weight: bold;
+}
+
+#documentation .chapter-content {
+    margin-left: 20px;
+}
+
+#documentation pre code {
+    background-color: #eee;
+    border: 1px solid #f6f8fa;
+    display: block;
+    padding: 5px;
+    margin: 0;
+}
