@@ -1,667 +1,518 @@
-<!doctype html>
+<style>
+h2.chapter-header {
+  padding-bottom: 0.3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid #eaecef;
+}
+span.mark {
+  font-weight: bold;
+}
+.chapter-content {
+  text-align: justify;
+  margin-left: 20px;
+  margin-bottom: 75px;
+}
+pre code {
+  background-color: transparent;
+  padding: 5px;
+  margin: 0;
+}
+.subtitle {
+  color: gray;
+  font-size: 10px;
+  margin: 0 auto;
+}
 
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Xabe.FFmpeg Documentation</title>
-    <link href="style.css"
-            rel="stylesheet">
+</style>
 </head>
 
-<body>
+<ul>
+    <li><a href="#conception">Conception</a></li>
+    <li><a href="#gettingStreams">Getting streams from media file</a></li>
+    <li><a href="#streams">Streams</a></li>
+    <li><a href="#conversion">Conversion</a></li>
+    <li><a href="#conversionResult">Conversion result</a></li>
+    <li><a href="#stopConversion">Stop conversion</a></li>
+    <li><a href="#conversionHelpers">Conversion helpers</a></li>
+    <li><a href="#extractAudio">Extracting audio</a></li>
+    <li><a href="#extractVideo">Extracting video</a></li>
+    <li><a href="#reversingMedia">Reversing media</a></li>
+    <li><a href="#addingAudio">Adding audio</a></li>
+    <li><a href="#addingSubtitles">Adding subtitles</a></li>
+    <li><a href="#changeSpeed">Changing speed</a></li>
+    <li><a href="#changingSize">Changing size</a></li>
+    <li><a href="#changingVideoFormat">Changing video format</a></li>
+    <li><a href="#concatenateVideos">Concatenate videos</a></li>
+    <li><a href="#split">Split</a></li>
+    <li><a href="#watermarks">Watermarks</a></li>
+    <li><a href="#snapshot">Snapshot</a></li>
+    <li><a href="#gifs">Gifs</a></li>
+    <li><a href="#ownArguments">Own arguments</a></li>
+    <li><a href="#conversionsQueue">Conversions queue</a></li>
+    <li><a href="#convertingSubtitles">Converting subtitles</a></li>
+</ul>
 
-    <div id="documentation">
-        <h2>Table of contents</h2>
-        <ul>
-            <li><a href="#conception">Conception</a></li>
-            <li><a href="#gettingStreams">Getting streams from media file</a></li>
-            <li><a href="#streams">Streams</a></li>
-            <li><a href="#conversion">Conversion</a></li>
-            <li><a href="#conversionResult">Conversion result</a></li>
-            <li><a href="#stopConversion">Stop conversion</a></li>
-            <li><a href="#conversionHelpers">Conversion helpers</a></li>
-            <li><a href="#extractAudio">Extracting audio</a></li>
-            <li><a href="#extractVideo">Extracting video</a></li>
-            <li><a href="#reversingMedia">Reversing media</a></li>
-            <li><a href="#addingAudio">Adding audio</a></li>
-            <li><a href="#addingSubtitles">Adding subtitles</a></li>
-            <li><a href="#changeSpeed">Changing speed</a></li>
-            <li><a href="#changingSize">Changing size</a></li>
-            <li><a href="#changingVideoFormat">Changing video format</a></li>
-            <li><a href="#concatenateVideos">Concatenate videos</a></li>
-            <li><a href="#split">Split</a></li>
-            <li><a href="#watermarks">Watermarks</a></li>
-            <li><a href="#snapshot">Snapshot</a></li>
-            <li><a href="#gifs">Gifs</a></li>
-            <li><a href="#ownArguments">Own arguments</a></li>
-            <li><a href="#conversionsQueue">Conversions queue</a></li>
-            <li><a href="#convertingSubtitles">Converting subtitles</a></li>
-        </ul>
+<div class="chapter">
+    <h2 class="chapter-header"
+        id="conception">
+        Conception
+    </h2>
+    <div class="chapter-content">
+        <p>
+            Xabe.FFmpeg uses only streams to operate on every media file. Most common conversions can be done with few simple steps:
+            <ol>
+                <li>Extract streams from input file or create new streams with outside source (e.g. WebStream)</li>
+                <li>Manipulate with streams with embeded methods</li>
+                <li>Add selected streams to conversion</li>
+                <li>Set output</li>
+                <li>Start conversion</li>
+            </ol>
+            Operating on streams (not on files) allows to work with multi-streams media files and single-stream files with the same way.
+        </p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Conception-->
-        <div class="chapter">
-            <h2 class="chapter-header"
-                id="conception">
-                Conception
-            </h2>
-            <div class="chapter-content">
-                <p>
-                    Xabe.FFmpeg use only streams to operate on every media file. Most common conversions can be done with few simple steps:
-                    <ol>
-                        <li>Extract streams from input file or create new streams with outside source (e.g. WebStream)</li>
-                        <li>Manipulate with streams with embeded methods</li>
-                        <li>Add selected streams to conversion</li>
-                        <li>Set output</li>
-                        <li>Start conversion</li>
-                    </ol>
-                    Opereting on streams (not on files) allow to work with multi-streams media files and single-stream files with the same way.
-                </p>
-            </div>
-        </div>
+<div class="chapter">
+    <h2 class="chapter-header"
+        id="gettingStreams">
+        Getting streams from media file
+    </h2>
+    <div class="chapter-content">
+        <p>
+            Basic properties of media file can be read by <span class="mark">MediaInfo</span> class:
+        </p>
+        <pre><code>string filePath = Path.Combine("C:", "samples", "SampleVideo.mp4");
+IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3);</code></pre>
+        <p><span class="mark">IMediaInfo</span> contains basic properties about media:</p>
+        <img src="https://xabe.net/wp-content/uploads/2018/03/IMediaInfo.png" />
+        <p>More properties can be found in specific stream.</p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Getting streams-->
-        <div class="chapter">
-            <h2 class="chapter-header"
-                id="gettingStreams">
-                Getting streams from media file
-            </h2>
-            <div class="chapter-content">
-                <p>
-                    Basic properties of media file can be read by <span class="mark">MediaInfo</span> class:
-                </p>
-                <pre>
-                <code>
-string filePath = Path.Combine("C:\\", "samples", "SampleVideo.mp4");
-IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3);
-                </code>
-            </pre>
-                <p><span class="mark">IMediaInfo</span> contains basic properties about media:</p>
-                <img src="https://xabe.net/wp-content/uploads/2018/03/IMediaInfo.png" />
-                <p>More information about audio or video can be found in specific stream.</p>
-            </div>
-        </div>
+<div class="chapter">
+    <h2 class="chapter-header" id="streams">Streams</h2>
+    <div class="chapter-content">
+        <p>
+            Streams are basic structure in <span class="mark">Xabe.FFmpeg</span> so it is good to know their architecture:
+        </p>
+        <img src="https://xabe.net/wp-content/uploads/2018/03/streams.png" />
+        <p class="subtitle">Diagram shows only most important properties and methods, for more information look at implementation.</p>
+</div>
+</div>
 
-        <!----------------------------------------------------------------------------------Streams-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="streams">Streams</h2>
-            <div class="chapter-content">
-                <p>
-                    Streams are basic structure in <span class="mark">Xabe.FFmpeg</span> so it is good to know them architecture*:
-                </p>
-                <img width="80%" src="https://xabe.net/wp-content/uploads/2018/03/streams.png" />
-            </div>
-            <p>* diagram shows only most important properties and methods, for more information look at implementation.</p>
-        </div>
-
-        <!----------------------------------------------------------------------------------Conversion-->
-        <div class="chapter">
-            <h2 id="conversion" class="chapter-header">Conversion</h2>
-            <div class="chapter-content">
-                <p><span class="mark">Xabe.FFmpeg.Conversion</span> is the main class to handle FFmpeg conversions. User can manipulate audio, video and subtitle through this class.</p>
-                <p>Sample below shows basic conversion video file from mkv to mp4 format:</p>
-                <pre>
-                <code>
-string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+<div class="chapter">
+    <h2 id="conversion" class="chapter-header">Conversion</h2>
+    <div class="chapter-content">
+        <p><span class="mark">Xabe.FFmpeg.Conversion</span> is the main class to handle FFmpeg conversions. User can manipulate audio, video and subtitle through this class.</p>
+        <p>Sample below shows basic conversion video file from mkv to mp4 format:</p>
+        <pre><code>string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio);
 
 IStream videoStream = mediaInfo.VideoStreams.FirstOrDefault()
-    ?.SetCodec(VideoCodec.H264);
+?.SetCodec(VideoCodec.H264);
 IStream audioStream = mediaInfo.AudioStreams.FirstOrDefault()
-    ?.SetCodec(AudioCodec.Aac);
+?.SetCodec(AudioCodec.Aac);
 
 Conversion.New().AddStream(audioStream, videoStream)
-    .SetOutput(outputPath)
-    .Start();
-                    </code>
-                </pre>
-                <p>Almost all methods in on streams returns specific stream (IAudioStream, IVideoStream etc.). It's allow to create chain of methods. Stream object could be use more than once. Conversion methods returns IConversion so could be use same way:</p>
-                <pre>
-                <code>
-string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+.SetOutput(outputPath)
+.Start();</code></pre>
+        <p>Almost all methods in streams return specific stream (IAudioStream, IVideoStream etc.). It allows to create chain of methods. Stream object could be use more than once.</p>
+        <pre><code>string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio);
 
 IStream videoStream = mediaInfo.VideoStreams.FirstOrDefault()
-    ?.SetCodec(VideoCodec.H264)
-    ?.Reverse()
-    ?.SetSize(VideoSize.Hd480);
+?.SetCodec(VideoCodec.H264)
+?.Reverse()
+?.SetSize(VideoSize.Hd480);
 
 Conversion.New().AddStream(videoStream)
-    .SetOutput(outputPath)
-    .Start();
-                    </code>
-                </pre>
-                <p>
-                    Method <span class="mark">Xabe.FFmpeg.Conversion.Clear()</span> it used to set IConversion to untouched state. All parameters passed to it are overrided by default values.
-                </p>
+.SetOutput(outputPath)
+.Start();</code></pre>
+        <p>
+            Method <span class="mark">Xabe.FFmpeg.Conversion.Clear()</span> sets IConversion to untouched state. All parameters passed to it are overrided by default values.
+        </p>
 
-                <p>
-                    <span class="mark">IConversion</span> provide events to handle FFmpeg output. <span class="mark">OnDataReceived</span> and <span class="mark">OnProgress</span> events allow redirect FFmpeg output to user and inform him about progress.
-                    <pre>
-                    <code>
-conversion.OnProgress += (sender, args) =>
+        <p>
+            <span class="mark">IConversion</span> provides events to handle FFmpeg output. <span class="mark">OnDataReceived</span> and <span class="mark">OnProgress</span> events allow redirect FFmpeg output to user and inform him about progress.
+            <pre><code>conversion.OnProgress += (sender, args) =>
 {
-    var percent = (int)(Math.Round(args.Duration.TotalSeconds / args.TotalLength.TotalSeconds, 2) * 100);
-    Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {percent}%");
+var percent = (int)(Math.Round(args.Duration.TotalSeconds / args.TotalLength.TotalSeconds, 2) * 100);
+Debug.WriteLine($"[{args.Duration} / {args.TotalLength}] {percent}%");
 };
-await conversion.Start();
-                        </code>
-                    </pre>
-                </p>
-                <p><span class="mark">OnDataReceived:</span></p>
-                <pre>
-                <code>
-conversion.OnDataReceived += (sender, args) =>
+await conversion.Start();</code></pre>
+        </p>
+        <p><span class="mark">OnDataReceived:</span></p>
+        <pre><code>conversion.OnDataReceived += (sender, args) =>
 {
-    Debug.WriteLine($"{args.Data}{Environment.NewLine}") ;
+Debug.WriteLine($"{args.Data}{Environment.NewLine}") ;
 };
-await conversion.Start();
-                    </code>
-                </pre>
-            </div>
-        </div>
+await conversion.Start();</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Conversion result-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="conversionResult">Conversion result</h2>
-            <div class="chapter-content">
-                <p>
-                    Started conversion returns ConversionResult after completed (success or failure). Returned object informs about status of conversion, conversion duration, output file and more. 
-               
-                </p>
-                <p>
-                    One of most useful value for debug may be "Arguments" property which have all arguments passed to ffmpeg process for conversion. 
-                </p>
-            </div>
-        </div>
+<div class="chapter">
+    <h2 class="chapter-header" id="conversionResult">Conversion result</h2>
+    <div class="chapter-content">
+        <p>
+            Started conversion returns ConversionResult after it's completed (success or failure). Returned object informs about status of conversion, conversion duration, output file and more. 
+        </p>
+        <p>
+            One of most useful value for debug may be "Arguments" property which have all arguments passed to FFmpeg process for conversion. 
+        </p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Stop conversion-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="stopConversion">Stop conversion</h2>
-            <div class="chapter-content">
-                <p>Started conversion could be stopped. This requires passing <span class="mark">CancellationToken</span> to <span class="mark">Start</span> method.</p>
-                <pre>
-                <code>
-var cancellationTokenSource = new CancellationTokenSource();
+<!----------------------------------------------------------------------------------Stop conversion-->
+<div class="chapter">
+    <h2 class="chapter-header" id="stopConversion">Stop conversion</h2>
+    <div class="chapter-content">
+        <p>Started conversion could be stopped. This requires passing <span class="mark">CancellationToken</span> to <span class="mark">Start</span> method.</p>
+        <pre><code>var cancellationTokenSource = new CancellationTokenSource();
 string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio);
 
 IStream videoStream = mediaInfo.VideoStreams.FirstOrDefault()
-    ?.SetCodec(VideoCodec.H264);
+?.SetCodec(VideoCodec.H264);
 
 await Conversion.New()
-    .AddStream(videoStream)
-    .SetOutput(outputPath)
-    .Start(cancellationTokenSource.Token);
-                    </code>
-                </pre>
-                <p><span class="mark">CancellationTokenSource</span> can be cancelled manually...</p>
-                <pre>
-                <code>
-cancellationTokenSource.Cancel();
-</code>
-                </pre>
-                <p>or automatically after period of time:</p>
-                <pre>
-                <code>
-cancellationTokenSource.CancelAfter(500);
-</code>
-                </pre>
-            </div>
-        </div>
+.AddStream(videoStream)
+.SetOutput(outputPath)
+.Start(cancellationTokenSource.Token);</code></pre>
+        <p><span class="mark">CancellationTokenSource</span> can be cancelled manually...</p>
+        <pre><code>cancellationTokenSource.Cancel();</code></pre>
+        <p>or automatically after period of time:</p>
+        <pre><code>cancellationTokenSource.CancelAfter(500);</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Conversion helpers-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="conversionHelpers">Conversion helpers</h2>
-            <div class="chapter-content">
-                <p>
-                    <span class="mark">Xabe.FFmpeg.Conversion.Helpers</span> is part of Conversion class with conversion snippets. Most simple conversions will be done with helpers or little modification. That was designed to simplify typical conversions and teach how to create own solutions.
-                </p>
-                <p>
-                    <span class="mark">Xabe.FFmpeg.Conversion.Helpers</span> is good point to start using Xabe.FFmpeg library. Every method may be used as templete for a more complicated conversions or just to getting things done (probably most that you need). If you think that your new conversion method is really useful do not worry about include them to <span class="mark">Xabe.FFmpeg.Conversion.Helpers</span> by pull request.
-                </p>
-                <p>
-                    Every method is only a snippet and use only IConversion with specific configuration. Let's see source to know how chosen conversion works.
-                </p>
-            </div>
-        </div>
+<div class="chapter">
+    <h2 class="chapter-header" id="conversionHelpers">Conversion helpers</h2>
+    <div class="chapter-content">
+        <p>
+            <span class="mark">Xabe.FFmpeg.Conversion.Helpers</span> is a part of Conversion class with conversion snippets. Most simple conversions will be done with helpers or little modification. That was designed to simplify typical conversions and teach how to create own solutions.
+        </p>
+        <p>
+            <span class="mark">Xabe.FFmpeg.Conversion.Helpers</span> is a good point to start using Xabe.FFmpeg library. Every method may be used as templete for a more complicated conversions. If you think that your new conversion method is really useful, do not worry about include them to <span class="mark">Xabe.FFmpeg.Conversion.Helpers</span> by pull request.
+        </p>
+        <p>
+            Every method is only a snippet and uses only IConversion with specific configuration. Let's see the source to know how chosen conversion works.
+        </p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Extract audio-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="extractAudio">Extracting audio</h2>
-            <div class="chapter-content">
-                <p>
-                    The simplest way to extract audio from media file is by <span class="mark">Conversion.Helpers</span>:
-                </p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+<div class="chapter">
+    <h2 class="chapter-header" id="extractAudio">Extracting audio</h2>
+    <div class="chapter-content">
+        <p>
+            The simplest way to extract audio from media file is by <span class="mark">Conversion.Helpers</span>:
+        </p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 IConversionResult result = await Conversion.ExtractAudio(Resources.Mp4WithAudio, output)
-    .Start();
-                    </code>
-                </pre>
-            </div>
-        </div>
+.Start();</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Extracting video-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="extractVideo">Extracting video</h2>
-            <div class="chapter-content">
-                <p>
-                    The simplest way to extract video from media file is by <span class="mark">Conversion.Helpers</span>:
-                </p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(Resources.Mp4WithAudio));
+<div class="chapter">
+    <h2 class="chapter-header" id="extractVideo">Extracting video</h2>
+    <div class="chapter-content">
+        <p>
+            The simplest way to extract video from media file is by <span class="mark">Conversion.Helpers</span>:
+        </p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(Resources.Mp4WithAudio));
 IConversionResult result = await Conversion.ExtractVideo(Resources.Mp4WithAudio, output)
-    .Start();
-                    </code>
-                    </pre>
-            </div>
-        </div>
+.Start();</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Reversing media-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="reversingMedia">Reversing media</h2>
-            <div class="chapter-content">
-                <p>
-                    Reverse is possible by operating on streams using <span class="mark">Reverse()</span> method:
-                </p>
-                <pre>
-                <code>
-IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+<div class="chapter">
+    <h2 class="chapter-header" id="reversingMedia">Reversing media</h2>
+    <div class="chapter-content">
+        <p>
+            Reverse is possible by operating on streams using <span class="mark">Reverse()</span> method:
+        </p>
+        <pre><code>IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
 string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
 IConversionResult conversionResult = await Conversion.New()
-    .AddStream(inputFile.VideoStreams.First()
-        .SetCodec(VideoCodec.H264)
-        .Reverse())
-    .SetOutput(outputPath)
-    .Start();
-                        </code>
-                     </pre>
-                <p>On example output video file will have only one stream - reversed first video stream from source file.</p>
-                <p>Use <span class="mark">Reverse()</span> methods is possible on <span class="mark">IAudioStream</span> and <span class="mark">IVideoStream</span>.</p>
-            </div>
-        </div>
+.AddStream(inputFile.VideoStreams.First()
+.SetCodec(VideoCodec.H264)
+.Reverse())
+.SetOutput(outputPath)
+.Start();</code></pre>
+        <p>In given example output video file will have only one stream - reversed first video stream from source file.</p>
+        <p>Use <span class="mark">Reverse()</span> methods is possible on <span class="mark">IAudioStream</span> and <span class="mark">IVideoStream</span>.</p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Adding audio-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="addingAudio">Adding audio</h2>
-            <div class="chapter-content">
-                <p>
-                    The simplest way to add audio to video file is by <span class="mark">Conversion.Helpers</span>:
-                </p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+<div class="chapter">
+    <h2 class="chapter-header" id="addingAudio">Adding audio</h2>
+    <div class="chapter-content">
+        <p>
+            The simplest way to add audio to video file is by <span class="mark">Conversion.Helpers</span>:
+        </p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 IConversionResult result = await Conversion.AddAudio(Resources.Mp4, Resources.Mp3, output)
-    .Start();
-                        </code>
-                            </pre>
-            </div>
-        </div>
+.Start();</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Adding subtitles-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="addingSubtitles">Adding subtitles</h2>
-            <div class="chapter-content">
-                <p>
-                    There is two way to add subtitles into video. First of it is to burn it into video. Next one is to add new stream with subtitles, like in .mkv format.
-                </p>
+<div class="chapter">
+    <h2 class="chapter-header" id="addingSubtitles">Adding subtitles</h2>
+    <div class="chapter-content">
+        <p>
+            There are two ways to add subtitles into video. The first one is to burn it into video. The next one is to add new stream with subtitles, as in .mkv format.
+        </p>
 
-                <h3>
-                    Burning subtitles
-                </h3>
-                <p><span class="mark">IVideoStream</span> allows to burn subtitle into video:</p>
-                <pre>
-                <code>
-IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+        <h3>
+            Burning subtitles
+        </h3>
+        <p><span class="mark">IVideoStream</span> allows to burn subtitle into video:</p>
+        <pre><code>IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
 string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
 IConversionResult conversionResult = await Conversion.New()
-    .AddStream(inputFile.VideoStreams.First().AddSubtitles(Resources.SubtitleSrt))
-    .SetOutput(outputPath)
-    .Start();
-                    </code>
-                        </pre>
+.AddStream(inputFile.VideoStreams.First().AddSubtitles(Resources.SubtitleSrt))
+.SetOutput(outputPath)
+.Start();</code></pre>
 
-                <h3>
-                    Add subtitles
-                </h3>
-                <p>Subtitles are streams too so could be added to conversion like other streams:</p>
-                <pre>
-                <code>
-IMediaInfo mediaInfo = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
+        <h3>
+            Add subtitles
+        </h3>
+        <p>Subtitles are streams too so could be added to conversion like other streams:</p>
+        <pre><code>IMediaInfo mediaInfo = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 IMediaInfo subtitleInfo = AsyncHelper.RunSync(() => MediaInfo.Get(subtitlePath));
 
 ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
-    .SetLanguage(language);
+.SetLanguage(language);
 
 return New()
-    .AddStream(mediaInfo.VideoStreams.ToArray())
-    .AddStream(mediaInfo.AudioStreams.ToArray())
-    .AddStream(subtitleStream)
-    .SetOutput(outputPath);
-                    </code>
-                </pre>
-                <p>or easier using <span class="mark">Conversion.Helpers</span></p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+.AddStream(mediaInfo.VideoStreams.ToArray())
+.AddStream(mediaInfo.AudioStreams.ToArray())
+.AddStream(subtitleStream)
+.SetOutput(outputPath);</code></pre>
+        <p>or easier using <span class="mark">Conversion.Helpers</span></p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
 IConversionResult result = await Conversion.AddSubtitles(Resources.Mp4, output, Resources.SubtitleSrt)
-    .Start();
-                    </code>
-                </pre>
-            </div>
-        </div>
+.Start();</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Changing speed-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="changeSpeed">Changing speed</h2>
-            <div class="chapter-content">
-                <p>
-                    <span class="mark">IVideoStream</span> and <span class="mark">IAudioStream</span> allows change media speed:
-                </p>
-                <pre>
-                <code>
-IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+<div class="chapter">
+    <h2 class="chapter-header" id="changeSpeed">Changing speed</h2>
+    <div class="chapter-content">
+        <p>
+            <span class="mark">IVideoStream</span> and <span class="mark">IAudioStream</span> allow to change media speed:
+        </p>
+        <pre><code>IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
 string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
 IConversionResult conversionResult = await Conversion.New()
-    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.H264)
-    .ChangeSpeed(1.5))
-    .SetOutput(outputPath)
-    .Start();
-                    </code>
-                </pre>
-                <p><span class="mark">ChangeSpeed()</span> method accepting 1 argument - multiplayer. Multiplayer have to be between 0.5 and 2.0. If you want to speed up streams use values greater than 1, else less than 1.</p>
-            </div>
-        </div>
+.AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.H264)
+.ChangeSpeed(1.5))
+.SetOutput(outputPath)
+.Start();</code></pre>
+        <p><span class="mark">ChangeSpeed()</span> method accepting 1 argument - multiplayer. Multiplayer has to be between 0.5 and 2.0. If you want to speed up streams, use values greater than 1, if not, less than 1.</p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Changing size-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="changingSize">Changing size</h2>
-            <div class="chapter-content">
-                <p>
-                    The simplest way to change video size is by <span class="mark">Conversion.Helpers</span>:
-                </p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
+<div class="chapter">
+    <h2 class="chapter-header" id="changingSize">Changing size</h2>
+    <div class="chapter-content">
+        <p>
+            The simplest way to change video size is by <span class="mark">Conversion.Helpers</span>:
+        </p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
 string input = Resources.MkvWithAudio;
 
 IConversionResult result = await Conversion.ChangeSize(input, output, new VideoSize(640, 360))
-    .Start();
-                    </code>
-                            </pre>
-            </div>
-        </div>
+.Start();</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Changing video format-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="changingVideoFormat">Changing video format</h2>
-            <div class="chapter-content">
-                <p>
-                    <span class="mark">Conversion.Helpers</span> contains few predefinied methods to change video format e.g.:
-                </p>
-                <pre>
-                <code>
-await Conversion.ToOgv(inputVideoPath, outputPathOgv).Start();
+<div class="chapter">
+    <h2 class="chapter-header" id="changingVideoFormat">Changing video format</h2>
+    <div class="chapter-content">
+        <p>
+            <span class="mark">Conversion.Helpers</span> contains few predefinied methods to change video format e.g.:
+        </p>
+        <pre><code>await Conversion.ToOgv(inputVideoPath, outputPathOgv).Start();
 await Conversion.ToTs(inputVideoPath, outputPathTs).Start();
-await Conversion.ToWebM(inputVideoPath, outputPathWebm).Start();
-                    </code>
-                            </pre>
-                <p>More conversion types is possible by Conversion:</p>
-                <pre>
-                <code>
-string inputVideoPath = Path.Combine("C:\\", "Temp", "input.mkv");
-string outputPathMp4 = Path.Combine("C:\\", "Temp", "result.mp4");
+await Conversion.ToWebM(inputVideoPath, outputPathWebm).Start();</code></pre>
+        <p>More conversion types are possible by Conversion:</p>
+        <pre><code>string inputVideoPath = Path.Combine("C:", "Temp", "input.mkv");
+string outputPathMp4 = Path.Combine("C:", "Temp", "result.mp4");
 
 IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputVideoPath));
 
 IStream videoStream = info.VideoStreams.FirstOrDefault()
-    ?.SetCodec(VideoCodec.H264);
+?.SetCodec(VideoCodec.H264);
 IStream audioStream = info.AudioStreams.FirstOrDefault()
-    ?.SetCodec(AudioCodec.Aac);
+?.SetCodec(AudioCodec.Aac);
 
 return New()
-    .AddStream(videoStream, audioStream)
-    .SetOutput(outputPathMp4);
-                    </code>
-                            </pre>
-            </div>
-        </div>
+.AddStream(videoStream, audioStream)
+.SetOutput(outputPathMp4);</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Concatenate videos-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="concatenateVideos">Concatenate videos</h2>
-            <div class="chapter-content">
-                <p>
-                    The simplest way to concatenate video files is by <span class="mark">Conversion.Helpers</span>:
-                </p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-IConversionResult result = await Conversion.Concatenate(output,  Resources.MkvWithAudio, Resources.Mp4WithAudio);
-                    </code>
-                            </pre>
-                <p>Files list is params so it is possible concatenate more than two files.</p>
-                <p>Concatenate is complicated operation so look at helper implementation to understand how it works.</p>
-            </div>
-        </div>
+<div class="chapter">
+    <h2 class="chapter-header" id="concatenateVideos">Concatenate videos</h2>
+    <div class="chapter-content">
+        <p>
+            The simplest way to concatenate video files is by <span class="mark">Conversion.Helpers</span>:
+        </p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+IConversionResult result = await Conversion.Concatenate(output,  Resources.MkvWithAudio, Resources.Mp4WithAudio);</code></pre>
+        <p>Files list is params so it is possible to concatenate more than two files.</p>
+        <p>Concatenate is a complicated operation so look at helper implementation to understand how it works.</p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Split-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="split">Split</h2>
-            <div class="chapter-content">
-                <p>
-                    <span class="mark">IVideoStream</span> and <span class="mark">IAudioStream</span> allows split media, but the fastest way is by <span class="mark">Conversion.Helpers</span>:
-                </p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+<div class="chapter">
+    <h2 class="chapter-header" id="split">Split</h2>
+    <div class="chapter-content">
+        <p>
+            <span class="mark">IVideoStream</span> and <span class="mark">IAudioStream</span> allows split media, but the fastest way is by <span class="mark">Conversion.Helpers</span>:
+        </p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 IConversionResult result = await Conversion.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8))
-    .Start();
-                    </code>
-                 </pre>
-                <p>Helper splits all streams in media file and copy them (splitted) to output. In example on output will be media file with duration 6 sekunds contains both streams: audio and video. </p>
-            </div>
-        </div>
+.Start();</code></pre>
+        <p>Helper splits all streams in media file and copys them (splitted) to output. In example on output will be media file with duration of 6 seconds contains both streams: audio and video. </p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Watermarks-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="watermarks">Watermarks</h2>
-            <div class="chapter-content">
-                <p>
-                    Example of use watermarks:
-                </p>
-                <pre>
-                <code>
-string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+<div class="chapter">
+    <h2 class="chapter-header" id="watermarks">Watermarks</h2>
+    <div class="chapter-content">
+        <p>
+            Example of use watermarks:
+        </p>
+        <pre><code>string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 IConversionResult result = await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center)
-    .Start();
-                    </code>
-                 </pre>
-                <p>Watermark can be set in different position on image: </p>
-                <ul>
-                    <li>Position.UpperRight</li>
-                    <li>Position.BottomRight</li>
-                    <li>Position.Right</li>
-                    <li>Position.BottomLeft</li>
-                    <li>Position.UpperLeft</li>
-                    <li>Position.Left</li>
-                    <li>Position.Center</li>
-                    <li>Position.Bottom</li>
-                    <li>Position.Up</li>
-                </ul>
-            </div>
-        </div>
+.Start();</code></pre>
+        <p>Watermark can be set in different position in a video: </p>
+        <ul>
+            <li>Position.UpperRight</li>
+            <li>Position.BottomRight</li>
+            <li>Position.Right</li>
+            <li>Position.BottomLeft</li>
+            <li>Position.UpperLeft</li>
+            <li>Position.Left</li>
+            <li>Position.Center</li>
+            <li>Position.Bottom</li>
+            <li>Position.Up</li>
+        </ul>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Snapshot-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="snapshot">Snapshot</h2>
-            <div class="chapter-content">
-                <p>
-                    The simplest way to get snapshot is by <span class="mark">Conversion.Helpers</span>:
-                </p>
-                <pre>
-                <code>
-string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
+<div class="chapter">
+    <h2 class="chapter-header" id="snapshot">Snapshot</h2>
+    <div class="chapter-content">
+        <p>
+            The simplest way to get snapshot is by <span class="mark">Conversion.Helpers</span>:
+        </p>
+        <pre><code>string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
 IConversionResult result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0))
-    .Start();
-                    </code>
-                 </pre>
-                <p>Conversion always returns snapshot in png file format so outputPath should be with correct extension. Image has exactly the same size like video. </p>
-            </div>
-        </div>
+.Start();</code></pre>
+        <p>Conversion always returns snapshot in png file format so outputPath should be with correct extension. Image has exactly the same size as a video. </p>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Gifs-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="gifs">Gifs</h2>
-            <div class="chapter-content">
-                <p>
-                    FFmpeg allows to create gif file from video. Number of loops (one to unfinity) and delay between repeats can be specified in parameters. Easiest way to get gif from video is to use <span class="mark">Conversion.Helpers.ToGif()</span> method:
-                </p>
-                <pre>
-                <code>
-string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
+<div class="chapter">
+    <h2 class="chapter-header" id="gifs">Gifs</h2>
+    <div class="chapter-content">
+        <p>
+            FFmpeg allows to create gif file from video. Number of loops (one to infinity) and delay between repeats can be specified in parameters. The easiest way to get gif from video is to use <span class="mark">Conversion.Helpers.ToGif()</span> method:
+        </p>
+        <pre><code>string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
 
 IConversionResult result = await Conversion.ToGif(Resources.Mp4, output, 1, 1)
-.Start();
-                    </code>
-                 </pre>
-            </div>
-        </div>
+.Start();</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Own arguments-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="ownArguments">Own arguments</h2>
-            <div class="chapter-content">
-                <p>
-                    It is impossible to wrap all funcionality of FFmpeg in C#. To perform more complex tasks it will be necessary to pass your own arugments directly to FFmpeg.
-                </p>
-                <p>
-                    If you want to add additional parameter to IConversion use AddParameter method. All parameters added in this way will go near the end of ffmpeg arguments, just before output parameter. This code add 3 parameters to conversion: -ss (start position), -t (duration) and -s (size).
-                </p>
-                <pre>
-                <code>
-bool conversionResult = await new Conversion().SetInput(Resources.MkvWithAudio)
+<div class="chapter">
+    <h2 class="chapter-header" id="ownArguments">Own arguments</h2>
+    <div class="chapter-content">
+        <p>
+            It is impossible to wrap all funcionality of FFmpeg in C#. To perform more complex tasks it will be necessary to pass your own arugments directly to FFmpeg.
+        </p>
+        <p>
+            If you want to add additional parameter to IConversion, use AddParameter method. All parameters added in this way will go near the end of ffmpeg arguments, just before output parameter. This code adds 3 parameters to conversion: -ss (start position), -t (duration) and -s (size).
+        </p>
+        <pre><code>bool conversionResult = await new Conversion().SetInput(Resources.MkvWithAudio)
 .AddParameter($"-ss {TimeSpan.FromSeconds(1)} -t {TimeSpan.FromSeconds(1)}")
 .AddParameter("-s 1920x1080")
 .SetOutput(outputPath)
 .Start();
 
-//Output ffmpeg arguments should look like "ffmpeg.exe -i sample.mkv -ss 1 -t 1 -s 1920x1080 output.mp4"
-                    </code>
-                 </pre>
+//Output ffmpeg arguments should look like "ffmpeg.exe -i sample.mkv -ss 1 -t 1 -s 1920x1080 output.mp4"</code></pre>
 
-                <p>
-                    Also your can pass only your own arguments, without helping from IConversion class. Simplest conversion, from one format to another can be obtained in this way:
-                </p>
-                <pre>
-<code>
-string inputFile = Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv");
+        <p>
+            Also user can pass only his own arguments, without using IConversion class. Simplest conversion, from one format to another, can be obtained in this way:
+        </p>
+        <pre><code>string inputFile = Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv");
 string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-string arguments = $"-i \"{inputFile}\" \"{outputPath}\"";
+string arguments = $"-i "{inputFile}" "{outputPath}"";
 
-bool conversionResult = await new Conversion().Start(arguments);
-</code>
-                </pre>
-                <p>
-                    In result arguments variable should look like this (depends on OS and directories):
-                </p>
-                <pre>
-<code>
--i "C:\Xabe.FFmpeg\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv" "C:\Temp\tmpA1AA.mp4"
-</code>
-                </pre>
-                <p>
-                    That string will be passed directly to FFmpeg so final command running in console will looks like:
-                </p>
-<pre>
-<code>
-ffmpeg.exe -i "C:\Xabe.FFmpeg\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv" "C:\Temp\tmpA1AA.mp4"
-</code>
-</pre>
-            </div>
-        </div>
+bool conversionResult = await new Conversion().Start(arguments);</code></pre>
+        <p>
+            In a result, Arguments variable should look like this (depends on OS and directories):
+        </p>
+        <pre><code>-i "C:Xabe.FFmpegXabe.FFmpeg.TestbinDebugnetcoreapp2.0ResourcesSampleVideo_360x240_1mb.mkv" "C:TemptmpA1AA.mp4"</code></pre>
+        <p>
+            That string will be passed directly to FFmpeg so final command running in console will look like:
+        </p>
+<pre><code>ffmpeg.exe -i "C:Xabe.FFmpegXabe.FFmpeg.TestbinDebugnetcoreapp2.0ResourcesSampleVideo_360x240_1mb.mkv" "C:TemptmpA1AA.mp4"</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Conversions queue-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="conversionsQueue">Conversions queue</h2>
-            <div class="chapter-content">
-                <p>
-                    ConversionQueue provide easy to use interface to queue conversions. If parallel flag is set to true, Queue will process multiple conversions simultaneously. Number of parallel executions is equal number of cores, which give the best performance. With parallel flag, multithread in IConversion object should be disabled to gain performance. It is a lot more efficent in conversion small files under few megabytes.
-                </p>
-                <pre>
-                <code>
-var queue = new ConversionQueue(parallel: false);
+<div class="chapter">
+    <h2 class="chapter-header" id="conversionsQueue">Conversions queue</h2>
+    <div class="chapter-content">
+        <p>
+            ConversionQueue provides an easy to use interface to queue conversions. If parallel flag is set to true, Queue will process multiple conversions simultaneously. A number of parallel conversions depends on a number of cores, which give the best performance. With parallel flag, multithread in IConversion object should be disabled to gain performance. It is a lot more efficent in conversion small files under few megabytes.
+        </p>
+        <pre><code>var queue = new ConversionQueue(parallel: false);
 IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
 IConversion conversion2 = ConversionHelper.ToMp4(Resources.MkvWithAudio, output2);
 queue.Add(conversion);
 queue.Add(conversion2);
 
-queue.Start();
-                    </code>
-                 </pre>
-                <h3>Events</h3>
-                <p>OnException:</p>
-                <pre>
-                <code>
+queue.Start();</code></pre>
+        <h3>Events</h3>
+        <p>OnException:</p>
+        <pre>
+        <code>
 queue.OnException += (number, count, conversion) =>
 {
-    System.Console.Out.WriteLine($"Exception when converting file {number}/{count}");
-};
-                    </code>
-</pre>
-                <p>OnConverted:</p>
-                <pre>
-                <code>
-queue.OnConverted += (number, count, conversion) =>
+System.Console.Out.WriteLine($"Exception when converting file {number}/{count}");
+};</code></pre>
+        <p>OnConverted:</p>
+        <pre><code>queue.OnConverted += (number, count, conversion) =>
 {
-    System.Console.Out.WriteLine($"File {number}/{count} converted into {conversion.OutputFilePath}");
-};
-                    </code>
-</pre>
-            </div>
-        </div>
+System.Console.Out.WriteLine($"File {number}/{count} converted into {conversion.OutputFilePath}");
+};</code></pre>
+    </div>
+</div>
 
-        <!----------------------------------------------------------------------------------Converting subtitles-->
-        <div class="chapter">
-            <h2 class="chapter-header" id="convertingSubtitles">Converting subtitles</h2>
-            <div class="chapter-content">
-                <p>
-                    Subtitles are typical streams so can be converted like other streams:
-                </p>
-                <pre>
-                <code>
-string outputPath = Path.ChangeExtension(Path.GetTempFileName(), "ass");
+<div class="chapter">
+    <h2 class="chapter-header" id="convertingSubtitles">Converting subtitles</h2>
+    <div class="chapter-content">
+        <p>
+            Subtitles are typical streams so can be converted like other streams:
+        </p>
+        <pre><code>string outputPath = Path.ChangeExtension(Path.GetTempFileName(), "ass");
 
 IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt);
 
 ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault()
-    .SetFormat(new SubtitleFormat(format));
+.SetFormat(new SubtitleFormat(format));
 
 IConversionResult result = await Conversion.New()
-    .AddStream(subtitleStream)
-    .SetOutput(outputPath)
-    .Start();
-                    </code>
-                 </pre>
-            </div>
-        </div>
-
-
-
-
-
-
-
-
-
-
+.AddStream(subtitleStream)
+.SetOutput(outputPath)
+.Start();</code></pre>
     </div>
-
-</body>
-</html>
+</div>

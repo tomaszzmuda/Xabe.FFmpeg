@@ -8,50 +8,7 @@
 [![Join the chat at https://gitter.im/Xabe-FFmpeg/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Xabe-FFmpeg/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
-.NET Standard wrapper for FFmpeg. It's allow to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
+.NET Standard wrapper for FFmpeg. It allows to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
 
-[List of features and wiki](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki)
-
-## Using ##
-
-**You have to have installed FFmpeg and added it to your PATH variable OR specify directory where FFmpeg and ffprob are before run conversion in variable FFbase.FFmpegDir OR have FFmpeg and FFprobe in directory with you executable.**
-
-Default the library is trying to find FFmpeg executables names contains "ffprobe", "ffmpeg". This function is case insensitive. Those names can be changed in FFbase.FFmpegExecutableName and FFbase.FFprobeExecutableName.
-
-Install the [Xabe.FFmpeg NuGet package](https://www.nuget.org/packages/Xabe.FFmpeg) via nuget:
-
-	PM> Install-Package Xabe.FFmpeg
-	
-Creating media info:
-
-	IMediaInfo mediaInfo = new MediaInfo("videofile.mkv");
-	
-Media info contains information about video like: duration, audio format, video format, radio, frame rate, height, width, size in Properties property.
-
-It is possible to have more elastic way to convert media. **Conversion** class is builder for FFmpeg command. You can specify all implemented FFmpeg options and run process:
-	
-	string output = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
-	bool result = await ConversionHelper.ToMp4("videofile.mkv", output)
-                                    .Start();
-
-or
-
-	string outputPath = Path.ChangeExtension(Path.GetTempFileName(), Extensions.Mp4);
-	bool conversionResult = await Conversion.New()
-		.SetInput("videofile.mkv")
-		.Rotate(rotateDegrees)
-		.SetOutput(outputPath)
-		.Start();
-
-it is possible to give your own arguments
-
-	bool conversionResult = await Conversion.New().Start("-i \"C:\Xabe.FFmpeg.Test\bin\Debug\netcoreapp2.0\Resources\SampleVideo_360x240_1mb.mkv\" \"C:\Users\tzmuda\AppData\Local\Temp\tmp9B8A.mp4\"");
-
-## Lincence ##
-
-Xabe.FFmpeg is licensed under [Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)](https://creativecommons.org/licenses/by-nc-sa/3.0/) - see [License](LICENSE.md) for details. If you want use Xabe.FFmpeg in commercial project please ask about licensing at **tomasz.zmuda@xabe.xyz**
-
-## Contact ##
-
-Feel free to ask any questions on [Gitter](https://gitter.im/Xabe-FFmpeg/Lobby# "Gitter") or write e-mail  to **tomasz.zmuda@xabe.xyz**
+[Xabe.FFmpeg Documentation](https://github.com/tomaszzmuda/Xabe.FFmpeg/wiki)
