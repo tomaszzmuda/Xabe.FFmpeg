@@ -1,67 +1,67 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using Xabe.FFmpeg.Model;
+using System.Linq;
+using System.Threading.Tasks;
+using Xabe.FFmpeg.Exceptions;
+using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IMediaInfo" />
-    public class MediaInfo: IMediaInfo
+    public class MediaInfo : IMediaInfo
     {
-        private readonly object _propertiesLock = new object();
-        private MediaProperties _properties;
+        private MediaInfo(FileInfo fileInfo)
+        {
+            FileInfo = fileInfo;
+        }
 
         /// <inheritdoc />
-        public MediaInfo(FileInfo sourceFileInfo): this(sourceFileInfo.FullName)
+        public IEnumerable<IStream> Streams => VideoStreams.Concat<IStream>(AudioStreams)
+                                                           .Concat(SubtitleStreams);
+
+        /// <inheritdoc />
+        public TimeSpan Duration { get; internal set; }
+
+        /// <inheritdoc />
+        public long Size { get; internal set; }
+
+        /// <inheritdoc />
+        public IEnumerable<IVideoStream> VideoStreams { get; internal set; }
+
+        /// <inheritdoc />
+        public IEnumerable<IAudioStream> AudioStreams { get; internal set; }
+
+        /// <inheritdoc />
+        public IEnumerable<ISubtitleStream> SubtitleStreams { get; internal set; }
+
+        /// <inheritdoc />
+        public FileInfo FileInfo { get; }
+
+        /// <summary>
+        ///     Get MediaInfo from file
+        /// </summary>
+        /// <param name="filePath">FullPath to file</param>
+        public static async Task<IMediaInfo> Get(string filePath)
         {
+            return await Get(new FileInfo(filePath));
         }
 
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
-        /// <param name="fullName">FullName to file</param>
-        public MediaInfo(string fullName)
+        /// <param name="fileInfo">FileInfo</param>
+        public static async Task<IMediaInfo> Get(FileInfo fileInfo)
         {
-            if(!File.Exists(fullName))
-                throw new ArgumentException($"Input file {fullName} doesn't exists.");
-            FileInfo = new FileInfo(fullName);
-        }
-
-        /// <inheritdoc />
-        [Obsolete("This property will be remove in version 3.0.0. Please use Xabe.FFmpeg.IMediaInfo.Properties instead.")]
-        public MediaProperties VideoProperties => Properties;
-
-        /// <inheritdoc />
-        public MediaProperties Properties
-        {
-            get
+            if(!File.Exists(fileInfo.FullName))
             {
-                lock(_propertiesLock)
-                {
-                    if(_properties == null)
-                        _properties = new FFprobe().GetProperties(FileInfo.FullName);
-                    return _properties;
-                }
+                throw new InvalidInputException($"Input file {fileInfo.FullName} doesn't exists.");
             }
-        }
 
-        /// <inheritdoc />
-        public FileInfo FileInfo { get; }
+            var mediaInfo = new MediaInfo(fileInfo);
+            mediaInfo = await new FFprobe().GetProperties(fileInfo, mediaInfo);
 
-        /// <inheritdoc cref="IMediaInfo.ToString" />
-        public override string ToString()
-        {
-            return $"Video fullName : {FileInfo.FullName}{Environment.NewLine}" +
-                   $"Video root : {Path.GetDirectoryName(FileInfo.FullName)}{Environment.NewLine}" +
-                   $"Video name: {FileInfo.Name}{Environment.NewLine}" +
-                   $"Video extension : {FileInfo.Extension}{Environment.NewLine}" +
-                   $"Video duration : {Properties.VideoDuration}{Environment.NewLine}" +
-                   $"Video format : {Properties.VideoFormat}{Environment.NewLine}" +
-                   $"Audio format : {Properties.AudioFormat}{Environment.NewLine}" +
-                   $"Audio duration : {Properties.AudioDuration}{Environment.NewLine}" +
-                   $"Aspect Ratio : {Properties.Ratio}{Environment.NewLine}" +
-                   $"Framerate : {Properties.Ratio} fps{Environment.NewLine}" +
-                   $"Resolution : {Properties.Width} x {Properties.Height}{Environment.NewLine}" +
-                   $"Size : {Properties.Size} b";
+            return mediaInfo;
         }
     }
 }

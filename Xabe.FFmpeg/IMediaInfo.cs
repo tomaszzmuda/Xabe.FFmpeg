@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using Xabe.FFmpeg.Model;
+using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {
@@ -10,25 +11,38 @@ namespace Xabe.FFmpeg
     public interface IMediaInfo
     {
         /// <summary>
+        ///     All file streams
+        /// </summary>
+        IEnumerable<IStream> Streams { get; }
+
+        /// <summary>
         ///     Source file info
         /// </summary>
         FileInfo FileInfo { get; }
 
         /// <summary>
-        ///     Video properties
+        ///     Duration of media
         /// </summary>
-        [Obsolete("This property will be remove in version 3.0.0. Please use Xabe.FFmpeg.IMediaInfo.Properties instead.")]
-        MediaProperties VideoProperties { get; }
+        TimeSpan Duration { get; }
 
         /// <summary>
-        ///     Media properties
+        ///     Size of file
         /// </summary>
-        MediaProperties Properties { get; }
+        long Size { get; }
 
         /// <summary>
-        ///     Get formated info about video
+        ///     Video streams
         /// </summary>
-        /// <returns>Formated info about vidoe</returns>
-        string ToString();
+        IEnumerable<IVideoStream> VideoStreams { get; }
+
+        /// <summary>
+        ///     Audio streams
+        /// </summary>
+        IEnumerable<IAudioStream> AudioStreams { get; }
+
+        /// <summary>
+        ///     Audio streams
+        /// </summary>
+        IEnumerable<ISubtitleStream> SubtitleStreams { get; }
     }
 }

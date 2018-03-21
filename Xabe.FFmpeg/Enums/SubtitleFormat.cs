@@ -1,25 +1,31 @@
-﻿using System.ComponentModel;
-
-namespace Xabe.FFmpeg.Enums
+﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
     ///     Output subtitle format
     /// </summary>
-    public enum SubtitleFormat
+    public class SubtitleFormat: MediaFormat
     {
+        /// <summary>
+        ///     Subtitle format
+        /// </summary>
+        /// <param name="format">Subtitles format</param>
+        public SubtitleFormat(string format): base(format)
+        {
+        }
+
         /// <summary>
         ///     SubRip
         /// </summary>
-        [Description("srt")] SRT,
+        public static SubtitleFormat Srt => new SubtitleFormat("srt");
 
         /// <summary>
-        ///     WebVTT
+        ///     SubRip
         /// </summary>
-        [Description("webvtt")] WebVTT,
+        public static SubtitleFormat WebVtt => new SubtitleFormat("webvtt");
 
         /// <summary>
-        ///     Advanced SubStation Alpha
+        ///     SubRip
         /// </summary>
-        [Description("ass")] ASS
+        public static SubtitleFormat Ass => new SubtitleFormat("ass");
     }
 }

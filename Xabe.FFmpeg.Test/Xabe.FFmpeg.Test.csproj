@@ -8,9 +8,17 @@
     <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
 
     <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
+	
+	<DebugType>Full</DebugType>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn />
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+    
   <ItemGroup>
+    <None Remove="Resources\multipleStreamSample.mkv" />
     <None Remove="Resources\sample.flv" />
     <None Remove="Resources\sample.ts" />
     <None Remove="Resources\sampleSrt.srt" />
@@ -23,6 +31,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\input.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\multipleStreamSample.mkv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\mute.mp4">
@@ -47,6 +58,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="xunit" Version="2.3.0-beta3-build3705" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta3-build3705" />
   </ItemGroup>

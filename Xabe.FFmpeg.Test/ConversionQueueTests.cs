@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xunit;
 
@@ -18,8 +20,8 @@ namespace Xabe.FFmpeg.Test
 
             for(var i = 0; i < 2; i++)
             {
-                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
-                IConversion conversion = ConversionHelper.ToTs(Resources.Mp4, output);
+                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+                IConversion conversion = Conversion.ToTs(Resources.Mp4, output);
                 queue.Add(conversion);
             }
 
@@ -36,10 +38,15 @@ namespace Xabe.FFmpeg.Test
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
-            var mediaInfo = new MediaInfo(currentConversion.OutputFilePath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Properties.Duration);
-            Assert.Equal("h264", mediaInfo.Properties.VideoFormat);
-            Assert.Equal("aac", mediaInfo.Properties.AudioFormat);
+            IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath)
+                                            .Result;
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(1, mediaInfo.VideoStreams.Count());
+            Assert.Equal(1, mediaInfo.AudioStreams.Count());
+            Assert.Equal("h264", mediaInfo.VideoStreams.First()
+                                          .Format);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First()
+                                         .Format);
             if(conversionNumber == totalConversionsCount)
                 resetEvent.Set();
         }
@@ -52,9 +59,9 @@ namespace Xabe.FFmpeg.Test
 
             for(var i = 0; i < 2; i++)
             {
-                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
-                IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
+                IConversion conversion = Conversion.ToMp4(Resources.MkvWithAudio, output);
                 queue.Add(conversion);
             }
 
@@ -76,11 +83,11 @@ namespace Xabe.FFmpeg.Test
             var currentItemNumber = 0;
             var totalItemsCount = 0;
 
-            for (var i = 0; i < 2; i++)
+            for(var i = 0; i < 2; i++)
             {
-                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + Extensions.Mp4);
+                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
-                IConversion conversion = ConversionHelper.ToMp4(Resources.MkvWithAudio, output);
+                IConversion conversion = Conversion.ToMp4(Resources.MkvWithAudio, output);
                 queue.Add(conversion);
             }
 
@@ -89,7 +96,8 @@ namespace Xabe.FFmpeg.Test
             {
                 totalItemsCount = count;
                 currentItemNumber = number;
-                if (number == count) resetEvent.Set();
+                if(number == count)
+                    resetEvent.Set();
             };
             queue.Start();
             Assert.True(resetEvent.WaitOne(10000));
