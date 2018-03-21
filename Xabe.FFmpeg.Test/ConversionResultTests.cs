@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
+using Xabe.FFmpeg.Streams;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -22,6 +25,12 @@ namespace Xabe.FFmpeg.Test
             Assert.True(result.StartTime != DateTime.MinValue);
             Assert.True(result.EndTime != DateTime.MinValue);
             Assert.True(result.Duration > TimeSpan.FromMilliseconds(1));
+        }
+
+        [Fact]
+        public async Task ConversionWithWrongInputTest2()
+        {
+            await Assert.ThrowsAsync<InvalidInputException>(() => MediaInfo.Get("Z:\\test.mp4"));
         }
     }
 }

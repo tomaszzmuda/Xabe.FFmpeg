@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
@@ -54,7 +55,7 @@ namespace Xabe.FFmpeg
         {
             if(!File.Exists(fileInfo.FullName))
             {
-                throw new ArgumentException($"Input file {fileInfo.FullName} doesn't exists.");
+                throw new InvalidInputException($"Input file {fileInfo.FullName} doesn't exists.");
             }
 
             var mediaInfo = new MediaInfo(fileInfo);
