@@ -16,3 +16,4 @@
 *.user
 /coverage.xml
 /coverage
+/.vscode
