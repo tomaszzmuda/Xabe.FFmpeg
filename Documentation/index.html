@@ -1,28 +1,31 @@
 <style>
-h2.chapter-header {
-  padding-bottom: 0.3em;
-  font-size: 1.5em;
-  border-bottom: 1px solid #eaecef;
-}
-span.mark {
-  font-weight: bold;
-}
-.chapter-content {
-  text-align: justify;
-  margin-left: 20px;
-  margin-bottom: 75px;
-}
-pre code {
-  background-color: transparent;
-  padding: 5px;
-  margin: 0;
-}
-.subtitle {
-  color: gray;
-  font-size: 10px;
-  margin: 0 auto;
-}
+    h2.chapter-header {
+        padding-bottom: 0.3em;
+        font-size: 1.5em;
+        border-bottom: 1px solid #eaecef;
+    }
 
+    span.mark {
+        font-weight: bold;
+    }
+
+    .chapter-content {
+        text-align: justify;
+        margin-left: 20px;
+        margin-bottom: 75px;
+    }
+
+    pre code {
+        background-color: transparent;
+        padding: 5px;
+        margin: 0;
+    }
+
+    .subtitle {
+        color: gray;
+        font-size: 10px;
+        margin: 0 auto;
+    }
 </style>
 </head>
 
@@ -97,7 +100,7 @@ IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3);</code></pre>
         </p>
         <img src="https://xabe.net/wp-content/uploads/2018/03/streams.png" />
         <p class="subtitle">Diagram shows only most important properties and methods, for more information look at implementation.</p>
-</div>
+    </div>
 </div>
 
 <div class="chapter">
@@ -154,15 +157,14 @@ await conversion.Start();</code></pre>
     <h2 class="chapter-header" id="conversionResult">Conversion result</h2>
     <div class="chapter-content">
         <p>
-            Started conversion returns ConversionResult after it's completed (success or failure). Returned object informs about status of conversion, conversion duration, output file and more. 
+            Started conversion returns ConversionResult after it's completed (success or failure). Returned object informs about status of conversion, conversion duration, output file and more.
         </p>
         <p>
-            One of most useful value for debug may be "Arguments" property which have all arguments passed to FFmpeg process for conversion. 
+            One of most useful value for debug may be "Arguments" property which have all arguments passed to FFmpeg process for conversion.
         </p>
     </div>
 </div>
 
-<!----------------------------------------------------------------------------------Stop conversion-->
 <div class="chapter">
     <h2 class="chapter-header" id="stopConversion">Stop conversion</h2>
     <div class="chapter-content">
