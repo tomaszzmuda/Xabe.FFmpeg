@@ -24,6 +24,7 @@ namespace Xabe.FFmpeg
         private IEnumerable<FieldInfo> _fields;
         private string _output;
         private string _preset;
+        private bool _overwriteOutput;
         private string _shortestInput;
         private bool _useMultiThreads = true;
 
@@ -34,7 +35,7 @@ namespace Xabe.FFmpeg
             {
                 var builder = new StringBuilder();
                 builder.Append(BuildInput());
-                builder.Append("-n ");
+                builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
                 builder.Append(_preset);
                 builder.Append(_shortestInput);
@@ -166,6 +167,18 @@ namespace Xabe.FFmpeg
                 builder.Append(stream.Build());
             }
             return builder.ToString();
+        }
+
+        private string BuildOverwriteOutputParameter(bool overwriteOutput)
+        {
+            return overwriteOutput ? "-y " : "-n ";
+        }
+
+        /// <inheritdoc />
+        public IConversion SetOverwriteOutput(bool overwrite)
+        {
+            _overwriteOutput = overwrite;
+            return this;
         }
 
         private string BuildFilters()
