@@ -34,7 +34,7 @@ namespace Xabe.FFmpeg
             {
                 var builder = new StringBuilder();
                 builder.Append(BuildInput());
-                builder.Append("-n ");
+                builder.Append("-y ");
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
                 builder.Append(_preset);
                 builder.Append(_shortestInput);
