@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
+using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
 using Xabe.FFmpeg.Streams;
 using Xunit;
@@ -100,6 +101,27 @@ namespace Xabe.FFmpeg.Test
             Assert.True(secondConversionResult.Success);
             Assert.Contains(" -y ", secondConversionResult.Arguments);
             Assert.DoesNotContain(" -n ", secondConversionResult.Arguments);
+        }
+
+        [Fact]
+        public async Task OverwriteFilesExceptionTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Ac3);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.True(conversionResult.Success);
+            Assert.Contains("-n ", conversionResult.Arguments);
+
+            await Assert.ThrowsAsync<ConversionException>(() => Conversion.New()
+                                                                          .AddStream(audioStream)
+                                                                          .SetOutput(output)
+                                                                          .Start());
         }
     }
 }

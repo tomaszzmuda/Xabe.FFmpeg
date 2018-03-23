@@ -49,7 +49,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Set overwrite output file parameter
         /// </summary>
-        /// <param name="overwrite">Should be output file overwritten or not</param>
+        /// <param name="overwrite">Should be output file overwritten or not. If not overwrite and file exists conversion will throw ConversionException</param>
         /// <returns>>IConversion object</returns>
         IConversion SetOverwriteOutput(bool overwrite);
 
