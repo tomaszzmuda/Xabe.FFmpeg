@@ -47,6 +47,13 @@ namespace Xabe.FFmpeg
         IConversion SetOutput(string outputPath);
 
         /// <summary>
+        ///     Set overwrite output file parameter
+        /// </summary>
+        /// <param name="overwrite">Should be output file overwritten or not</param>
+        /// <returns>>IConversion object</returns>
+        IConversion SetOverwriteOutput(bool overwrite);
+
+        /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
         event ConversionProgressEventHandler OnProgress;
