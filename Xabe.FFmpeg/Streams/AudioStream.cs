@@ -85,9 +85,9 @@ namespace Xabe.FFmpeg.Streams
         public string Format { get; internal set; }
 
         /// <inheritdoc />
-        public string GetSource()
+        public IEnumerable<string> GetSource()
         {
-            return Source.FullName;
+            return new []{Source.FullName};
         }
 
         /// <inheritdoc />

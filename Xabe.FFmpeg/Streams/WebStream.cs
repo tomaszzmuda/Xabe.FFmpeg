@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Xabe.FFmpeg.Streams
@@ -31,9 +32,9 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public string GetSource()
+        public IEnumerable<string> GetSource()
         {
-            return _uri.AbsoluteUri;
+            return new []{_uri.AbsoluteUri};
         }
 
         /// <inheritdoc />

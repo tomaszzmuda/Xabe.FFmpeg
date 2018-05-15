@@ -10,6 +10,7 @@ namespace Xabe.FFmpeg.Streams
     /// <inheritdoc cref="IVideoStream" />
     public class VideoStream : IVideoStream, IFilterable
     {
+        private readonly List<string> _sources = new List<string>();
         private readonly List<string> _parameters = new List<string>();
         private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
         private string _bitsreamFilter;
@@ -203,7 +204,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream SetWatermark(string imagePath, Position position)
         {
-            _parameters.Add($"-i \"{imagePath}\" ");
+            _sources.Add(imagePath);
             string argument = string.Empty;
             switch(position)
             {
@@ -247,9 +248,10 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public string GetSource()
+        public IEnumerable<string> GetSource()
         {
-            return Source.FullName;
+            return _sources.Concat(new []{Source.FullName});
+
         }
 
         void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)

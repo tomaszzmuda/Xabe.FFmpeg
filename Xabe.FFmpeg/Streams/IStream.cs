@@ -1,4 +1,6 @@
-﻿namespace Xabe.FFmpeg.Streams
+﻿using System.Collections.Generic;
+
+namespace Xabe.FFmpeg.Streams
 {
     /// <summary>
     ///     Base stream class
@@ -25,6 +27,6 @@
         ///     Get stream input
         /// </summary>
         /// <returns>Input path</returns>
-        string GetSource();
+        IEnumerable<string> GetSource();
     }
 }

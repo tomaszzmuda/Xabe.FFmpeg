@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Xabe.FFmpeg.Enums;
@@ -61,9 +62,9 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public string GetSource()
+        public IEnumerable<string> GetSource()
         {
-            return Source.FullName;
+            return new []{Source.FullName};
         }
 
         private string BuildLanguage()
