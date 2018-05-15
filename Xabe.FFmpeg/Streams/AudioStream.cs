@@ -115,7 +115,7 @@ namespace Xabe.FFmpeg.Streams
             {
                 yield return new FilterConfiguration
                 {
-                    FilterType = ":a",
+                    FilterType = "-filter:a",
                     StreamNumber = Index,
                     Filters = _audioFilters
                 };
