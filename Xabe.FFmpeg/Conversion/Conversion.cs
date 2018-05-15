@@ -249,16 +249,12 @@ namespace Xabe.FFmpeg
         /// <returns>Input argument</returns>
         private string BuildInput()
         {
-            var builder = new StringBuilder();
+            var builder = new StringBuilder();  
             var index = 0;
-            foreach(var sources in _streams.Select(x => x.GetSource())
-                                               .Distinct())
+            foreach(var source in _streams.SelectMany(x => x.GetSource()).Distinct())
             {
-                foreach(string source in sources)
-                {
-                    _inputFileMap[source] = index++;
-                    builder.Append($"-i \"{source}\" ");
-                }
+                _inputFileMap[source] = index++;
+                builder.Append($"-i \"{source}\" ");
             }
             return builder.ToString();
         }
