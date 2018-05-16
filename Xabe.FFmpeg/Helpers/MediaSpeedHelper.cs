@@ -8,8 +8,7 @@ namespace Xabe.FFmpeg
         internal static string GetAudioSpeed(double multiplication)
         {
             CheckMultiplicationRange(multiplication);
-            string audioSpeed = $"atempo={string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
-            return audioSpeed;
+            return $"{string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
         }
 
         internal static string GetVideoSpeedFilter(double multiplication)

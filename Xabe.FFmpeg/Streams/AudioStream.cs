@@ -85,9 +85,9 @@ namespace Xabe.FFmpeg.Streams
         public string Format { get; internal set; }
 
         /// <inheritdoc />
-        public string GetSource()
+        public IEnumerable<string> GetSource()
         {
-            return Source.FullName;
+            return new []{Source.FullName};
         }
 
         /// <inheritdoc />
@@ -115,7 +115,7 @@ namespace Xabe.FFmpeg.Streams
             {
                 yield return new FilterConfiguration
                 {
-                    FilterType = ":a",
+                    FilterType = "-filter:a",
                     StreamNumber = Index,
                     Filters = _audioFilters
                 };

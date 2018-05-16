@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class NewConversionTests
+    public class ConversionTests
     {
         [Theory]
         [InlineData(Position.UpperRight)]
@@ -30,9 +30,10 @@ namespace Xabe.FFmpeg.Test
                                   .SetWatermark(Resources.PngSample, position);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                    .AddStream(stream)
-                                                    .SetOutput(outputPath)
-                                                    .Start();
+                                                                 .SetPreset(ConversionPreset.UltraFast)
+                                                                 .AddStream(stream)
+                                                                 .SetOutput(outputPath)
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             Assert.Contains("overlay", conversionResult.Arguments);

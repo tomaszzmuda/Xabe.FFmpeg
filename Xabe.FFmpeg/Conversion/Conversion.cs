@@ -235,7 +235,10 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             foreach(IStream stream in _streams)
             {
-                    builder.Append($"-map {_inputFileMap[stream.GetSource()]}:{stream.Index} ");
+                foreach(var source in stream.GetSource())
+                {
+                    builder.Append($"-map {_inputFileMap[source]}:{stream.Index} ");
+                }
             }
             return builder.ToString();
         }
@@ -246,10 +249,9 @@ namespace Xabe.FFmpeg
         /// <returns>Input argument</returns>
         private string BuildInput()
         {
-            var builder = new StringBuilder();
+            var builder = new StringBuilder();  
             var index = 0;
-            foreach(string source in _streams.Select(x => x.GetSource())
-                                               .Distinct())
+            foreach(var source in _streams.SelectMany(x => x.GetSource()).Distinct())
             {
                 _inputFileMap[source] = index++;
                 builder.Append($"-i \"{source}\" ");
