@@ -18,7 +18,7 @@
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIconUrl>https://xabe.net/assets/Xabe_logo_100x100_black.png</PackageIconUrl>
+    <PackageIconUrl>https://xabe.net/assets/new_xabe_logo-100x100.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
