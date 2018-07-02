@@ -351,5 +351,25 @@ namespace Xabe.FFmpeg.Test
                 await Assert.ThrowsAsync<UriFormatException>(ConversionAction);
             }
         }
+
+        [Fact]
+        public async Task ConversionWithoutSpecificFormat()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult result = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
+
+            Assert.True(result.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(1, mediaInfo.VideoStreams.Count());
+            Assert.Equal(1, mediaInfo.AudioStreams.Count());
+            IAudioStream audioStream = mediaInfo.AudioStreams.First();
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
+            Assert.Equal("h264", videoStream.Format);
+            Assert.Equal("aac", audioStream.Format);
+        }
     }
 }
