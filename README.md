@@ -19,5 +19,6 @@ Xabe.FFmpeg is licensed under [Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 ## Contact ##
 
-Feel free to ask any questions on [Gitter](https://gitter.im/Xabe-FFmpeg/Lobby# "Gitter") or write e-mail  to **xabe@xabe.net**
-You can check our website to - [Xabe.net](https://xabe.net/)
+Feel free to ask any questions on [Gitter](https://gitter.im/Xabe-FFmpeg/Lobby# "Gitter") or write e-mail  to **support@xabe.net**
+
+You can check our website too - [Xabe.net](https://xabe.net/)
