@@ -1,15 +1,34 @@
-using System.Linq;
 using System.IO;
 using Xunit;
 using System.Threading.Tasks;
-using static Xabe.FFmpeg.ExecDownload.Tests.OperatingSystemProvider;
 using NSubstitute;
 using Newtonsoft.Json;
+using System;
+using System.Runtime.InteropServices;
 
 namespace Xabe.FFmpeg.ExecDownload.Tests
 {
     public class LinkProviderTests
     {
+        [Fact]
+        internal async Task FullProcessPassed()
+        {
+            FFbase.FFmpegDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            await FFmpegDownloader.GetLatestVersion();
+
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            { 
+                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffmpeg.exe")));
+                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffprobe.exe")));
+            }
+            else
+            {
+                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffmpeg")));
+                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffprobe")));
+            }
+
+        }
+
         [Theory]
         [InlineData(OperatingSystem.Windows64)]
         [InlineData(OperatingSystem.Windows32)]
@@ -32,8 +51,8 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
                 Directory.Delete("assemblies", true);
             }
 
-            LastestFFmpegBinaries2._linkProvider = linkProvider;
-            await LastestFFmpegBinaries2.DownloadLatestVersion(currentVersion);
+            FFmpegDownloader._linkProvider = linkProvider;
+            await FFmpegDownloader.DownloadLatestVersion(currentVersion);
 
             if(os == OperatingSystem.Windows32 || os == OperatingSystem.Windows64)
             {
@@ -46,14 +65,6 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
                 Assert.True(File.Exists(Path.Combine("assemblies", "ffprobe")));
             }
 
-        }
-
-        [Fact]
-        public async Task TestDownloader()
-        {
-            await new LastestFFmpegBinaries2(new LinkProvider()).GetLatestVersion();
-            //Assert.True(Directory.GetFiles(".").Any(x => x.Equals("ffmpeg") || x.Equals("ffmpeg.exe")));
-            //Assert.True(Directory.GetFiles(".").Any(x => x.Equals("ffprobe") || x.Equals("ffprobe.exe")));
         }
     }
 }

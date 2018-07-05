@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Xabe.FFmpeg.ExecDownload
 {
-    public class BaseBinaries
+    internal class BaseBinaries
     {
         [JsonProperty(PropertyName = "ffmpeg")]
         public string Ffmpeg { get; set; }
@@ -17,35 +17,35 @@ namespace Xabe.FFmpeg.ExecDownload
         public string Ffprobe { get; set; }
     }
 
-    public class Windows32 : BaseBinaries
+    internal class Windows32 : BaseBinaries
     {
     }
 
-    public class Windows64 : BaseBinaries
+    internal class Windows64 : BaseBinaries
     {
     }
 
-    public class Linux32 : BaseBinaries
+    internal class Linux32 : BaseBinaries
     {
     }
 
-    public class Linux64 : BaseBinaries
+    internal class Linux64 : BaseBinaries
     {
     }
 
-    public class LinuxArmhf : BaseBinaries
+    internal class LinuxArmhf : BaseBinaries
     {
     }
 
-    public class LinuxArmel : BaseBinaries
+    internal class LinuxArmel : BaseBinaries
     {
     }
 
-    public class LinuxArm64 : BaseBinaries
+    internal class LinuxArm64 : BaseBinaries
     {
     }
 
-    public class Osx64
+    internal class Osx64
     {
         [JsonProperty(PropertyName = "ffmpeg")]
         public string Ffmpeg { get; set; }
@@ -55,7 +55,7 @@ namespace Xabe.FFmpeg.ExecDownload
         public string Ffprobe { get; set; }
     }
 
-    public class Bin
+    internal class Bin
     {
         [JsonProperty(PropertyName = "windows-32")]
         public Windows32 Windows32 { get; set; }
@@ -82,19 +82,19 @@ namespace Xabe.FFmpeg.ExecDownload
         public Osx64 Osx64 { get; set; }
     }
 
-    public class Links
+    internal class Links
     {
         public string FFmpegLink { get; set; }
         public string FFprobeLink { get; set; }
     }
 
-    public class DownloadedVersion
+    internal class DownloadedVersion
     {
         [JsonProperty(PropertyName = "version")]
         public string Version { get; set; }
     }
 
-    public class FFbinariesVersionInfo
+    internal class FFbinariesVersionInfo
     {
         [JsonProperty(PropertyName = "version")]
         public string Version { get; set; }

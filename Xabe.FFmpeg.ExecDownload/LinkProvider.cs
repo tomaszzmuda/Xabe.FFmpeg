@@ -1,12 +1,10 @@
-﻿using static Xabe.FFmpeg.ExecDownload.Tests.OperatingSystemProvider;
-
-namespace Xabe.FFmpeg.ExecDownload.Tests
+﻿namespace Xabe.FFmpeg.ExecDownload.Tests
 {
-    public class LinkProvider
+    internal class LinkProvider
     {
         IOperatingSystemProvider _operatingSystemProvider;
 
-        public LinkProvider()
+        internal LinkProvider()
         {
             _operatingSystemProvider = new OperatingSystemProvider();
         }

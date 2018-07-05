@@ -8,29 +8,27 @@ using Newtonsoft.Json;
 
 namespace Xabe.FFmpeg.ExecDownload.Tests
 {
-    public class LastestFFmpegBinaries2
+    public class FFmpegDownloader
     {
         internal static LinkProvider _linkProvider = new LinkProvider();
 
-        public LastestFFmpegBinaries2(LinkProvider linkProvider)
+        internal FFmpegDownloader(LinkProvider linkProvider)
         {
             _linkProvider = linkProvider;
         }
 
         /// <summary>
-        /// Acquires the latests binaries.
+        ///     Download latest FFmpeg version for current operating system to FFbase.FFmpegDir. If it is not set download to ".".
         /// </summary>
-        public async Task GetLatestVersion()
+        public async static Task GetLatestVersion()
         {
             var latestVersion = GetLatestVersionInfo();
 
             if(!CheckIfUpdateAvaiable(latestVersion.Version))
                 return;
 
-            // Download Files for os version
             await DownloadLatestVersion(latestVersion);
 
-            // Save current version
             SaveVersion(latestVersion);
         }
 
@@ -43,10 +41,6 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
             }
         }
 
-        /// <summary>
-        /// Downloads the applications.
-        /// </summary>
-        /// <param name="latestFFmpegBinaries">The object.</param>
         internal async static Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries)
         {
             var ffProbeZipPath = Path.Combine(Path.GetTempPath(), "FFprobe.zip");
@@ -58,7 +52,6 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
             Extract(ffmpegZip, FFbase.FFmpegDir ?? ".");
             Extract(ffprobeZip, FFbase.FFmpegDir ?? ".");
 
-            // Clean Folder
             if(Directory.Exists(Path.Combine(FFbase.FFmpegDir ?? ".", "__MACOSX")))
                 Directory.Delete(Path.Combine(FFbase.FFmpegDir ?? ".", "__MACOSX"), true);
         }
@@ -67,16 +60,11 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
 
         private static void Extract(string ffMpegZipPath, string destinationDir)
         {
-                ZipFile.ExtractToDirectory(ffMpegZipPath, destinationDir);
-                File.Delete(ffMpegZipPath);
+            ZipFile.ExtractToDirectory(ffMpegZipPath, destinationDir);
+            File.Delete(ffMpegZipPath);
         }
 
-        /// <summary>
-        /// Upgrades if necessary.
-        /// </summary>
-        /// <param name="remoteVersion">The remote version.</param>
-        /// <returns></returns>
-        private bool CheckIfUpdateAvaiable(string latestVersion)
+        private static bool CheckIfUpdateAvaiable(string latestVersion)
         {
             var versionPath = Path.Combine(FFbase.FFmpegDir ?? ".", "version.json");
             if(!File.Exists(versionPath))
@@ -92,11 +80,7 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
             return false;
         }
 
-        /// <summary>
-        /// Saves the version.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        private void SaveVersion(FFbinariesVersionInfo latestVersion)
+        private static void SaveVersion(FFbinariesVersionInfo latestVersion)
         {
             var versionPath = Path.Combine(FFbase.FFmpegDir ?? ".", "version.json");
             File.WriteAllText(versionPath, JsonConvert.SerializeObject(new DownloadedVersion()
@@ -105,12 +89,6 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
             }, Formatting.Indented));
         }
 
-        /// <summary>
-        /// Downloads the file.
-        /// </summary>
-        /// <param name="url">The URL.</param>
-        /// <param name="path">The path.</param>
-        /// <returns></returns>
         private async static Task<string> DownloadFile(string url)
         {
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
@@ -131,6 +109,4 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
             return tempPath;
         }
     }
-
-
 }
