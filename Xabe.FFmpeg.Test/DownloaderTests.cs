@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 using Xabe.FFmpeg.Downloader;
 
-namespace Xabe.FFmpeg.Tests
+namespace Xabe.FFmpeg.Test
 {
     public class DownloaderTests
     {
@@ -44,7 +44,7 @@ namespace Xabe.FFmpeg.Tests
 
             var linkProvider = new LinkProvider(operatingSystemProvider);
 
-            FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText("ffbinaries.json"));
+            FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
             FFmpeg.ExecutablePath = "assemblies";
             if(Directory.Exists("assemblies"))
             {
