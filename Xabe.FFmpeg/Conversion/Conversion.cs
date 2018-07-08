@@ -75,7 +75,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public async Task<IConversionResult> Start(string parameters, CancellationToken cancellationToken)
         {
-            var ffmpeg = new FFmpeg();
+            var ffmpeg = new FFmpegWrapper();
             ffmpeg.OnProgress += OnProgress;
             ffmpeg.OnDataReceived += OnDataReceived;
             var result = new ConversionResult

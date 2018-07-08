@@ -1,136 +1,216 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using Xabe.FFmpeg.Events;
+using System.Reflection;
 using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {
-    // ReSharper disable once InconsistentNaming
-
     /// <inheritdoc />
-    /// <summary>
-    ///     Wrapper for FFmpeg
-    /// </summary>
-    internal class FFmpeg : FFbase
+    public abstract class FFmpeg
     {
-        private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
-        private List<string> _outputLog;
-        private TimeSpan _totalTime;
+        private static string _ffmpegPath;
+        private static string _ffprobePath;
+
+        private static readonly object FfmpegPathLock = new object();
+
+        private static readonly object FfprobePathLock = new object();
 
         /// <summary>
-        ///     Fires when FFmpeg progress changes
+        ///     Directory contains FFmpeg and FFprobe
         /// </summary>
-        internal event ConversionProgressEventHandler OnProgress;
+        [Obsolete("Please use ExecutablePath property.")]
+        public static string FFmpegDir { get => ExecutablePath; set => ExecutablePath = value; }
 
         /// <summary>
-        ///     Fires when FFmpeg process print something
+        ///     Directory contains FFmpeg and FFprobe
         /// </summary>
-        internal event DataReceivedEventHandler OnDataReceived;
+        public static string ExecutablePath { get; set; }
 
-        internal async Task<bool> RunProcess(string args, CancellationToken cancellationToken)
+        /// <summary>
+        ///     Name of FFmpeg executable name (Case insensitive)
+        /// </summary>
+        public static string FFmpegExecutableName { get; } = "ffmpeg";
+
+        /// <summary>
+        ///     Name of FFprobe executable name (Case insensitive)
+        /// </summary>
+        public static string FFprobeExecutableName { get; } = "ffprobe";
+
+        /// <summary>
+        ///     FFmpeg process
+        /// </summary>
+        protected Process Process;
+
+        /// <summary>
+        ///     Initalize new FFmpeg. Search FFmpeg and FFprobe in PATH
+        /// </summary>
+        protected FFmpeg()
         {
-            return await Task.Run(() =>
+            if(!string.IsNullOrWhiteSpace(FFprobePath) &&
+               !string.IsNullOrWhiteSpace(FFmpegPath))
             {
-                _outputLog = new List<string>();
+                return;
+            }
 
-                RunProcess(args, FFmpegPath, true, true, true);
+            if(!string.IsNullOrWhiteSpace(ExecutablePath))
+            {
+                FFprobePath = new DirectoryInfo(ExecutablePath).GetFiles()
+                                                          .FirstOrDefault(x => x.Name.ToLower()
+                                                                                .Contains(FFprobeExecutableName.ToLower()))
+                                                          .FullName;
+                FFmpegPath = new DirectoryInfo(ExecutablePath).GetFiles()
+                                                         .FirstOrDefault(x => x.Name.ToLower()
+                                                                               .Contains(FFmpegExecutableName.ToLower()))
+                                                         .FullName;
+                ValidateExecutables();
+                return;
+            }
 
-                using(Process)
+            Assembly entryAssembly = Assembly.GetEntryAssembly();
+
+            if(entryAssembly != null)
+            {
+                string workingDirectory = Path.GetDirectoryName(entryAssembly.Location);
+
+                FindProgramsFromPath(workingDirectory);
+
+                if(FFmpegPath != null &&
+                   FFprobePath != null)
                 {
-                    Process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
-                    Process.BeginErrorReadLine();
-                    cancellationToken.Register(() => { Process.StandardInput.Write("q"); });
-                    Process.WaitForExit();
-
-                    if(cancellationToken.IsCancellationRequested)
-                    {
-                        return false;
-                    }
-
-                    if(Process.ExitCode != 0)
-                    {
-                        throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                    }
-                }
-                return true;
-            });
-        }
-
-        private void ProcessOutputData(DataReceivedEventArgs e, string args)
-        {
-            if(e.Data == null)
-            {
-                return;
-            }
-
-            OnDataReceived?.Invoke(this, e);
-
-            _outputLog.Add(e.Data);
-
-            if(OnProgress == null)
-            {
-                return;
-            }
-
-            CalculateTime(e, args);
-        }
-
-        private void CalculateTime(DataReceivedEventArgs e, string args)
-        {
-            if(e.Data.Contains("Duration: N/A"))
-            {
-                return;
-            }
-
-            var regex = new Regex(TimeFormatRegex);
-            if(e.Data.Contains("Duration"))
-            {
-                GetDuration(e, regex, args);
-            }
-            else if(e.Data.Contains("frame"))
-            {
-                Match match = regex.Match(e.Data);
-                if(match.Success)
-                {
-                    OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime));
+                    return;
                 }
             }
+
+            string[] paths = Environment.GetEnvironmentVariable("PATH")
+                                        .Split(Path.PathSeparator);
+
+            foreach(string path in paths)
+            {
+                FindProgramsFromPath(path);
+
+                if(FFmpegPath != null &&
+                   FFprobePath != null)
+                {
+                    break;
+                }
+            }
+
+            ValidateExecutables();
         }
 
-        private void GetDuration(DataReceivedEventArgs e, Regex regex, string args)
+        /// <summary>
+        ///     FilePath to FFmpeg
+        /// </summary>
+        protected string FFmpegPath
         {
-            string t = GetArgumentValue("-t", args);
-            if(!string.IsNullOrWhiteSpace(t))
+            get
             {
-                _totalTime = TimeSpan.Parse(t);
+                lock(FfmpegPathLock)
+                {
+                    return _ffmpegPath;
+                }
+            }
+
+            private set
+            {
+                lock(FfmpegPathLock)
+                {
+                    _ffmpegPath = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     FilePath to FFprobe
+        /// </summary>
+        protected string FFprobePath
+        {
+            get
+            {
+                lock(FfprobePathLock)
+                {
+                    return _ffprobePath;
+                }
+            }
+
+            private set
+            {
+                lock(FfprobePathLock)
+                {
+                    _ffprobePath = value;
+                }
+            }
+        }
+
+        private void ValidateExecutables()
+        {
+            if(FFmpegPath != null &&
+               FFprobePath != null)
+            {
                 return;
             }
 
-            Match match = regex.Match(e.Data);
-            _totalTime = TimeSpan.Parse(match.Value);
-
-            string ss = GetArgumentValue("-ss", args);
-            if(!string.IsNullOrWhiteSpace(ss))
-            {
-                _totalTime -= TimeSpan.Parse(ss);
-            }
+            string ffmpegDir = string.IsNullOrWhiteSpace(ExecutablePath) ? string.Empty : string.Format(ExecutablePath + " or ");
+            string exceptionMessage =
+                $"Cannot find FFmpeg in {ffmpegDir}PATH. This package needs installed FFmpeg. Please add it to your PATH variable or specify path to DIRECTORY with FFmpeg executables in {nameof(FFmpeg)}.{nameof(ExecutablePath)}";
+            throw new FFmpegNotFoundException(exceptionMessage);
         }
 
-        private string GetArgumentValue(string option, string args)
+        private void FindProgramsFromPath(string path)
         {
-            List<string> words = args.Split(' ')
-                                     .ToList();
-            int index = words.IndexOf(option);
-            if(index >= 0)
+            if(!Directory.Exists(path))
             {
-                return words[index + 1];
+                return;
             }
-            return string.Empty;
+            FileInfo[] files = new DirectoryInfo(path).GetFiles();
+
+            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith(FFprobeExecutableName, true, CultureInfo.InvariantCulture))
+                               ?.FullName;
+            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith(FFmpegExecutableName, true, CultureInfo.InvariantCulture))
+                              ?.FullName;
         }
+
+        /// <summary>
+        ///     Run conversion
+        /// </summary>
+        /// <param name="args">Arguments</param>
+        /// <param name="processPath">FilePath to executable (FFmpeg, ffprobe)</param>
+        /// <param name="standardInput">Should redirect standard input</param>
+        /// <param name="standardOutput">Should redirect standard output</param>
+        /// <param name="standardError">Should redirect standard error</param>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        protected void RunProcess(string args, string processPath, bool standardInput = false,
+            bool standardOutput = false, bool standardError = false)
+        {
+            Process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = processPath,
+                    Arguments = args,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardInput = standardInput,
+                    RedirectStandardOutput = standardOutput,
+                    RedirectStandardError = standardError
+                },
+                EnableRaisingEvents = true
+            };
+
+            Process.Start();
+        }
+    }
+
+    /// <summary>
+    ///     Base FFmpeg class
+    /// </summary>
+    [Obsolete("Please use class FFmpeg.")]
+    public abstract class FFbase : FFmpeg
+    {
+        
     }
 }

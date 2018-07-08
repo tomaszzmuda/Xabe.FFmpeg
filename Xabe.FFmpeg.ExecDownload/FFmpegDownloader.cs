@@ -49,11 +49,11 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
 
             var ffmpegZip = await DownloadFile(links.FFmpegLink);
             var ffprobeZip = await DownloadFile(links.FFprobeLink);
-            Extract(ffmpegZip, FFbase.FFmpegDir ?? ".");
-            Extract(ffprobeZip, FFbase.FFmpegDir ?? ".");
+            Extract(ffmpegZip, FFmpeg.ExecutablePath ?? ".");
+            Extract(ffprobeZip, FFmpeg.ExecutablePath ?? ".");
 
-            if(Directory.Exists(Path.Combine(FFbase.FFmpegDir ?? ".", "__MACOSX")))
-                Directory.Delete(Path.Combine(FFbase.FFmpegDir ?? ".", "__MACOSX"), true);
+            if(Directory.Exists(Path.Combine(FFmpeg.ExecutablePath ?? ".", "__MACOSX")))
+                Directory.Delete(Path.Combine(FFmpeg.ExecutablePath ?? ".", "__MACOSX"), true);
         }
 
 
@@ -66,7 +66,7 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
 
         private static bool CheckIfUpdateAvaiable(string latestVersion)
         {
-            var versionPath = Path.Combine(FFbase.FFmpegDir ?? ".", "version.json");
+            var versionPath = Path.Combine(FFmpeg.ExecutablePath ?? ".", "version.json");
             if(!File.Exists(versionPath))
                 return true;
 
@@ -82,7 +82,7 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
 
         private static void SaveVersion(FFbinariesVersionInfo latestVersion)
         {
-            var versionPath = Path.Combine(FFbase.FFmpegDir ?? ".", "version.json");
+            var versionPath = Path.Combine(FFmpeg.ExecutablePath ?? ".", "version.json");
             File.WriteAllText(versionPath, JsonConvert.SerializeObject(new DownloadedVersion()
             {
                 Version = latestVersion.Version

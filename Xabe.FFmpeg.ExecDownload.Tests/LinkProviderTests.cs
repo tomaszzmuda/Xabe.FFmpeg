@@ -13,18 +13,18 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
         [Fact]
         internal async Task FullProcessPassed()
         {
-            FFbase.FFmpegDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            FFmpeg.ExecutablePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
             await FFmpegDownloader.GetLatestVersion();
 
             if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             { 
-                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffmpeg.exe")));
-                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffprobe.exe")));
+                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffmpeg.exe")));
+                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffprobe.exe")));
             }
             else
             {
-                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffmpeg")));
-                Assert.True(File.Exists(Path.Combine(FFbase.FFmpegDir, "ffprobe")));
+                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffmpeg")));
+                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffprobe")));
             }
 
         }
@@ -45,7 +45,7 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
             var linkProvider = new LinkProvider(operatingSystemProvider);
 
             FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText("ffbinaries.json"));
-            FFbase.FFmpegDir = "assemblies";
+            FFmpeg.ExecutablePath = "assemblies";
             if(Directory.Exists("assemblies"))
             {
                 Directory.Delete("assemblies", true);
