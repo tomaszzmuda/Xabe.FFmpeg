@@ -24,12 +24,12 @@ namespace Xabe.FFmpeg
         ///     Directory contains FFmpeg and FFprobe
         /// </summary>
         [Obsolete("Please use ExecutablePath property.")]
-        public static string FFmpegDir { get => ExecutablePath; set => ExecutablePath = value; }
+        public static string FFmpegDir { get => ExecutablesPath; set => ExecutablesPath = value; }
 
         /// <summary>
-        ///     Directory contains FFmpeg and FFprobe
+        ///     Directory containing FFmpeg and FFprobe
         /// </summary>
-        public static string ExecutablePath { get; set; }
+        public static string ExecutablesPath { get; set; }
 
         /// <summary>
         ///     Name of FFmpeg executable name (Case insensitive)
@@ -65,13 +65,13 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            if(!string.IsNullOrWhiteSpace(ExecutablePath))
+            if(!string.IsNullOrWhiteSpace(ExecutablesPath))
             {
-                FFprobePath = new DirectoryInfo(ExecutablePath).GetFiles()
+                FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
                                                           .FirstOrDefault(x => x.Name.ToLower()
                                                                                 .Contains(FFprobeExecutableName.ToLower()))
                                                           .FullName;
-                FFmpegPath = new DirectoryInfo(ExecutablePath).GetFiles()
+                FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
                                                          .FirstOrDefault(x => x.Name.ToLower()
                                                                                .Contains(FFmpegExecutableName.ToLower()))
                                                          .FullName;
@@ -163,9 +163,9 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            string ffmpegDir = string.IsNullOrWhiteSpace(ExecutablePath) ? string.Empty : string.Format(ExecutablePath + " or ");
+            string ffmpegDir = string.IsNullOrWhiteSpace(ExecutablesPath) ? string.Empty : string.Format(ExecutablesPath + " or ");
             string exceptionMessage =
-                $"Cannot find FFmpeg in {ffmpegDir}PATH. This package needs installed FFmpeg. Please add it to your PATH variable or specify path to DIRECTORY with FFmpeg executables in {nameof(FFmpeg)}.{nameof(ExecutablePath)}";
+                $"Cannot find FFmpeg in {ffmpegDir}PATH. This package needs installed FFmpeg. Please add it to your PATH variable or specify path to DIRECTORY with FFmpeg executables in {nameof(FFmpeg)}.{nameof(ExecutablesPath)}";
             throw new FFmpegNotFoundException(exceptionMessage);
         }
 

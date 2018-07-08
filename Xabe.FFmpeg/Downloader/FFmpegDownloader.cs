@@ -12,11 +12,6 @@ namespace Xabe.FFmpeg.Downloader
     {
         internal static LinkProvider _linkProvider = new LinkProvider();
 
-        internal FFmpegDownloader(LinkProvider linkProvider)
-        {
-            _linkProvider = linkProvider;
-        }
-
         internal async static Task GetLatestVersion()
         {
             var latestVersion = GetLatestVersionInfo();
@@ -46,11 +41,11 @@ namespace Xabe.FFmpeg.Downloader
 
             var ffmpegZip = await DownloadFile(links.FFmpegLink);
             var ffprobeZip = await DownloadFile(links.FFprobeLink);
-            Extract(ffmpegZip, FFmpeg.ExecutablePath ?? ".");
-            Extract(ffprobeZip, FFmpeg.ExecutablePath ?? ".");
+            Extract(ffmpegZip, FFmpeg.ExecutablesPath ?? ".");
+            Extract(ffprobeZip, FFmpeg.ExecutablesPath ?? ".");
 
-            if(Directory.Exists(Path.Combine(FFmpeg.ExecutablePath ?? ".", "__MACOSX")))
-                Directory.Delete(Path.Combine(FFmpeg.ExecutablePath ?? ".", "__MACOSX"), true);
+            if(Directory.Exists(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX")))
+                Directory.Delete(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX"), true);
         }
 
 
@@ -63,7 +58,7 @@ namespace Xabe.FFmpeg.Downloader
 
         private static bool CheckIfUpdateAvaiable(string latestVersion)
         {
-            var versionPath = Path.Combine(FFmpeg.ExecutablePath ?? ".", "version.json");
+            var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
             if(!File.Exists(versionPath))
                 return true;
 
@@ -79,7 +74,7 @@ namespace Xabe.FFmpeg.Downloader
 
         private static void SaveVersion(FFbinariesVersionInfo latestVersion)
         {
-            var versionPath = Path.Combine(FFmpeg.ExecutablePath ?? ".", "version.json");
+            var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
             File.WriteAllText(versionPath, JsonConvert.SerializeObject(new DownloadedVersion()
             {
                 Version = latestVersion.Version

@@ -13,19 +13,15 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         internal async Task FullProcessPassed()
         {
-            FFmpeg.ExecutablePath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
+            var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
+            operatingSystemProvider.GetOperatingSystem().Returns(x => OperatingSystem.Linux64);
+            FFmpegDownloader._linkProvider = new LinkProvider(operatingSystemProvider);
+            FFmpeg.ExecutablesPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
+
             await FFmpegDownloader.GetLatestVersion();
 
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            { 
-                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffmpeg.exe")));
-                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffprobe.exe")));
-            }
-            else
-            {
-                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffmpeg")));
-                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablePath, "ffprobe")));
-            }
+            Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablesPath, "ffmpeg")));
+            Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablesPath, "ffprobe")));
 
         }
 
@@ -37,7 +33,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(OperatingSystem.LinuxArm64)]
         [InlineData(OperatingSystem.LinuxArmhf)]
         [InlineData(OperatingSystem.Linux32)]
-        internal async Task LinkProviderTest(OperatingSystem os)
+        internal async Task DownloadLatestVersionTest(OperatingSystem os)
         {
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
             operatingSystemProvider.GetOperatingSystem().Returns(x => os);
@@ -45,7 +41,7 @@ namespace Xabe.FFmpeg.Test
             var linkProvider = new LinkProvider(operatingSystemProvider);
 
             FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-            FFmpeg.ExecutablePath = "assemblies";
+            FFmpeg.ExecutablesPath = "assemblies";
             if(Directory.Exists("assemblies"))
             {
                 Directory.Delete("assemblies", true);
