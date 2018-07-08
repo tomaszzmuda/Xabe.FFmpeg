@@ -3,17 +3,17 @@ using Xunit;
 using System.Threading.Tasks;
 using NSubstitute;
 using Newtonsoft.Json;
-using System;
 using System.Runtime.InteropServices;
+using Xabe.FFmpeg.Downloader;
 
-namespace Xabe.FFmpeg.ExecDownload.Tests
+namespace Xabe.FFmpeg.Tests
 {
-    public class LinkProviderTests
+    public class DownloaderTests
     {
         [Fact]
         internal async Task FullProcessPassed()
         {
-            FFmpeg.ExecutablePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            FFmpeg.ExecutablePath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
             await FFmpegDownloader.GetLatestVersion();
 
             if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

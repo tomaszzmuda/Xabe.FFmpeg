@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Xabe.FFmpeg.ExecDownload.Tests
+namespace Xabe.FFmpeg.Downloader
 {
     internal partial class OperatingSystemProvider : IOperatingSystemProvider
     {

@@ -1,4 +1,4 @@
-﻿namespace Xabe.FFmpeg.ExecDownload.Tests
+﻿namespace Xabe.FFmpeg.Downloader
 {
     internal enum OperatingSystem
     {

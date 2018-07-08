@@ -16,5 +16,7 @@ namespace Xabe.FFmpeg.Test
         internal static readonly string Dll = Path.Combine(Environment.CurrentDirectory, "Xabe.FFmpeg.Test.dll");
 
         internal static readonly string SubtitleSrt = Path.Combine(Environment.CurrentDirectory, "Resources", "sampleSrt.srt");
+
+        internal static readonly string FFbinariesInfo = Path.Combine(Environment.CurrentDirectory, "Resources", "ffbinaries.json");
     }
 }

@@ -6,9 +6,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Xabe.FFmpeg.ExecDownload.Tests
+namespace Xabe.FFmpeg.Downloader
 {
-    public class FFmpegDownloader
+    internal class FFmpegDownloader
     {
         internal static LinkProvider _linkProvider = new LinkProvider();
 
@@ -17,10 +17,7 @@ namespace Xabe.FFmpeg.ExecDownload.Tests
             _linkProvider = linkProvider;
         }
 
-        /// <summary>
-        ///     Download latest FFmpeg version for current operating system to FFbase.FFmpegDir. If it is not set download to ".".
-        /// </summary>
-        public async static Task GetLatestVersion()
+        internal async static Task GetLatestVersion()
         {
             var latestVersion = GetLatestVersionInfo();
 
