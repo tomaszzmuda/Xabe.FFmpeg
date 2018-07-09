@@ -137,9 +137,7 @@ namespace Xabe.FFmpeg.Test
             cancellationToken.CancelAfter(1000);
             var conversion = Conversion.New().AddStream(new WebStream(new Uri(@"rtsp://192.168.1.123:554/"), "M3U8", TimeSpan.FromMinutes(5))).SetOutput(output);
 
-            IConversionResult result = await conversion.Start(cancellationToken.Token);
-
-            Assert.False(result.Success);
+            await Assert.ThrowsAsync<ConversionException>(async () => await conversion.Start(cancellationToken.Token));
             Assert.Equal(System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count(), ffmpegProcesses);
         }
     }
