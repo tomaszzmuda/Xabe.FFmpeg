@@ -24,6 +24,7 @@ namespace Xabe.FFmpeg
         private IEnumerable<FieldInfo> _fields;
         private string _output;
         private string _preset;
+        private string _hardwareAcceleration;
         private bool _overwriteOutput;
         private string _shortestInput;
         private bool _useMultiThreads = true;
@@ -34,6 +35,7 @@ namespace Xabe.FFmpeg
             lock(_builderLock)
             {
                 var builder = new StringBuilder();
+                builder.Append(_hardwareAcceleration);
                 builder.Append(BuildInput());
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
@@ -213,7 +215,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Create arhument for ffmpeg with thread configuration
+        ///     Create argument for ffmpeg with thread configuration
         /// </summary>
         /// <param name="multiThread">Use multi thread</param>
         /// <returns>Build parameter argument</returns>
@@ -266,6 +268,18 @@ namespace Xabe.FFmpeg
         public static IConversion New()
         {
             return new Conversion();
+        }
+
+        /// <inheritdoc />
+        public IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, int device = 0)
+        {
+            _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} ";
+            if(device != 0)
+            {
+                _hardwareAcceleration += $"-hwaccel_device {device} ";
+            }
+            UseMultiThread(false);
+            return this;
         }
     }
 }

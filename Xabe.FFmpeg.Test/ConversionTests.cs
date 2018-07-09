@@ -124,6 +124,34 @@ namespace Xabe.FFmpeg.Test
                                                                           .SetOutput(output)
                                                                           .Start());
         }
+
+        [Theory]
+        [InlineData("auto")]
+        public async Task EnableHardwareAcceleration(string hardwareAccelerator)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), 0).Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("h264", resultFile.VideoStreams.First().Format);
+        }
+
+
+        [Theory]
+        [InlineData("a16f0cb5c0354b6197e9f3bc3108c017")]
+        public async Task MissingHardwareAccelerator(string hardwareAccelerator)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            await Assert.ThrowsAsync<HardwareAcceleratorNotFoundException>(async () =>
+            {
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), 0).Start();
+            });
+        }
     }
 }
 

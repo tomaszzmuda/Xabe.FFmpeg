@@ -52,6 +52,11 @@ namespace Xabe.FFmpeg
                         return false;
                     }
 
+                    if(_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
+                    {
+                        throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                    }
+
                     if(Process.ExitCode != 0)
                     {
                         throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
