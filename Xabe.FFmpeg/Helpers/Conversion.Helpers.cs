@@ -357,5 +357,26 @@ namespace Xabe.FFmpeg
             conversion.SetOutput(output);
             return await conversion.Start();
         }
+
+
+        /// <summary>
+        ///     Convert one file to another with destination format.
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="outputFilePath">Path to file</param>
+        /// <returns>IConversion object</returns>
+        public static IConversion Convert(string inputFilePath, string outputFilePath)
+        {
+            IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputFilePath));
+
+            var conversion = New().SetOutput(outputFilePath);
+
+            foreach(var stream in info.Streams)
+            {
+                conversion.AddStream(stream);
+            }
+
+            return conversion;
+        }
     }
 }
