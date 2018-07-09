@@ -378,5 +378,21 @@ namespace Xabe.FFmpeg
 
             return conversion;
         }
+
+        /// <summary>
+        ///     Convert one file to another with destination format using hardware acceleration (if possible). Using cuvid. Requires Windows or Linux and NVidia GPU.
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="outputFilePath">Path to file</param>
+        /// <param name="decoder">Codec using to decoding input video (e.g. h264_cuvid)</param>
+        /// <param name="encoder">Codec using to encode output video (e.g. h264_nvenc)</param>
+        /// <returns>IConversion object</returns>
+        public static IConversion ConvertWithHardware(string inputFilePath, string outputFilePath, VideoCodec decoder, VideoCodec encoder)
+        {
+            var conversion = Convert(inputFilePath, outputFilePath);
+            conversion.UseHardwareAcceleration(HardwareAccelerator.cuvid, decoder, 0);
+            conversion.AddParameter($"-c:v {encoder?.ToString()} ");
+            return conversion;
+        }
     }
 }

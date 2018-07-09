@@ -281,5 +281,21 @@ namespace Xabe.FFmpeg
             UseMultiThread(false);
             return this;
         }
+
+        /// <inheritdoc />
+        public IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, VideoCodec codec, int device = 0)
+        {
+            _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} ";
+            if(codec != null)
+            {
+                _hardwareAcceleration += $"-c:v {codec} ";
+            }
+            if(device != 0)
+            {
+                _hardwareAcceleration += $"-hwaccel_device {device} ";
+            }
+            UseMultiThread(false);
+            return this;
+        }
     }
 }
