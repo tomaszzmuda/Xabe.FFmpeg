@@ -137,7 +137,7 @@ namespace Xabe.FFmpeg
         IConversion AddStream<T>(params T[] streams) where T : IStream;
 
         /// <summary>
-        ///     Use hardware acceleration. This option set -threads to 1 for compability reasons.
+        ///     Use hardware acceleration. This option set -threads to 1 for compability reasons. This should be use with proper codec (e.g. -c:v h264_nvenc or h264_cuvid)
         /// </summary>
         /// <param name="hardwareAccelerator">Hardware accelerator. List of all acceclerators avaiable for your system - "ffmpeg -hwaccels"</param>
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>

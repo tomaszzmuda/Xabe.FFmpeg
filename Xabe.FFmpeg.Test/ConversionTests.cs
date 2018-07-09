@@ -127,7 +127,7 @@ namespace Xabe.FFmpeg.Test
 
         [Theory]
         [InlineData("auto")]
-        public async Task EnableHardwareAcceleration(string hardwareAccelerator)
+        public async Task UseHardwareAcceleration(string hardwareAccelerator)
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
