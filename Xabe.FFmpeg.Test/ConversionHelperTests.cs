@@ -372,7 +372,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", audioStream.Format);
         }
 
-        [Fact]
+        [Fact(Skip = "Cannot be done in CI")]
         public async Task ConversionWithHardware()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);

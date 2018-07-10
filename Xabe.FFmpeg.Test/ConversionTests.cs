@@ -127,7 +127,7 @@ namespace Xabe.FFmpeg.Test
                                                                           .Start());
         }
 
-        [Theory]
+        [Theory(Skip = "Cannot be done in CI")]
         [InlineData("auto")]
         public async Task UseHardwareAcceleration(string hardwareAccelerator)
         {
