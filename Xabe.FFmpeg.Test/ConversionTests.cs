@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
@@ -151,6 +153,20 @@ namespace Xabe.FFmpeg.Test
             {
                 await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), 0).Start();
             });
+        }
+
+        [Fact]
+        public async Task OpenNotExistingStream()
+        {
+            var ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count();
+
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            var cancellationToken = new CancellationTokenSource();
+            cancellationToken.CancelAfter(1000);
+            var conversion = Conversion.New().AddStream(new WebStream(new Uri(@"rtsp://192.168.1.123:554/"), "M3U8", TimeSpan.FromMinutes(5))).SetOutput(output);
+
+            await Assert.ThrowsAsync<ConversionException>(async () => await conversion.Start(cancellationToken.Token));
+            Assert.Equal(System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count(), ffmpegProcesses);
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Xabe.FFmpeg
         private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
         private List<string> _outputLog;
         private TimeSpan _totalTime;
+        private bool _wasKilled = false;
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
@@ -44,8 +45,22 @@ namespace Xabe.FFmpeg
                 {
                     Process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     Process.BeginErrorReadLine();
-                    cancellationToken.Register(() => { Process.StandardInput.Write("q"); });
+                    cancellationToken.Register(async () => {
+                        Process.StandardInput.Write("q");
+                        await Task.Delay(1000 * 5);
+
+                        if(!Process.HasExited)
+                        {
+                            _wasKilled = true;
+                            Process.Kill();
+                        }
+                    });
                     Process.WaitForExit();
+
+                    if(_wasKilled)
+                    {
+                        throw new ConversionException("Cannot stop process. Killed it.", args);
+                    }
 
                     if(cancellationToken.IsCancellationRequested)
                     {
