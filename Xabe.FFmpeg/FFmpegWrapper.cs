@@ -67,6 +67,11 @@ namespace Xabe.FFmpeg
                         return false;
                     }
 
+                    if(_outputLog.Any(x => x.Contains("Unknown decoder")))
+                    {
+                        throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                    }
+
                     if(_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
                     {
                         throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
