@@ -271,25 +271,11 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, int device = 0)
+        public IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
         {
-            _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} ";
-            if(device != 0)
-            {
-                _hardwareAcceleration += $"-hwaccel_device {device} ";
-            }
-            UseMultiThread(false);
-            return this;
-        }
+            _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} -c:v {decoder} ";
+            AddParameter($"-c:v {encoder?.ToString()} ");
 
-        /// <inheritdoc />
-        public IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, VideoCodec codec, int device = 0)
-        {
-            _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} ";
-            if(codec != null)
-            {
-                _hardwareAcceleration += $"-c:v {codec} ";
-            }
             if(device != 0)
             {
                 _hardwareAcceleration += $"-hwaccel_device {device} ";
