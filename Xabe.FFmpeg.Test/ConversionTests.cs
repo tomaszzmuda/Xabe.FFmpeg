@@ -127,14 +127,13 @@ namespace Xabe.FFmpeg.Test
                                                                           .Start());
         }
 
-        [Theory(Skip = "Cannot be done in CI")]
-        [InlineData("auto")]
-        public async Task UseHardwareAcceleration(string hardwareAccelerator)
+        [RunnableInDebugOnly]
+        public async Task UseHardwareAcceleration()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
-            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), 0).Start();
+            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_cuvid, VideoCodec.H264_nvenc, 0).Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -151,7 +150,20 @@ namespace Xabe.FFmpeg.Test
 
             await Assert.ThrowsAsync<HardwareAcceleratorNotFoundException>(async () =>
             {
-                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), 0).Start();
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), VideoCodec.H264_cuvid, VideoCodec.H264_nvenc).Start();
+            });
+        }
+
+        [Fact]
+        public async Task UnknownDecoderException()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
+                
+            await Assert.ThrowsAsync<UnknownDecoderException>(async () =>
+            {
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start();
             });
         }
 

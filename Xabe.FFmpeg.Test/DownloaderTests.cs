@@ -16,13 +16,21 @@ namespace Xabe.FFmpeg.Test
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
             operatingSystemProvider.GetOperatingSystem().Returns(x => OperatingSystem.Linux64);
             FFmpegDownloader._linkProvider = new LinkProvider(operatingSystemProvider);
-            FFmpeg.ExecutablesPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
+            var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
-            await FFmpegDownloader.GetLatestVersion();
+            try
+            {
+                FFmpeg.ExecutablesPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
 
-            Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablesPath, "ffmpeg")));
-            Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablesPath, "ffprobe")));
+                await FFmpegDownloader.GetLatestVersion();
 
+                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablesPath, "ffmpeg")));
+                Assert.True(File.Exists(Path.Combine(FFmpeg.ExecutablesPath, "ffprobe")));
+            }
+            finally
+            {
+                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+            }
         }
 
         [Theory]
@@ -39,7 +47,9 @@ namespace Xabe.FFmpeg.Test
             operatingSystemProvider.GetOperatingSystem().Returns(x => os);
 
             var linkProvider = new LinkProvider(operatingSystemProvider);
+            var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
+            try { 
             FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
             FFmpeg.ExecutablesPath = "assemblies";
             if(Directory.Exists("assemblies"))
@@ -60,7 +70,11 @@ namespace Xabe.FFmpeg.Test
                 Assert.True(File.Exists(Path.Combine("assemblies", "ffmpeg")));
                 Assert.True(File.Exists(Path.Combine("assemblies", "ffprobe")));
             }
-
+            }
+            finally
+            {
+                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+            }
         }
     }
 }

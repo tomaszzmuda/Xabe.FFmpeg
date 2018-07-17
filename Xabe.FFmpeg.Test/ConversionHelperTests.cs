@@ -372,12 +372,12 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", audioStream.Format);
         }
 
-        [Fact(Skip = "Cannot be done in CI")]
+        [RunnableInDebugOnly]
         public async Task ConversionWithHardware()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.ConvertWithHardware(Resources.MkvWithAudio, output, VideoCodec.H264_cuvid,VideoCodec.H264_nvenc).Start();
+            IConversionResult result = await Conversion.ConvertWithHardware(Resources.MkvWithAudio, output, HardwareAccelerator.cuvid,VideoCodec.H264_cuvid,VideoCodec.H264_nvenc).Start();
 
             Assert.True(result.Success);
             Assert.Equal(TimeSpan.FromSeconds(10), result.MediaInfo.Value.Duration);
