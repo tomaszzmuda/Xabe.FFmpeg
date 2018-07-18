@@ -46,6 +46,16 @@
         /// </summary>
         public static readonly VideoCodec Libx264 = new VideoCodec("libx264");
 
+        /// <summary>
+        ///     h264_cuvid
+        /// </summary>
+        public static readonly VideoCodec H264_cuvid = new VideoCodec("h264_cuvid");
+
+        /// <summary>
+        ///     h264_nvenc
+        /// </summary>
+        public static readonly VideoCodec H264_nvenc = new VideoCodec("h264_nvenc");
+
         /// <inheritdoc />
         public VideoCodec(string codec)
         {

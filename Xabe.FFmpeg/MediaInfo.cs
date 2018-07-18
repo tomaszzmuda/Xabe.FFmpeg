@@ -59,7 +59,7 @@ namespace Xabe.FFmpeg
             }
 
             var mediaInfo = new MediaInfo(fileInfo);
-            mediaInfo = await new FFprobe().GetProperties(fileInfo, mediaInfo);
+            mediaInfo = await new FFprobeWrapper().GetProperties(fileInfo, mediaInfo);
 
             return mediaInfo;
         }

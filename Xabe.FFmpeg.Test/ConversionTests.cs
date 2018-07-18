@@ -127,6 +127,46 @@ namespace Xabe.FFmpeg.Test
                                                                           .Start());
         }
 
+        [RunnableInDebugOnly]
+        public async Task UseHardwareAcceleration()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_cuvid, VideoCodec.H264_nvenc, 0).Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("h264", resultFile.VideoStreams.First().Format);
+        }
+
+
+        [Theory]
+        [InlineData("a16f0cb5c0354b6197e9f3bc3108c017")]
+        public async Task MissingHardwareAccelerator(string hardwareAccelerator)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            await Assert.ThrowsAsync<HardwareAcceleratorNotFoundException>(async () =>
+            {
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), VideoCodec.H264_cuvid, VideoCodec.H264_nvenc).Start();
+            });
+        }
+
+        [Fact]
+        public async Task UnknownDecoderException()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
+                
+            await Assert.ThrowsAsync<UnknownDecoderException>(async () =>
+            {
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start();
+            });
+        }
+
         [Fact]
         public async Task OpenNotExistingStream()
         {

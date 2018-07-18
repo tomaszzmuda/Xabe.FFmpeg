@@ -18,6 +18,7 @@
   </PropertyGroup>
     
   <ItemGroup>
+    <None Remove="Resources\ffbinaries.json" />
     <None Remove="Resources\multipleStreamSample.mkv" />
     <None Remove="Resources\sample.flv" />
     <None Remove="Resources\sample.ts" />
@@ -28,6 +29,9 @@
 
   <ItemGroup>
     <Content Include="Resources\audio.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ffbinaries.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\input.mp4">
@@ -58,6 +62,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="NSubstitute" Version="3.1.0" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
     <PackageReference Include="xunit" Version="2.3.0-beta3-build3705" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta3-build3705" />

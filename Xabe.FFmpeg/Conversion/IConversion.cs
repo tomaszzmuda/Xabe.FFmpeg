@@ -135,5 +135,15 @@ namespace Xabe.FFmpeg
         /// <param name="streams">Streams to add</param>
         /// <returns>IConversion object</returns>
         IConversion AddStream<T>(params T[] streams) where T : IStream;
+
+        /// <summary>
+        ///     Use hardware acceleration. This option set -threads to 1 for compability reasons. This should be use with proper codec (e.g. -c:v h264_nvenc or h264_cuvid)
+        /// </summary>
+        /// <param name="hardwareAccelerator">Hardware accelerator. List of all acceclerators avaiable for your system - "ffmpeg -hwaccels"</param>
+        /// <param name="decoder">Codec using to decode input video.</param>
+        /// <param name="encoder">Codec using to encode output video.</param>
+        /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
+        /// <returns>IConversion object</returns>
+        IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0);
     }
 }
