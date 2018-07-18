@@ -52,7 +52,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
         /// </summary>
-        internal async static Task GetLatestVersion()
+        public async static Task GetLatestVersion()
         {
             await FFmpegDownloader.GetLatestVersion();
         }
