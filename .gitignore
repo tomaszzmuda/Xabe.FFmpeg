@@ -6,12 +6,12 @@
 
 /.vs/Xabe.FFmpeg/v15/sqlite3
 
-/.vs/*
+**/.vs/*
 *.nupkg
 *.user
 /coverage.xml
 /coverage
 /.vscode
 
-*/obj
-*/bin
+**/obj
+**/bin
