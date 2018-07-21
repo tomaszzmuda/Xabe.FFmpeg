@@ -384,7 +384,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputFilePath">Path to file</param>
         /// <param name="outputFilePath">Path to file</param>
-        /// <param name="hardwareAccelerator">Hardware accelerator. List of all acceclerators avaiable for your system - "ffmpeg -hwaccels"</param>
+        /// <param name="hardwareAccelerator">Hardware accelerator. List of all acceclerators available for your system - "ffmpeg -hwaccels"</param>
         /// <param name="decoder">Codec using to decoding input video (e.g. h264_cuvid)</param>
         /// <param name="encoder">Codec using to encode output video (e.g. h264_nvenc)</param>
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>

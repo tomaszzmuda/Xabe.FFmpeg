@@ -1,7 +1,7 @@
 ﻿namespace Xabe.FFmpeg.Enums
 {
     /// <summary>
-    ///     Defines types of avaiable rotation
+    ///     Defines types of available rotation
     /// </summary>
     public enum RotateDegrees
     {
