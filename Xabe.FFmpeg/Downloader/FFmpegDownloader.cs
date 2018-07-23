@@ -16,7 +16,7 @@ namespace Xabe.FFmpeg.Downloader
         {
             var latestVersion = GetLatestVersionInfo();
 
-            if(!CheckIfUpdateAvaiable(latestVersion.Version))
+            if(!CheckIfUpdateAvailable(latestVersion.Version))
                 return;
 
             await DownloadLatestVersion(latestVersion);
@@ -56,7 +56,7 @@ namespace Xabe.FFmpeg.Downloader
             File.Delete(ffMpegZipPath);
         }
 
-        private static bool CheckIfUpdateAvaiable(string latestVersion)
+        private static bool CheckIfUpdateAvailable(string latestVersion)
         {
             var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
             if(!File.Exists(versionPath))
