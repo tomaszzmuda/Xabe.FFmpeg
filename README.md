@@ -10,6 +10,7 @@
 
 .NET Standard wrapper for FFmpeg. It allows to process media without know how FFmpeg works, and can be used to pass customized arguments to FFmpeg from dotnet core application.
 
+![Xabe.FFmpeg basic workflow](https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/Assets/Infographic.png)
 
 [Xabe.FFmpeg Documentation](https://xabe.net/product/xabe_ffmpeg/#documentation)
 
