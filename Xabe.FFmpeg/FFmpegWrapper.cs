@@ -117,7 +117,7 @@ namespace Xabe.FFmpeg
             {
                 GetDuration(e, regex, args);
             }
-            else if(e.Data.Contains("frame"))
+            else if(e.Data.Contains("size"))
             {
                 Match match = regex.Match(e.Data);
                 if(match.Success)
