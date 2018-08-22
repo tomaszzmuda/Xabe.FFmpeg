@@ -33,6 +33,32 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
+
+        [Fact]
+        public async Task OnConversion_ExtractOnlyAudioStream_OnProgressFires()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            IConversion conversion = Conversion.New()
+                                               .AddStream(inputFile.AudioStreams.First()
+                                                                                .SetSeek(TimeSpan.FromSeconds(2)))
+                                               .SetOutput(outputPath);
+
+            TimeSpan currentProgress;
+            TimeSpan videoLength;
+            conversion.OnProgress += (sender, e) =>
+            {
+                currentProgress = e.Duration;
+                videoLength = e.TotalLength;
+            };
+
+            await conversion.Start();
+
+            Assert.True(currentProgress > TimeSpan.Zero);
+            Assert.True(currentProgress <= videoLength);
+            Assert.True(videoLength == TimeSpan.FromSeconds(7));
+        }
     }
 }
 
