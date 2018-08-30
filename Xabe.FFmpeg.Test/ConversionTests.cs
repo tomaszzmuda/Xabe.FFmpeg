@@ -180,6 +180,27 @@ namespace Xabe.FFmpeg.Test
             await Assert.ThrowsAsync<ConversionException>(async () => await conversion.Start(cancellationToken.Token));
             Assert.Equal(System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count(), ffmpegProcesses);
         }
+
+        [Fact]
+        public async Task Conversion_CancellationOccurs_NoExeptionWasThrown()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            var task = Conversion.ToWebM(Resources.Mp4WithAudio, output)
+                    .SetPreset(ConversionPreset.UltraFast)
+                    .Start(cancellationTokenSource.Token);
+
+            cancellationTokenSource.Cancel();
+            await task;
+
+            for(int i = 0; i < 7; i++)
+            {
+                await Task.Delay(1000);
+            }
+
+            Assert.True(true);
+        }
     }
 }
 

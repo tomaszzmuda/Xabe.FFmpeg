@@ -49,10 +49,17 @@ namespace Xabe.FFmpeg
                         Process.StandardInput.Write("q");
                         await Task.Delay(1000 * 5);
 
-                        if(!Process.HasExited)
+                        try
                         {
-                            _wasKilled = true;
-                            Process.Kill();
+                            if(!Process.HasExited)
+                            {
+                                _wasKilled = true;
+                                Process.Kill();
+                            }
+                        }
+                        catch(InvalidOperationException)
+                        {
+
                         }
                     });
                     Process.WaitForExit();
