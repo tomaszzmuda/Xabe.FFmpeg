@@ -168,7 +168,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task OpenNotExistingStream()
+        public async Task RTSP_NotExistingStream_CancelledSucesfully()
         {
             var ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count();
 
@@ -177,12 +177,12 @@ namespace Xabe.FFmpeg.Test
             cancellationToken.CancelAfter(1000);
             var conversion = Conversion.New().AddStream(new WebStream(new Uri(@"rtsp://192.168.1.123:554/"), "M3U8", TimeSpan.FromMinutes(5))).SetOutput(output);
 
-            await Assert.ThrowsAsync<ConversionException>(async () => await conversion.Start(cancellationToken.Token));
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await conversion.Start(cancellationToken.Token));
             Assert.Equal(System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count(), ffmpegProcesses);
         }
 
         [Fact]
-        public async Task Conversion_CancellationOccurs_NoExeptionWasThrown()
+        public async Task Conversion_CancellationOccurs_ExeptionWasThrown()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
             var cancellationTokenSource = new CancellationTokenSource();
@@ -192,14 +192,7 @@ namespace Xabe.FFmpeg.Test
                     .Start(cancellationTokenSource.Token);
 
             cancellationTokenSource.Cancel();
-            await task;
-
-            for(int i = 0; i < 7; i++)
-            {
-                await Task.Delay(1000);
-            }
-
-            Assert.True(true);
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await task); ;
         }
     }
 }
