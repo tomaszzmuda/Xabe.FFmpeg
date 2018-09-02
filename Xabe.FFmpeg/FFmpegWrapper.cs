@@ -64,6 +64,7 @@ namespace Xabe.FFmpeg
                     });
                     Process.WaitForExit();
 
+                    cancellationToken.ThrowIfCancellationRequested();
                     if(_wasKilled)
                     {
                         throw new ConversionException("Cannot stop process. Killed it.", args);
