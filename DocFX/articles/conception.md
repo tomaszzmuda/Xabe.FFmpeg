@@ -1,4 +1,5 @@
-### C# FFmpeg wrapper conception
+C# FFmpeg wrapper conception
+============================
 
 Xabe.FFmpeg uses only streams to operate on every media file. Most common conversions can be done with few simple steps:
 
