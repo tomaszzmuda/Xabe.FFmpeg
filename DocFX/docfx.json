@@ -3,10 +3,7 @@
     {
       "src": [
         {
-          "files": [
-            "**.csproj"
-          ],
-          "src": "C:\\Users\\tzmuda\\Source\\Xabe.FFmpeg\\Xabe.FFmpeg"
+          "src": "..\\Xabe.FFmpeg\\Xabe.FFmpeg.csproj"
         }
       ],
       "dest": "api",
