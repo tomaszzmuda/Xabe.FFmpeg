@@ -6,7 +6,7 @@ Xabe.FFmpeg.Conversion is the main class to handle FFmpeg conversions. User can 
 Sample below shows basic conversion video file from mkv to mp4 format:
 
     string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-                IConversionResult result = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
+    IConversionResult result = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
 
 This could be done also by:
 
@@ -102,11 +102,10 @@ or automatically after period of time:
 
 OnException:
 
-        `
-queue.OnException += (number, count, conversion) =>
-{
-System.Console.Out.WriteLine($"Exception when converting file {number}/{count}");
-};`
+    queue.OnException += (number, count, conversion) =>
+    {
+    System.Console.Out.WriteLine($"Exception when converting file {number}/{count}");
+    };
 
 OnConverted:
 
