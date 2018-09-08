@@ -3,11 +3,12 @@
     {
       "src": [
         {
-          "src": "..\\Xabe.FFmpeg\\Xabe.FFmpeg.csproj"
+          "files": [ "/**/*.csproj" ],
+          "src": "../Xabe.FFmpeg"
         }
       ],
       "dest": "api",
-      "disableGitFeatures": false,
+      "disableGitFeatures": true,
       "disableDefaultFilter": false
     }
   ],
