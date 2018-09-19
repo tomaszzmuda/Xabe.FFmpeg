@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
 using Xabe.FFmpeg.Streams;
 
@@ -17,8 +18,15 @@ namespace Xabe.FFmpeg
     {
         private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
-            string jsonStreams = await RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
-            var probe = JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
+            ProbeModel probe = null;
+            try
+            {
+                probe = await Start<ProbeModel>($"-v quiet -show_streams \"{videoPath}\"");
+            }
+            catch(FFprobeException)
+            {
+                return new ProbeModel.Stream[0];
+            }
             return probe.streams ?? new ProbeModel.Stream[0];
         }
 
@@ -36,11 +44,8 @@ namespace Xabe.FFmpeg
 
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
-            string jsonFormat =
-                await RunProcess($"-v quiet -print_format json -show_format \"{videoPath}\"");
-            FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonFormat)
-                                                   .format;
-            return format;
+            FormatModel.Root root = await Start<FormatModel.Root>($"-v quiet -show_format \"{videoPath}\"");
+            return root.format;
         }
 
         private TimeSpan GetAudioDuration(ProbeModel.Stream audio)
@@ -76,6 +81,18 @@ namespace Xabe.FFmpeg
             return width == 0 ? height : width;
         }
 
+        public async Task<T> Start<T>(string args)
+        {
+            args = "-print_format json " + args;
+            string stringResult = await RunProcess(args);
+            return JsonConvert.DeserializeObject<T>(stringResult);
+        }
+
+        public async Task<string> Start(string args)
+        {
+            return await RunProcess(args);
+        }
+
         private async Task<string> RunProcess(string args)
         {
             return await Task.Run(() =>
@@ -88,9 +105,10 @@ namespace Xabe.FFmpeg
                 {
                     output = Process.StandardOutput.ReadToEnd();
                 }
-                catch(Exception)
+                catch(Exception e)
                 {
                     output = string.Empty;
+                    throw new FFprobeException(e.Message, args);
                 }
                 finally
                 {
