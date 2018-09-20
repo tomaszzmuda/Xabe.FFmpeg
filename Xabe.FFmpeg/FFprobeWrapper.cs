@@ -20,7 +20,7 @@ namespace Xabe.FFmpeg
         {
             ProbeModel probe = null;
             string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
-            if(!string.IsNullOrEmpty(stringResult))
+            if(string.IsNullOrEmpty(stringResult))
             {
                 return new ProbeModel.Stream[0];
             }
