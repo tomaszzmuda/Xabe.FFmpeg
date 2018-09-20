@@ -11,7 +11,7 @@ namespace Xabe.FFmpeg
         /// Start probe with result from console
         /// </summary>
         /// <param name="args">Args to pass to FFprobe</param>
-        /// <returns>Console output output</returns>
+        /// <returns>Output from console in specified format</returns>
         Task<string> Start(string args);
     }
 }

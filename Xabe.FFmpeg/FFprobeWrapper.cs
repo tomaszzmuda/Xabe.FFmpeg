@@ -19,15 +19,12 @@ namespace Xabe.FFmpeg
         private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
             ProbeModel probe = null;
-            try
-            {
-                string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
-                probe = JsonConvert.DeserializeObject<ProbeModel>(stringResult);
-            }
-            catch(FFprobeException)
+            string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
+            if(!string.IsNullOrEmpty(stringResult))
             {
                 return new ProbeModel.Stream[0];
             }
+            probe = JsonConvert.DeserializeObject<ProbeModel>(stringResult);
             return probe.streams ?? new ProbeModel.Stream[0];
         }
 
@@ -100,10 +97,9 @@ namespace Xabe.FFmpeg
                 {
                     output = Process.StandardOutput.ReadToEnd();
                 }
-                catch(Exception e)
+                catch(Exception)
                 {
                     output = string.Empty;
-                    throw new FFprobeException(e.Message, args);
                 }
                 finally
                 {
