@@ -21,7 +21,8 @@ namespace Xabe.FFmpeg
             ProbeModel probe = null;
             try
             {
-                probe = await Start<ProbeModel>($"-v quiet -show_streams \"{videoPath}\"");
+                string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
+                probe = JsonConvert.DeserializeObject<ProbeModel>(stringResult);
             }
             catch(FFprobeException)
             {
@@ -44,7 +45,8 @@ namespace Xabe.FFmpeg
 
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
-            FormatModel.Root root = await Start<FormatModel.Root>($"-v quiet -show_format \"{videoPath}\"");
+            string stringResult = await Start($"-v quiet -print_format json -show_format \"{videoPath}\"");
+            var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult); 
             return root.format;
         }
 
@@ -79,13 +81,6 @@ namespace Xabe.FFmpeg
                 }
             }
             return width == 0 ? height : width;
-        }
-
-        public async Task<T> Start<T>(string args)
-        {
-            args = "-print_format json " + args;
-            string stringResult = await RunProcess(args);
-            return JsonConvert.DeserializeObject<T>(stringResult);
         }
 
         public async Task<string> Start(string args)

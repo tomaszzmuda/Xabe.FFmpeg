@@ -8,18 +8,10 @@ namespace Xabe.FFmpeg
     public interface IProbe
     {
         /// <summary>
-        /// Start probe with JSON result
-        /// </summary>
-        /// <typeparam name="T">Type to return (deserialize from output)</typeparam>
-        /// <param name="args">Args to pass to FFprobe</param>
-        /// <returns>Deserialized output</returns>
-        Task<T> Start<T>(string args);
-
-        /// <summary>
-        /// Start probe with raw result
+        /// Start probe with result from console
         /// </summary>
         /// <param name="args">Args to pass to FFprobe</param>
-        /// <returns>Raw output</returns>
+        /// <returns>Console output output</returns>
         Task<string> Start(string args);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -18,28 +17,6 @@ namespace Xabe.FFmpeg.Test
                                .Where(x => !string.IsNullOrEmpty(x));
 
             Assert.Equal(3, values.Count());
-        }
-
-        [Fact]
-        public async Task StartWithJsonResultTest()
-        {
-
-            ProbeMock result = await Probe.New()
-                                       .Start<ProbeMock>($"-v quiet -show_streams \"{Resources.Mp4}\"");
-
-            Assert.NotNull(result);
-            Assert.NotNull(result.Streams);
-        }
-
-        private class ProbeMock
-        {
-            [JsonProperty(PropertyName = "streams")]
-            public StreamMock[] Streams { get; set; }
-        }
-
-        private class StreamMock
-        {
-            public string codec_name { get; set; }
         }
     }
 }
