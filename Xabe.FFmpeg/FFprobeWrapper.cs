@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
 using Xabe.FFmpeg.Streams;
 
@@ -17,8 +18,13 @@ namespace Xabe.FFmpeg
     {
         private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
-            string jsonStreams = await RunProcess($"-v quiet -print_format json -show_streams \"{videoPath}\"");
-            var probe = JsonConvert.DeserializeObject<ProbeModel>(jsonStreams, new JsonSerializerSettings());
+            ProbeModel probe = null;
+            string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
+            if(string.IsNullOrEmpty(stringResult))
+            {
+                return new ProbeModel.Stream[0];
+            }
+            probe = JsonConvert.DeserializeObject<ProbeModel>(stringResult);
             return probe.streams ?? new ProbeModel.Stream[0];
         }
 
@@ -40,11 +46,9 @@ namespace Xabe.FFmpeg
 
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
-            string jsonFormat =
-                await RunProcess($"-v quiet -print_format json -show_format \"{videoPath}\"");
-            FormatModel.Format format = JsonConvert.DeserializeObject<FormatModel.Root>(jsonFormat)
-                                                   .format;
-            return format;
+            string stringResult = await Start($"-v quiet -print_format json -show_format \"{videoPath}\"");
+            var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult); 
+            return root.format;
         }
 
         private TimeSpan GetAudioDuration(ProbeModel.Stream audio)
@@ -78,6 +82,11 @@ namespace Xabe.FFmpeg
                 }
             }
             return width == 0 ? height : width;
+        }
+
+        public async Task<string> Start(string args)
+        {
+            return await RunProcess(args);
         }
 
         private async Task<string> RunProcess(string args)
