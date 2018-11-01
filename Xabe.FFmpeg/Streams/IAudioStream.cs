@@ -19,6 +19,16 @@ namespace Xabe.FFmpeg.Streams
         CodecType CodecType { get; }
 
         /// <summary>
+        ///     BitRate of audio source
+        /// </summary>
+        double BitRate { get; }
+
+        /// <summary>
+        ///     SampleRate of audio source
+        /// </summary>
+        int SampleRate { get; }
+
+        /// <summary>
         ///     Set stream to copy with orginal codec
         /// </summary>
         /// <returns>IAudioStream</returns>
@@ -78,10 +88,5 @@ namespace Xabe.FFmpeg.Streams
         /// <param name="language">Language</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetLanguage(string language);
-
-        /// <summary>
-        ///     BitRate of audio source
-        /// </summary>
-        double BitRate { get; }
     }
 }

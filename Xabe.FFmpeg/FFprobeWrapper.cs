@@ -155,7 +155,8 @@ namespace Xabe.FFmpeg
                     Source = fileInfo,
                     Index = model.index,
                     Language = model.tags?.language,
-                    BitRate = model.bit_rate
+                    BitRate = model.bit_rate,
+                    SampleRate = model.sample_rate
                 };
                 yield return stream;
             }

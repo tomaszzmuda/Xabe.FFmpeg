@@ -21,6 +21,8 @@ namespace Xabe.FFmpeg.Model
 
             public double bit_rate { get; set; }
 
+            public int sample_rate { get; set; }
+
             public int index { get; set; }
 
             public Tags tags { get; set; }
