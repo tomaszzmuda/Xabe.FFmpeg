@@ -17,6 +17,7 @@ namespace Xabe.FFmpeg.Streams
         private string _reverse;
         private string _seek;
         private string _split;
+        private string _configuredLanguage;
 
         /// <inheritdoc />
         public IAudioStream Reverse()
@@ -34,7 +35,20 @@ namespace Xabe.FFmpeg.Streams
             builder.Append(_seek);
             builder.Append(_reverse);
             builder.Append(_split);
+            builder.Append(BuildLanguage());
             return builder.ToString();
+        }
+
+        private string BuildLanguage()
+        {
+            string language = string.Empty;
+            language = !string.IsNullOrEmpty(_configuredLanguage) ? _configuredLanguage : Language;
+            if (!string.IsNullOrEmpty(language))
+            {
+                // TODO: check how to set lang metadata for audio stream
+                language = $"-metadata:a:a:{Index} language={language} ";
+            }
+            return language;
         }
 
         /// <inheritdoc />
@@ -99,6 +113,19 @@ namespace Xabe.FFmpeg.Streams
             if(seek.HasValue)
             {
                 _seek = $"-ss {seek.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public string Language { get; internal set; }
+
+        /// <inheritdoc />
+        public IAudioStream SetLanguage(string lang)
+        {
+            if (!string.IsNullOrEmpty(lang))
+            {
+                _configuredLanguage = lang;
             }
             return this;
         }

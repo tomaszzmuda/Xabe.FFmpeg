@@ -66,5 +66,17 @@ namespace Xabe.FFmpeg.Streams
         /// <param name="seek">Position</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetSeek(TimeSpan? seek);
+
+        /// <summary>
+        ///     Audio language
+        /// </summary>
+        string Language { get; }
+
+        /// <summary>
+        ///     Set audio language
+        /// </summary>
+        /// <param name="language">Language</param>
+        /// <returns>IAudioStream</returns>
+        IAudioStream SetLanguage(string language);
     }
 }

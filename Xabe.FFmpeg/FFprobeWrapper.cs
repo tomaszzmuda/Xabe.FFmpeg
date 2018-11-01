@@ -153,7 +153,8 @@ namespace Xabe.FFmpeg
                     Format = model.codec_name,
                     Duration = GetAudioDuration(model),
                     Source = fileInfo,
-                    Index = model.index
+                    Index = model.index,
+                    Language = model.tags?.language
                 };
                 yield return stream;
             }
