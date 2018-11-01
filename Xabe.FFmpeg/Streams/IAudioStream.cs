@@ -78,5 +78,10 @@ namespace Xabe.FFmpeg.Streams
         /// <param name="language">Language</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetLanguage(string language);
+
+        /// <summary>
+        ///     BitRate of audio source
+        /// </summary>
+        double BitRate { get; }
     }
 }

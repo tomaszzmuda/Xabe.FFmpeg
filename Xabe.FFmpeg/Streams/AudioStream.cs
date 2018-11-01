@@ -120,6 +120,10 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public string Language { get; internal set; }
 
+        
+        /// <inheritdoc />
+        public double BitRate { get; internal set; }
+
         /// <inheritdoc />
         public IAudioStream SetLanguage(string lang)
         {
