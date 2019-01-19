@@ -194,6 +194,63 @@ namespace Xabe.FFmpeg.Test
             cancellationTokenSource.Cancel();
             await Assert.ThrowsAsync<OperationCanceledException>(async () => await task); ;
         }
+
+        [Theory]
+        [InlineData(true, 1)]
+        [InlineData(true, 8)]
+        [InlineData(false, 1)]
+        public async Task UseMultithreadTest(bool useMultithread, int expectedThreadsCount)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .UseMultiThread(useMultithread, expectedThreadsCount)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("h264", resultFile.VideoStreams.First().Format);
+            Assert.Contains($"-threads {expectedThreadsCount}", conversionResult.Arguments);
+        }
+
+        [Fact]
+        public async Task UseMultithreadTest_WithoutThreadCount_AllThreads()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .UseMultiThread(true)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("h264", resultFile.VideoStreams.First().Format);
+            Assert.Contains($"-threads {Environment.ProcessorCount}", conversionResult.Arguments);
+        }
+
+        [Fact]
+        public async Task UseMultithreadTest_WithoutMultithread_OneThreadOnly()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .UseMultiThread(false)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("h264", resultFile.VideoStreams.First().Format);
+            Assert.Contains($"-threads 1", conversionResult.Arguments);
+        }
     }
 }
 

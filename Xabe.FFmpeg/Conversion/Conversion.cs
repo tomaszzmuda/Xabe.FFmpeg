@@ -28,6 +28,7 @@ namespace Xabe.FFmpeg
         private bool _overwriteOutput;
         private string _shortestInput;
         private bool _useMultiThreads = true;
+        private int? _threadsCount;
 
         /// <inheritdoc />
         public string Build()
@@ -140,9 +141,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion UseMultiThread(bool multiThread)
+        public IConversion UseMultiThread(bool multiThread, int? threadsCount = null)
         {
             _useMultiThreads = multiThread;
+            _threadsCount = threadsCount;
             return this;
         }
 
@@ -219,11 +221,19 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="multiThread">Use multi thread</param>
         /// <returns>Build parameter argument</returns>
-        private static string BuildThreadsArgument(bool multiThread)
+        private string BuildThreadsArgument(bool multiThread)
         {
-            string threadCount = multiThread
-                ? Environment.ProcessorCount.ToString()
-                : "1";
+            string threadCount = "";
+            if(_threadsCount == null)
+            {
+                threadCount = multiThread
+                    ? Environment.ProcessorCount.ToString()
+                    : "1";
+            }
+            else
+            {
+                threadCount = _threadsCount.ToString();
+            }
 
             return $"-threads {threadCount} ";
         }

@@ -33,11 +33,12 @@ namespace Xabe.FFmpeg
         IConversion SetPreset(ConversionPreset preset);
 
         /// <summary>
-        ///     Defines if converter should use all CPU cores
+        ///     Defines if converter should use more than one CPU core
         /// </summary>
-        /// <param name="multiThread">Use all CPU cores</param>
+        /// <param name="multiThread">Use multiThreads</param>
+        /// <param name="threadCount">Number of used threads</param>
         /// <returns>IConversion object</returns>
-        IConversion UseMultiThread(bool multiThread);
+        IConversion UseMultiThread(bool multiThread, int? threadCount = null);
 
         /// <summary>
         ///     Set output path
