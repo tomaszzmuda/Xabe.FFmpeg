@@ -34,10 +34,14 @@ namespace Xabe.FFmpeg
             return Math.Round(double.Parse(fr[0]) / double.Parse(fr[1]), 3);
         }
 
-        private string GetVideoAspectRatio(int width, int heigght)
+        private string GetVideoAspectRatio(int width, int height)
         {
-            int cd = GetGcd(width, heigght);
-            return width / cd + ":" + heigght / cd;
+            int cd = GetGcd(width, height);
+            if(cd <= 0)
+            {
+                return "0:0";
+            }
+            return width / cd + ":" + height / cd;
         }
 
         private async Task<FormatModel.Format> GetFormat(string videoPath)
