@@ -39,8 +39,6 @@ namespace Xabe.FFmpeg.Downloader
 
         internal async static Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries)
         {
-            var ffProbeZipPath = Path.Combine(Path.GetTempPath(), "FFprobe.zip");
-
             Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
 
             var ffmpegZip = await DownloadFile(links.FFmpegLink);
