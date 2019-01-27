@@ -77,7 +77,7 @@ namespace Xabe.FFmpeg.Downloader
 
         private static bool CheckIfFilesExist()
         {
-            return !File.Exists(FfmpegDestinationPath) && !File.Exists(FfprobeDestinationPath);
+            return !File.Exists(FfmpegDestinationPath) || !File.Exists(FfprobeDestinationPath);
         }
 
         internal static string ComputeFileDestinationPath(string filename, OperatingSystem os)
