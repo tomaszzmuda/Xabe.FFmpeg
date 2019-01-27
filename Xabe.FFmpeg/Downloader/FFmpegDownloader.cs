@@ -11,12 +11,16 @@ namespace Xabe.FFmpeg.Downloader
     internal class FFmpegDownloader
     {
         internal static LinkProvider _linkProvider = new LinkProvider();
+        private static readonly OperatingSystem _os = new OperatingSystemProvider().GetOperatingSystem();
+
+        private static string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", _os);
+        private static string FfprobeDestinationPath => ComputeFileDestinationPath("ffprobe", _os);
 
         internal async static Task GetLatestVersion()
         {
             var latestVersion = GetLatestVersionInfo();
 
-            if(!CheckIfUpdateAvailable(latestVersion.Version))
+            if(!CheckIfUpdateAvailable(latestVersion.Version) && !CheckIfFilesExist())
                 return;
 
             await DownloadLatestVersion(latestVersion);
@@ -48,12 +52,44 @@ namespace Xabe.FFmpeg.Downloader
                 Directory.Delete(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX"), true);
         }
 
-
-
         private static void Extract(string ffMpegZipPath, string destinationDir)
         {
-            ZipFile.ExtractToDirectory(ffMpegZipPath, destinationDir);
+            using(ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))
+            {
+                if(!Directory.Exists(destinationDir))
+                    Directory.CreateDirectory(destinationDir);
+
+                foreach(ZipArchiveEntry zipEntry in zipArchive.Entries)
+                {
+                    string destinationPath = Path.Combine(destinationDir, zipEntry.FullName);
+
+                    // Archived empty directories have empty Names
+                    if(zipEntry.Name == string.Empty)
+                    {
+                        Directory.CreateDirectory(destinationPath);
+                        continue;
+                    }
+
+                    zipEntry.ExtractToFile(destinationPath, overwrite: true);
+                }
+            }
+
             File.Delete(ffMpegZipPath);
+        }
+
+        private static bool CheckIfFilesExist()
+        {
+            return !File.Exists(FfmpegDestinationPath) && !File.Exists(FfprobeDestinationPath);
+        }
+
+        internal static string ComputeFileDestinationPath(string filename, OperatingSystem os)
+        {
+            string path = Path.Combine(FFmpeg.ExecutablesPath ?? ".", filename);
+            
+            if(os == OperatingSystem.Windows32 || os == OperatingSystem.Windows64)
+                path += ".exe";
+
+            return path;
         }
 
         private static bool CheckIfUpdateAvailable(string latestVersion)
@@ -72,7 +108,7 @@ namespace Xabe.FFmpeg.Downloader
             return false;
         }
 
-        private static void SaveVersion(FFbinariesVersionInfo latestVersion)
+        internal static void SaveVersion(FFbinariesVersionInfo latestVersion)
         {
             var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
             File.WriteAllText(versionPath, JsonConvert.SerializeObject(new DownloadedVersion()
