@@ -196,17 +196,17 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Theory]
-        [InlineData(true, 1)]
-        [InlineData(true, 8)]
-        [InlineData(false, 1)]
-        public async Task UseMultithreadTest(bool useMultithread, int expectedThreadsCount)
+        [InlineData(1)]
+        [InlineData(8)]
+        [InlineData(0)]
+        public async Task UseMultithreadTest(int expectedThreadsCount)
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(info.VideoStreams.First())
-                                                                 .UseMultiThread(useMultithread, expectedThreadsCount)
+                                                                 .UseMultiThread(expectedThreadsCount)
                                                                  .SetOutput(output)
                                                                  .Start();
 

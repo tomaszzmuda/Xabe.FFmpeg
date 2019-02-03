@@ -141,9 +141,16 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion UseMultiThread(bool multiThread, int? threadsCount = null)
+        public IConversion UseMultiThread(bool multiThread)
         {
             _useMultiThreads = multiThread;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion UseMultiThread(int threadsCount)
+        {
+            UseMultiThread(true);
             _threadsCount = threadsCount;
             return this;
         }
