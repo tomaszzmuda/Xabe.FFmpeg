@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     ///     Create queue for conversions
     /// </summary>
-    public class ConversionQueue: IDisposable
+    public class ConversionQueue : IDisposable
     {
         /// <summary>
         ///     Information about queue's media status
@@ -24,6 +25,7 @@ namespace Xabe.FFmpeg
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private long _number;
         private long _totalItems;
+        private readonly IList<Task> _tasks = new List<Task>();
 
         /// <summary>
         ///     Queue for conversions.
@@ -36,16 +38,10 @@ namespace Xabe.FFmpeg
         {
             _parallel = parallel;
 
-            if(!_parallel)
+            for (var i = 0; i < (_parallel && Environment.ProcessorCount > 1 ? Environment.ProcessorCount : 1); i++)
             {
-                Task.Run(() => Worker(_cancellationTokenSource.Token));
-            }
-            else
-            {
-                for(var i = 0; i < Environment.ProcessorCount; i++)
-                {
-                    Task.Run(() => Worker(_cancellationTokenSource.Token));
-                }
+                var task = Task.Factory.StartNew(() => CreateWorkerTaskAsync(_cancellationTokenSource.Token), _cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                _tasks.Add(task);
             }
         }
 
@@ -53,7 +49,12 @@ namespace Xabe.FFmpeg
         public void Dispose()
         {
             _start?.Reset();
-            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource?.Cancel();
+            _list?.Dispose();
+            foreach (var task in _tasks)
+            {
+                task.Dispose();
+            }
         }
 
         /// <summary>
@@ -71,9 +72,9 @@ namespace Xabe.FFmpeg
             return _list.Take();
         }
 
-        private async Task Worker(CancellationToken token)
+        private async Task CreateWorkerTaskAsync(CancellationToken token)
         {
-            while(!token.IsCancellationRequested)
+            while (!token.IsCancellationRequested)
             {
                 IConversion conversion = null;
                 try
@@ -82,11 +83,11 @@ namespace Xabe.FFmpeg
                     conversion = GetNext();
                     Interlocked.Increment(ref _number);
                     await conversion.Start(token);
-                    OnConverted?.Invoke((int) Interlocked.Read(ref _number), (int) Interlocked.Read(ref _totalItems), conversion);
+                    OnConverted?.Invoke((int)Interlocked.Read(ref _number), (int)Interlocked.Read(ref _totalItems), conversion);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
-                    OnException?.Invoke((int) Interlocked.Read(ref _number), (int) Interlocked.Read(ref _totalItems), conversion);
+                    OnException?.Invoke((int)Interlocked.Read(ref _number), (int)Interlocked.Read(ref _totalItems), conversion);
                 }
             }
         }
@@ -97,6 +98,7 @@ namespace Xabe.FFmpeg
         /// <param name="cancellationTokenSource">Cancelation token</param>
         public void Start(CancellationTokenSource cancellationTokenSource = null)
         {
+            _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = cancellationTokenSource ?? new CancellationTokenSource();
             _start.Set();
         }
