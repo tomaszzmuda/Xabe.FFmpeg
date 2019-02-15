@@ -45,11 +45,6 @@ namespace Xabe.FFmpeg
         public static string FFprobeExecutableName { get; } = "ffprobe";
 
         /// <summary>
-        ///     FFmpeg process
-        /// </summary>
-        protected Process Process;
-
-        /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
         /// </summary>
         public async static Task GetLatestVersion()
@@ -196,10 +191,10 @@ namespace Xabe.FFmpeg
         /// <param name="standardError">Should redirect standard error</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
-        protected void RunProcess(string args, string processPath, bool standardInput = false,
+        protected Process RunProcess(string args, string processPath, bool standardInput = false,
             bool standardOutput = false, bool standardError = false)
         {
-            Process = new Process
+            var process = new Process
             {
                 StartInfo =
                 {
@@ -214,7 +209,8 @@ namespace Xabe.FFmpeg
                 EnableRaisingEvents = true
             };
 
-            Process.Start();
+            process.Start();
+            return process;
         }
     }
 

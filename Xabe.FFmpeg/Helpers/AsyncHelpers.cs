@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,27 +17,29 @@ namespace Xabe.FFmpeg
         public static void RunSync(Func<Task> task)
         {
             var oldContext = SynchronizationContext.Current;
-            var synch = new ExclusiveSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(synch);
-            synch.Post(async _ =>
+            using (var synch = new ExclusiveSynchronizationContext())
             {
-                try
+                SynchronizationContext.SetSynchronizationContext(synch);
+                synch.Post(async _ =>
                 {
-                    await task();
-                }
-                catch(Exception e)
-                {
-                    synch.InnerException = e;
-                    throw;
-                }
-                finally
-                {
-                    synch.EndMessageLoop();
-                }
-            }, null);
-            synch.BeginMessageLoop();
+                    try
+                    {
+                        await task();
+                    }
+                    catch (Exception e)
+                    {
+                        synch.InnerException = e;
+                        throw;
+                    }
+                    finally
+                    {
+                        synch.EndMessageLoop();
+                    }
+                }, null);
+                synch.BeginMessageLoop();
 
-            SynchronizationContext.SetSynchronizationContext(oldContext);
+                SynchronizationContext.SetSynchronizationContext(oldContext);
+            }
         }
 
         /// <summary>
@@ -50,31 +51,33 @@ namespace Xabe.FFmpeg
         public static T RunSync<T>(Func<Task<T>> task)
         {
             var oldContext = SynchronizationContext.Current;
-            var synch = new ExclusiveSynchronizationContext();
-            SynchronizationContext.SetSynchronizationContext(synch);
-            T ret = default(T);
-            synch.Post(async _ =>
+            using (var synch = new ExclusiveSynchronizationContext())
             {
-                try
+                SynchronizationContext.SetSynchronizationContext(synch);
+                T ret = default(T);
+                synch.Post(async _ =>
                 {
-                    ret = await task();
-                }
-                catch(Exception e)
-                {
-                    synch.InnerException = e;
-                    throw;
-                }
-                finally
-                {
-                    synch.EndMessageLoop();
-                }
-            }, null);
-            synch.BeginMessageLoop();
-            SynchronizationContext.SetSynchronizationContext(oldContext);
-            return ret;
+                    try
+                    {
+                        ret = await task();
+                    }
+                    catch (Exception e)
+                    {
+                        synch.InnerException = e;
+                        throw;
+                    }
+                    finally
+                    {
+                        synch.EndMessageLoop();
+                    }
+                }, null);
+                synch.BeginMessageLoop();
+                SynchronizationContext.SetSynchronizationContext(oldContext);
+                return ret;
+            }
         }
 
-        private class ExclusiveSynchronizationContext : SynchronizationContext
+        private class ExclusiveSynchronizationContext : SynchronizationContext, IDisposable
         {
             private bool done;
             public Exception InnerException { get; set; }
@@ -89,7 +92,7 @@ namespace Xabe.FFmpeg
 
             public override void Post(SendOrPostCallback d, object state)
             {
-                lock(items)
+                lock (items)
                 {
                     items.Enqueue(Tuple.Create(d, state));
                 }
@@ -103,20 +106,20 @@ namespace Xabe.FFmpeg
 
             public void BeginMessageLoop()
             {
-                while(!done)
+                while (!done)
                 {
                     Tuple<SendOrPostCallback, object> task = null;
-                    lock(items)
+                    lock (items)
                     {
-                        if(items.Count > 0)
+                        if (items.Count > 0)
                         {
                             task = items.Dequeue();
                         }
                     }
-                    if(task != null)
+                    if (task != null)
                     {
                         task.Item1(task.Item2);
-                        if(InnerException != null) // the method threw an exeption
+                        if (InnerException != null) // the method threw an exeption
                         {
                             throw new AggregateException("AsyncHelpers.Run method threw an exception.", InnerException);
                         }
@@ -132,6 +135,35 @@ namespace Xabe.FFmpeg
             {
                 return this;
             }
+
+            #region IDisposable
+            private bool _isDisposed = false;
+            ~ExclusiveSynchronizationContext()
+            {
+                this.Dispose(false);
+            }
+
+            public void Dispose()
+            {
+                this.Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (_isDisposed)
+                {
+                    return;
+                }
+
+                if (disposing)
+                {
+                    workItemsWaiting?.Dispose();
+                }
+
+                _isDisposed = true;
+            }
+            #endregion
         }
     }
 }

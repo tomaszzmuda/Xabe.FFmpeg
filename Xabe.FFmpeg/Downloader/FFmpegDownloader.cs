@@ -20,7 +20,7 @@ namespace Xabe.FFmpeg.Downloader
         {
             var latestVersion = GetLatestVersionInfo();
 
-            if(!CheckIfUpdateAvailable(latestVersion.Version) && !CheckIfFilesExist())
+            if (!CheckIfUpdateAvailable(latestVersion.Version) && !CheckIfFilesExist())
                 return;
 
             await DownloadLatestVersion(latestVersion);
@@ -30,7 +30,7 @@ namespace Xabe.FFmpeg.Downloader
 
         internal static FFbinariesVersionInfo GetLatestVersionInfo()
         {
-            using(var wc = new WebClient())
+            using (var wc = new WebClient())
             {
                 var json = wc.DownloadString("http://ffbinaries.com/api/v1/version/latest");
                 return JsonConvert.DeserializeObject<FFbinariesVersionInfo>(json);
@@ -41,28 +41,32 @@ namespace Xabe.FFmpeg.Downloader
         {
             Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
 
-            var ffmpegZip = await DownloadFile(links.FFmpegLink);
-            var ffprobeZip = await DownloadFile(links.FFprobeLink);
+            var ffmpegZipDownloadTask = DownloadFile(links.FFmpegLink);
+            var ffprobeZipDownloadTask = DownloadFile(links.FFprobeLink);
+
+            var ffmpegZip = await ffmpegZipDownloadTask.ConfigureAwait(false);
+            var ffprobeZip = await ffprobeZipDownloadTask.ConfigureAwait(false);
+
             Extract(ffmpegZip, FFmpeg.ExecutablesPath ?? ".");
             Extract(ffprobeZip, FFmpeg.ExecutablesPath ?? ".");
 
-            if(Directory.Exists(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX")))
+            if (Directory.Exists(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX")))
                 Directory.Delete(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX"), true);
         }
 
         private static void Extract(string ffMpegZipPath, string destinationDir)
         {
-            using(ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))
+            using (ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))
             {
-                if(!Directory.Exists(destinationDir))
+                if (!Directory.Exists(destinationDir))
                     Directory.CreateDirectory(destinationDir);
 
-                foreach(ZipArchiveEntry zipEntry in zipArchive.Entries)
+                foreach (ZipArchiveEntry zipEntry in zipArchive.Entries)
                 {
                     string destinationPath = Path.Combine(destinationDir, zipEntry.FullName);
 
                     // Archived empty directories have empty Names
-                    if(zipEntry.Name == string.Empty)
+                    if (zipEntry.Name == string.Empty)
                     {
                         Directory.CreateDirectory(destinationPath);
                         continue;
@@ -83,8 +87,8 @@ namespace Xabe.FFmpeg.Downloader
         internal static string ComputeFileDestinationPath(string filename, OperatingSystem os)
         {
             string path = Path.Combine(FFmpeg.ExecutablesPath ?? ".", filename);
-            
-            if(os == OperatingSystem.Windows32 || os == OperatingSystem.Windows64)
+
+            if (os == OperatingSystem.Windows32 || os == OperatingSystem.Windows64)
                 path += ".exe";
 
             return path;
@@ -93,13 +97,13 @@ namespace Xabe.FFmpeg.Downloader
         private static bool CheckIfUpdateAvailable(string latestVersion)
         {
             var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
-            if(!File.Exists(versionPath))
+            if (!File.Exists(versionPath))
                 return true;
 
             FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(versionPath));
-            if(currentVersion != null)
+            if (currentVersion != null)
             {
-                if(new Version(latestVersion) > new Version(currentVersion.Version))
+                if (new Version(latestVersion) > new Version(currentVersion.Version))
                     return true;
             }
 
@@ -119,14 +123,14 @@ namespace Xabe.FFmpeg.Downloader
         {
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
 
-            using(var client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                using(var result = await client.GetAsync(url))
+                using (var result = await client.GetAsync(url))
                 {
-                    if(!result.IsSuccessStatusCode)
+                    if (!result.IsSuccessStatusCode)
                         return null;
                     var readedData = await result.Content.ReadAsByteArrayAsync();
-                    if(readedData == null)
+                    if (readedData == null)
                         return null;
                     File.WriteAllBytes(tempPath, readedData);
                 }
