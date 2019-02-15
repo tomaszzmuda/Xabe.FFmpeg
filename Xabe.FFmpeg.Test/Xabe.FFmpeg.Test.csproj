@@ -1,71 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
-
     <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
-
     <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
-	
-	<DebugType>Full</DebugType>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <NoWarn />
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-    
-  <ItemGroup>
-    <None Remove="Resources\ffbinaries.json" />
-    <None Remove="Resources\multipleStreamSample.mkv" />
-    <None Remove="Resources\sample.flv" />
-    <None Remove="Resources\sample.ts" />
-    <None Remove="Resources\sampleSrt.srt" />
-    <None Remove="Resources\SampleVideo_360x240_1mb.mkv" />
-    <None Remove="Resources\watermark.png" />
-  </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\audio.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ffbinaries.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\input.mp4">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\multipleStreamSample.mkv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\mute.mp4">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\sample.flv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\sample.ts">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\sampleSrt.srt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\SampleVideo_360x240_1mb.mkv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\watermark.png">
+    <None Remove="Resources\**\*.*" />
+    <Content Include="Resources\**\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="NSubstitute" Version="3.1.0" />
-    <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="xunit" Version="2.3.0-beta3-build3705" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta3-build3705" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="NSubstitute" Version="4.0.0" />
+    <PackageReference Include="OpenCover" Version="4.7.922" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>

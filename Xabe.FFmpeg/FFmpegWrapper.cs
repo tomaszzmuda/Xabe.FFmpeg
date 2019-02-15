@@ -39,64 +39,69 @@ namespace Xabe.FFmpeg
             {
                 _outputLog = new List<string>();
 
-                RunProcess(args, FFmpegPath, true, true, true);
+                var process = RunProcess(args, FFmpegPath, true, true, true);
 
-                using(Process)
+                using (process)
                 {
-                    Process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
-                    Process.BeginErrorReadLine();
-                    cancellationToken.Register(async () => {
-                        Process.StandardInput.Write("q");
+                    process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
+                    process.BeginErrorReadLine();
+                    var ctr = cancellationToken.Register(async () =>
+                    {
+                        process.StandardInput.Write("q");
                         await Task.Delay(1000 * 5);
 
                         try
                         {
-                            if(!Process.HasExited)
+                            if (!process.HasExited)
                             {
                                 _wasKilled = true;
-                                Process.Kill();
+                                process.Kill();
                             }
                         }
-                        catch(InvalidOperationException)
+                        catch (InvalidOperationException)
                         {
-
                         }
                     });
-                    Process.WaitForExit();
 
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if(_wasKilled)
+                    using (ctr)
                     {
-                        throw new ConversionException("Cannot stop process. Killed it.", args);
-                    }
+                        process.WaitForExit();
 
-                    if(cancellationToken.IsCancellationRequested)
-                    {
-                        return false;
-                    }
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (_wasKilled)
+                        {
+                            throw new ConversionException("Cannot stop process. Killed it.", args);
+                        }
 
-                    if(_outputLog.Any(x => x.Contains("Unknown decoder")))
-                    {
-                        throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                    }
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return false;
+                        }
 
-                    if(_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
-                    {
-                        throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                    }
+                        if (_outputLog.Any(x => x.Contains("Unknown decoder")))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
 
-                    if(Process.ExitCode != 0)
-                    {
-                        throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        if (_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
+                        {
+                            throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (process.ExitCode != 0)
+                        {
+                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
                     }
                 }
+
                 return true;
             });
         }
 
         private void ProcessOutputData(DataReceivedEventArgs e, string args)
         {
-            if(e.Data == null)
+            if (e.Data == null)
             {
                 return;
             }
@@ -105,7 +110,7 @@ namespace Xabe.FFmpeg
 
             _outputLog.Add(e.Data);
 
-            if(OnProgress == null)
+            if (OnProgress == null)
             {
                 return;
             }
@@ -115,20 +120,20 @@ namespace Xabe.FFmpeg
 
         private void CalculateTime(DataReceivedEventArgs e, string args)
         {
-            if(e.Data.Contains("Duration: N/A"))
+            if (e.Data.Contains("Duration: N/A"))
             {
                 return;
             }
 
             var regex = new Regex(TimeFormatRegex);
-            if(e.Data.Contains("Duration"))
+            if (e.Data.Contains("Duration"))
             {
                 GetDuration(e, regex, args);
             }
-            else if(e.Data.Contains("size"))
+            else if (e.Data.Contains("size"))
             {
                 Match match = regex.Match(e.Data);
-                if(match.Success)
+                if (match.Success)
                 {
                     OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime));
                 }
@@ -138,7 +143,7 @@ namespace Xabe.FFmpeg
         private void GetDuration(DataReceivedEventArgs e, Regex regex, string args)
         {
             string t = GetArgumentValue("-t", args);
-            if(!string.IsNullOrWhiteSpace(t))
+            if (!string.IsNullOrWhiteSpace(t))
             {
                 _totalTime = TimeSpan.Parse(t);
                 return;
@@ -148,7 +153,7 @@ namespace Xabe.FFmpeg
             _totalTime = TimeSpan.Parse(match.Value);
 
             string ss = GetArgumentValue("-ss", args);
-            if(!string.IsNullOrWhiteSpace(ss))
+            if (!string.IsNullOrWhiteSpace(ss))
             {
                 _totalTime -= TimeSpan.Parse(ss);
             }
@@ -159,7 +164,7 @@ namespace Xabe.FFmpeg
             List<string> words = args.Split(' ')
                                      .ToList();
             int index = words.IndexOf(option);
-            if(index >= 0)
+            if (index >= 0)
             {
                 return words[index + 1];
             }
