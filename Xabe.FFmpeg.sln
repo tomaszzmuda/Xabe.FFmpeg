@@ -7,10 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabe.FFmpeg", "Xabe.FFmpeg\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{986DB5E3-B71F-4AC6-A530-2F527D78CB9F}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		.travis.yml = .travis.yml
 		build.ps1 = build.ps1
 		build.sh = build.sh
+		corefx.vssettings = corefx.vssettings
 		Directory.Build.props = Directory.Build.props
 		Documentation\index.html = Documentation\index.html
 		LICENSE.md = LICENSE.md
