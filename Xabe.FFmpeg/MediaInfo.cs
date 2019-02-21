@@ -53,7 +53,7 @@ namespace Xabe.FFmpeg
         /// <param name="fileInfo">FileInfo</param>
         public static async Task<IMediaInfo> Get(FileInfo fileInfo)
         {
-            if(!File.Exists(fileInfo.FullName))
+            if (!File.Exists(fileInfo.FullName))
             {
                 throw new InvalidInputException($"Input file {fileInfo.FullName} doesn't exists.");
             }

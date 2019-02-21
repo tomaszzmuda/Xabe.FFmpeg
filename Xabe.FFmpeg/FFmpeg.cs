@@ -16,12 +16,12 @@ namespace Xabe.FFmpeg
     /// </summary>
     public abstract class FFmpeg
     {
-        private static string _ffmpegPath;
-        private static string _ffprobePath;
+        private static string s_ffmpegPath;
+        private static string s_ffprobePath;
 
-        private static readonly object FfmpegPathLock = new object();
+        private static readonly object s_ffmpegPathLock = new object();
 
-        private static readonly object FfprobePathLock = new object();
+        private static readonly object s_ffprobePathLock = new object();
 
         /// <summary>
         ///     Directory contains FFmpeg and FFprobe
@@ -57,13 +57,13 @@ namespace Xabe.FFmpeg
         /// </summary>
         protected FFmpeg()
         {
-            if(!string.IsNullOrWhiteSpace(FFprobePath) &&
+            if (!string.IsNullOrWhiteSpace(FFprobePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
             {
                 return;
             }
 
-            if(!string.IsNullOrWhiteSpace(ExecutablesPath))
+            if (!string.IsNullOrWhiteSpace(ExecutablesPath))
             {
                 FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
                                                           .FirstOrDefault(x => x.Name.ToLower()
@@ -79,13 +79,13 @@ namespace Xabe.FFmpeg
 
             Assembly entryAssembly = Assembly.GetEntryAssembly();
 
-            if(entryAssembly != null)
+            if (entryAssembly != null)
             {
                 string workingDirectory = Path.GetDirectoryName(entryAssembly.Location);
 
                 FindProgramsFromPath(workingDirectory);
 
-                if(FFmpegPath != null &&
+                if (FFmpegPath != null &&
                    FFprobePath != null)
                 {
                     return;
@@ -95,11 +95,11 @@ namespace Xabe.FFmpeg
             string[] paths = Environment.GetEnvironmentVariable("PATH")
                                         .Split(Path.PathSeparator);
 
-            foreach(string path in paths)
+            foreach (string path in paths)
             {
                 FindProgramsFromPath(path);
 
-                if(FFmpegPath != null &&
+                if (FFmpegPath != null &&
                    FFprobePath != null)
                 {
                     break;
@@ -116,17 +116,17 @@ namespace Xabe.FFmpeg
         {
             get
             {
-                lock(FfmpegPathLock)
+                lock (s_ffmpegPathLock)
                 {
-                    return _ffmpegPath;
+                    return s_ffmpegPath;
                 }
             }
 
             private set
             {
-                lock(FfmpegPathLock)
+                lock (s_ffmpegPathLock)
                 {
-                    _ffmpegPath = value;
+                    s_ffmpegPath = value;
                 }
             }
         }
@@ -138,24 +138,24 @@ namespace Xabe.FFmpeg
         {
             get
             {
-                lock(FfprobePathLock)
+                lock (s_ffprobePathLock)
                 {
-                    return _ffprobePath;
+                    return s_ffprobePath;
                 }
             }
 
             private set
             {
-                lock(FfprobePathLock)
+                lock (s_ffprobePathLock)
                 {
-                    _ffprobePath = value;
+                    s_ffprobePath = value;
                 }
             }
         }
 
         private void ValidateExecutables()
         {
-            if(FFmpegPath != null &&
+            if (FFmpegPath != null &&
                FFprobePath != null)
             {
                 return;
@@ -169,7 +169,7 @@ namespace Xabe.FFmpeg
 
         private void FindProgramsFromPath(string path)
         {
-            if(!Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
                 return;
             }
@@ -220,6 +220,5 @@ namespace Xabe.FFmpeg
     [Obsolete("Please use class FFmpeg.")]
     public abstract class FFbase : FFmpeg
     {
-        
     }
 }

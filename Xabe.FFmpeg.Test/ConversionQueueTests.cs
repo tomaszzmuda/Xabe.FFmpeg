@@ -18,7 +18,7 @@ namespace Xabe.FFmpeg.Test
         {
             var queue = new ConversionQueue(parallel);
 
-            for(var i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 IConversion conversion = Conversion.ToTs(Resources.Mp4, output);
@@ -47,7 +47,7 @@ namespace Xabe.FFmpeg.Test
                                           .Format);
             Assert.Equal("aac", mediaInfo.AudioStreams.First()
                                          .Format);
-            if(conversionNumber == totalConversionsCount)
+            if (conversionNumber == totalConversionsCount)
                 resetEvent.Set();
         }
 
@@ -57,7 +57,7 @@ namespace Xabe.FFmpeg.Test
             var queue = new ConversionQueue();
             var exceptionOccures = false;
 
-            for(var i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
@@ -83,7 +83,7 @@ namespace Xabe.FFmpeg.Test
             var currentItemNumber = 0;
             var totalItemsCount = 0;
 
-            for(var i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
@@ -96,7 +96,7 @@ namespace Xabe.FFmpeg.Test
             {
                 totalItemsCount = count;
                 currentItemNumber = number;
-                if(number == count)
+                if (number == count)
                     resetEvent.Set();
             };
             queue.Start();

@@ -3,7 +3,7 @@
 namespace Xabe.FFmpeg.Model
 {
     /// <inheritdoc />
-    internal class ConversionResult: IConversionResult
+    internal class ConversionResult : IConversionResult
     {
         /// <inheritdoc />
         public bool Success { get; internal set; }

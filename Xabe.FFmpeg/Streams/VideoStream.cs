@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<IFilterConfiguration> GetFilters()
         {
-            if(_videoFilters.Any())
+            if (_videoFilters.Any())
             {
                 yield return new FilterConfiguration
                 {
@@ -102,7 +102,7 @@ namespace Xabe.FFmpeg.Streams
         public IVideoStream SetLoop(int count, int delay)
         {
             _loop = $"-loop {count} ";
-            if(delay > 0)
+            if (delay > 0)
             {
                 _loop += $"-final_delay {delay / 100} ";
             }
@@ -114,15 +114,15 @@ namespace Xabe.FFmpeg.Streams
         {
             string filter = $"'{subtitlePath}'".Replace("\\", "\\\\")
                                                .Replace(":", "\\:");
-            if(!string.IsNullOrEmpty(encode))
+            if (!string.IsNullOrEmpty(encode))
             {
                 filter += $":charenc={encode}";
             }
-            if(!string.IsNullOrEmpty(style))
+            if (!string.IsNullOrEmpty(style))
             {
                 filter += $":force_style=\'{style}\'";
             }
-            if(originalSize != null)
+            if (originalSize != null)
             {
                 filter += $":original_size={originalSize}";
             }
@@ -140,7 +140,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream SetScale(VideoSize size)
         {
-            if(size != null)
+            if (size != null)
             {
                 _scale = $"-vf scale={size} ";
             }
@@ -150,7 +150,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream SetSize(VideoSize size)
         {
-            if(size != null)
+            if (size != null)
             {
                 _size = $"-s {size} ";
             }
@@ -174,9 +174,9 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream SetSeek(TimeSpan seek)
         {
-            if(seek != null)
+            if (seek != null)
             {
-                if(seek > Duration)
+                if (seek > Duration)
                 {
                     throw new ArgumentException("Seek can not be greater than video duration");
                 }
@@ -206,7 +206,7 @@ namespace Xabe.FFmpeg.Streams
         {
             _watermarkSource = imagePath;
             string argument = string.Empty;
-            switch(position)
+            switch (position)
             {
                 case Position.Bottom:
                     argument += "(main_w-overlay_w)/2:main_h-overlay_h";
@@ -250,10 +250,9 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            if(!string.IsNullOrWhiteSpace(_watermarkSource))
+            if (!string.IsNullOrWhiteSpace(_watermarkSource))
                 return new[] { Source.FullName, _watermarkSource };
-            return new[] { Source.FullName};
-
+            return new[] { Source.FullName };
         }
 
         void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)
