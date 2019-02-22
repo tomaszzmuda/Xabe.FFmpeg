@@ -7,33 +7,33 @@ namespace Xabe.FFmpeg.Downloader
     {
         public OperatingSystem GetOperatingSystem()
         {
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if(RuntimeInformation.OSArchitecture == Architecture.X64)
+                if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
                     return OperatingSystem.Windows64;
                 }
-                else if(RuntimeInformation.OSArchitecture == Architecture.X64)
+                else if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
                     return OperatingSystem.Windows64;
                 }
             }
-            else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                    return OperatingSystem.Osx64;
+                return OperatingSystem.Osx64;
             }
-            else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                switch(RuntimeInformation.OSArchitecture)
+                switch (RuntimeInformation.OSArchitecture)
                 {
                     case Architecture.X64:
-                    return OperatingSystem.Linux64;
+                        return OperatingSystem.Linux64;
                     case Architecture.X86:
-                    return OperatingSystem.Linux32;
+                        return OperatingSystem.Linux32;
                     case Architecture.Arm:
-                    return OperatingSystem.LinuxArmhf;
+                        return OperatingSystem.LinuxArmhf;
                     case Architecture.Arm64:
-                    return OperatingSystem.LinuxArm64;
+                        return OperatingSystem.LinuxArm64;
                 }
 
                 // TODO : How to distinct Tizen / Raspberry architecture

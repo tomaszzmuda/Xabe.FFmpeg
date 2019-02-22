@@ -2,7 +2,7 @@
 {
     internal class LinkProvider
     {
-        IOperatingSystemProvider _operatingSystemProvider;
+        private IOperatingSystemProvider _operatingSystemProvider;
 
         internal LinkProvider()
         {
@@ -17,7 +17,7 @@
         internal Links GetLinks(FFbinariesVersionInfo version)
         {
             var links = new Links();
-            switch(_operatingSystemProvider.GetOperatingSystem())
+            switch (_operatingSystemProvider.GetOperatingSystem())
             {
                 case OperatingSystem.Windows64:
                     links.FFmpegLink = version.BinariesUrl.Windows64.Ffmpeg;

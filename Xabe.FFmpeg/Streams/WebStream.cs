@@ -34,7 +34,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            return new []{_uri.AbsoluteUri};
+            return new[] { _uri.AbsoluteUri };
         }
 
         /// <inheritdoc />

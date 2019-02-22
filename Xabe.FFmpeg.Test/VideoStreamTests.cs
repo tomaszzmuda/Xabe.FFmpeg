@@ -148,7 +148,7 @@ namespace Xabe.FFmpeg.Test
                                     .SetOutput(outputPath)
                                     .Start();
                 }
-                catch(ConversionException e)
+                catch (ConversionException e)
                 {
                     Assert.Contains("-c:v copy", e.InputParameters);
                     Assert.Contains("-vf reverse", e.InputParameters);

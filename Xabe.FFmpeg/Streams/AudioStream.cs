@@ -87,7 +87,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            return new []{Source.FullName};
+            return new[] { Source.FullName };
         }
 
         /// <inheritdoc />
@@ -96,7 +96,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IAudioStream SetSeek(TimeSpan? seek)
         {
-            if(seek.HasValue)
+            if (seek.HasValue)
             {
                 _seek = $"-ss {seek.Value.ToFFmpeg()} ";
             }
@@ -111,7 +111,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<IFilterConfiguration> GetFilters()
         {
-            if(_audioFilters.Any())
+            if (_audioFilters.Any())
             {
                 yield return new FilterConfiguration
                 {

@@ -37,14 +37,14 @@ namespace Xabe.FFmpeg.Test
 
         [Theory]
         [InlineData("ass", "ass", false)]
-        [InlineData("vtt","webvtt", false)]
+        [InlineData("vtt", "webvtt", false)]
         [InlineData("srt", "subrip", false)]
         public async Task ExtractSubtitles(string format, string expectedFormat, bool checkOutputLanguage)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), format);
             IMediaInfo info = await MediaInfo.Get(Resources.MultipleStream);
 
-            ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x=>x.Language == "spa");
+            ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x => x.Language == "spa");
             Assert.NotNull(subtitleStream);
 
             IConversionResult result = await Conversion.New()
@@ -58,7 +58,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(0, resultInfo.AudioStreams.Count());
             Assert.Equal(1, resultInfo.SubtitleStreams.Count());
             Assert.Equal(expectedFormat, resultInfo.SubtitleStreams.First().Format);
-            if(checkOutputLanguage)
+            if (checkOutputLanguage)
             {
                 Assert.Equal("spa", resultInfo.SubtitleStreams.First().Language);
             }

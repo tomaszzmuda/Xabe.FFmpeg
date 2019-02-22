@@ -160,7 +160,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
-                
+
             await Assert.ThrowsAsync<UnknownDecoderException>(async () =>
             {
                 await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start();

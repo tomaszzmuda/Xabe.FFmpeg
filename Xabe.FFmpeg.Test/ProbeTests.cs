@@ -24,7 +24,7 @@ namespace Xabe.FFmpeg.Test
         {
             string result = await Probe.New()
                                        .Start($"-loglevel error -skip_frame nokey -select_streams v:0 -show_entries frame=pkt_pts_time {Resources.Mp4}");
-            
+
             Assert.True(!string.IsNullOrEmpty(result));
         }
     }

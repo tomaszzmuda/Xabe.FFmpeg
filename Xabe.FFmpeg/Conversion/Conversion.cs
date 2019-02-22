@@ -33,7 +33,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string Build()
         {
-            lock(_builderLock)
+            lock (_builderLock)
             {
                 var builder = new StringBuilder();
                 builder.Append(_hardwareAcceleration);
@@ -97,14 +97,14 @@ namespace Xabe.FFmpeg
         public void Clear()
         {
             _parameters.Clear();
-            if(_fields == null)
+            if (_fields == null)
             {
                 _fields = GetType()
                     .GetFields(BindingFlags.NonPublic |
                                BindingFlags.Instance)
                     .Where(x => x.FieldType == typeof(string));
             }
-            foreach(FieldInfo fieldinfo in _fields)
+            foreach (FieldInfo fieldinfo in _fields)
             {
                 fieldinfo.SetValue(this, null);
             }
@@ -120,9 +120,9 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion AddStream<T>(params T[] streams) where T : IStream
         {
-            foreach(T stream in streams)
+            foreach (T stream in streams)
             {
-                if(stream != null)
+                if (stream != null)
                 {
                     _streams.Add(stream);
                 }
@@ -173,7 +173,7 @@ namespace Xabe.FFmpeg
         private string BuildStreamParameters()
         {
             var builder = new StringBuilder();
-            foreach(IStream stream in _streams)
+            foreach (IStream stream in _streams)
             {
                 builder.Append(stream.Build());
             }
@@ -196,21 +196,21 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             var configurations = new List<IFilterConfiguration>();
-            foreach(IStream stream in _streams)
+            foreach (IStream stream in _streams)
             {
-                if(stream is IFilterable filterable)
+                if (stream is IFilterable filterable)
                 {
                     configurations.AddRange(filterable.GetFilters());
                 }
             }
             IEnumerable<IGrouping<string, IFilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
-            foreach(IGrouping<string, IFilterConfiguration> filterGroup in filterGroups)
+            foreach (IGrouping<string, IFilterConfiguration> filterGroup in filterGroups)
             {
                 builder.Append($"{filterGroup.Key} \"");
-                foreach(IFilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
+                foreach (IFilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
                 {
                     var values = new List<string>();
-                    foreach(KeyValuePair<string, string> filter in configuration.Filters)
+                    foreach (KeyValuePair<string, string> filter in configuration.Filters)
                     {
                         string map = $"[{configuration.StreamNumber}]";
                         string value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
@@ -231,7 +231,7 @@ namespace Xabe.FFmpeg
         private string BuildThreadsArgument(bool multiThread)
         {
             string threadCount = "";
-            if(_threadsCount == null)
+            if (_threadsCount == null)
             {
                 threadCount = multiThread
                     ? Environment.ProcessorCount.ToString()
@@ -252,9 +252,9 @@ namespace Xabe.FFmpeg
         private string BuildMap()
         {
             var builder = new StringBuilder();
-            foreach(IStream stream in _streams)
+            foreach (IStream stream in _streams)
             {
-                foreach(var source in stream.GetSource())
+                foreach (var source in stream.GetSource())
                 {
                     builder.Append($"-map {_inputFileMap[source]}:{stream.Index} ");
                 }
@@ -268,9 +268,9 @@ namespace Xabe.FFmpeg
         /// <returns>Input argument</returns>
         private string BuildInput()
         {
-            var builder = new StringBuilder();  
+            var builder = new StringBuilder();
             var index = 0;
-            foreach(var source in _streams.SelectMany(x => x.GetSource()).Distinct())
+            foreach (var source in _streams.SelectMany(x => x.GetSource()).Distinct())
             {
                 _inputFileMap[source] = index++;
                 builder.Append($"-i \"{source}\" ");
@@ -293,7 +293,7 @@ namespace Xabe.FFmpeg
             _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} -c:v {decoder} ";
             AddParameter($"-c:v {encoder?.ToString()} ");
 
-            if(device != 0)
+            if (device != 0)
             {
                 _hardwareAcceleration += $"-hwaccel_device {device} ";
             }

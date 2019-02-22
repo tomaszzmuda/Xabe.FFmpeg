@@ -36,14 +36,14 @@ namespace Xabe.FFmpeg.Test
                 Assert.True(File.Exists(ffprobePath));
 
                 // 2- Check updates (same version)
-                
+
                 await FFmpegDownloader.GetLatestVersion();
-                
+
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
 
                 // 3- Check updates (outdated version)
-                
+
                 var fFbinariesVersionInfo = new FFbinariesVersionInfo
                 {
                     Version = new Version().ToString() // "0.0"
@@ -54,22 +54,22 @@ namespace Xabe.FFmpeg.Test
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
-                
+
                 // 4- Missing ffmpeg
-                
+
                 File.Delete(ffmpegPath);
 
                 await FFmpegDownloader.GetLatestVersion();
-                
+
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
-                
+
                 // 5- Missing ffprobe
-                
+
                 File.Delete(ffprobePath);
 
                 await FFmpegDownloader.GetLatestVersion();
-                
+
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
             }
@@ -95,19 +95,20 @@ namespace Xabe.FFmpeg.Test
             var linkProvider = new LinkProvider(operatingSystemProvider);
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
-            try { 
-            FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-            FFmpeg.ExecutablesPath = "assemblies";
-            if(Directory.Exists("assemblies"))
+            try
             {
-                Directory.Delete("assemblies", true);
-            }
+                FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
+                FFmpeg.ExecutablesPath = "assemblies";
+                if (Directory.Exists("assemblies"))
+                {
+                    Directory.Delete("assemblies", true);
+                }
 
-            FFmpegDownloader._linkProvider = linkProvider;
-            await FFmpegDownloader.DownloadLatestVersion(currentVersion);
-                
-            Assert.True(File.Exists(FFmpegDownloader.ComputeFileDestinationPath("ffmpeg", os)));
-            Assert.True(File.Exists(FFmpegDownloader.ComputeFileDestinationPath("ffprobe", os)));
+                FFmpegDownloader._linkProvider = linkProvider;
+                await FFmpegDownloader.DownloadLatestVersion(currentVersion);
+
+                Assert.True(File.Exists(FFmpegDownloader.ComputeFileDestinationPath("ffmpeg", os)));
+                Assert.True(File.Exists(FFmpegDownloader.ComputeFileDestinationPath("ffprobe", os)));
             }
             finally
             {
