@@ -13,29 +13,22 @@ namespace Xabe.FFmpeg.Test
     {
         [Theory]
         [InlineData(null)]
-        [InlineData(ProcessPriorityClass.High)]
+        //[InlineData(ProcessPriorityClass.High)]
         [InlineData(ProcessPriorityClass.BelowNormal)]
         public async Task ConversionResultTest(ProcessPriorityClass? priority)
         {
-            try
-            {
-                string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 
-                IConversionResult result = await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)
-                                                 .SetPreset(Enums.ConversionPreset.UltraFast)
-                                                 .SetPriority(priority)
-                                                 .Start();
+            IConversionResult result = await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)
+                                             .SetPreset(Enums.ConversionPreset.UltraFast)
+                                             .SetPriority(priority)
+                                             .Start();
 
-                Assert.True(result.Success);
-                Assert.NotNull(result.MediaInfo.Value);
-                Assert.True(result.StartTime != DateTime.MinValue);
-                Assert.True(result.EndTime != DateTime.MinValue);
-                Assert.True(result.Duration > TimeSpan.FromMilliseconds(1));
-            }
-            catch (Win32Exception e) when (e.Message.Contains("Permission denied "))
-            {
-                Console.WriteLine("No permission to set priority on travis ci");
-            }
+            Assert.True(result.Success);
+            Assert.NotNull(result.MediaInfo.Value);
+            Assert.True(result.StartTime != DateTime.MinValue);
+            Assert.True(result.EndTime != DateTime.MinValue);
+            Assert.True(result.Duration > TimeSpan.FromMilliseconds(1));
         }
 
         [Fact]
