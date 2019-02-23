@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Win32.SafeHandles;
 using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Exceptions;
 
@@ -23,6 +22,7 @@ namespace Xabe.FFmpeg
         private static readonly Regex s_timeFormatRegex = new Regex(TimeFormatPattern, RegexOptions.Compiled);
         private List<string> _outputLog;
         private TimeSpan _totalTime;
+        private bool _wasKilled = false;
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
@@ -47,17 +47,37 @@ namespace Xabe.FFmpeg
                     process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     process.BeginErrorReadLine();
 
-                    using (var processEnded = new ManualResetEvent(false))
+                    var ctr = cancellationToken.Register(async () =>
                     {
-                        processEnded.SafeWaitHandle = new SafeWaitHandle(process.Handle, false);
-                        int index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
+                        process.StandardInput.Write("q");
+                        await Task.Delay(1000 * 5);
 
-                        if (index == 1
-                            && !process.HasExited)
+                        try
                         {
-                            process.CloseMainWindow();
-                            process.Kill();
-                            throw new OperationCanceledException();
+                            if (!process.HasExited)
+                            {
+                                _wasKilled = true;
+                                process.Kill();
+                            }
+                        }
+                        catch (InvalidOperationException)
+                        {
+                        }
+                    });
+
+                    using (ctr)
+                    {
+                        process.WaitForExit();
+
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (_wasKilled)
+                        {
+                            throw new ConversionException("Cannot stop process. Killed it.", args);
+                        }
+
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return false;
                         }
 
                         if (_outputLog.Any(x => x.Contains("Unknown decoder")))
