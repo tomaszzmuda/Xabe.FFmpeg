@@ -1,23 +1,26 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
-using Xabe.FFmpeg.Streams;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
     public class ConversionResultTests
     {
-        [Fact]
-        public async Task ConversionResultTest()
+        [Theory]
+        [InlineData(null)]
+        [InlineData(ProcessPriorityClass.High)]
+        [InlineData(ProcessPriorityClass.BelowNormal)]
+        public async Task ConversionResultTest(ProcessPriorityClass? priority)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 
             IConversionResult result = await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)
                                              .SetPreset(Enums.ConversionPreset.UltraFast)
+                                             .SetPriority(priority)
                                              .Start();
 
             Assert.True(result.Success);

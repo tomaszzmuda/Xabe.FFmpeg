@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Exceptions;
 
@@ -18,10 +19,10 @@ namespace Xabe.FFmpeg
     /// </summary>
     internal class FFmpegWrapper : FFmpeg
     {
-        private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
+        private const string TimeFormatPattern = @"\w\w:\w\w:\w\w";
+        private static readonly Regex s_timeFormatRegex = new Regex(TimeFormatPattern, RegexOptions.Compiled);
         private List<string> _outputLog;
         private TimeSpan _totalTime;
-        private bool _wasKilled = false;
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
@@ -33,49 +34,30 @@ namespace Xabe.FFmpeg
         /// </summary>
         internal event DataReceivedEventHandler OnDataReceived;
 
-        internal async Task<bool> RunProcess(string args, CancellationToken cancellationToken)
+        internal async Task<bool> RunProcess(
+            string args,
+            CancellationToken cancellationToken)
         {
-            return await Task.Run(() =>
+            return await Task.Factory.StartNew(() =>
             {
                 _outputLog = new List<string>();
-
-                var process = RunProcess(args, FFmpegPath, true, true, true);
-
+                var process = RunProcess(args, FFmpegPath, Priority, true, true, true);
                 using (process)
                 {
                     process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     process.BeginErrorReadLine();
-                    var ctr = cancellationToken.Register(async () =>
+
+                    using (var processEnded = new ManualResetEvent(false))
                     {
-                        process.StandardInput.Write("q");
-                        await Task.Delay(1000 * 5);
+                        processEnded.SafeWaitHandle = new SafeWaitHandle(process.Handle, false);
+                        int index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
 
-                        try
+                        if (index == 1
+                            && !process.HasExited)
                         {
-                            if (!process.HasExited)
-                            {
-                                _wasKilled = true;
-                                process.Kill();
-                            }
-                        }
-                        catch (InvalidOperationException)
-                        {
-                        }
-                    });
-
-                    using (ctr)
-                    {
-                        process.WaitForExit();
-
-                        cancellationToken.ThrowIfCancellationRequested();
-                        if (_wasKilled)
-                        {
-                            throw new ConversionException("Cannot stop process. Killed it.", args);
-                        }
-
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            return false;
+                            process.CloseMainWindow();
+                            process.Kill();
+                            throw new OperationCanceledException();
                         }
 
                         if (_outputLog.Any(x => x.Contains("Unknown decoder")))
@@ -96,7 +78,10 @@ namespace Xabe.FFmpeg
                 }
 
                 return true;
-            });
+            },
+            cancellationToken,
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
         }
 
         private void ProcessOutputData(DataReceivedEventArgs e, string args)
@@ -125,14 +110,13 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            var regex = new Regex(TimeFormatRegex);
             if (e.Data.Contains("Duration"))
             {
-                GetDuration(e, regex, args);
+                GetDuration(e, s_timeFormatRegex, args);
             }
             else if (e.Data.Contains("size"))
             {
-                Match match = regex.Match(e.Data);
+                Match match = s_timeFormatRegex.Match(e.Data);
                 if (match.Success)
                 {
                     OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime));

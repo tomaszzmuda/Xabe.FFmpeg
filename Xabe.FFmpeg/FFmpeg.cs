@@ -45,6 +45,11 @@ namespace Xabe.FFmpeg
         public static string FFprobeExecutableName { get; } = "ffprobe";
 
         /// <summary>
+        ///     FFmpeg tool process priority
+        /// </summary>
+        public ProcessPriorityClass? Priority { get; set; }
+
+        /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
         /// </summary>
         public async static Task GetLatestVersion()
@@ -186,13 +191,19 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="processPath">FilePath to executable (FFmpeg, ffprobe)</param>
+        /// <param name="priority">Process priority to run executables</param>
         /// <param name="standardInput">Should redirect standard input</param>
         /// <param name="standardOutput">Should redirect standard output</param>
         /// <param name="standardError">Should redirect standard error</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
-        protected Process RunProcess(string args, string processPath, bool standardInput = false,
-            bool standardOutput = false, bool standardError = false)
+        protected Process RunProcess(
+            string args,
+            string processPath,
+            ProcessPriorityClass? priority,
+            bool standardInput = false,
+            bool standardOutput = false,
+            bool standardError = false)
         {
             var process = new Process
             {
@@ -210,6 +221,16 @@ namespace Xabe.FFmpeg
             };
 
             process.Start();
+
+            if (priority.HasValue)
+            {
+                process.PriorityClass = priority.Value;
+            }
+            else
+            {
+                process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
+            }
+
             return process;
         }
     }

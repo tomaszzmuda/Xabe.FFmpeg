@@ -26,6 +26,13 @@ namespace Xabe.FFmpeg
         void Clear();
 
         /// <summary>
+        /// Set priority of ffmpeg process
+        /// </summary>
+        /// <param name="priority">FFmpeg process priority</param>
+        /// <returns></returns>
+        IConversion SetPriority(ProcessPriorityClass? priority);
+
+        /// <summary>
         ///     Set preset of IConversion. Slower speed equals better compression and quality.
         /// </summary>
         /// <param name="preset">Preset</param>

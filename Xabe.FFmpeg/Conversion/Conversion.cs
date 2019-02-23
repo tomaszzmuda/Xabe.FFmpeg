@@ -29,6 +29,7 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private bool _useMultiThreads = true;
         private int? _threadsCount;
+        private ProcessPriorityClass? _priority = null;
 
         /// <inheritdoc />
         public string Build()
@@ -79,6 +80,7 @@ namespace Xabe.FFmpeg
         public async Task<IConversionResult> Start(string parameters, CancellationToken cancellationToken)
         {
             var ffmpeg = new FFmpegWrapper();
+            ffmpeg.Priority = _priority;
             ffmpeg.OnProgress += OnProgress;
             ffmpeg.OnDataReceived += OnDataReceived;
             var result = new ConversionResult
@@ -167,6 +169,13 @@ namespace Xabe.FFmpeg
         public IConversion UseShortest(bool useShortest)
         {
             _shortestInput = !useShortest ? string.Empty : "-shortest ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetPriority(ProcessPriorityClass? priority)
+        {
+            _priority = priority;
             return this;
         }
 
