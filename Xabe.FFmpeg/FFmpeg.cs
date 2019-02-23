@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -228,7 +229,13 @@ namespace Xabe.FFmpeg
             }
             else
             {
-                process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
+                try
+                {
+                    process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
+                }
+                catch (Win32Exception e) when (e.Message.Contains("Permission denied "))
+                {
+                }
             }
 
             return process;
