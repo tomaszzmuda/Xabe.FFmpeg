@@ -9,9 +9,9 @@ using Xabe.FFmpeg.Streams;
 
 namespace MyVideosConverter
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Run().GetAwaiter().GetResult();
         }
@@ -36,7 +36,7 @@ namespace MyVideosConverter
 
         private static async Task RunConversion(Queue<FileInfo> filesToConvert)
         {
-            while(filesToConvert.TryDequeue(out FileInfo fileToConvert))
+            while (filesToConvert.TryDequeue(out FileInfo fileToConvert))
             {
                 //Save file to the same location with changed extension
                 string outputFileName = Path.ChangeExtension(fileToConvert.FullName, ".mp4");
@@ -53,7 +53,7 @@ namespace MyVideosConverter
                     .SetSize(VideoSize.Hd480)
                     //Set codec which will be used to encode file. If not set it's set automatically according to output file extension
                     .SetCodec(VideoCodec.H264);
-                    
+
                 //Create new conversion object
                 var conversion = Conversion.New()
                     //Add video stream to output file
