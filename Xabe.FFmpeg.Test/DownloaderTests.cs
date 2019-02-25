@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using Xunit;
 using System.Threading.Tasks;
-using NSubstitute;
 using Newtonsoft.Json;
+using NSubstitute;
 using Xabe.FFmpeg.Downloader;
+using Xunit;
 using OperatingSystem = Xabe.FFmpeg.Downloader.OperatingSystem;
 
 namespace Xabe.FFmpeg.Test
@@ -30,14 +30,14 @@ namespace Xabe.FFmpeg.Test
 
                 // 1- First download
 
-                await FFmpegDownloader.GetLatestVersion();
+                await FFmpegDownloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
 
                 // 2- Check updates (same version)
 
-                await FFmpegDownloader.GetLatestVersion();
+                await FFmpegDownloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -50,7 +50,7 @@ namespace Xabe.FFmpeg.Test
                 };
                 FFmpegDownloader.SaveVersion(fFbinariesVersionInfo);
 
-                await FFmpegDownloader.GetLatestVersion();
+                await FFmpegDownloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -59,7 +59,7 @@ namespace Xabe.FFmpeg.Test
 
                 File.Delete(ffmpegPath);
 
-                await FFmpegDownloader.GetLatestVersion();
+                await FFmpegDownloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -68,7 +68,7 @@ namespace Xabe.FFmpeg.Test
 
                 File.Delete(ffprobePath);
 
-                await FFmpegDownloader.GetLatestVersion();
+                await FFmpegDownloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -105,7 +105,7 @@ namespace Xabe.FFmpeg.Test
                 }
 
                 FFmpegDownloader._linkProvider = linkProvider;
-                await FFmpegDownloader.DownloadLatestVersion(currentVersion);
+                await FFmpegDownloader.DownloadLatestVersion(currentVersion).ConfigureAwait(false);
 
                 Assert.True(File.Exists(FFmpegDownloader.ComputeFileDestinationPath("ffmpeg", os)));
                 Assert.True(File.Exists(FFmpegDownloader.ComputeFileDestinationPath("ffprobe", os)));

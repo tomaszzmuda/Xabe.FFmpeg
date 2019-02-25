@@ -15,10 +15,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public async Task<string> Start(string args)
+        public Task<string> Start(string args)
         {
             var wrapper = new FFprobeWrapper();
-            return await wrapper.Start(args);
+            return wrapper.Start(args);
         }
     }
 }

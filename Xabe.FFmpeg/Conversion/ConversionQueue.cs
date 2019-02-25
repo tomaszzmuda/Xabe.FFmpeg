@@ -82,7 +82,7 @@ namespace Xabe.FFmpeg
                     _start.WaitOne();
                     conversion = GetNext();
                     Interlocked.Increment(ref _number);
-                    await conversion.Start(token);
+                    await conversion.Start(token).ConfigureAwait(false);
                     OnConverted?.Invoke((int)Interlocked.Read(ref _number), (int)Interlocked.Read(ref _totalItems), conversion);
                 }
                 catch (Exception)
@@ -127,7 +127,7 @@ namespace Xabe.FFmpeg
         /// <param name="conversion">Defined conversion</param>
         public async Task Add(Task<IConversion> conversion)
         {
-            Add(await conversion);
+            Add(await conversion.ConfigureAwait(false));
         }
     }
 }

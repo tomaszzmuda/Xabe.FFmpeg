@@ -42,9 +42,9 @@ namespace Xabe.FFmpeg
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
-        public static async Task<IMediaInfo> Get(string filePath)
+        public static Task<IMediaInfo> Get(string filePath)
         {
-            return await Get(new FileInfo(filePath));
+            return Get(new FileInfo(filePath));
         }
 
         /// <summary>
@@ -59,8 +59,7 @@ namespace Xabe.FFmpeg
             }
 
             var mediaInfo = new MediaInfo(fileInfo);
-            mediaInfo = await new FFprobeWrapper().GetProperties(fileInfo, mediaInfo);
-
+            mediaInfo = await new FFprobeWrapper().GetProperties(fileInfo, mediaInfo).ConfigureAwait(false);
             return mediaInfo;
         }
     }

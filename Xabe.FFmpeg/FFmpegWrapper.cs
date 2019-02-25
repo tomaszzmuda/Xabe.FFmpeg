@@ -33,9 +33,9 @@ namespace Xabe.FFmpeg
         /// </summary>
         internal event DataReceivedEventHandler OnDataReceived;
 
-        internal async Task<bool> RunProcess(string args, CancellationToken cancellationToken)
+        internal Task<bool> RunProcess(string args, CancellationToken cancellationToken)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 _outputLog = new List<string>();
 
@@ -45,10 +45,12 @@ namespace Xabe.FFmpeg
                 {
                     process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     process.BeginErrorReadLine();
-                    var ctr = cancellationToken.Register(async () =>
+                    // VSTHRD101: Avoid using async lambda for a void returning delegate type, becaues any exceptions not handled by the delegate will crash the process
+                    // https://github.com/Microsoft/vs-threading/blob/master/doc/analyzers/VSTHRD101.md
+                    var ctr = cancellationToken.Register(() =>
                     {
                         process.StandardInput.Write("q");
-                        await Task.Delay(1000 * 5);
+                        Task.Delay(1000 * 5).ConfigureAwait(false).GetAwaiter().GetResult();
 
                         try
                         {
