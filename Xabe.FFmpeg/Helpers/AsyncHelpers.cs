@@ -20,11 +20,11 @@ namespace Xabe.FFmpeg
             using (var synch = new ExclusiveSynchronizationContext())
             {
                 SynchronizationContext.SetSynchronizationContext(synch);
-                synch.Post(async _ =>
+                synch.Post(_ =>
                 {
                     try
                     {
-                        await task();
+                        task().ConfigureAwait(false).GetAwaiter().GetResult();
                     }
                     catch (Exception e)
                     {
@@ -55,11 +55,11 @@ namespace Xabe.FFmpeg
             {
                 SynchronizationContext.SetSynchronizationContext(synch);
                 T ret = default(T);
-                synch.Post(async _ =>
+                synch.Post(_ =>
                 {
                     try
                     {
-                        ret = await task();
+                        ret = task().ConfigureAwait(false).GetAwaiter().GetResult();
                     }
                     catch (Exception e)
                     {

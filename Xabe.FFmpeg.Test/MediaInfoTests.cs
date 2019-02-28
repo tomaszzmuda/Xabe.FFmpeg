@@ -13,7 +13,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task AudioPopertiesTest()
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3);
+            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
             Assert.Equal(FileExtensions.Mp3, mediaInfo.FileInfo.Extension);
@@ -34,7 +34,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetMultipleStreamsTest()
         {
-            IMediaInfo videoInfo = await MediaInfo.Get(Resources.MultipleStream);
+            IMediaInfo videoInfo = await MediaInfo.Get(Resources.MultipleStream).ConfigureAwait(false);
 
             Assert.Equal(1, videoInfo.VideoStreams.Count());
             Assert.Equal(2, videoInfo.AudioStreams.Count());
@@ -44,7 +44,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetVideoBitrateTest()
         {
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
             IVideoStream videoStream = info.VideoStreams.First();
 
             Assert.Equal(860233, videoStream.Bitrate);
@@ -53,13 +53,13 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task IncorrectFormatTest()
         {
-            await Assert.ThrowsAsync<ArgumentException>(async () => await MediaInfo.Get(Resources.Dll));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await MediaInfo.Get(Resources.Dll).ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         [Fact]
         public async Task MkvPropertiesTest()
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio);
+            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
             Assert.Equal(FileExtensions.Mkv, mediaInfo.FileInfo.Extension);
@@ -90,7 +90,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task PropertiesTest()
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp4WithAudio);
+            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp4WithAudio).ConfigureAwait(false);
 
             Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
             Assert.Equal(FileExtensions.Mp4, mediaInfo.FileInfo.Extension);

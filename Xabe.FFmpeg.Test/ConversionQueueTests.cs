@@ -38,8 +38,7 @@ namespace Xabe.FFmpeg.Test
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
-            IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath)
-                                            .Result;
+            IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(1, mediaInfo.VideoStreams.Count());
             Assert.Equal(1, mediaInfo.AudioStreams.Count());

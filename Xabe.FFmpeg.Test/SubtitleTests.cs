@@ -18,7 +18,7 @@ namespace Xabe.FFmpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), extension);
 
-            IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt);
+            IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt).ConfigureAwait(false);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault()
                                                  .SetFormat(new SubtitleFormat(format));
@@ -26,10 +26,10 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await Conversion.New()
                                           .AddStream(subtitleStream)
                                           .SetOutput(outputPath)
-                                          .Start();
+                                          .Start().ConfigureAwait(false);
 
             Assert.True(result.Success);
-            IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
+            IMediaInfo resultInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
             Assert.Equal(1, resultInfo.SubtitleStreams.Count());
             ISubtitleStream resultSteam = resultInfo.SubtitleStreams.First();
             Assert.Equal(expectedFormat, resultSteam.Format.ToLower());
@@ -42,7 +42,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractSubtitles(string format, string expectedFormat, bool checkOutputLanguage)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), format);
-            IMediaInfo info = await MediaInfo.Get(Resources.MultipleStream);
+            IMediaInfo info = await MediaInfo.Get(Resources.MultipleStream).ConfigureAwait(false);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x => x.Language == "spa");
             Assert.NotNull(subtitleStream);
@@ -50,10 +50,10 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await Conversion.New()
                                                        .AddStream(subtitleStream)
                                                        .SetOutput(outputPath)
-                                                       .Start();
+                                                       .Start().ConfigureAwait(false);
 
             Assert.True(result.Success);
-            IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
+            IMediaInfo resultInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
             Assert.Equal(0, resultInfo.VideoStreams.Count());
             Assert.Equal(0, resultInfo.AudioStreams.Count());
             Assert.Equal(1, resultInfo.SubtitleStreams.Count());
