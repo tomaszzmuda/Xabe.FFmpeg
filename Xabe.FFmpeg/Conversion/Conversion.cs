@@ -30,6 +30,7 @@ namespace Xabe.FFmpeg
         private bool _useMultiThreads = true;
         private int? _threadsCount;
         private ProcessPriorityClass? _priority = null;
+        private FFmpegWrapper _ffmpeg;
 
         /// <inheritdoc />
         public string Build()
@@ -59,6 +60,9 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
+        public int? FFmpegProcessId => _ffmpeg?.FFmpegProcessId;
+
+        /// <inheritdoc />
         public Task<IConversionResult> Start()
         {
             return Start(Build());
@@ -79,14 +83,19 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public async Task<IConversionResult> Start(string parameters, CancellationToken cancellationToken)
         {
-            var ffmpeg = new FFmpegWrapper();
-            ffmpeg.Priority = _priority;
-            ffmpeg.OnProgress += OnProgress;
-            ffmpeg.OnDataReceived += OnDataReceived;
+            if (_ffmpeg != null)
+            {
+                throw new InvalidOperationException("Conversion has already been started. ");
+            }
+
+            _ffmpeg = new FFmpegWrapper();
+            _ffmpeg.Priority = _priority;
+            _ffmpeg.OnProgress += OnProgress;
+            _ffmpeg.OnDataReceived += OnDataReceived;
             var result = new ConversionResult
             {
                 StartTime = DateTime.Now,
-                Success = await ffmpeg.RunProcess(parameters, cancellationToken).ConfigureAwait(false),
+                Success = await _ffmpeg.RunProcess(parameters, cancellationToken).ConfigureAwait(false),
                 EndTime = DateTime.Now,
                 MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
                                                                 .Result),

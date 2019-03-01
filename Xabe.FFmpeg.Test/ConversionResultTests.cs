@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg.Test
                                              .SetPreset(Enums.ConversionPreset.UltraFast)
                                              .SetPriority(priority)
                                              .Start().ConfigureAwait(false);
-           
+
             Assert.True(result.Success);
             Assert.NotNull(result.MediaInfo.Value);
             Assert.True(result.StartTime != DateTime.MinValue);

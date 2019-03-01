@@ -21,7 +21,6 @@ namespace Xabe.FFmpeg
         private static string s_ffprobePath;
 
         private static readonly object s_ffmpegPathLock = new object();
-
         private static readonly object s_ffprobePathLock = new object();
 
         /// <summary>
@@ -49,6 +48,11 @@ namespace Xabe.FFmpeg
         ///     FFmpeg tool process priority
         /// </summary>
         public ProcessPriorityClass? Priority { get; set; }
+
+        /// <summary>
+        /// FFmpeg process id
+        /// </summary>
+        public int FFmpegProcessId { get; private set; }
 
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
@@ -222,6 +226,7 @@ namespace Xabe.FFmpeg
             };
 
             process.Start();
+            FFmpegProcessId = process.Id;
 
             if (priority.HasValue)
             {

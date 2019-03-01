@@ -5,13 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Enums;
-using Xabe.FFmpeg.Streams;
 
 namespace MyVideosConverter
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Run().GetAwaiter().GetResult();
         }
@@ -19,29 +18,27 @@ namespace MyVideosConverter
         private static async Task Run()
         {
             Queue<FileInfo> filesToConvert = new Queue<FileInfo>(GetFilesToConvert("C:\\movies"));
-            await Console.Out.WriteLineAsync($"Find {filesToConvert.Count()} files to convert.");
+            await Console.Out.WriteLineAsync($"Find {filesToConvert.Count()} files to convert.").ConfigureAwait(false);
 
             //Set directory where app should look for FFmpeg executables.
             FFmpeg.ExecutablesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg");
             //Get latest version of FFmpeg. It's great idea if you don't know if you had installed FFmpeg.
-            await FFmpeg.GetLatestVersion();
+            await FFmpeg.GetLatestVersion().ConfigureAwait(false);
 
             //Run conversion
-            await RunConversion(filesToConvert);
+            await RunConversion(filesToConvert).ConfigureAwait(false);
 
             Console.In.ReadLine();
         }
 
-
-
         private static async Task RunConversion(Queue<FileInfo> filesToConvert)
         {
-            while(filesToConvert.TryDequeue(out FileInfo fileToConvert))
+            while (filesToConvert.TryDequeue(out FileInfo fileToConvert))
             {
                 //Save file to the same location with changed extension
                 string outputFileName = Path.ChangeExtension(fileToConvert.FullName, ".mp4");
 
-                var mediaInfo = await MediaInfo.Get(fileToConvert);
+                var mediaInfo = await MediaInfo.Get(fileToConvert).ConfigureAwait(false);
                 var videoStream = mediaInfo.VideoStreams.First();
                 var audioStream = mediaInfo.AudioStreams.First();
 
@@ -53,7 +50,7 @@ namespace MyVideosConverter
                     .SetSize(VideoSize.Hd480)
                     //Set codec which will be used to encode file. If not set it's set automatically according to output file extension
                     .SetCodec(VideoCodec.H264);
-                    
+
                 //Create new conversion object
                 var conversion = Conversion.New()
                     //Add video stream to output file
@@ -72,12 +69,12 @@ namespace MyVideosConverter
                 conversion.OnProgress += async (sender, args) =>
                 {
                     //Show all output from FFmpeg to console
-                    await Console.Out.WriteLineAsync($"[{args.Duration}/{args.TotalLength}][{args.Percent}%] {fileToConvert.Name}");
+                    await Console.Out.WriteLineAsync($"[{args.Duration}/{args.TotalLength}][{args.Percent}%] {fileToConvert.Name}").ConfigureAwait(false);
                 };
                 //Start conversion
-                await conversion.Start();
+                await conversion.Start().ConfigureAwait(false);
 
-                await Console.Out.WriteLineAsync($"Finished converion file [{fileToConvert.Name}]");
+                await Console.Out.WriteLineAsync($"Finished converion file [{fileToConvert.Name}]").ConfigureAwait(false);
             }
         }
 

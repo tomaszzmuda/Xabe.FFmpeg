@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Exceptions;
 
@@ -50,25 +51,46 @@ namespace Xabe.FFmpeg
                     // https://github.com/Microsoft/vs-threading/blob/master/doc/analyzers/VSTHRD101.md
                     var ctr = cancellationToken.Register(() =>
                     {
-                        process.StandardInput.Write("q");
-                        Task.Delay(1000 * 5).ConfigureAwait(false).GetAwaiter().GetResult();
+                        if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+                        {
+                            process.StandardInput.Write("q");
+                            Task.Delay(1000 * 5).ConfigureAwait(false).GetAwaiter().GetResult();
 
-                        try
-                        {
-                            if (!process.HasExited)
+                            try
                             {
-                                _wasKilled = true;
-                                process.Kill();
+                                if (!process.HasExited)
+                                {
+                                    _wasKilled = true;
+                                    process.Kill();
+                                }
                             }
-                        }
-                        catch (InvalidOperationException)
-                        {
+                            catch (InvalidOperationException)
+                            {
+                            }
                         }
                     });
 
                     using (ctr)
                     {
-                        process.WaitForExit();
+                        using (var processEnded = new ManualResetEvent(false))
+                        {
+                            processEnded.SetSafeWaitHandle(new SafeWaitHandle(process.Handle, false));
+                            int index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
+
+                            // If the signal came from the caller cancellation token close the window
+                            if (index == 1
+                                && !process.HasExited)
+                            {
+                                process.CloseMainWindow();
+                                process.Kill();
+                                _wasKilled = true;
+                            }
+                            else if (index == 0 && !process.HasExited)
+                            {
+                                // Workaround for linux: https://github.com/dotnet/corefx/issues/35544
+                                process.WaitForExit();
+                            }
+                        }
 
                         cancellationToken.ThrowIfCancellationRequested();
                         if (_wasKilled)
