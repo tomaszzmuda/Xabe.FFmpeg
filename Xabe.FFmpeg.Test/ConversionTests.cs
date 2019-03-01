@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -199,8 +198,7 @@ namespace Xabe.FFmpeg.Test
                     .Start(cancellationTokenSource.Token);
 
             cancellationTokenSource.Cancel();
-            await Assert.ThrowsAsync<OperationCanceledException>(async () => await task.ConfigureAwait(false)).ConfigureAwait(false);
-            ;
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task.ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         [Theory]

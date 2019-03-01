@@ -53,19 +53,22 @@ namespace Xabe.FFmpeg
                     {
                         if (Environment.OSVersion.Platform != PlatformID.Win32NT)
                         {
-                            process.StandardInput.Write("q");
-                            Task.Delay(1000 * 5).ConfigureAwait(false).GetAwaiter().GetResult();
-
                             try
                             {
-                                if (!process.HasExited)
-                                {
-                                    _wasKilled = true;
-                                    process.Kill();
-                                }
+                                process.StandardInput.Write("q");
+                                Task.Delay(1000 * 5).ConfigureAwait(false).GetAwaiter().GetResult();
                             }
                             catch (InvalidOperationException)
                             {
+                            }
+                            finally
+                            {
+                                if (!process.HasExited)
+                                {
+                                    process.CloseMainWindow();
+                                    process.Kill();
+                                    _wasKilled = true;
+                                }
                             }
                         }
                     });
