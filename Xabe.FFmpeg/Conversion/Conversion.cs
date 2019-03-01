@@ -29,7 +29,7 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private bool _useMultiThreads = true;
         private int? _threadsCount;
-        private ProcessPriorityClass? _priority = null;
+        private FFmpegProcessPriority _priority = FFmpegProcessPriority.Default();
         private FFmpegWrapper _ffmpeg;
 
         /// <inheritdoc />
@@ -182,7 +182,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetPriority(ProcessPriorityClass? priority)
+        public IConversion SetPriority(FFmpegProcessPriority priority)
         {
             _priority = priority;
             return this;

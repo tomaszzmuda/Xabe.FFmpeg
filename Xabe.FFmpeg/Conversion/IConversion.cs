@@ -35,7 +35,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="priority">FFmpeg process priority</param>
         /// <returns></returns>
-        IConversion SetPriority(ProcessPriorityClass? priority);
+        IConversion SetPriority(FFmpegProcessPriority priority);
 
         /// <summary>
         ///     Set preset of IConversion. Slower speed equals better compression and quality.

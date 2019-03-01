@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -8,6 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Downloader;
 using Xabe.FFmpeg.Exceptions;
+using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -47,7 +47,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     FFmpeg tool process priority
         /// </summary>
-        public ProcessPriorityClass? Priority { get; set; }
+        public FFmpegProcessPriority Priority { get; set; }
 
         /// <summary>
         /// FFmpeg process id
@@ -205,7 +205,7 @@ namespace Xabe.FFmpeg
         protected Process RunProcess(
             string args,
             string processPath,
-            ProcessPriorityClass? priority,
+            FFmpegProcessPriority priority,
             bool standardInput = false,
             bool standardOutput = false,
             bool standardError = false)
@@ -228,21 +228,11 @@ namespace Xabe.FFmpeg
             process.Start();
             FFmpegProcessId = process.Id;
 
-            if (priority.HasValue)
+            ProcessPriorityClass? priorityClass = priority.GetPriorityClass();
+            if (priorityClass.HasValue)
             {
-                process.PriorityClass = priority.Value;
+                process.PriorityClass = priorityClass.Value;
             }
-            else
-            {
-                try
-                {
-                    process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
-                }
-                catch (Win32Exception e) when (e.Message.Contains("Permission denied "))
-                {
-                }
-            }
-
             return process;
         }
     }
