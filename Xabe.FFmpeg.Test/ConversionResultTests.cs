@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -22,8 +21,8 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)
                                              .SetPreset(Enums.ConversionPreset.UltraFast)
                                              .SetPriority(priority)
-                                             .Start();
-
+                                             .Start().ConfigureAwait(false);
+           
             Assert.True(result.Success);
             Assert.NotNull(result.MediaInfo.Value);
             Assert.True(result.StartTime != DateTime.MinValue);
@@ -34,7 +33,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ConversionWithWrongInputTest2()
         {
-            await Assert.ThrowsAsync<InvalidInputException>(() => MediaInfo.Get("Z:\\test.mp4"));
+            await Assert.ThrowsAsync<InvalidInputException>(async () => await MediaInfo.Get("Z:\\test.mp4").ConfigureAwait(false)).ConfigureAwait(false);
         }
     }
 }

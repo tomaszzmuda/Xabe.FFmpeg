@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg.Downloader
             if (!CheckIfUpdateAvailable(latestVersion.Version) && !CheckIfFilesExist())
                 return;
 
-            await DownloadLatestVersion(latestVersion);
+            await DownloadLatestVersion(latestVersion).ConfigureAwait(false);
 
             SaveVersion(latestVersion);
         }
@@ -125,11 +125,11 @@ namespace Xabe.FFmpeg.Downloader
 
             using (var client = new HttpClient())
             {
-                using (var result = await client.GetAsync(url))
+                using (var result = await client.GetAsync(url).ConfigureAwait(false))
                 {
                     if (!result.IsSuccessStatusCode)
                         return null;
-                    var readedData = await result.Content.ReadAsByteArrayAsync();
+                    var readedData = await result.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                     if (readedData == null)
                         return null;
                     File.WriteAllBytes(tempPath, readedData);

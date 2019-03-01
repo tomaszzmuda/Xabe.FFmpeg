@@ -318,7 +318,7 @@ namespace Xabe.FFmpeg
         /// <param name="output">Concatenated inputVideos</param>
         /// <param name="inputVideos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversionResult> Concatenate(string output, params string[] inputVideos)
+        public static Task<IConversionResult> Concatenate(string output, params string[] inputVideos)
         {
             if (inputVideos.Length <= 1)
             {
@@ -355,7 +355,7 @@ namespace Xabe.FFmpeg
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
             conversion.SetOutput(output);
-            return await conversion.Start();
+            return conversion.Start();
         }
 
 

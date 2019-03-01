@@ -59,21 +59,21 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
-        public async Task<IConversionResult> Start()
+        public Task<IConversionResult> Start()
         {
-            return await Start(Build());
+            return Start(Build());
         }
 
         /// <inheritdoc />
-        public async Task<IConversionResult> Start(CancellationToken cancellationToken)
+        public Task<IConversionResult> Start(CancellationToken cancellationToken)
         {
-            return await Start(Build(), cancellationToken);
+            return Start(Build(), cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<IConversionResult> Start(string parameters)
+        public Task<IConversionResult> Start(string parameters)
         {
-            return await Start(parameters, new CancellationToken());
+            return Start(parameters, new CancellationToken());
         }
 
         /// <inheritdoc />
@@ -86,7 +86,7 @@ namespace Xabe.FFmpeg
             var result = new ConversionResult
             {
                 StartTime = DateTime.Now,
-                Success = await ffmpeg.RunProcess(parameters, cancellationToken),
+                Success = await ffmpeg.RunProcess(parameters, cancellationToken).ConfigureAwait(false),
                 EndTime = DateTime.Now,
                 MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
                                                                 .Result),
