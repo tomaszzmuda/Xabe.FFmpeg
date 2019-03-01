@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xabe.FFmpeg.Model;
@@ -90,29 +91,17 @@ namespace Xabe.FFmpeg
 
         private Task<string> RunProcess(string args)
         {
-            return Task.Run(() =>
+            return Task.Factory.StartNew(() =>
             {
-                using (var process = RunProcess(args, FFprobePath, standardOutput: true))
+                using (var process = RunProcess(args, FFprobePath, Priority, standardOutput: true))
                 {
-                    string output;
-
-                    try
-                    {
-                        output = process.StandardOutput.ReadToEnd();
-                    }
-                    catch (Exception)
-                    {
-                        output = string.Empty;
-                    }
-                    finally
-                    {
-                        process.WaitForExit();
-                        process.Close();
-                    }
-
-                    return output;
+                    process.WaitForExit();
+                    return process.StandardOutput.ReadToEnd();
                 }
-            });
+            },
+            CancellationToken.None,
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
         }
 
         /// <summary>

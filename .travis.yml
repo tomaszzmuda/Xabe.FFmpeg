@@ -15,6 +15,7 @@ before_install:
 install:
  - dotnet restore
  - dotnet test Xabe.FFmpeg.Test/ -c Release
+ - dotnet build ExampleProject/ -c Release
  - dotnet clean -c Release
 
 script:

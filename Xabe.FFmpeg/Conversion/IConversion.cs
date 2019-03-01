@@ -21,9 +21,21 @@ namespace Xabe.FFmpeg
         string OutputFilePath { get; }
 
         /// <summary>
+        /// FFmpeg process id
+        /// </summary>
+        int? FFmpegProcessId { get; }
+
+        /// <summary>
         ///     Clear saved parameters
         /// </summary>
         void Clear();
+
+        /// <summary>
+        /// Set priority of ffmpeg process
+        /// </summary>
+        /// <param name="priority">FFmpeg process priority</param>
+        /// <returns></returns>
+        IConversion SetPriority(ProcessPriorityClass? priority);
 
         /// <summary>
         ///     Set preset of IConversion. Slower speed equals better compression and quality.

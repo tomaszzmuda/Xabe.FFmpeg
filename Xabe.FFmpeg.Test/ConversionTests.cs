@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
@@ -170,15 +170,21 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task RTSP_NotExistingStream_CancelledSucesfully()
         {
-            var ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count();
-
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
             var cancellationToken = new CancellationTokenSource();
-            cancellationToken.CancelAfter(1000);
             var conversion = Conversion.New().AddStream(new WebStream(new Uri(@"rtsp://192.168.1.123:554/"), "M3U8", TimeSpan.FromMinutes(5))).SetOutput(output);
+            var conversionTask = conversion.Start(cancellationToken.Token);
+            cancellationToken.CancelAfter(2000);
+            await Task.Delay(500).ConfigureAwait(false);
+            var ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
+            ffmpegProcesses.Any(_ => _.Id == conversion.FFmpegProcessId && !_.HasExited).Should().BeTrue();
 
-            await Assert.ThrowsAsync<OperationCanceledException>(async () => await conversion.Start(cancellationToken.Token).ConfigureAwait(false)).ConfigureAwait(false);
-            Assert.Equal(System.Diagnostics.Process.GetProcessesByName("ffmpeg").Count(), ffmpegProcesses);
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await conversionTask.ConfigureAwait(false)).ConfigureAwait(false);
+
+            conversion.FFmpegProcessId.Should().BeGreaterThan(0);
+
+            ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
+            ffmpegProcesses.Any(_ => _.Id == conversion.FFmpegProcessId && !_.HasExited).Should().BeFalse();
         }
 
         [Fact]
@@ -192,8 +198,7 @@ namespace Xabe.FFmpeg.Test
                     .Start(cancellationTokenSource.Token);
 
             cancellationTokenSource.Cancel();
-            await Assert.ThrowsAsync<OperationCanceledException>(async () => await task.ConfigureAwait(false)).ConfigureAwait(false);
-            ;
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task.ConfigureAwait(false)).ConfigureAwait(false);
         }
 
         [Theory]

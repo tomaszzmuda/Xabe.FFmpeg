@@ -40,8 +40,8 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-            Assert.Equal(1, mediaInfo.VideoStreams.Count());
-            Assert.Equal(1, mediaInfo.AudioStreams.Count());
+            Assert.Single(mediaInfo.VideoStreams);
+            Assert.Single(mediaInfo.AudioStreams);
             Assert.Equal("h264", mediaInfo.VideoStreams.First()
                                           .Format);
             Assert.Equal("aac", mediaInfo.AudioStreams.First()
