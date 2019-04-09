@@ -38,6 +38,13 @@ namespace Xabe.FFmpeg
         IConversion SetPriority(ProcessPriorityClass? priority);
 
         /// <summary>
+        ///     Seeks in output file to position. (-ss argument)
+        /// </summary>
+        /// <param name="seek">Position</param>
+        /// <returns>IConversion</returns>
+        IConversion SetSeek(TimeSpan? seek);
+
+        /// <summary>
         ///     Set preset of IConversion. Slower speed equals better compression and quality.
         /// </summary>
         /// <param name="preset">Preset</param>

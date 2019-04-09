@@ -14,6 +14,12 @@ namespace Xabe.FFmpeg.Streams
         string Build();
 
         /// <summary>
+        ///     Build FFmpeg arguments for input
+        /// </summary>
+        /// <returns>Arguments</returns>
+        string BuildInputArguments();
+
+        /// <summary>
         ///     Index of stream
         /// </summary>
         int Index { get; }
