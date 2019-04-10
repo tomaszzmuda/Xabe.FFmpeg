@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="NSubstitute" Version="4.0.0" />
     <PackageReference Include="OpenCover" Version="4.7.922" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -40,6 +40,12 @@
     <None Update="Resources\sampleSubtitles.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Dotnet.CodeFormatter.BuildTask.Fork" Version="0.0.2" />
+    <PackageReference Update="Microsoft.Net.Compilers" Version="3.0.0" />
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.0.102" />
   </ItemGroup>
 
 </Project>
