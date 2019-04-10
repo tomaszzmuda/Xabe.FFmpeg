@@ -27,6 +27,7 @@ namespace Xabe.FFmpeg
         private string _hardwareAcceleration;
         private bool _overwriteOutput;
         private string _shortestInput;
+        private string _seek;
         private bool _useMultiThreads = true;
         private int? _threadsCount;
         private ProcessPriorityClass? _priority = null;
@@ -39,11 +40,11 @@ namespace Xabe.FFmpeg
             {
                 var builder = new StringBuilder();
                 builder.Append(_hardwareAcceleration);
+                builder.Append(BuildInputParameters());
                 builder.Append(BuildInput());
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
-                builder.Append(_preset);
-                builder.Append(_shortestInput);
+                builder.Append(BuildConversionParameters());
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
@@ -152,6 +153,16 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public IConversion SetSeek(TimeSpan? seek)
+        {
+            if (seek.HasValue)
+            {
+                _seek = $"-ss {seek.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
         public IConversion UseMultiThread(bool multiThread)
         {
             _useMultiThreads = multiThread;
@@ -188,12 +199,31 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        private string BuildConversionParameters()
+        {
+            var builder = new StringBuilder();
+            builder.Append(_preset);
+            builder.Append(_shortestInput);
+            builder.Append(_seek);
+            return builder.ToString();
+        }
+
         private string BuildStreamParameters()
         {
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
             {
                 builder.Append(stream.Build());
+            }
+            return builder.ToString();
+        }
+
+        private string BuildInputParameters()
+        {
+            var builder = new StringBuilder();
+            foreach (IStream stream in _streams)
+            {
+                builder.Append(stream.BuildInputArguments());
             }
             return builder.ToString();
         }

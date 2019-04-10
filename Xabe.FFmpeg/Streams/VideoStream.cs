@@ -61,7 +61,6 @@ namespace Xabe.FFmpeg.Streams
             builder.Append(_scale);
             builder.Append(_codec);
             builder.Append(_bitsreamFilter);
-            builder.Append(_seek);
             builder.Append(_frameCount);
             builder.Append(_loop);
             builder.Append(_split);
@@ -69,6 +68,12 @@ namespace Xabe.FFmpeg.Streams
             builder.Append(_rotate);
             builder.Append(_size);
             return builder.ToString();
+        }
+
+        /// <inheritdoc />
+        public string BuildInputArguments()
+        {
+            return _seek;
         }
 
         /// <inheritdoc />

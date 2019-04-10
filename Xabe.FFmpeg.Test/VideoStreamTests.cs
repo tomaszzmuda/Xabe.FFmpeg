@@ -233,9 +233,9 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
             IConversion conversion = Conversion.New()
-                                               .AddStream(inputFile.VideoStreams.First()
-                                                                                .SetSeek(TimeSpan.FromSeconds(2)))
-                                               .SetOutput(outputPath);
+                                               .AddStream(inputFile.VideoStreams.First())
+                                               .SetOutput(outputPath)
+                                               .SetSeek(TimeSpan.FromSeconds(2));
 
             TimeSpan currentProgress;
             TimeSpan videoLength;

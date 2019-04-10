@@ -40,6 +40,12 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
+        public string BuildInputArguments()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
         public int Index { get; internal set; }
 
         /// <inheritdoc />

@@ -31,10 +31,15 @@ namespace Xabe.FFmpeg.Streams
             var builder = new StringBuilder();
             builder.Append(_audio);
             builder.Append(_bitsreamFilter);
-            builder.Append(_seek);
             builder.Append(_reverse);
             builder.Append(_split);
             return builder.ToString();
+        }
+
+        /// <inheritdoc />
+        public string BuildInputArguments()
+        {
+            return _seek;
         }
 
         /// <inheritdoc />
