@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -95,7 +97,7 @@ namespace Xabe.FFmpeg
             {
                 using (var process = RunProcess(args, FFprobePath, Priority, standardOutput: true))
                 {
-                    process.WaitForExit();
+                    process.WaitForExit(); // problem here. No eol/eof signal?
                     return process.StandardOutput.ReadToEnd();
                 }
             },
