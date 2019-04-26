@@ -95,9 +95,18 @@ namespace Xabe.FFmpeg
         {
             return Task.Factory.StartNew(() =>
             {
-                using (var process = RunProcess(args, FFprobePath, Priority, standardOutput: true))
+                using (Process process = RunProcess(args, FFprobePath, Priority, standardOutput: true))
                 {
-                    process.WaitForExit(); // problem here. No eol/eof signal?
+                    while (!process.HasExited)
+                    {
+                        process.WaitForExit(10);
+                        int toRead = process.StandardOutput.Peek();
+                        if (toRead > 0)
+                        {
+                            break;
+                        }
+                    }
+                    process.WaitForExit();
                     return process.StandardOutput.ReadToEnd();
                 }
             },
