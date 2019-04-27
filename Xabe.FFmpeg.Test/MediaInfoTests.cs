@@ -57,6 +57,14 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task Mp4PropertiesTest()
+        {
+            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.BunnyMp4).ConfigureAwait(false);
+
+            Assert.True(mediaInfo.Streams.Any());
+        }
+
+        [Fact]
         public async Task MkvPropertiesTest()
         {
             IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);

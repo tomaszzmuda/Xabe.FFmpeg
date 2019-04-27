@@ -13,6 +13,7 @@ namespace Xabe.FFmpeg.Test
         internal static readonly string MultipleStream = GetResourceFilePath("multipleStreamSample.mkv");
         internal static readonly string TsWithAudio = GetResourceFilePath("sample.ts");
         internal static readonly string FlvWithAudio = GetResourceFilePath("sample.flv");
+        internal static readonly string BunnyMp4 = GetResourceFilePath("bunny.mp4");
         internal static readonly string Dll = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xabe.FFmpeg.Test.dll");
 
         internal static readonly string SubtitleSrt = GetResourceFilePath("sampleSrt.srt");
