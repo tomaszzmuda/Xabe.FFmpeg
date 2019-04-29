@@ -228,19 +228,19 @@ namespace Xabe.FFmpeg
             process.Start();
             FFmpegProcessId = process.Id;
 
-            if (priority.HasValue)
+            try
             {
-                process.PriorityClass = priority.Value;
-            }
-            else
-            {
-                try
+                if (priority.HasValue)
+                {
+                    process.PriorityClass = priority.Value;
+                }
+                else
                 {
                     process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
                 }
-                catch (Win32Exception e) when (e.Message.Contains("Permission denied "))
-                {
-                }
+            }
+            catch (Exception e)
+            {
             }
 
             return process;
