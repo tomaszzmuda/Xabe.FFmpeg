@@ -239,7 +239,7 @@ namespace Xabe.FFmpeg
                     process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
 
