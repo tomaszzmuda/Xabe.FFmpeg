@@ -106,8 +106,10 @@ namespace Xabe.FFmpeg
                             break;
                         }
                     }
+
+                    string output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
-                    return process.StandardOutput.ReadToEnd();
+                    return output;
                 }
             },
             CancellationToken.None,
