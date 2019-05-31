@@ -5,18 +5,21 @@ namespace Xabe.FFmpeg.Test
 {
     internal static class Resources
     {
-        internal static readonly string PngSample = Path.Combine(Environment.CurrentDirectory, "Resources", "watermark.png");
-        internal static readonly string Mp4WithAudio = Path.Combine(Environment.CurrentDirectory, "Resources", "input.mp4");
-        internal static readonly string Mp3 = Path.Combine(Environment.CurrentDirectory, "Resources", "audio.mp3");
-        internal static readonly string Mp4 = Path.Combine(Environment.CurrentDirectory, "Resources", "mute.mp4");
-        internal static readonly string MkvWithAudio = Path.Combine(Environment.CurrentDirectory, "Resources", "SampleVideo_360x240_1mb.mkv");
-        internal static readonly string MultipleStream = Path.Combine(Environment.CurrentDirectory, "Resources", "multipleStreamSample.mkv");
-        internal static readonly string TsWithAudio = Path.Combine(Environment.CurrentDirectory, "Resources", "sample.ts");
-        internal static readonly string FlvWithAudio = Path.Combine(Environment.CurrentDirectory, "Resources", "sample.flv");
-        internal static readonly string Dll = Path.Combine(Environment.CurrentDirectory, "Xabe.FFmpeg.Test.dll");
+        internal static readonly string PngSample = GetResourceFilePath("watermark.png");
+        internal static readonly string Mp4WithAudio = GetResourceFilePath("input.mp4");
+        internal static readonly string Mp3 = GetResourceFilePath("audio.mp3");
+        internal static readonly string Mp4 = GetResourceFilePath("mute.mp4");
+        internal static readonly string MkvWithAudio = GetResourceFilePath("SampleVideo_360x240_1mb.mkv");
+        internal static readonly string MultipleStream = GetResourceFilePath("multipleStreamSample.mkv");
+        internal static readonly string TsWithAudio = GetResourceFilePath("sample.ts");
+        internal static readonly string FlvWithAudio = GetResourceFilePath("sample.flv");
+        internal static readonly string BunnyMp4 = GetResourceFilePath("bunny.mp4");
+        internal static readonly string Dll = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xabe.FFmpeg.Test.dll");
 
-        internal static readonly string SubtitleSrt = Path.Combine(Environment.CurrentDirectory, "Resources", "sampleSrt.srt");
+        internal static readonly string SubtitleSrt = GetResourceFilePath("sampleSrt.srt");
 
-        internal static readonly string FFbinariesInfo = Path.Combine(Environment.CurrentDirectory, "Resources", "ffbinaries.json");
+        internal static readonly string FFbinariesInfo = GetResourceFilePath("ffbinaries.json");
+
+        internal static string GetResourceFilePath(string fileName) => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", fileName);
     }
 }

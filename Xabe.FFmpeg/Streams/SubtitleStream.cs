@@ -7,7 +7,7 @@ using Xabe.FFmpeg.Enums;
 namespace Xabe.FFmpeg.Streams
 {
     /// <inheritdoc />
-    public class SubtitleStream: ISubtitleStream
+    public class SubtitleStream : ISubtitleStream
     {
         private string _configuredLanguage;
         private string _format;
@@ -16,7 +16,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public ISubtitleStream SetFormat(SubtitleFormat format)
         {
-            if(!string.IsNullOrEmpty(format.Format))
+            if (!string.IsNullOrEmpty(format.Format))
             {
                 _format = $"-f {format} ";
             }
@@ -40,6 +40,12 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
+        public string BuildInputArguments()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
         public int Index { get; internal set; }
 
         /// <inheritdoc />
@@ -48,7 +54,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public ISubtitleStream SetLanguage(string lang)
         {
-            if(!string.IsNullOrEmpty(lang))
+            if (!string.IsNullOrEmpty(lang))
             {
                 _configuredLanguage = lang;
             }
@@ -64,14 +70,14 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            return new []{Source.FullName};
+            return new[] { Source.FullName };
         }
 
         private string BuildLanguage()
         {
             string language = string.Empty;
             language = !string.IsNullOrEmpty(_configuredLanguage) ? _configuredLanguage : Language;
-            if(!string.IsNullOrEmpty(language))
+            if (!string.IsNullOrEmpty(language))
             {
                 language = $"-metadata:s:s:{Index} language={language} ";
             }

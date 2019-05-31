@@ -32,9 +32,15 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
+        public string BuildInputArguments()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            return new []{_uri.AbsoluteUri};
+            return new[] { _uri.AbsoluteUri };
         }
 
         /// <inheritdoc />

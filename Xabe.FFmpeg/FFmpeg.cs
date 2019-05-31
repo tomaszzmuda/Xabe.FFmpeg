@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -16,12 +17,11 @@ namespace Xabe.FFmpeg
     /// </summary>
     public abstract class FFmpeg
     {
-        private static string _ffmpegPath;
-        private static string _ffprobePath;
+        private static string s_ffmpegPath;
+        private static string s_ffprobePath;
 
-        private static readonly object FfmpegPathLock = new object();
-
-        private static readonly object FfprobePathLock = new object();
+        private static readonly object s_ffmpegPathLock = new object();
+        private static readonly object s_ffprobePathLock = new object();
 
         /// <summary>
         ///     Directory contains FFmpeg and FFprobe
@@ -45,16 +45,21 @@ namespace Xabe.FFmpeg
         public static string FFprobeExecutableName { get; } = "ffprobe";
 
         /// <summary>
-        ///     FFmpeg process
+        ///     FFmpeg tool process priority
         /// </summary>
-        protected Process Process;
+        public ProcessPriorityClass? Priority { get; set; }
+
+        /// <summary>
+        /// FFmpeg process id
+        /// </summary>
+        public int FFmpegProcessId { get; private set; }
 
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
         /// </summary>
-        public async static Task GetLatestVersion()
+        public static Task GetLatestVersion()
         {
-            await FFmpegDownloader.GetLatestVersion();
+            return FFmpegDownloader.GetLatestVersion();
         }
 
         /// <summary>
@@ -62,13 +67,13 @@ namespace Xabe.FFmpeg
         /// </summary>
         protected FFmpeg()
         {
-            if(!string.IsNullOrWhiteSpace(FFprobePath) &&
+            if (!string.IsNullOrWhiteSpace(FFprobePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
             {
                 return;
             }
 
-            if(!string.IsNullOrWhiteSpace(ExecutablesPath))
+            if (!string.IsNullOrWhiteSpace(ExecutablesPath))
             {
                 FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
                                                           .FirstOrDefault(x => x.Name.ToLower()
@@ -84,13 +89,13 @@ namespace Xabe.FFmpeg
 
             Assembly entryAssembly = Assembly.GetEntryAssembly();
 
-            if(entryAssembly != null)
+            if (entryAssembly != null)
             {
                 string workingDirectory = Path.GetDirectoryName(entryAssembly.Location);
 
                 FindProgramsFromPath(workingDirectory);
 
-                if(FFmpegPath != null &&
+                if (FFmpegPath != null &&
                    FFprobePath != null)
                 {
                     return;
@@ -100,11 +105,11 @@ namespace Xabe.FFmpeg
             string[] paths = Environment.GetEnvironmentVariable("PATH")
                                         .Split(Path.PathSeparator);
 
-            foreach(string path in paths)
+            foreach (string path in paths)
             {
                 FindProgramsFromPath(path);
 
-                if(FFmpegPath != null &&
+                if (FFmpegPath != null &&
                    FFprobePath != null)
                 {
                     break;
@@ -121,17 +126,17 @@ namespace Xabe.FFmpeg
         {
             get
             {
-                lock(FfmpegPathLock)
+                lock (s_ffmpegPathLock)
                 {
-                    return _ffmpegPath;
+                    return s_ffmpegPath;
                 }
             }
 
             private set
             {
-                lock(FfmpegPathLock)
+                lock (s_ffmpegPathLock)
                 {
-                    _ffmpegPath = value;
+                    s_ffmpegPath = value;
                 }
             }
         }
@@ -143,24 +148,24 @@ namespace Xabe.FFmpeg
         {
             get
             {
-                lock(FfprobePathLock)
+                lock (s_ffprobePathLock)
                 {
-                    return _ffprobePath;
+                    return s_ffprobePath;
                 }
             }
 
             private set
             {
-                lock(FfprobePathLock)
+                lock (s_ffprobePathLock)
                 {
-                    _ffprobePath = value;
+                    s_ffprobePath = value;
                 }
             }
         }
 
         private void ValidateExecutables()
         {
-            if(FFmpegPath != null &&
+            if (FFmpegPath != null &&
                FFprobePath != null)
             {
                 return;
@@ -174,7 +179,7 @@ namespace Xabe.FFmpeg
 
         private void FindProgramsFromPath(string path)
         {
-            if(!Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
                 return;
             }
@@ -191,15 +196,21 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="args">Arguments</param>
         /// <param name="processPath">FilePath to executable (FFmpeg, ffprobe)</param>
+        /// <param name="priority">Process priority to run executables</param>
         /// <param name="standardInput">Should redirect standard input</param>
         /// <param name="standardOutput">Should redirect standard output</param>
         /// <param name="standardError">Should redirect standard error</param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
-        protected void RunProcess(string args, string processPath, bool standardInput = false,
-            bool standardOutput = false, bool standardError = false)
+        protected Process RunProcess(
+            string args,
+            string processPath,
+            ProcessPriorityClass? priority,
+            bool standardInput = false,
+            bool standardOutput = false,
+            bool standardError = false)
         {
-            Process = new Process
+            var process = new Process
             {
                 StartInfo =
                 {
@@ -214,7 +225,25 @@ namespace Xabe.FFmpeg
                 EnableRaisingEvents = true
             };
 
-            Process.Start();
+            process.Start();
+            FFmpegProcessId = process.Id;
+
+            try
+            {
+                if (priority.HasValue)
+                {
+                    process.PriorityClass = priority.Value;
+                }
+                else
+                {
+                    process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return process;
         }
     }
 
@@ -224,6 +253,5 @@ namespace Xabe.FFmpeg
     [Obsolete("Please use class FFmpeg.")]
     public abstract class FFbase : FFmpeg
     {
-        
     }
 }

@@ -21,9 +21,28 @@ namespace Xabe.FFmpeg
         string OutputFilePath { get; }
 
         /// <summary>
+        /// FFmpeg process id
+        /// </summary>
+        int? FFmpegProcessId { get; }
+
+        /// <summary>
         ///     Clear saved parameters
         /// </summary>
         void Clear();
+
+        /// <summary>
+        /// Set priority of ffmpeg process
+        /// </summary>
+        /// <param name="priority">FFmpeg process priority</param>
+        /// <returns></returns>
+        IConversion SetPriority(ProcessPriorityClass? priority);
+
+        /// <summary>
+        ///     Seeks in output file to position. (-ss argument)
+        /// </summary>
+        /// <param name="seek">Position</param>
+        /// <returns>IConversion</returns>
+        IConversion SetSeek(TimeSpan? seek);
 
         /// <summary>
         ///     Set preset of IConversion. Slower speed equals better compression and quality.
@@ -33,9 +52,16 @@ namespace Xabe.FFmpeg
         IConversion SetPreset(ConversionPreset preset);
 
         /// <summary>
+        ///     Defines thread count used by converter
+        /// </summary>
+        /// <param name="threadCount">Number of used threads</param>
+        /// <returns>IConversion object</returns>
+        IConversion UseMultiThread(int threadCount);
+
+        /// <summary>
         ///     Defines if converter should use all CPU cores
         /// </summary>
-        /// <param name="multiThread">Use all CPU cores</param>
+        /// <param name="multiThread">Use multiThreads</param>
         /// <returns>IConversion object</returns>
         IConversion UseMultiThread(bool multiThread);
 

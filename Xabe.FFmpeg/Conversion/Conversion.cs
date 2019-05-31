@@ -27,20 +27,24 @@ namespace Xabe.FFmpeg
         private string _hardwareAcceleration;
         private bool _overwriteOutput;
         private string _shortestInput;
+        private string _seek;
         private bool _useMultiThreads = true;
+        private int? _threadsCount;
+        private ProcessPriorityClass? _priority = null;
+        private FFmpegWrapper _ffmpeg;
 
         /// <inheritdoc />
         public string Build()
         {
-            lock(_builderLock)
+            lock (_builderLock)
             {
                 var builder = new StringBuilder();
                 builder.Append(_hardwareAcceleration);
+                builder.Append(BuildInputParameters());
                 builder.Append(BuildInput());
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
-                builder.Append(_preset);
-                builder.Append(_shortestInput);
+                builder.Append(BuildConversionParameters());
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
@@ -57,33 +61,42 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
-        public async Task<IConversionResult> Start()
+        public int? FFmpegProcessId => _ffmpeg?.FFmpegProcessId;
+
+        /// <inheritdoc />
+        public Task<IConversionResult> Start()
         {
-            return await Start(Build());
+            return Start(Build());
         }
 
         /// <inheritdoc />
-        public async Task<IConversionResult> Start(CancellationToken cancellationToken)
+        public Task<IConversionResult> Start(CancellationToken cancellationToken)
         {
-            return await Start(Build(), cancellationToken);
+            return Start(Build(), cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<IConversionResult> Start(string parameters)
+        public Task<IConversionResult> Start(string parameters)
         {
-            return await Start(parameters, new CancellationToken());
+            return Start(parameters, new CancellationToken());
         }
 
         /// <inheritdoc />
         public async Task<IConversionResult> Start(string parameters, CancellationToken cancellationToken)
         {
-            var ffmpeg = new FFmpegWrapper();
-            ffmpeg.OnProgress += OnProgress;
-            ffmpeg.OnDataReceived += OnDataReceived;
+            if (_ffmpeg != null)
+            {
+                throw new InvalidOperationException("Conversion has already been started. ");
+            }
+
+            _ffmpeg = new FFmpegWrapper();
+            _ffmpeg.Priority = _priority;
+            _ffmpeg.OnProgress += OnProgress;
+            _ffmpeg.OnDataReceived += OnDataReceived;
             var result = new ConversionResult
             {
                 StartTime = DateTime.Now,
-                Success = await ffmpeg.RunProcess(parameters, cancellationToken),
+                Success = await _ffmpeg.RunProcess(parameters, cancellationToken).ConfigureAwait(false),
                 EndTime = DateTime.Now,
                 MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
                                                                 .Result),
@@ -96,14 +109,14 @@ namespace Xabe.FFmpeg
         public void Clear()
         {
             _parameters.Clear();
-            if(_fields == null)
+            if (_fields == null)
             {
                 _fields = GetType()
                     .GetFields(BindingFlags.NonPublic |
                                BindingFlags.Instance)
                     .Where(x => x.FieldType == typeof(string));
             }
-            foreach(FieldInfo fieldinfo in _fields)
+            foreach (FieldInfo fieldinfo in _fields)
             {
                 fieldinfo.SetValue(this, null);
             }
@@ -119,9 +132,9 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion AddStream<T>(params T[] streams) where T : IStream
         {
-            foreach(T stream in streams)
+            foreach (T stream in streams)
             {
-                if(stream != null)
+                if (stream != null)
                 {
                     _streams.Add(stream);
                 }
@@ -140,9 +153,27 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public IConversion SetSeek(TimeSpan? seek)
+        {
+            if (seek.HasValue)
+            {
+                _seek = $"-ss {seek.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
         public IConversion UseMultiThread(bool multiThread)
         {
             _useMultiThreads = multiThread;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion UseMultiThread(int threadsCount)
+        {
+            UseMultiThread(true);
+            _threadsCount = threadsCount;
             return this;
         }
 
@@ -161,12 +192,38 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <inheritdoc />
+        public IConversion SetPriority(ProcessPriorityClass? priority)
+        {
+            _priority = priority;
+            return this;
+        }
+
+        private string BuildConversionParameters()
+        {
+            var builder = new StringBuilder();
+            builder.Append(_preset);
+            builder.Append(_shortestInput);
+            builder.Append(_seek);
+            return builder.ToString();
+        }
+
         private string BuildStreamParameters()
         {
             var builder = new StringBuilder();
-            foreach(IStream stream in _streams)
+            foreach (IStream stream in _streams)
             {
                 builder.Append(stream.Build());
+            }
+            return builder.ToString();
+        }
+
+        private string BuildInputParameters()
+        {
+            var builder = new StringBuilder();
+            foreach (IStream stream in _streams)
+            {
+                builder.Append(stream.BuildInputArguments());
             }
             return builder.ToString();
         }
@@ -187,21 +244,21 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             var configurations = new List<IFilterConfiguration>();
-            foreach(IStream stream in _streams)
+            foreach (IStream stream in _streams)
             {
-                if(stream is IFilterable filterable)
+                if (stream is IFilterable filterable)
                 {
                     configurations.AddRange(filterable.GetFilters());
                 }
             }
             IEnumerable<IGrouping<string, IFilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
-            foreach(IGrouping<string, IFilterConfiguration> filterGroup in filterGroups)
+            foreach (IGrouping<string, IFilterConfiguration> filterGroup in filterGroups)
             {
                 builder.Append($"{filterGroup.Key} \"");
-                foreach(IFilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
+                foreach (IFilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
                 {
                     var values = new List<string>();
-                    foreach(KeyValuePair<string, string> filter in configuration.Filters)
+                    foreach (KeyValuePair<string, string> filter in configuration.Filters)
                     {
                         string map = $"[{configuration.StreamNumber}]";
                         string value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
@@ -219,11 +276,19 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="multiThread">Use multi thread</param>
         /// <returns>Build parameter argument</returns>
-        private static string BuildThreadsArgument(bool multiThread)
+        private string BuildThreadsArgument(bool multiThread)
         {
-            string threadCount = multiThread
-                ? Environment.ProcessorCount.ToString()
-                : "1";
+            string threadCount = "";
+            if (_threadsCount == null)
+            {
+                threadCount = multiThread
+                    ? Environment.ProcessorCount.ToString()
+                    : "1";
+            }
+            else
+            {
+                threadCount = _threadsCount.ToString();
+            }
 
             return $"-threads {threadCount} ";
         }
@@ -235,9 +300,9 @@ namespace Xabe.FFmpeg
         private string BuildMap()
         {
             var builder = new StringBuilder();
-            foreach(IStream stream in _streams)
+            foreach (IStream stream in _streams)
             {
-                foreach(var source in stream.GetSource())
+                foreach (var source in stream.GetSource())
                 {
                     builder.Append($"-map {_inputFileMap[source]}:{stream.Index} ");
                 }
@@ -251,9 +316,9 @@ namespace Xabe.FFmpeg
         /// <returns>Input argument</returns>
         private string BuildInput()
         {
-            var builder = new StringBuilder();  
+            var builder = new StringBuilder();
             var index = 0;
-            foreach(var source in _streams.SelectMany(x => x.GetSource()).Distinct())
+            foreach (var source in _streams.SelectMany(x => x.GetSource()).Distinct())
             {
                 _inputFileMap[source] = index++;
                 builder.Append($"-i \"{source}\" ");
@@ -276,7 +341,7 @@ namespace Xabe.FFmpeg
             _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} -c:v {decoder} ";
             AddParameter($"-c:v {encoder?.ToString()} ");
 
-            if(device != 0)
+            if (device != 0)
             {
                 _hardwareAcceleration += $"-hwaccel_device {device} ";
             }

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Default" Description=" " ToolsVersion="15.0">
+  <Rules AnalyzerId="Microsoft.VisualStudio.Threading.Analyzers" RuleNamespace="SonarAnalyzer.CSharp">
+    <Rule Id="VSTHRD111" Action="Error" />
+    <Rule Id="VSTHRD200" Action="None" />
+  </Rules>
+</RuleSet>

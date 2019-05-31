@@ -11,22 +11,26 @@ namespace Xabe.FFmpeg.Downloader
     internal class FFmpegDownloader
     {
         internal static LinkProvider _linkProvider = new LinkProvider();
+        private static readonly OperatingSystem s_os = new OperatingSystemProvider().GetOperatingSystem();
+
+        private static string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", s_os);
+        private static string FfprobeDestinationPath => ComputeFileDestinationPath("ffprobe", s_os);
 
         internal async static Task GetLatestVersion()
         {
             var latestVersion = GetLatestVersionInfo();
 
-            if(!CheckIfUpdateAvailable(latestVersion.Version))
+            if (!CheckIfUpdateAvailable(latestVersion.Version) && !CheckIfFilesExist())
                 return;
 
-            await DownloadLatestVersion(latestVersion);
+            await DownloadLatestVersion(latestVersion).ConfigureAwait(false);
 
             SaveVersion(latestVersion);
         }
 
         internal static FFbinariesVersionInfo GetLatestVersionInfo()
         {
-            using(var wc = new WebClient())
+            using (var wc = new WebClient())
             {
                 var json = wc.DownloadString("http://ffbinaries.com/api/v1/version/latest");
                 return JsonConvert.DeserializeObject<FFbinariesVersionInfo>(json);
@@ -35,44 +39,78 @@ namespace Xabe.FFmpeg.Downloader
 
         internal async static Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries)
         {
-            var ffProbeZipPath = Path.Combine(Path.GetTempPath(), "FFprobe.zip");
-
             Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
 
-            var ffmpegZip = await DownloadFile(links.FFmpegLink);
-            var ffprobeZip = await DownloadFile(links.FFprobeLink);
+            var ffmpegZipDownloadTask = DownloadFile(links.FFmpegLink);
+            var ffprobeZipDownloadTask = DownloadFile(links.FFprobeLink);
+
+            var ffmpegZip = await ffmpegZipDownloadTask.ConfigureAwait(false);
+            var ffprobeZip = await ffprobeZipDownloadTask.ConfigureAwait(false);
+
             Extract(ffmpegZip, FFmpeg.ExecutablesPath ?? ".");
             Extract(ffprobeZip, FFmpeg.ExecutablesPath ?? ".");
 
-            if(Directory.Exists(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX")))
+            if (Directory.Exists(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX")))
                 Directory.Delete(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX"), true);
         }
 
-
-
         private static void Extract(string ffMpegZipPath, string destinationDir)
         {
-            ZipFile.ExtractToDirectory(ffMpegZipPath, destinationDir);
+            using (ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))
+            {
+                if (!Directory.Exists(destinationDir))
+                    Directory.CreateDirectory(destinationDir);
+
+                foreach (ZipArchiveEntry zipEntry in zipArchive.Entries)
+                {
+                    string destinationPath = Path.Combine(destinationDir, zipEntry.FullName);
+
+                    // Archived empty directories have empty Names
+                    if (zipEntry.Name == string.Empty)
+                    {
+                        Directory.CreateDirectory(destinationPath);
+                        continue;
+                    }
+
+                    zipEntry.ExtractToFile(destinationPath, overwrite: true);
+                }
+            }
+
             File.Delete(ffMpegZipPath);
+        }
+
+        private static bool CheckIfFilesExist()
+        {
+            return !File.Exists(FfmpegDestinationPath) || !File.Exists(FfprobeDestinationPath);
+        }
+
+        internal static string ComputeFileDestinationPath(string filename, OperatingSystem os)
+        {
+            string path = Path.Combine(FFmpeg.ExecutablesPath ?? ".", filename);
+
+            if (os == OperatingSystem.Windows32 || os == OperatingSystem.Windows64)
+                path += ".exe";
+
+            return path;
         }
 
         private static bool CheckIfUpdateAvailable(string latestVersion)
         {
             var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
-            if(!File.Exists(versionPath))
+            if (!File.Exists(versionPath))
                 return true;
 
             FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(versionPath));
-            if(currentVersion != null)
+            if (currentVersion != null)
             {
-                if(new Version(latestVersion) > new Version(currentVersion.Version))
+                if (new Version(latestVersion) > new Version(currentVersion.Version))
                     return true;
             }
 
             return false;
         }
 
-        private static void SaveVersion(FFbinariesVersionInfo latestVersion)
+        internal static void SaveVersion(FFbinariesVersionInfo latestVersion)
         {
             var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
             File.WriteAllText(versionPath, JsonConvert.SerializeObject(new DownloadedVersion()
@@ -85,14 +123,14 @@ namespace Xabe.FFmpeg.Downloader
         {
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
 
-            using(var client = new HttpClient())
+            using (var client = new HttpClient())
             {
-                using(var result = await client.GetAsync(url))
+                using (var result = await client.GetAsync(url).ConfigureAwait(false))
                 {
-                    if(!result.IsSuccessStatusCode)
+                    if (!result.IsSuccessStatusCode)
                         return null;
-                    var readedData = await result.Content.ReadAsByteArrayAsync();
-                    if(readedData == null)
+                    var readedData = await result.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    if (readedData == null)
                         return null;
                     File.WriteAllBytes(tempPath, readedData);
                 }

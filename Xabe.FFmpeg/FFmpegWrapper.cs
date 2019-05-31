@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Exceptions;
 
@@ -18,7 +19,8 @@ namespace Xabe.FFmpeg
     /// </summary>
     internal class FFmpegWrapper : FFmpeg
     {
-        private const string TimeFormatRegex = @"\w\w:\w\w:\w\w";
+        private const string TimeFormatPattern = @"\w\w:\w\w:\w\w";
+        private static readonly Regex s_timeFormatRegex = new Regex(TimeFormatPattern, RegexOptions.Compiled);
         private List<string> _outputLog;
         private TimeSpan _totalTime;
         private bool _wasKilled = false;
@@ -33,70 +35,104 @@ namespace Xabe.FFmpeg
         /// </summary>
         internal event DataReceivedEventHandler OnDataReceived;
 
-        internal async Task<bool> RunProcess(string args, CancellationToken cancellationToken)
+        internal Task<bool> RunProcess(
+            string args,
+            CancellationToken cancellationToken)
         {
-            return await Task.Run(() =>
+            return Task.Factory.StartNew(() =>
             {
                 _outputLog = new List<string>();
-
-                RunProcess(args, FFmpegPath, true, true, true);
-
-                using(Process)
+                var process = RunProcess(args, FFmpegPath, Priority, true, true, true);
+                using (process)
                 {
-                    Process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
-                    Process.BeginErrorReadLine();
-                    cancellationToken.Register(async () => {
-                        Process.StandardInput.Write("q");
-                        await Task.Delay(1000 * 5);
-
-                        try
+                    process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
+                    process.BeginErrorReadLine();
+                    // VSTHRD101: Avoid using async lambda for a void returning delegate type, becaues any exceptions not handled by the delegate will crash the process
+                    // https://github.com/Microsoft/vs-threading/blob/master/doc/analyzers/VSTHRD101.md
+                    var ctr = cancellationToken.Register(() =>
+                    {
+                        if (Environment.OSVersion.Platform != PlatformID.Win32NT)
                         {
-                            if(!Process.HasExited)
+                            try
                             {
-                                _wasKilled = true;
-                                Process.Kill();
+                                process.StandardInput.Write("q");
+                                Task.Delay(1000 * 5).ConfigureAwait(false).GetAwaiter().GetResult();
+                            }
+                            catch (InvalidOperationException)
+                            {
+                            }
+                            finally
+                            {
+                                if (!process.HasExited)
+                                {
+                                    process.CloseMainWindow();
+                                    process.Kill();
+                                    _wasKilled = true;
+                                }
                             }
                         }
-                        catch(InvalidOperationException)
-                        {
-
-                        }
                     });
-                    Process.WaitForExit();
 
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if(_wasKilled)
+                    using (ctr)
                     {
-                        throw new ConversionException("Cannot stop process. Killed it.", args);
-                    }
+                        using (var processEnded = new ManualResetEvent(false))
+                        {
+                            processEnded.SetSafeWaitHandle(new SafeWaitHandle(process.Handle, false));
+                            int index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
 
-                    if(cancellationToken.IsCancellationRequested)
-                    {
-                        return false;
-                    }
+                            // If the signal came from the caller cancellation token close the window
+                            if (index == 1
+                                && !process.HasExited)
+                            {
+                                process.CloseMainWindow();
+                                process.Kill();
+                                _wasKilled = true;
+                            }
+                            else if (index == 0 && !process.HasExited)
+                            {
+                                // Workaround for linux: https://github.com/dotnet/corefx/issues/35544
+                                process.WaitForExit();
+                            }
+                        }
 
-                    if(_outputLog.Any(x => x.Contains("Unknown decoder")))
-                    {
-                        throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                    }
+                        cancellationToken.ThrowIfCancellationRequested();
+                        if (_wasKilled)
+                        {
+                            throw new ConversionException("Cannot stop process. Killed it.", args);
+                        }
 
-                    if(_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
-                    {
-                        throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                    }
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return false;
+                        }
 
-                    if(Process.ExitCode != 0)
-                    {
-                        throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        if (_outputLog.Any(x => x.Contains("Unknown decoder")))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
+                        {
+                            throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (process.ExitCode != 0)
+                        {
+                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
                     }
                 }
+
                 return true;
-            });
+            },
+            cancellationToken,
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
         }
 
         private void ProcessOutputData(DataReceivedEventArgs e, string args)
         {
-            if(e.Data == null)
+            if (e.Data == null)
             {
                 return;
             }
@@ -105,7 +141,7 @@ namespace Xabe.FFmpeg
 
             _outputLog.Add(e.Data);
 
-            if(OnProgress == null)
+            if (OnProgress == null)
             {
                 return;
             }
@@ -115,20 +151,19 @@ namespace Xabe.FFmpeg
 
         private void CalculateTime(DataReceivedEventArgs e, string args)
         {
-            if(e.Data.Contains("Duration: N/A"))
+            if (e.Data.Contains("Duration: N/A"))
             {
                 return;
             }
 
-            var regex = new Regex(TimeFormatRegex);
-            if(e.Data.Contains("Duration"))
+            if (e.Data.Contains("Duration"))
             {
-                GetDuration(e, regex, args);
+                GetDuration(e, s_timeFormatRegex, args);
             }
-            else if(e.Data.Contains("size"))
+            else if (e.Data.Contains("size"))
             {
-                Match match = regex.Match(e.Data);
-                if(match.Success)
+                Match match = s_timeFormatRegex.Match(e.Data);
+                if (match.Success)
                 {
                     OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime));
                 }
@@ -138,7 +173,7 @@ namespace Xabe.FFmpeg
         private void GetDuration(DataReceivedEventArgs e, Regex regex, string args)
         {
             string t = GetArgumentValue("-t", args);
-            if(!string.IsNullOrWhiteSpace(t))
+            if (!string.IsNullOrWhiteSpace(t))
             {
                 _totalTime = TimeSpan.Parse(t);
                 return;
@@ -148,7 +183,7 @@ namespace Xabe.FFmpeg
             _totalTime = TimeSpan.Parse(match.Value);
 
             string ss = GetArgumentValue("-ss", args);
-            if(!string.IsNullOrWhiteSpace(ss))
+            if (!string.IsNullOrWhiteSpace(ss))
             {
                 _totalTime -= TimeSpan.Parse(ss);
             }
@@ -159,7 +194,7 @@ namespace Xabe.FFmpeg
             List<string> words = args.Split(' ')
                                      .ToList();
             int index = words.IndexOf(option);
-            if(index >= 0)
+            if (index >= 0)
             {
                 return words[index + 1];
             }

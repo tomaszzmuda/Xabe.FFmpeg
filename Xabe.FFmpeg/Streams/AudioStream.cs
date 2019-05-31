@@ -32,7 +32,6 @@ namespace Xabe.FFmpeg.Streams
             var builder = new StringBuilder();
             builder.Append(_audio);
             builder.Append(_bitsreamFilter);
-            builder.Append(_seek);
             builder.Append(_reverse);
             builder.Append(_split);
             builder.Append(BuildLanguage());
@@ -49,6 +48,12 @@ namespace Xabe.FFmpeg.Streams
                 language = $"-metadata:a:a:{Index} language={language} ";
             }
             return language;
+        }
+
+        /// <inheritdoc />
+        public string BuildInputArguments()
+        {
+            return _seek;
         }
 
         /// <inheritdoc />
@@ -101,7 +106,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            return new []{Source.FullName};
+            return new[] { Source.FullName };
         }
 
         /// <inheritdoc />
@@ -110,7 +115,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IAudioStream SetSeek(TimeSpan? seek)
         {
-            if(seek.HasValue)
+            if (seek.HasValue)
             {
                 _seek = $"-ss {seek.Value.ToFFmpeg()} ";
             }
@@ -145,7 +150,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<IFilterConfiguration> GetFilters()
         {
-            if(_audioFilters.Any())
+            if (_audioFilters.Any())
             {
                 yield return new FilterConfiguration
                 {

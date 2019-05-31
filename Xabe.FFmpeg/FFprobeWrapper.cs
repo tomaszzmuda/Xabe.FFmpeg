@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
 using Xabe.FFmpeg.Streams;
 
@@ -19,8 +21,8 @@ namespace Xabe.FFmpeg
         private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
             ProbeModel probe = null;
-            string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
-            if(string.IsNullOrEmpty(stringResult))
+            string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"").ConfigureAwait(false);
+            if (string.IsNullOrEmpty(stringResult))
             {
                 return new ProbeModel.Stream[0];
             }
@@ -34,16 +36,20 @@ namespace Xabe.FFmpeg
             return Math.Round(double.Parse(fr[0]) / double.Parse(fr[1]), 3);
         }
 
-        private string GetVideoAspectRatio(int width, int heigght)
+        private string GetVideoAspectRatio(int width, int height)
         {
-            int cd = GetGcd(width, heigght);
-            return width / cd + ":" + heigght / cd;
+            int cd = GetGcd(width, height);
+            if (cd <= 0)
+            {
+                return "0:0";
+            }
+            return width / cd + ":" + height / cd;
         }
 
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
-            string stringResult = await Start($"-v quiet -print_format json -show_format \"{videoPath}\"");
-            var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult); 
+            string stringResult = await Start($"-v quiet -print_format json -show_format \"{videoPath}\"").ConfigureAwait(false);
+            var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult);
             return root.format;
         }
 
@@ -65,10 +71,10 @@ namespace Xabe.FFmpeg
 
         private int GetGcd(int width, int height)
         {
-            while(width != 0 &&
+            while (width != 0 &&
                   height != 0)
             {
-                if(width > height)
+                if (width > height)
                 {
                     width -= height;
                 }
@@ -80,35 +86,33 @@ namespace Xabe.FFmpeg
             return width == 0 ? height : width;
         }
 
-        public async Task<string> Start(string args)
+        public Task<string> Start(string args)
         {
-            return await RunProcess(args);
+            return RunProcess(args);
         }
 
-        private async Task<string> RunProcess(string args)
+        private Task<string> RunProcess(string args)
         {
-            return await Task.Run(() =>
+            return Task.Factory.StartNew(() =>
             {
-                RunProcess(args, FFprobePath, standardOutput: true);
-
-                string output;
-
-                try
+                using (Process process = RunProcess(args, FFprobePath, Priority, standardOutput: true))
                 {
-                    output = Process.StandardOutput.ReadToEnd();
+                    while (!process.HasExited)
+                    {
+                        process.WaitForExit(10);
+                        int toRead = process.StandardOutput.Peek();
+                        if (toRead > 0)
+                        {
+                            break;
+                        }
+                    }
+                    process.WaitForExit();
+                    return process.StandardOutput.ReadToEnd();
                 }
-                catch(Exception)
-                {
-                    output = string.Empty;
-                }
-                finally
-                {
-                    Process.WaitForExit();
-                    Process.Close();
-                }
-
-                return output;
-            });
+            },
+            CancellationToken.None,
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
         }
 
         /// <summary>
@@ -119,13 +123,13 @@ namespace Xabe.FFmpeg
         /// <returns>Properties</returns>
         public async Task<MediaInfo> GetProperties(FileInfo fileInfo, MediaInfo mediaInfo)
         {
-            ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName);
-            if(!streams.Any())
+            ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName).ConfigureAwait(false);
+            if (!streams.Any())
             {
                 throw new ArgumentException($"Invalid file. Cannot load file {fileInfo.Name}");
             }
 
-            FormatModel.Format format = await GetFormat(fileInfo.FullName);
+            FormatModel.Format format = await GetFormat(fileInfo.FullName).ConfigureAwait(false);
             mediaInfo.Size = long.Parse(format.size);
 
             mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
@@ -146,7 +150,7 @@ namespace Xabe.FFmpeg
 
         private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
-            foreach(ProbeModel.Stream model in audioStreamModels)
+            foreach (ProbeModel.Stream model in audioStreamModels)
             {
                 var stream = new AudioStream
                 {
@@ -164,7 +168,7 @@ namespace Xabe.FFmpeg
 
         private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
-            foreach(ProbeModel.Stream model in audioStreamModels)
+            foreach (ProbeModel.Stream model in audioStreamModels)
             {
                 var stream = new SubtitleStream
                 {
@@ -179,7 +183,7 @@ namespace Xabe.FFmpeg
 
         private IEnumerable<IVideoStream> PrepareVideoStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
         {
-            foreach(ProbeModel.Stream model in videoStreamModels)
+            foreach (ProbeModel.Stream model in videoStreamModels)
             {
                 var stream = new VideoStream
                 {

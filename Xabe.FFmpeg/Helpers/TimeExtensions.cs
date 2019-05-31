@@ -38,7 +38,7 @@ namespace Xabe.FFmpeg
             var milliseconds = 0;
             var seconds = 0;
 
-            if(parts[0].Contains('.'))
+            if (parts[0].Contains('.'))
             {
                 string[] secondsSplit = parts[0].Split('.');
                 seconds = int.Parse(secondsSplit[0]);
