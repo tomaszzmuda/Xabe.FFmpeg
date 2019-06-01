@@ -45,7 +45,7 @@ namespace Xabe.FFmpeg.Streams
             if (!string.IsNullOrEmpty(language))
             {
                 // TODO: check how to set lang metadata for audio stream
-                language = $"-metadata:a:a:{Index} language={language} ";
+                language = $"-metadata:s:a:{Index} language={language} ";
             }
             return language;
         }
