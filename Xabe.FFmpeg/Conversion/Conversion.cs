@@ -199,6 +199,22 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <inheritdoc />
+        public IConversion ExtractEveryNthFrame(int frameNo)
+        {
+            AddParameter(string.Format("-vf \"select=not(mod(n\\,{0}))\"", frameNo));
+            AddParameter("-vsync vfr");
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion ExtractFrameN(int frameNo)
+        {
+            AddParameter(string.Format("-vf select='eq(n\\,{0})'", frameNo));
+            AddParameter("-vsync 0");
+            return this;
+        }
+
         private string BuildConversionParameters()
         {
             var builder = new StringBuilder();

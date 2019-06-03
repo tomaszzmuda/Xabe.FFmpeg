@@ -38,6 +38,20 @@ namespace Xabe.FFmpeg
         IConversion SetPriority(ProcessPriorityClass? priority);
 
         /// <summary>
+        /// Extracts Every frameNo frame of the input video and outputs as a png image
+        /// </summary>
+        /// <param name="frameNo">The frame interval to extract </param>
+        /// <returns></returns>
+        IConversion ExtractEveryNthFrame(int frameNo);
+
+        /// <summary>
+        /// Extracts the frameNo'th frame of the input video and outputs as a png image
+        /// </summary>
+        /// <param name="frameNo">The frame to extract</param>
+        /// <returns></returns>
+        IConversion ExtractFrameN(int frameNo);
+
+        /// <summary>
         ///     Seeks in output file to position. (-ss argument)
         /// </summary>
         /// <param name="seek">Position</param>
