@@ -83,37 +83,45 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ExtractNthFrameTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "_%03d" + FileExtensions.Png);
+            Guid fileGuid = Guid.NewGuid();
+            string output = Path.Combine(Path.GetTempPath(), fileGuid + "_%3d" + FileExtensions.Png);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .ExtractEveryNthFrame(10)
+                                                                 .ExtractEveryNthFrame(10, NumberPosition.END, 3)
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(false);
 
             Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
-            Assert.Equal("png", resultFile.AudioStreams.First().Format);
+
+            int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
+                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == FileExtensions.Png).Count();
+
+            Assert.Equal(26, outputFilesCount);
         }
 
         [Fact]
         public async Task ExtractFrameNTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + "_%d" + FileExtensions.Png);
+            Guid fileGuid = Guid.NewGuid();
+            string output = Path.Combine(Path.GetTempPath(), fileGuid + "_%d" + FileExtensions.Png);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .ExtractFrameN(10)
+                                                                 .ExtractNthFrame(10)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start().ConfigureAwait(true);
 
             Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
-            Assert.Equal("png", resultFile.AudioStreams.First().Format);
+
+            int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
+                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == FileExtensions.Png).Count();
+
+            Assert.Equal(1, outputFilesCount);
         }
 
         [Fact]

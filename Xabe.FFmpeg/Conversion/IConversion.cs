@@ -41,15 +41,17 @@ namespace Xabe.FFmpeg
         /// Extracts Every frameNo frame of the input video and outputs as a png image
         /// </summary>
         /// <param name="frameNo">The frame interval to extract </param>
+        ///<param name ="digits"> the number of digits to include in the file number</param>
+        /// <param name="numberPosition"> the position of the file number within the output path</param>
         /// <returns></returns>
-        IConversion ExtractEveryNthFrame(int frameNo);
+        IConversion ExtractEveryNthFrame(int frameNo, NumberPosition numberPosition, int digits = 3);
 
         /// <summary>
         /// Extracts the frameNo'th frame of the input video and outputs as a png image
         /// </summary>
         /// <param name="frameNo">The frame to extract</param>
         /// <returns></returns>
-        IConversion ExtractFrameN(int frameNo);
+        IConversion ExtractNthFrame(int frameNo);
 
         /// <summary>
         ///     Seeks in output file to position. (-ss argument)

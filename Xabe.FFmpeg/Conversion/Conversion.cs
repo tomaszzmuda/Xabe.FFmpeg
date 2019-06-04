@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -200,15 +201,16 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion ExtractEveryNthFrame(int frameNo)
+        public IConversion ExtractEveryNthFrame(int frameNo, NumberPosition numberPosition, int digits = 3)
         {
-            AddParameter(string.Format("-vf \"select=not(mod(n\\,{0}))\"", frameNo));
+            AddParameter(string.Format("-vf select='not(mod(n\\,{0}))'", frameNo));
             AddParameter("-vsync vfr");
+            BuildNumberedOutput(numberPosition, digits);
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion ExtractFrameN(int frameNo)
+        public IConversion ExtractNthFrame(int frameNo)
         {
             AddParameter(string.Format("-vf select='eq(n\\,{0})'", frameNo));
             AddParameter("-vsync 0");
@@ -340,6 +342,24 @@ namespace Xabe.FFmpeg
                 builder.Append($"-i \"{source}\" ");
             }
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// Builds the output path with an optional number specifier
+        /// </summary>
+        /// <param name="digits"> the number of digits to include in the file number</param>
+        /// <param name="position"> the position of the file number within the output path </param>
+        /// <returns></returns>
+        public string BuildNumberedOutput(NumberPosition position = NumberPosition.BEGIN, int digits = 3)
+        {
+            string output = _output;
+
+            if (position == NumberPosition.BEGIN)
+                output = string.Format("_%{0}d", digits) + output;
+            else if (position == NumberPosition.END)
+                output = Path.GetFileNameWithoutExtension(output) + string.Format("_%{0}d", digits) + Path.GetExtension(output);
+
+            return output;
         }
 
         /// <summary>
