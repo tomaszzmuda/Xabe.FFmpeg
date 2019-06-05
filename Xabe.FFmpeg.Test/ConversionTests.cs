@@ -81,7 +81,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task ExtractNthFrameTest()
+        public async Task ExtractEveryNthFrameTest()
         {
             Guid fileGuid = Guid.NewGuid();
             Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
@@ -102,7 +102,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task ExtractFrameNTest()
+        public async Task ExtractNthFrameTest()
         {
             Guid fileGuid = Guid.NewGuid();
             Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
