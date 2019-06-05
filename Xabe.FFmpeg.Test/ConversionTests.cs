@@ -84,14 +84,13 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractNthFrameTest()
         {
             Guid fileGuid = Guid.NewGuid();
-            string output = Path.Combine(Path.GetTempPath(), fileGuid + "_%3d" + FileExtensions.Png);
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .ExtractEveryNthFrame(10, NumberPosition.END, 3)
-                                                                 .SetOutput(output)
+                                                                 .ExtractEveryNthFrame(10, outputBuilder)
                                                                  .Start().ConfigureAwait(false);
 
             Assert.True(conversionResult.Success);
@@ -106,14 +105,13 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractFrameNTest()
         {
             Guid fileGuid = Guid.NewGuid();
-            string output = Path.Combine(Path.GetTempPath(), fileGuid + "_%d" + FileExtensions.Png);
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
-
+            
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .ExtractNthFrame(10)
-                                                                 .SetOutput(output)
+                                                                 .ExtractNthFrame(10, outputBuilder)
                                                                  .Start().ConfigureAwait(true);
 
             Assert.True(conversionResult.Success);
