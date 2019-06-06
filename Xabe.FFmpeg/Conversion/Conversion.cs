@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -33,12 +34,17 @@ namespace Xabe.FFmpeg
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
 
+        private Func<string, string> _buildOutputFileName = null; 
         /// <inheritdoc />
         public string Build()
         {
             lock (_builderLock)
             {
                 var builder = new StringBuilder();
+
+                if (_buildOutputFileName == null)
+                    _buildOutputFileName = (number) => { return _output; };
+
                 builder.Append(_hardwareAcceleration);
                 builder.Append(BuildInputParameters());
                 builder.Append(BuildInput());
@@ -49,7 +55,8 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
                 builder.Append(string.Join(string.Empty, _parameters));
-                builder.Append(_output);
+                builder.Append(_buildOutputFileName("_%03d"));
+
                 return builder.ToString();
             }
         }
@@ -196,6 +203,25 @@ namespace Xabe.FFmpeg
         public IConversion SetPriority(ProcessPriorityClass? priority)
         {
             _priority = priority;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion ExtractEveryNthFrame(int frameNo, Func<string, string> buildOutputFileName)
+        {
+            _buildOutputFileName = buildOutputFileName;
+            AddParameter(string.Format("-vf select='not(mod(n\\,{0}))'", frameNo));
+            AddParameter("-vsync vfr");
+            
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion ExtractNthFrame(int frameNo, Func<string, string> buildOutputFileName)
+        {
+            _buildOutputFileName = buildOutputFileName;
+            AddParameter(string.Format("-vf select='eq(n\\,{0})'", frameNo));
+            AddParameter("-vsync 0");
             return this;
         }
 

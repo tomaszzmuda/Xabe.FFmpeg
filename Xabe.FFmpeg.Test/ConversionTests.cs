@@ -81,6 +81,48 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task ExtractEveryNthFrameTest()
+        {
+            Guid fileGuid = Guid.NewGuid();
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .ExtractEveryNthFrame(10, outputBuilder)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+
+            int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
+                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == FileExtensions.Png).Count();
+
+            Assert.Equal(26, outputFilesCount);
+        }
+
+        [Fact]
+        public async Task ExtractNthFrameTest()
+        {
+            Guid fileGuid = Guid.NewGuid();
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
+            
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .ExtractNthFrame(10, outputBuilder)
+                                                                 .Start().ConfigureAwait(true);
+
+            Assert.True(conversionResult.Success);
+
+            int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
+                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == FileExtensions.Png).Count();
+
+            Assert.Equal(1, outputFilesCount);
+        }
+
+        [Fact]
         public async Task OverwriteFilesTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
