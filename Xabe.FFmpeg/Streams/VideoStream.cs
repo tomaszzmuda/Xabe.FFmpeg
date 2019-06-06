@@ -198,6 +198,12 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
+        public VideoCodec GetCodec()
+        {
+            return new VideoCodec(_codec.Replace("-codec:v ", "").Trim(' '));
+        }
+
+        /// <inheritdoc />
         public TimeSpan Duration { get; internal set; }
 
         /// <inheritdoc />

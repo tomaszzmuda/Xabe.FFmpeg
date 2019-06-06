@@ -90,6 +90,9 @@ namespace Xabe.FFmpeg.Streams
         public string Format { get; internal set; }
 
         /// <inheritdoc />
+        public double Bitrate { get; set; }
+
+        /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
             return new[] { Source.FullName };
@@ -106,6 +109,12 @@ namespace Xabe.FFmpeg.Streams
                 _seek = $"-ss {seek.Value.ToFFmpeg()} ";
             }
             return this;
+        }
+
+        /// <inheritdoc />
+        public AudioCodec GetCodec()
+        {
+            return new AudioCodec(_audio.Replace("-codec:a ", "").Trim(' '));
         }
 
         void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)

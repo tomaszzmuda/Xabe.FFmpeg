@@ -186,6 +186,27 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public IConversion SetVideoBitrate(string bitrate)
+        {
+            AddParameter(string.Format("-b:v {0}", bitrate));
+            AddParameter(string.Format("-minrate {0}", bitrate));
+            AddParameter(string.Format("-maxrate {0}", bitrate));
+            AddParameter(string.Format("-bufsize {0}", bitrate));
+
+            if (HasH264Stream())
+                AddParameter("-x264opts nal-hrd=cbr:force-cfr=1");
+            
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetAudioBitrate(string bitrate)
+        {
+            AddParameter(string.Format("-b:a {0}", bitrate));
+            return this;
+        }
+
+        /// <inheritdoc />
         public IConversion UseShortest(bool useShortest)
         {
             _shortestInput = !useShortest ? string.Empty : "-shortest ";
@@ -326,6 +347,23 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
+        private bool HasH264Stream()
+        {
+            foreach (IStream stream in _streams)
+            {
+                if (stream is IVideoStream)
+                {
+                    IVideoStream s = (IVideoStream)stream;
+                    VideoCodec codec = s.GetCodec();
+                    if (codec.ToString() == VideoCodec.Libx264.ToString() ||
+                        codec.ToString() == VideoCodec.H264.ToString())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         /// <summary>
         ///     Get new instance of Conversion
         /// </summary>

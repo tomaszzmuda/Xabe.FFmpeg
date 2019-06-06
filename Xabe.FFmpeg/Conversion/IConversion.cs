@@ -52,6 +52,22 @@ namespace Xabe.FFmpeg
         IConversion SetPreset(ConversionPreset preset);
 
         /// <summary>
+        ///     Sets The bitrate of the video streams to the supplied value
+        ///     Acceptable values include 1200K for 1200kbit/s or 1M for 1mbit/s
+        /// </summary>
+        /// <param name="bitrate">The required Bitrate Value</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetVideoBitrate(string bitrate);
+
+        /// <summary>
+        ///     Sets The bitrate of the audio streams to the supplied value
+        ///     Acceptable values include 1200K for 1200kbit/s or 1M for 1mbit/s
+        /// </summary>
+        /// <param name="bitrate">The required Bitrate Value</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetAudioBitrate(string bitrate);
+
+        /// <summary>
         ///     Defines thread count used by converter
         /// </summary>
         /// <param name="threadCount">Number of used threads</param>
