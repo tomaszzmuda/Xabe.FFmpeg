@@ -185,10 +185,16 @@ namespace Xabe.FFmpeg
             }
             FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith(FFprobeExecutableName, true, CultureInfo.InvariantCulture))
+            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith(FFprobeExecutableName, true, CultureInfo.InvariantCulture) && !IsLibraryFile(x.Extension))
                                ?.FullName;
-            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith(FFmpegExecutableName, true, CultureInfo.InvariantCulture))
+            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith(FFmpegExecutableName, true, CultureInfo.InvariantCulture) && !IsLibraryFile(x.Extension))
                               ?.FullName;
+        }
+
+        private static bool IsLibraryFile(string extension)
+        {
+            return extension.EndsWith("dll", true, CultureInfo.InvariantCulture)
+                   || extension.EndsWith("pdb", true, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
