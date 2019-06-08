@@ -209,12 +209,6 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public VideoCodec GetCodec()
-        {
-            return Codec;
-        }
-
-        /// <inheritdoc />
         public TimeSpan Duration { get; internal set; }
 
         /// <inheritdoc />
