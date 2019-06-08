@@ -129,12 +129,6 @@ namespace Xabe.FFmpeg.Streams
         IVideoStream SetSeek(TimeSpan seek);
 
         /// <summary>
-        /// Gets Video Codec for stream
-        /// </summary>
-        /// <returns></returns>
-        VideoCodec GetCodec();
-
-        /// <summary>
         ///     Burn subtitle into file
         /// </summary>
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>

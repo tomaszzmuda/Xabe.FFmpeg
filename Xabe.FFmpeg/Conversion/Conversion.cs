@@ -380,7 +380,7 @@ namespace Xabe.FFmpeg
                 if (stream is IVideoStream)
                 {
                     IVideoStream s = (IVideoStream)stream;
-                    VideoCodec codec = s.GetCodec();
+                    VideoCodec codec = ((VideoStream)s).Codec;
                     if (codec.ToString() == VideoCodec.Libx264.ToString() ||
                         codec.ToString() == VideoCodec.H264.ToString())
                     {
