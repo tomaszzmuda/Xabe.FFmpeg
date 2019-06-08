@@ -63,6 +63,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Format);
         }
+
         [Fact]
         public async Task SetOutputFormatTest()
         {
@@ -100,7 +101,25 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Format);
             Assert.Equal(".avi", resultFile.FileInfo.Extension);
         }
+        
+        [Fact]
+        public async Task GetScreenCaptureTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .GetScreenCapture(10)
+                                                                 .SetInputTime(TimeSpan.FromSeconds(10))
+                                                                 .SetOutputFormat(MediaFormat.H264)
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("h264", resultFile.VideoStreams.First().Format);
+            Assert.Equal(10, resultFile.VideoStreams.First().FrameRate);
+            Assert.Equal(TimeSpan.FromSeconds(10), resultFile.VideoStreams.First().Duration);
+        }
 
         [Fact]
         public async Task SetVideoCodecTest()

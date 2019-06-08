@@ -54,11 +54,33 @@ namespace Xabe.FFmpeg
         IConversion ExtractNthFrame(int frameNo, Func<string, string> buildOutputFileName);
 
         /// <summary>
+        /// Builds the -framerate option for this conversion
+        /// </summary>
+        /// <param name="frameRate"></param>
+        /// <returns>IConversion object</returns>
+        IConversion SetFrameRate(double frameRate);
+
+        /// <summary>
         ///     Seeks in output file to position. (-ss argument)
         /// </summary>
         /// <param name="seek">Position</param>
         /// <returns>IConversion</returns>
         IConversion SetSeek(TimeSpan? seek);
+
+        /// <summary>
+        ///     Sets input capture length (-t input argument)
+        ///     Typically used with the GetScreenCapture Function to stop capturing after a time interval
+        /// </summary>
+        /// <param name="seek">Output Length</param>
+        /// <returns>IConversion</returns>
+        IConversion SetInputTime(TimeSpan? seek);
+
+        /// <summary>
+        ///     Sets output file length (-t output argument)
+        /// </summary>
+        /// <param name="seek">Output Length</param>
+        /// <returns>IConversion</returns>
+        IConversion SetOutputTime(TimeSpan? seek);
 
         /// <summary>
         ///     Set preset of IConversion. Slower speed equals better compression and quality.
@@ -115,9 +137,8 @@ namespace Xabe.FFmpeg
         ///     Captures the entire display for length seconds at the specified framerate 
         /// </summary>
         /// <param name="frameRate">The framrate at which to capture the display</param>
-        /// <param name="length">the length of time to capture the display</param>
         /// <returns>IConversion object</returns>
-        IConversion GetScreenCapture(double frameRate, TimeSpan length);
+        IConversion GetScreenCapture(double frameRate);
 
         /// <summary>
         /// Sets the format for the input file using the -f option before the input file name

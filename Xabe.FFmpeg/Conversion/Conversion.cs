@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,11 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private string _seek;
         private bool _useMultiThreads = true;
+        private bool _capturing = false;
         private int? _threadsCount;
+        private string _inputTime;
+        private string _outputTime;
+
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
         private Func<string, string> _buildOutputFileName = null;
@@ -47,14 +52,21 @@ namespace Xabe.FFmpeg
 
                 builder.Append(_hardwareAcceleration);
                 builder.Append(BuildInputFormat());
-                builder.Append(BuildInputParameters());
-                builder.Append(BuildInput());
+                builder.Append(_inputTime);
+
+                if (!_capturing)
+                {
+                    builder.Append(BuildInputParameters());
+                    builder.Append(BuildInput());
+                }
+
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
                 builder.Append(BuildConversionParameters());
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
+                builder.Append(_outputTime);
                 builder.Append(string.Join(string.Empty, _parameters));
                 builder.Append(BuildOutputFormat());
                 builder.Append(_buildOutputFileName("_%03d"));
@@ -178,6 +190,26 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public IConversion SetInputTime(TimeSpan? time)
+        {
+            if (time.HasValue)
+            {
+                _inputTime = $"-t {time.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetOutputTime(TimeSpan? time)
+        {
+            if (time.HasValue)
+            {
+                _outputTime = $"-t {time.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
         public IConversion UseMultiThread(bool multiThread)
         {
             _useMultiThreads = multiThread;
@@ -255,9 +287,35 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion GetScreenCapture(double frameRate, TimeSpan length)
+        public IConversion SetFrameRate(double frameRate)
         {
-            
+            AddParameter($"-framerate {frameRate}");
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion GetScreenCapture(double frameRate)
+        {
+            bool hasDShowDevice = false;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                _capturing = true;
+                if (hasDShowDevice)
+                {
+                    // TODO: Implement dshow device capture
+                    return this;
+                }
+                else
+                {
+                    SetInputFormat(MediaFormat.GdiGrab);
+                    SetFrameRate(frameRate);
+                    AddParameter("-i desktop ");
+                    return this;
+                }
+            }
+
+            _capturing = false;
             return this;
         }
 
