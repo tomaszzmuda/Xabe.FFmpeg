@@ -23,7 +23,6 @@ namespace Xabe.FFmpeg.Streams
         /// </summary>
         double Bitrate { get; set; }
 
-
         /// <summary>
         ///     Set stream to copy with orginal codec
         /// </summary>
@@ -72,11 +71,5 @@ namespace Xabe.FFmpeg.Streams
         /// <param name="seek">Position</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetSeek(TimeSpan? seek);
-        
-        /// <summary>
-        /// Gets Audio Codec for stream
-        /// </summary>
-        /// <returns></returns>
-        AudioCodec GetCodec();
     }
 }

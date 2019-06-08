@@ -12,7 +12,6 @@ namespace Xabe.FFmpeg.Streams
     public class AudioStream : IAudioStream, IFilterable
     {
         private readonly Dictionary<string, string> _audioFilters = new Dictionary<string, string>();
-        private string _audio;
         private string _bitsreamFilter;
         private string _reverse;
         private string _seek;
@@ -29,7 +28,7 @@ namespace Xabe.FFmpeg.Streams
         public string Build()
         {
             var builder = new StringBuilder();
-            builder.Append(_audio);
+            builder.Append(BuildAudioCodec());
             builder.Append(_bitsreamFilter);
             builder.Append(_reverse);
             builder.Append(_split);
@@ -40,6 +39,15 @@ namespace Xabe.FFmpeg.Streams
         public string BuildInputArguments()
         {
             return _seek;
+        }
+
+        /// <inheritdoc />
+        public string BuildAudioCodec()
+        {
+            if (Codec != null)
+                return $"-c:a {Codec.ToString()} ";
+            else
+                return string.Empty;
         }
 
         /// <inheritdoc />
@@ -76,7 +84,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IAudioStream SetCodec(AudioCodec codec)
         {
-            _audio = $"-codec:a {codec} ";
+            Codec = codec;
             return this;
         }
 
@@ -91,6 +99,9 @@ namespace Xabe.FFmpeg.Streams
 
         /// <inheritdoc />
         public double Bitrate { get; set; }
+
+        /// <inheritdoc />
+        public AudioCodec Codec { get; private set; }
 
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
@@ -109,12 +120,6 @@ namespace Xabe.FFmpeg.Streams
                 _seek = $"-ss {seek.Value.ToFFmpeg()} ";
             }
             return this;
-        }
-
-        /// <inheritdoc />
-        public AudioCodec GetCodec()
-        {
-            return new AudioCodec(_audio.Replace("-codec:a ", "").Trim(' '));
         }
 
         void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)
