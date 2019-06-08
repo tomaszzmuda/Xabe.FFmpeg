@@ -33,8 +33,8 @@ namespace Xabe.FFmpeg
         private int? _threadsCount;
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
-
-        private Func<string, string> _buildOutputFileName = null; 
+        private Func<string, string> _buildOutputFileName = null;
+        
         /// <inheritdoc />
         public string Build()
         {
@@ -46,6 +46,7 @@ namespace Xabe.FFmpeg
                     _buildOutputFileName = (number) => { return _output; };
 
                 builder.Append(_hardwareAcceleration);
+                builder.Append(BuildInputFormat());
                 builder.Append(BuildInputParameters());
                 builder.Append(BuildInput());
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
@@ -55,6 +56,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
                 builder.Append(string.Join(string.Empty, _parameters));
+                builder.Append(BuildOutputFormat());
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -69,6 +71,15 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public int? FFmpegProcessId => _ffmpeg?.FFmpegProcessId;
+
+        /// <inheritdoc />
+        public string OutputFilePath { get; private set; }
+
+        /// <inheritdoc />
+        public MediaFormat InputFormat { get; private set; }
+
+        /// <inheritdoc />
+        public MediaFormat OutputFormat { get; private set; }
 
         /// <inheritdoc />
         public Task<IConversionResult> Start()
@@ -148,9 +159,6 @@ namespace Xabe.FFmpeg
             }
             return this;
         }
-
-        /// <inheritdoc />
-        public string OutputFilePath { get; private set; }
 
         /// <inheritdoc />
         public IConversion SetPreset(ConversionPreset preset)
@@ -246,6 +254,13 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <inheritdoc />
+        public IConversion GetScreenCapture(double frameRate, TimeSpan length)
+        {
+            
+            return this;
+        }
+
         private string BuildConversionParameters()
         {
             var builder = new StringBuilder();
@@ -278,13 +293,6 @@ namespace Xabe.FFmpeg
         private string BuildOverwriteOutputParameter(bool overwriteOutput)
         {
             return overwriteOutput ? "-y " : "-n ";
-        }
-
-        /// <inheritdoc />
-        public IConversion SetOverwriteOutput(bool overwrite)
-        {
-            _overwriteOutput = overwrite;
-            return this;
         }
 
         private string BuildFilters()
@@ -373,6 +381,22 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
+        private string BuildInputFormat()
+        {
+            if (InputFormat != null)
+                return $"-f {InputFormat.ToString()} ";
+            else
+                return string.Empty;
+        }
+
+        private string BuildOutputFormat()
+        {
+            if (OutputFormat != null)
+                return $"-f {OutputFormat.ToString()} ";
+            else
+                return string.Empty;
+        }
+
         private bool HasH264Stream()
         {
             foreach (IStream stream in _streams)
@@ -410,6 +434,30 @@ namespace Xabe.FFmpeg
                 _hardwareAcceleration += $"-hwaccel_device {device} ";
             }
             UseMultiThread(false);
+            return this;
+        }
+
+
+        /// <inheritdoc />
+        public IConversion SetOverwriteOutput(bool overwrite)
+        {
+            _overwriteOutput = overwrite;
+            return this;
+        }
+
+
+        /// <inheritdoc />
+        public IConversion SetInputFormat(MediaFormat inputFormat)
+        {
+            InputFormat = inputFormat;
+            return this;
+        }
+
+
+        /// <inheritdoc />
+        public IConversion SetOutputFormat(MediaFormat outputFormat)
+        {
+            OutputFormat = outputFormat;
             return this;
         }
     }

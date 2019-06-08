@@ -112,6 +112,28 @@ namespace Xabe.FFmpeg
         IConversion SetOverwriteOutput(bool overwrite);
 
         /// <summary>
+        ///     Captures the entire display for length seconds at the specified framerate 
+        /// </summary>
+        /// <param name="frameRate">The framrate at which to capture the display</param>
+        /// <param name="length">the length of time to capture the display</param>
+        /// <returns>IConversion object</returns>
+        IConversion GetScreenCapture(double frameRate, TimeSpan length);
+
+        /// <summary>
+        /// Sets the format for the input file using the -f option before the input file name
+        /// </summary>
+        /// <param name="inputFormat">The input format to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetInputFormat(MediaFormat inputFormat);
+
+        /// <summary>
+        /// Sets the format for the output file using the -f option before the output file name
+        /// </summary>
+        /// <param name="outputFormat">The output format to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetOutputFormat(MediaFormat outputFormat);
+
+        /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
         event ConversionProgressEventHandler OnProgress;

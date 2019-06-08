@@ -79,6 +79,26 @@
         /// </summary>
         public static MediaFormat Rawvideo => new MediaFormat("rawvideo");
 
+        /// <summary>
+        ///     Dshow
+        /// </summary>
+        public static MediaFormat Dshow => new MediaFormat("dshow");
+
+        /// <summary>
+        ///     GdiGrab
+        /// </summary>
+        public static MediaFormat GdiGrab => new MediaFormat("gdigrab");
+
+        /// <summary>
+        ///    AVFoundation
+        /// </summary>
+        public static MediaFormat AVFoundation => new MediaFormat("avfoundation");
+
+        /// <summary>
+        ///     X11Grab
+        /// </summary>
+        public static MediaFormat X11Grab => new MediaFormat("x11grab");
+
         /// <inheritdoc />
         public override string ToString()
         {
