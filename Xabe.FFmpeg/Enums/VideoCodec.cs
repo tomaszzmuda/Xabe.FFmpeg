@@ -56,6 +56,11 @@
         /// </summary>
         public static readonly VideoCodec H264_nvenc = new VideoCodec("h264_nvenc");
 
+        /// <summary>
+        ///     Copy
+        /// </summary>
+        public static readonly VideoCodec Copy = new VideoCodec("copy");
+
         /// <inheritdoc />
         public VideoCodec(string codec)
         {
