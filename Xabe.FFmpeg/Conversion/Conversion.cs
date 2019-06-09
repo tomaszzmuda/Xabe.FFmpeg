@@ -311,6 +311,8 @@ namespace Xabe.FFmpeg
                     SetInputFormat(MediaFormat.GdiGrab);
                     SetFrameRate(frameRate);
                     AddParameter("-i desktop ");
+                    AddParameter("-pix_fmt yuv420p");
+                    AddParameter("-preset ultrafast");
                     return this;
                 }
             }
