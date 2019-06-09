@@ -316,6 +316,28 @@ namespace Xabe.FFmpeg
                     return this;
                 }
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                _capturing = true;
+
+                SetInputFormat(MediaFormat.AVFoundation);
+                SetFrameRate(frameRate);
+                AddParameter("-i 1:1 ");
+                AddParameter("-pix_fmt yuv420p");
+                AddParameter("-preset ultrafast");
+                return this;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                _capturing = true;
+
+                SetInputFormat(MediaFormat.X11Grab);
+                SetFrameRate(frameRate);
+                AddParameter("-i :0.0+0,0 ");
+                AddParameter("-pix_fmt yuv420p");
+                AddParameter("-preset ultrafast");
+                return this;
+            }
 
             _capturing = false;
             return this;
