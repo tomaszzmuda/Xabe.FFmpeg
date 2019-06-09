@@ -42,7 +42,7 @@
         /// <summary>
         ///     raw HEVC video
         /// </summary>
-        public static MediaFormat Hevc => new MediaFormat("h264");
+        public static MediaFormat Hevc => new MediaFormat("hevc");
 
         /// <summary>
         ///     Matroska
