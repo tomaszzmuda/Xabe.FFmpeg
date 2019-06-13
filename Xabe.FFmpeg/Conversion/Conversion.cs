@@ -300,6 +300,7 @@ namespace Xabe.FFmpeg
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
+                hasDShowDevice = ParseDShowDevices();
                 _capturing = true;
                 if (hasDShowDevice)
                 {
@@ -341,6 +342,11 @@ namespace Xabe.FFmpeg
 
             _capturing = false;
             return this;
+        }
+
+        private bool ParseDShowDevices()
+        {
+            throw new NotImplementedException();
         }
 
         private string BuildConversionParameters()
