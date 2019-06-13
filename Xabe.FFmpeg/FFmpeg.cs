@@ -1,13 +1,13 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Downloader;
 using Xabe.FFmpeg.Exceptions;
+using FileInfo = Xabe.FFmpeg.Model.FileInfo;
 
 namespace Xabe.FFmpeg
 {
@@ -37,12 +37,12 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Name of FFmpeg executable name (Case insensitive)
         /// </summary>
-        public static string FFmpegExecutableName { get; } = "ffmpeg";
+        public static string FFmpegExecutableName { get; } = FFmpegExecutablesHelper.FFmpegExecutableName;
 
         /// <summary>
         ///     Name of FFprobe executable name (Case insensitive)
         /// </summary>
-        public static string FFprobeExecutableName { get; } = "ffprobe";
+        public static string FFprobeExecutableName { get; } = FFmpegExecutablesHelper.FFprobeExecutableName;
 
         /// <summary>
         ///     FFmpeg tool process priority
@@ -183,18 +183,15 @@ namespace Xabe.FFmpeg
             {
                 return;
             }
-            FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-            FFprobePath = files.FirstOrDefault(x => x.Name.StartsWith(FFprobeExecutableName, true, CultureInfo.InvariantCulture) && !IsLibraryFile(x.Extension))
-                               ?.FullName;
-            FFmpegPath = files.FirstOrDefault(x => x.Name.StartsWith(FFmpegExecutableName, true, CultureInfo.InvariantCulture) && !IsLibraryFile(x.Extension))
-                              ?.FullName;
-        }
+            IEnumerable<FileInfo> files = new DirectoryInfo(path).GetFiles().Select(x => new FileInfo
+            {
+                Name = x.Name,
+                FullName = x.FullName
+            });
 
-        private static bool IsLibraryFile(string extension)
-        {
-            return extension.EndsWith("dll", true, CultureInfo.InvariantCulture)
-                   || extension.EndsWith("pdb", true, CultureInfo.InvariantCulture);
+            FFprobePath = FFmpegExecutablesHelper.SelectFFprobePath(files);
+            FFmpegPath = FFmpegExecutablesHelper.SelectFFmpegPath(files);
         }
 
         /// <summary>
