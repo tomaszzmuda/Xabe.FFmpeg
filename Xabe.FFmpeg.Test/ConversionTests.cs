@@ -81,6 +81,86 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task SetAudioBitrateTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Ac3);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(audioStream)
+                                                                 .SetAudioBitrate("128K")
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            double lowerBound = 128000 * 0.95;
+            double upperBound = 128000 * 1.05;
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.InRange<double>(resultFile.AudioStreams.First().Bitrate, lowerBound, upperBound);
+        }
+
+        [Fact]
+        public async Task SetLibH264VideoBitrateTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Libx264);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetVideoBitrate("1500K")
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            double lowerBound = 1500000 * 0.95;
+            double upperBound = 1500000 * 1.05;
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.InRange<double>(resultFile.VideoStreams.First().Bitrate, lowerBound, upperBound);
+        }
+
+        [Fact]
+        public async Task SetH264VideoBitrateTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.H264);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetVideoBitrate("1500K")
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            double lowerBound = 1500000 * 0.95;
+            double upperBound = 1500000 * 1.05;
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.InRange<double>(resultFile.VideoStreams.First().Bitrate, lowerBound, upperBound);
+        }
+
+        [Fact]
+        public async Task SetNonH264VideoBitrateTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetVideoBitrate("1500K")
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            double lowerBound = 1500000 * 0.95;
+            double upperBound = 1500000 * 1.05;
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.InRange<double>(resultFile.VideoStreams.First().Bitrate, lowerBound, upperBound);
+        }
+
+        [Fact]
         public async Task ExtractEveryNthFrameTest()
         {
             Guid fileGuid = Guid.NewGuid();

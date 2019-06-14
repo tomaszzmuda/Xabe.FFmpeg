@@ -19,6 +19,11 @@ namespace Xabe.FFmpeg.Streams
         CodecType CodecType { get; }
 
         /// <summary>
+        ///     Bit Rate
+        /// </summary>
+        double Bitrate { get; set; }
+
+        /// <summary>
         ///     Set stream to copy with orginal codec
         /// </summary>
         /// <returns>IAudioStream</returns>

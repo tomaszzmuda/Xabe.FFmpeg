@@ -14,7 +14,6 @@ namespace Xabe.FFmpeg.Streams
         private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
         private string _watermarkSource;
         private string _bitsreamFilter;
-        private string _codec;
         private string _frameCount;
         private string _loop;
         private string _reverse;
@@ -52,6 +51,9 @@ namespace Xabe.FFmpeg.Streams
 
         /// <inheritdoc />
         public FileInfo Source { get; internal set; }
+        
+        /// <inheritdoc />
+        public VideoCodec Codec { get; private set; }
 
         /// <inheritdoc />
         public string Build()
@@ -59,7 +61,7 @@ namespace Xabe.FFmpeg.Streams
             var builder = new StringBuilder();
             builder.Append(string.Join(" ", _parameters));
             builder.Append(_scale);
-            builder.Append(_codec);
+            builder.Append(BuildVideoCodec());
             builder.Append(_bitsreamFilter);
             builder.Append(_frameCount);
             builder.Append(_loop);
@@ -74,6 +76,15 @@ namespace Xabe.FFmpeg.Streams
         public string BuildInputArguments()
         {
             return _seek;
+        }
+
+        /// <inheritdoc />
+        public string BuildVideoCodec()
+        {
+            if (Codec != null)
+                return $"-c:v {Codec.ToString()} ";
+            else
+                return string.Empty;
         }
 
         /// <inheritdoc />
@@ -99,7 +110,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream CopyStream()
         {
-            _codec = "-c:v copy ";
+            Codec = VideoCodec.Copy;
             return this;
         }
 
@@ -165,7 +176,7 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream SetCodec(VideoCodec codec)
         {
-            _codec = $"-codec:v {codec} ";
+            Codec = codec;
             return this;
         }
 
