@@ -36,6 +36,13 @@ namespace Xabe.FFmpeg.Streams
         IAudioStream Reverse();
 
         /// <summary>
+        ///     Set audio Channels (-ac option)
+        /// </summary>
+        /// <param name="channels">Number of channels to use in the output stream</param>
+        /// <returns>IAudioStream</returns>
+        IAudioStream SetChannels(int channels);
+
+        /// <summary>
         ///     Set audio codec and bitrate
         /// </summary>
         /// <param name="codec">Audio odec</param>
@@ -48,6 +55,20 @@ namespace Xabe.FFmpeg.Streams
         /// <param name="filter">Filter</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetBitstreamFilter(BitstreamFilter filter);
+
+        /// <summary>
+        ///     Sets the Bitrate of the AudioStream
+        /// </summary>
+        /// <param name="bitRate">Bitrate for the AudioStream in Kb</param>
+        /// <returns>IAudioStream</returns>
+        IAudioStream SetBitrate(int bitRate);
+
+        /// <summary>
+        ///     Sets the SampleRate of the AudioStream (-ar option)
+        /// </summary>
+        /// <param name="sampleRate">SampleRate in HZ for the Audio Stream</param>
+        /// <returns>IAudioStream</returns>
+        IAudioStream SetSampleRate(int sampleRate);
 
         /// <summary>
         ///     Change speed of media

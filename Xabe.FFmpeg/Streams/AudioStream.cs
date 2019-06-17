@@ -16,6 +16,10 @@ namespace Xabe.FFmpeg.Streams
         private string _reverse;
         private string _seek;
         private string _split;
+        private string _samplerate;
+        private string _channels;
+        private string _bitrate;
+        private string _sampleRate;
 
         /// <inheritdoc />
         public IAudioStream Reverse()
@@ -30,6 +34,7 @@ namespace Xabe.FFmpeg.Streams
             var builder = new StringBuilder();
             builder.Append(BuildAudioCodec());
             builder.Append(_bitsreamFilter);
+            builder.Append(_samplerate);
             builder.Append(_reverse);
             builder.Append(_split);
             return builder.ToString();
@@ -68,9 +73,30 @@ namespace Xabe.FFmpeg.Streams
         public CodecType CodecType { get; } = CodecType.Audio;
 
         /// <inheritdoc />
+        public IAudioStream SetChannels(int channels)
+        {
+            _channels = $"-ac:{Index} {channels} ";
+            return this;
+        }
+
+        /// <inheritdoc />
         public IAudioStream SetBitstreamFilter(BitstreamFilter filter)
         {
             _bitsreamFilter = $"-bsf:a {filter} ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetBitrate(int bitRate)
+        {
+            _bitrate = $"-b:a:{Index} {bitRate}k ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetSampleRate(int sampleRate)
+        {
+            _sampleRate = $"-ar:{Index} {sampleRate} ";
             return this;
         }
 
