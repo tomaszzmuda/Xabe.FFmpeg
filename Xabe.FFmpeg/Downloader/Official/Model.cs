@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Xabe.FFmpeg.Downloader
+namespace Xabe.FFmpeg.Downloader.Official
 {
     internal class BaseBinaries
     {
