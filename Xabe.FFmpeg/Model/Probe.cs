@@ -23,6 +23,10 @@ namespace Xabe.FFmpeg.Model
 
             public int index { get; set; }
 
+            public int channels { get;set; }
+
+            public int sample_rate { get;set; }
+
             public Tags tags { get; set; }
 
             //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
