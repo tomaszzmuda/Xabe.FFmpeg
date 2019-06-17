@@ -33,6 +33,80 @@ namespace Xabe.FFmpeg.Test
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
+        [Theory]
+        [InlineData(192000)]
+        [InlineData(32000)]
+        public async Task ChangeBitrate(int expectedBitrate)
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+
+            var audioStream = inputFile.AudioStreams.First();
+            var bitrate = audioStream.Bitrate;
+            audioStream.ChangeBitrate(expectedBitrate);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(audioStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+
+            Assert.Equal(expectedBitrate, mediaInfo.AudioStreams.First().Bitrate);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
+        [Fact]
+        public async Task ChangeChannels()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+
+            var audioStream = inputFile.AudioStreams.First();
+            var channels = audioStream.Channels;
+            Assert.Equal(2, channels);
+            audioStream.SetChannels(1);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(audioStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+
+            Assert.Equal(1, mediaInfo.AudioStreams.First().Channels);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
+        [Fact]
+        public async Task ChangeSamplerate()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+
+            var audioStream = inputFile.AudioStreams.First();
+            var sampleRate = audioStream.SampleRate;
+            Assert.Equal(48000, sampleRate);
+            audioStream.SetSampleRate(44100);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(audioStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+
+            Assert.Equal(44100, mediaInfo.AudioStreams.First().SampleRate);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
+
         [Fact]
         public async Task OnConversion_ExtractOnlyAudioStream_OnProgressFires()
         {

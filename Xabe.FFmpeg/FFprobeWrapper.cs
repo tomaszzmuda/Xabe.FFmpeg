@@ -169,7 +169,9 @@ namespace Xabe.FFmpeg
                     Duration = GetAudioDuration(model),
                     Source = fileInfo,
                     Index = model.index,
-                    Bitrate = Math.Abs(model.bit_rate)
+                    Bitrate = Math.Abs(model.bit_rate),
+                    Channels = model.channels,
+                    SampleRate = model.sample_rate
                 };
                 yield return stream;
             }
