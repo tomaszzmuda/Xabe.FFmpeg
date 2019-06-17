@@ -73,6 +73,27 @@ namespace Xabe.FFmpeg.Streams
         IVideoStream Reverse();
 
         /// <summary>
+        ///     Set Flags for conversion (-flags option)
+        /// </summary>
+        /// <param name="flags">Flags to use</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetFlags(Flags flags);
+
+        /// <summary>
+        ///     Set Framerate of the video (-r option)
+        /// </summary>
+        /// <param name="framerate">Framerates in FPS</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetFramerate(int framerate);
+
+        /// <summary>
+        ///     Set Bitrate of the video (-b:v option)
+        /// </summary>
+        /// <param name="bitrate">Bitrate in bits</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetBitrate(double bitrate);
+
+        /// <summary>
         ///     Set size of video
         /// </summary>
         /// <param name="size">VideoSize</param>

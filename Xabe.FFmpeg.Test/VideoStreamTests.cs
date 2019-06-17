@@ -31,6 +31,74 @@ namespace Xabe.FFmpeg.Test
             Assert.False(mediaInfo.AudioStreams.Any());
         }
 
+        [Fact]
+        public async Task ChangeFramerate()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+
+            var videoStream = inputFile.VideoStreams.First();
+            var originalFramerate = videoStream.FrameRate;
+            Assert.Equal(25, originalFramerate);
+            videoStream.SetFramerate(24);
+
+            IConversionResult result = await Conversion.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(result.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            Assert.Equal(24, mediaInfo.VideoStreams.First().FrameRate);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
+        [Fact]
+        public async Task ChangeBitrate()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+
+            var videoStream = inputFile.VideoStreams.First();
+            var originalBitrate = videoStream.Bitrate;
+            Assert.Equal(860233, originalBitrate);
+            videoStream.SetBitrate(6000);
+
+            IConversionResult result = await Conversion.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(result.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            Assert.True(mediaInfo.VideoStreams.First().Bitrate < 10000);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
+        // Check if Filter Flags do work. FFProbe does not support checking for Interlaced or Progressive,
+        //  so there is no "real check" here
+        [Fact]
+        public async Task SetFlags()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+
+            var videoStream = inputFile.VideoStreams.First();
+            videoStream.SetFlags(Flags.Interlaced);
+
+            IConversionResult result = await Conversion.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(result.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
         [Theory]
         [InlineData(9, 9, 1.0)]
         [InlineData(5, 5, 2.0)]
