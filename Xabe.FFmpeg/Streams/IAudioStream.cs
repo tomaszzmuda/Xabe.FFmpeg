@@ -24,6 +24,16 @@ namespace Xabe.FFmpeg.Streams
         double Bitrate { get; set; }
 
         /// <summary>
+        ///     Sample Rate
+        /// </summary>
+        int SampleRate { get; set; }
+
+        /// <summary>
+        ///     Channels
+        /// </summary>
+        int Channels { get; set; }
+
+        /// <summary>
         ///     Set stream to copy with orginal codec
         /// </summary>
         /// <returns>IAudioStream</returns>
@@ -59,9 +69,9 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         ///     Sets the Bitrate of the AudioStream
         /// </summary>
-        /// <param name="bitRate">Bitrate for the AudioStream in Kb</param>
+        /// <param name="bitRate">Bitrate for the AudioStream in bytes</param>
         /// <returns>IAudioStream</returns>
-        IAudioStream SetBitrate(int bitRate);
+        IAudioStream ChangeBitrate(double bitRate);
 
         /// <summary>
         ///     Sets the SampleRate of the AudioStream (-ar option)
