@@ -47,7 +47,6 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
-                                                    //.SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start().ConfigureAwait(false);
 
@@ -72,7 +71,6 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
-                                                    //.SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start().ConfigureAwait(false);
 
@@ -97,7 +95,6 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
-                                                    //.SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start().ConfigureAwait(false);
 
