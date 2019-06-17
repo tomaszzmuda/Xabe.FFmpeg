@@ -47,7 +47,6 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
-                                                    //.SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start().ConfigureAwait(false);
 
@@ -72,7 +71,6 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
-                                                    //.SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start().ConfigureAwait(false);
 
@@ -91,13 +89,12 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 
             var audioStream = inputFile.AudioStreams.First();
-            var channels = audioStream.SampleRate;
-            Assert.Equal(48000, channels);
+            var sampleRate = audioStream.SampleRate;
+            Assert.Equal(48000, sampleRate);
             audioStream.SetSampleRate(44100);
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
-                                                    //.SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start().ConfigureAwait(false);
 
