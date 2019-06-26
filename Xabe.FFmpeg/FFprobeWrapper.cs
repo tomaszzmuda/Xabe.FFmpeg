@@ -123,7 +123,7 @@ namespace Xabe.FFmpeg
         /// <param name="fileInfo">Media file info</param>
         /// <param name="mediaInfo">Empty media info</param>
         /// <returns>Properties</returns>
-        public async Task<MediaInfo> GetProperties(FileInfo fileInfo, MediaInfo mediaInfo)
+        public async Task<MediaInfo> GetProperties(System.IO.FileInfo fileInfo, MediaInfo mediaInfo)
         {
             ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName).ConfigureAwait(false);
             if (!streams.Any())
@@ -150,7 +150,7 @@ namespace Xabe.FFmpeg
             return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private IEnumerable<IAudioStream> PrepareAudioStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private IEnumerable<IAudioStream> PrepareAudioStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach (ProbeModel.Stream model in audioStreamModels)
             {
@@ -160,13 +160,15 @@ namespace Xabe.FFmpeg
                     Duration = GetAudioDuration(model),
                     Source = fileInfo,
                     Index = model.index,
-                    Bitrate = Math.Abs(model.bit_rate)
+                    Bitrate = Math.Abs(model.bit_rate),
+                    Channels = model.channels,
+                    SampleRate = model.sample_rate
                 };
                 yield return stream;
             }
         }
 
-        private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach (ProbeModel.Stream model in audioStreamModels)
             {
@@ -181,7 +183,7 @@ namespace Xabe.FFmpeg
             }
         }
 
-        private IEnumerable<IVideoStream> PrepareVideoStreams(FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
+        private IEnumerable<IVideoStream> PrepareVideoStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
         {
             foreach (ProbeModel.Stream model in videoStreamModels)
             {

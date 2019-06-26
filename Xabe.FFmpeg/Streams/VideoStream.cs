@@ -13,8 +13,10 @@ namespace Xabe.FFmpeg.Streams
         private readonly List<string> _parameters = new List<string>();
         private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
         private string _watermarkSource;
+        private string _bitrate;
         private string _bitsreamFilter;
         private string _frameCount;
+        private string _frameRate;
         private string _loop;
         private string _reverse;
         private string _rotate;
@@ -22,6 +24,7 @@ namespace Xabe.FFmpeg.Streams
         private string _seek;
         private string _size;
         private string _split;
+        private string _flags;
 
         /// <inheritdoc />
         public IEnumerable<IFilterConfiguration> GetFilters()
@@ -63,12 +66,15 @@ namespace Xabe.FFmpeg.Streams
             builder.Append(_scale);
             builder.Append(BuildVideoCodec());
             builder.Append(_bitsreamFilter);
+            builder.Append(_bitrate);
+            builder.Append(_frameRate);
             builder.Append(_frameCount);
             builder.Append(_loop);
             builder.Append(_split);
             builder.Append(_reverse);
             builder.Append(_rotate);
             builder.Append(_size);
+            builder.Append(_flags);
             return builder.ToString();
         }
 
@@ -150,6 +156,27 @@ namespace Xabe.FFmpeg.Streams
         public IVideoStream Reverse()
         {
             _reverse = "-vf reverse ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetBitrate(double bitrate)
+        {
+            _bitrate = $"-b:v {bitrate} ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetFlags(Flags flags)
+        {
+            _flags = $"-flags {flags} ";
+            return this;
+        }
+        
+        /// <inheritdoc />
+        public IVideoStream SetFramerate(int framerate)
+        {
+            _frameRate = $"-r {framerate} ";
             return this;
         }
 
