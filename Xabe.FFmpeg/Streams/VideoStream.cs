@@ -54,7 +54,7 @@ namespace Xabe.FFmpeg.Streams
 
         /// <inheritdoc />
         public FileInfo Source { get; internal set; }
-        
+
         /// <inheritdoc />
         public VideoCodec Codec { get; private set; }
 
