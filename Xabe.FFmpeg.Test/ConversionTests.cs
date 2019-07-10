@@ -108,7 +108,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                                 .GetScreenCapture(30)
+                                                                 .GetScreenCapture(29.97)
                                                                  .SetInputTime(TimeSpan.FromSeconds(10))
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(false);
@@ -116,7 +116,7 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("h264", resultFile.VideoStreams.First().Format);
-            Assert.Equal(30, resultFile.VideoStreams.First().FrameRate);
+            Assert.Equal(29.97, resultFile.VideoStreams.First().FrameRate);
             Assert.Equal(TimeSpan.FromSeconds(10), resultFile.VideoStreams.First().Duration);
         }
 

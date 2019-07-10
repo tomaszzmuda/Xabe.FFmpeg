@@ -52,11 +52,11 @@ namespace Xabe.FFmpeg
 
                 builder.Append(_hardwareAcceleration);
                 builder.Append(BuildInputFormat());
+                builder.Append(BuildParameters(ParameterPosition.PreInput));
                 builder.Append(_inputTime);
-
+                
                 if (!_capturing)
                 {
-                    builder.Append(BuildParameters(ParameterPosition.PreInput));
                     builder.Append(BuildInputParameters());
                     builder.Append(BuildInput());
                 }
@@ -67,10 +67,8 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
-                builder.Append(_outputTime);
-                builder.Append(string.Join(string.Empty, _parameters));
-                builder.Append(BuildOutputFormat());
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
+                builder.Append(BuildOutputFormat());
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -308,7 +306,7 @@ namespace Xabe.FFmpeg
 
                 SetInputFormat(MediaFormat.GdiGrab);
                 SetFrameRate(frameRate);
-                AddParameter("-i desktop ");
+                AddParameter("-i desktop ", ParameterPosition.PreInput);
                 AddParameter("-pix_fmt yuv420p");
                 AddParameter("-preset ultrafast");
                 return this;
@@ -319,7 +317,7 @@ namespace Xabe.FFmpeg
 
                 SetInputFormat(MediaFormat.AVFoundation);
                 SetFrameRate(frameRate);
-                AddParameter("-i 1:1 ");
+                AddParameter("-i 1:1 ", ParameterPosition.PreInput);
                 AddParameter("-pix_fmt yuv420p");
                 AddParameter("-preset ultrafast");
                 return this;
@@ -330,7 +328,7 @@ namespace Xabe.FFmpeg
 
                 SetInputFormat(MediaFormat.X11Grab);
                 SetFrameRate(frameRate);
-                AddParameter("-i :0.0+0,0 ");
+                AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
                 AddParameter("-pix_fmt yuv420p");
                 AddParameter("-preset ultrafast");
                 return this;
