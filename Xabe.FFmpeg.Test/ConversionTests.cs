@@ -262,7 +262,7 @@ namespace Xabe.FFmpeg.Test
             Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
-            
+
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .ExtractNthFrame(10, outputBuilder)
@@ -453,6 +453,22 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("h264", resultFile.VideoStreams.First().Format);
             Assert.Contains($"-threads 1", conversionResult.Arguments);
+        }
+
+        [Fact]
+        public async Task AddPreParameterTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start()
+                                                                 .ConfigureAwait(false);
+
+            Assert.StartsWith("-re", conversionResult.Arguments);
         }
     }
 }

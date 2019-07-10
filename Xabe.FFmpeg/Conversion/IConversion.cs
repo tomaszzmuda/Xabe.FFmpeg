@@ -227,8 +227,9 @@ namespace Xabe.FFmpeg
         ///     Add additional parameters for the conversion (They must be well formed)
         /// </summary>
         /// <param name="parameter"> Parameter to set</param>
+        /// <param name="parameterPosition">Position of parameter</param>
         /// <returns>IConversion object</returns>
-        IConversion AddParameter(string parameter);
+        IConversion AddParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput);
 
         /// <summary>
         ///     Add streams to output file
