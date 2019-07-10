@@ -142,15 +142,6 @@ namespace Xabe.FFmpeg
             return mediaInfo;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public async Task<DShowDeviceInfo> GetDShowDevices()
-        {
-            return null;
-        }
-
         private static TimeSpan CalculateDuration(IEnumerable<IVideoStream> videoStreams, IEnumerable<IAudioStream> audioStreams)
         {
             double audioMax = audioStreams.Any() ? audioStreams.Max(x => x.Duration.TotalSeconds) : 0;

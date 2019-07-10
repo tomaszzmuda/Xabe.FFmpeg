@@ -80,11 +80,6 @@
         public static MediaFormat Rawvideo => new MediaFormat("rawvideo");
 
         /// <summary>
-        ///     Dshow
-        /// </summary>
-        public static MediaFormat Dshow => new MediaFormat("dshow");
-
-        /// <summary>
         ///     GdiGrab
         /// </summary>
         public static MediaFormat GdiGrab => new MediaFormat("gdigrab");

@@ -59,7 +59,6 @@ namespace Xabe.FFmpeg
                     builder.Append(BuildParameters(ParameterPosition.PreInput));
                     builder.Append(BuildInputParameters());
                     builder.Append(BuildInput());
-                     builder.Append(BuildParameters(ParameterPosition.PostInput));
                 }
 
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
@@ -71,6 +70,7 @@ namespace Xabe.FFmpeg
                 builder.Append(_outputTime);
                 builder.Append(string.Join(string.Empty, _parameters));
                 builder.Append(BuildOutputFormat());
+                builder.Append(BuildParameters(ParameterPosition.PostInput));
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -302,26 +302,16 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion GetScreenCapture(double frameRate)
         {
-            bool hasDShowDevice = false;
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                hasDShowDevice = ParseDShowDevices();
                 _capturing = true;
-                if (hasDShowDevice)
-                {
-                    // TODO: Implement dshow device capture
-                    return this;
-                }
-                else
-                {
-                    SetInputFormat(MediaFormat.GdiGrab);
-                    SetFrameRate(frameRate);
-                    AddParameter("-i desktop ");
-                    AddParameter("-pix_fmt yuv420p");
-                    AddParameter("-preset ultrafast");
-                    return this;
-                }
+
+                SetInputFormat(MediaFormat.GdiGrab);
+                SetFrameRate(frameRate);
+                AddParameter("-i desktop ");
+                AddParameter("-pix_fmt yuv420p");
+                AddParameter("-preset ultrafast");
+                return this;
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
@@ -348,11 +338,6 @@ namespace Xabe.FFmpeg
 
             _capturing = false;
             return this;
-        }
-
-        private bool ParseDShowDevices()
-        {
-            throw new NotImplementedException();
         }
 
         private string BuildConversionParameters()
