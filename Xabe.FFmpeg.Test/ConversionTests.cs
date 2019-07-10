@@ -101,8 +101,8 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Format);
             Assert.Equal(".avi", resultFile.FileInfo.Extension);
         }
-        
-        [Fact]
+
+        [RunnableInDebugOnly]
         public async Task GetScreenCaptureTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
