@@ -19,7 +19,7 @@ namespace Xabe.FFmpeg
     {
         private readonly object _builderLock = new object();
         private readonly Dictionary<string, int> _inputFileMap = new Dictionary<string, int>();
-        private readonly IList<string> _parameters = new List<string>();
+        private readonly IList<ConversionParameter> _parameters = new List<ConversionParameter>();
         private readonly List<IStream> _streams = new List<IStream>();
 
         private IEnumerable<FieldInfo> _fields;
@@ -34,7 +34,7 @@ namespace Xabe.FFmpeg
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
 
-        private Func<string, string> _buildOutputFileName = null; 
+        private Func<string, string> _buildOutputFileName = null;
         /// <inheritdoc />
         public string Build()
         {
@@ -46,6 +46,7 @@ namespace Xabe.FFmpeg
                     _buildOutputFileName = (number) => { return _output; };
 
                 builder.Append(_hardwareAcceleration);
+                builder.Append(BuildParameters(ParameterPosition.PreInput));
                 builder.Append(BuildInputParameters());
                 builder.Append(BuildInput());
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
@@ -54,7 +55,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
-                builder.Append(string.Join(string.Empty, _parameters));
+                builder.Append(BuildParameters(ParameterPosition.PostInput));
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -130,9 +131,13 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion AddParameter(string parameter)
+        public IConversion AddParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput)
         {
-            _parameters.Add($"{parameter.Trim()} ");
+            _parameters.Add(new ConversionParameter
+            {
+                Parameter = $"{parameter.Trim()} ",
+                Position = parameterPosition
+            });
             return this;
         }
 
@@ -202,7 +207,7 @@ namespace Xabe.FFmpeg
 
             if (HasH264Stream())
                 AddParameter("-x264opts nal-hrd=cbr:force-cfr=1");
-            
+
             return this;
         }
 
@@ -233,7 +238,7 @@ namespace Xabe.FFmpeg
             _buildOutputFileName = buildOutputFileName;
             AddParameter(string.Format("-vf select='not(mod(n\\,{0}))'", frameNo));
             AddParameter("-vsync vfr");
-            
+
             return this;
         }
 
@@ -355,6 +360,25 @@ namespace Xabe.FFmpeg
                 }
             }
             return builder.ToString();
+        }
+
+        /// <summary>
+        ///     Create parameters string
+        /// </summary>
+        /// <param name="forPosition">Position for parameters</param>
+        /// <returns>Parameters</returns>
+        private string BuildParameters(ParameterPosition forPosition)
+        {
+            IEnumerable<ConversionParameter> parameters = _parameters?.Where(x => x.Position == forPosition);
+            if (parameters != null &&
+                parameters.Any())
+            {
+                return string.Join(string.Empty, parameters.Select(x => x.Parameter));
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>
