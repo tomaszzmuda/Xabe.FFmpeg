@@ -155,6 +155,48 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task SetInputTimeTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IAudioStream audioStream = info.AudioStreams.First();
+            IVideoStream videoStream = info.VideoStreams.First();
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .AddStream(audioStream)
+                                                                 .SetInputTime(TimeSpan.FromSeconds(5))
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal(TimeSpan.FromSeconds(5), resultFile.AudioStreams.First().Duration);
+            Assert.Equal(TimeSpan.FromSeconds(5), resultFile.VideoStreams.First().Duration);
+        }
+
+        [Fact]
+        public async Task SetOutputTimeTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IAudioStream audioStream = info.AudioStreams.First();
+            IVideoStream videoStream = info.VideoStreams.First();
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutputTime(TimeSpan.FromSeconds(5))
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal(TimeSpan.FromSeconds(5), resultFile.AudioStreams.First().Duration);
+            Assert.Equal(TimeSpan.FromSeconds(5), resultFile.VideoStreams.First().Duration);
+        }
+
+        [Fact]
         public async Task SetAudioBitrateTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);

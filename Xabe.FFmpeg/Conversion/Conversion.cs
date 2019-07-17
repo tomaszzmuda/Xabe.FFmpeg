@@ -52,9 +52,9 @@ namespace Xabe.FFmpeg
 
                 builder.Append(_hardwareAcceleration);
                 builder.Append(BuildInputFormat());
-                builder.Append(BuildParameters(ParameterPosition.PreInput));
                 builder.Append(_inputTime);
-                
+                builder.Append(BuildParameters(ParameterPosition.PreInput));
+                                
                 if (!_capturing)
                 {
                     builder.Append(BuildInputParameters());
@@ -68,6 +68,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
+                builder.Append(_outputTime);
                 builder.Append(BuildOutputFormat());
                 builder.Append(_buildOutputFileName("_%03d"));
 
