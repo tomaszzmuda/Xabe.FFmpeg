@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,11 +31,15 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private string _seek;
         private bool _useMultiThreads = true;
+        private bool _capturing = false;
         private int? _threadsCount;
+        private string _inputTime;
+        private string _outputTime;
+
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
-
         private Func<string, string> _buildOutputFileName = null;
+
         /// <inheritdoc />
         public string Build()
         {
@@ -46,9 +51,16 @@ namespace Xabe.FFmpeg
                     _buildOutputFileName = (number) => { return _output; };
 
                 builder.Append(_hardwareAcceleration);
+                builder.Append(BuildInputFormat());
+                builder.Append(_inputTime);
                 builder.Append(BuildParameters(ParameterPosition.PreInput));
-                builder.Append(BuildInputParameters());
-                builder.Append(BuildInput());
+                                
+                if (!_capturing)
+                {
+                    builder.Append(BuildInputParameters());
+                    builder.Append(BuildInput());
+                }
+
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
                 builder.Append(BuildThreadsArgument(_useMultiThreads));
                 builder.Append(BuildConversionParameters());
@@ -56,6 +68,8 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
+                builder.Append(_outputTime);
+                builder.Append(BuildOutputFormat());
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -70,6 +84,15 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public int? FFmpegProcessId => _ffmpeg?.FFmpegProcessId;
+
+        /// <inheritdoc />
+        public string OutputFilePath { get; private set; }
+
+        /// <inheritdoc />
+        public MediaFormat InputFormat { get; private set; }
+
+        /// <inheritdoc />
+        public MediaFormat OutputFormat { get; private set; }
 
         /// <inheritdoc />
         public Task<IConversionResult> Start()
@@ -155,9 +178,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public string OutputFilePath { get; private set; }
-
-        /// <inheritdoc />
         public IConversion SetPreset(ConversionPreset preset)
         {
             _preset = $"-preset {preset.ToString().ToLower()} ";
@@ -170,6 +190,26 @@ namespace Xabe.FFmpeg
             if (seek.HasValue)
             {
                 _seek = $"-ss {seek.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetInputTime(TimeSpan? time)
+        {
+            if (time.HasValue)
+            {
+                _inputTime = $"-t {time.Value.ToFFmpeg()} ";
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetOutputTime(TimeSpan? time)
+        {
+            if (time.HasValue)
+            {
+                _outputTime = $"-t {time.Value.ToFFmpeg()} ";
             }
             return this;
         }
@@ -251,6 +291,54 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <inheritdoc />
+        public IConversion SetFrameRate(double frameRate)
+        {
+            AddParameter($"-framerate {frameRate}");
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion GetScreenCapture(double frameRate)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                _capturing = true;
+
+                SetInputFormat(MediaFormat.GdiGrab);
+                SetFrameRate(frameRate);
+                AddParameter("-i desktop ", ParameterPosition.PreInput);
+                AddParameter("-pix_fmt yuv420p");
+                AddParameter("-preset ultrafast");
+                return this;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                _capturing = true;
+
+                SetInputFormat(MediaFormat.AVFoundation);
+                SetFrameRate(frameRate);
+                AddParameter("-i 1:1 ", ParameterPosition.PreInput);
+                AddParameter("-pix_fmt yuv420p");
+                AddParameter("-preset ultrafast");
+                return this;
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                _capturing = true;
+
+                SetInputFormat(MediaFormat.X11Grab);
+                SetFrameRate(frameRate);
+                AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
+                AddParameter("-pix_fmt yuv420p");
+                AddParameter("-preset ultrafast");
+                return this;
+            }
+
+            _capturing = false;
+            return this;
+        }
+
         private string BuildConversionParameters()
         {
             var builder = new StringBuilder();
@@ -283,13 +371,6 @@ namespace Xabe.FFmpeg
         private string BuildOverwriteOutputParameter(bool overwriteOutput)
         {
             return overwriteOutput ? "-y " : "-n ";
-        }
-
-        /// <inheritdoc />
-        public IConversion SetOverwriteOutput(bool overwrite)
-        {
-            _overwriteOutput = overwrite;
-            return this;
         }
 
         private string BuildFilters()
@@ -397,6 +478,22 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
+        private string BuildInputFormat()
+        {
+            if (InputFormat != null)
+                return $"-f {InputFormat.ToString()} ";
+            else
+                return string.Empty;
+        }
+
+        private string BuildOutputFormat()
+        {
+            if (OutputFormat != null)
+                return $"-f {OutputFormat.ToString()} ";
+            else
+                return string.Empty;
+        }
+
         private bool HasH264Stream()
         {
             foreach (IStream stream in _streams)
@@ -434,6 +531,30 @@ namespace Xabe.FFmpeg
                 _hardwareAcceleration += $"-hwaccel_device {device} ";
             }
             UseMultiThread(false);
+            return this;
+        }
+
+
+        /// <inheritdoc />
+        public IConversion SetOverwriteOutput(bool overwrite)
+        {
+            _overwriteOutput = overwrite;
+            return this;
+        }
+
+
+        /// <inheritdoc />
+        public IConversion SetInputFormat(MediaFormat inputFormat)
+        {
+            InputFormat = inputFormat;
+            return this;
+        }
+
+
+        /// <inheritdoc />
+        public IConversion SetOutputFormat(MediaFormat outputFormat)
+        {
+            OutputFormat = outputFormat;
             return this;
         }
     }

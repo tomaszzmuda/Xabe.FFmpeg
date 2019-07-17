@@ -8,12 +8,22 @@
         /// <summary>
         ///     .mp4
         /// </summary>
+        public const string Avi = ".avi";
+
+        /// <summary>
+        ///     .mp4
+        /// </summary>
         public const string Mp4 = ".mp4";
 
         /// <summary>
         ///     .mp3
         /// </summary>
         public const string Mp3 = ".mp3";
+
+        /// <summary>
+        ///     .mpeg
+        /// </summary>
+        public const string Mpeg = ".mpeg";
 
         /// <summary>
         ///     .ts
