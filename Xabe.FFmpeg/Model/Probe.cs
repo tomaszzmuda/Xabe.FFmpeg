@@ -23,9 +23,11 @@ namespace Xabe.FFmpeg.Model
 
             public int index { get; set; }
 
-            public int channels { get;set; }
+            public int channels { get; set; }
 
-            public int sample_rate { get;set; }
+            public int sample_rate { get; set; }
+
+            public string pix_fmt { get; set; }
 
             public Tags tags { get; set; }
 
@@ -40,7 +42,6 @@ namespace Xabe.FFmpeg.Model
             //            public int has_b_frames { get; set; }
             //            public string sample_aspect_ratio { get; set; }
             //            public string display_aspect_ratio { get; set; }
-            //            public string pix_fmt { get; set; }
             //            public int level { get; set; }
             //            public string chroma_location { get; set; }
             //            public int refs { get; set; }

@@ -102,6 +102,24 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(".avi", resultFile.FileInfo.Extension);
         }
 
+        [Fact]
+        public async Task SetOutputPixelFormatTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetOutputPixelFormat(PixelFormat.Yuv420P)
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
+        }
+        
         [RunnableInDebugOnly]
         public async Task GetScreenCaptureTest()
         {
@@ -316,6 +334,27 @@ namespace Xabe.FFmpeg.Test
                 .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == FileExtensions.Png).Count();
 
             Assert.Equal(1, outputFilesCount);
+        }
+
+        [Fact]
+        public async Task BuildVideoFromImagesTest()
+        {
+            Func<string, string> inputBuilder = (number) => { return $" -i {Path.Combine(Resources.Images, "img" + number + FileExtensions.Png)} "; };
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .SetInputFrameRate(1)
+                                                                 .BuildVideoFromImages(1, inputBuilder)
+                                                                 .SetOutputFrameRate(1)
+                                                                 .SetOutputPixelFormat(PixelFormat.Yuv420P)
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(true);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
+            Assert.Equal(1, resultFile.VideoStreams.First().FrameRate);
+            Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
         [Fact]

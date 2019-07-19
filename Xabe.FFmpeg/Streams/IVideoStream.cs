@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg.Streams
@@ -42,6 +43,11 @@ namespace Xabe.FFmpeg.Streams
         ///     Video bitrate
         /// </summary>
         double Bitrate { get; }
+
+        /// <summary>
+        /// Pixel Format
+        /// </summary>
+        string PixelFormat{ get; }
 
         /// <summary>
         ///     Rotate video
@@ -108,11 +114,18 @@ namespace Xabe.FFmpeg.Streams
         IVideoStream SetSize(VideoSize size);
 
         /// <summary>
-        ///     Set video codec and bitrate
+        ///     Set video codec
         /// </summary>
         /// <param name="codec">Video codec</param>
         /// <returns>IVideoStream</returns>
         IVideoStream SetCodec(VideoCodec codec);
+
+        /// <summary>
+        ///     Set video pixel format
+        /// </summary>
+        /// <param name="pixelFormat">Pixel Format</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetPixelFormat(PixelFormat pixelFormat);
 
         /// <summary>
         ///     Set stream to copy with orginal codec
