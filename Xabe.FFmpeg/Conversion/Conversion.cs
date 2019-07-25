@@ -316,7 +316,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetOutputFrameRate(double frameRate)
+        public IConversion SetFrameRate(double frameRate)
         {
             AddParameter($"-framerate {frameRate}", ParameterPosition.PostInput);
             return this;
@@ -330,7 +330,7 @@ namespace Xabe.FFmpeg
                 _capturing = true;
 
                 SetInputFormat(MediaFormat.GdiGrab);
-                SetOutputFrameRate(frameRate);
+                SetFrameRate(frameRate);
                 AddParameter("-i desktop ", ParameterPosition.PreInput);
                 SetOutputPixelFormat(PixelFormat.Yuv420P);
                 AddParameter("-preset ultrafast");
@@ -341,7 +341,7 @@ namespace Xabe.FFmpeg
                 _capturing = true;
 
                 SetInputFormat(MediaFormat.AVFoundation);
-                SetOutputFrameRate(frameRate);
+                SetFrameRate(frameRate);
                 AddParameter("-i 1:1 ", ParameterPosition.PreInput);
                 SetOutputPixelFormat(PixelFormat.Yuv420P);
                 AddParameter("-preset ultrafast");
@@ -352,7 +352,7 @@ namespace Xabe.FFmpeg
                 _capturing = true;
 
                 SetInputFormat(MediaFormat.X11Grab);
-                SetOutputFrameRate(frameRate);
+                SetFrameRate(frameRate);
                 AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
                 SetOutputPixelFormat(PixelFormat.Yuv420P);
                 AddParameter("-preset ultrafast");

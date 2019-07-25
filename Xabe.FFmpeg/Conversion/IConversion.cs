@@ -66,7 +66,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="frameRate">The desired framerate of the output</param>
         /// <returns>IConversion object</returns>
-        IConversion SetOutputFrameRate(double frameRate);
+        IConversion SetFrameRate(double frameRate);
 
         /// <summary>
         /// Builds the -framerate option for the input of this conversion

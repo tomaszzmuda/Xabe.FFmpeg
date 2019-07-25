@@ -345,7 +345,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult conversionResult = await Conversion.New()
                                                                  .SetInputFrameRate(1)
                                                                  .BuildVideoFromImages(1, inputBuilder)
-                                                                 .SetOutputFrameRate(1)
+                                                                 .SetFrameRate(1)
                                                                  .SetOutputPixelFormat(PixelFormat.Yuv420P)
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(true);
