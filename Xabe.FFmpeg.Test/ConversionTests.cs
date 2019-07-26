@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -339,7 +340,10 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BuildVideoFromImagesTest()
         {
-            Func<string, string> inputBuilder = (number) => { return $" -i {Path.Combine(Resources.Images, "img" + number + FileExtensions.Png)} "; };
+            List<string> files = Directory.EnumerateFiles(Resources.Images).ToList();
+            InputBuilder builder = new InputBuilder();
+            string preparedFilesDir = string.Empty;
+            Func<string, string> inputBuilder = builder.PrepareInputFiles(files, out preparedFilesDir);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
             IConversionResult conversionResult = await Conversion.New()
@@ -350,8 +354,11 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(true);
 
+            int preparedFilesCount = Directory.EnumerateFiles(preparedFilesDir).ToList().Count;
+
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal(builder.FileList.Count, preparedFilesCount);
             Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
             Assert.Equal(1, resultFile.VideoStreams.First().FrameRate);
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
