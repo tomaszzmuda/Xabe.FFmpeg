@@ -180,7 +180,10 @@ namespace Xabe.FFmpeg
                     Format = model.codec_name,
                     Source = fileInfo,
                     Index = model.index,
-                    Language = model.tags?.language
+                    Language = model.tags?.language,
+                    Title = model.tags?.title,
+                    Default = model.disposition?._default,
+                    Forced = model.disposition?.forced,
                 };
                 yield return stream;
             }
@@ -200,7 +203,9 @@ namespace Xabe.FFmpeg
                     Ratio = GetVideoAspectRatio(model.width, model.height),
                     Source = fileInfo,
                     Index = model.index,
-                    Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate
+                    Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate,
+                    Default = model.disposition?._default,
+                    Forced = model.disposition?.forced,
                 };
                 yield return stream;
             }

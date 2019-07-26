@@ -56,31 +56,31 @@ namespace Xabe.FFmpeg.Model
             //            public string start_time { get; set; }
             //            public int duration_ts { get; set; }
             //            public string nb_frames { get; set; }
-            //            public Disposition disposition { get; set; }
         }
 
         internal class Tags
         {
             public string language { get; set; }
+            public string title { get; set; }
         }
 
-        //        NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
-
-        public class Disposition
+        internal class Disposition
         {
             [JsonProperty("default")]
             public int _default { get; set; }
-            public int dub { get; set; }
-            public int original { get; set; }
-            public int comment { get; set; }
-            public int lyrics { get; set; }
-            public int karaoke { get; set; }
             public int forced { get; set; }
-            public int hearing_impaired { get; set; }
-            public int visual_impaired { get; set; }
-            public int clean_effects { get; set; }
-            public int attached_pic { get; set; }
-            public int timed_thumbnails { get; set; }
+
+            //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
+            //            public int dub { get; set; }
+            //            public int original { get; set; }
+            //            public int comment { get; set; }
+            //            public int lyrics { get; set; }
+            //            public int karaoke { get; set; }
+            //            public int hearing_impaired { get; set; }
+            //            public int visual_impaired { get; set; }
+            //            public int clean_effects { get; set; }
+            //            public int attached_pic { get; set; }
+            //            public int timed_thumbnails { get; set; }
         }
     }
 }
