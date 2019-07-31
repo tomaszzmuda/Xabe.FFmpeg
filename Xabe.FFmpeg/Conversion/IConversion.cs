@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,9 +58,17 @@ namespace Xabe.FFmpeg
         /// Builds a video from a directory containing one or more sequentially named images
         /// </summary>
         /// <param name="startNumber">The number of the image to start building video from</param>
-        /// /// <param name="buildInputFileName"> Delegate Function to build up custom filename when inputting multiple files </param>
+        /// <param name="buildInputFileName"> Delegate Function to build up custom filename when inputting multiple files </param>
         /// <returns>IConversion object</returns>
         IConversion BuildVideoFromImages(int startNumber, Func<string, string> buildInputFileName);
+
+        /// <summary>
+        /// Builds a video from a directory containing one or more sequentially named images
+        /// </summary>
+        /// <param name="startNumber">The number of the image to start building video from</param>
+        /// <param name="imageFiles"> List of Image Files to Build into a Video</param>
+        /// <returns>IConversion object</returns>
+        IConversion BuildVideoFromImages(int startNumber, IEnumerable<string> imageFiles);
 
         /// <summary>
         /// Builds the -framerate option for the output of this conversion

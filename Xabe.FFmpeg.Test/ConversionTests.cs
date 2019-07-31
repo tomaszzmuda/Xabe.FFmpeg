@@ -365,6 +365,28 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task BuildVideoFromImagesListTest()
+        {
+            List<string> files = Directory.EnumerateFiles(Resources.Images).ToList();
+            string preparedFilesDir = string.Empty;
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .SetInputFrameRate(1)
+                                                                 .BuildVideoFromImages(1, files)
+                                                                 .SetFrameRate(1)
+                                                                 .SetOutputPixelFormat(PixelFormat.Yuv420P)
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(true);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
+            Assert.Equal(1, resultFile.VideoStreams.First().FrameRate);
+            Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
+        }
+
+        [Fact]
         public async Task OverwriteFilesTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
