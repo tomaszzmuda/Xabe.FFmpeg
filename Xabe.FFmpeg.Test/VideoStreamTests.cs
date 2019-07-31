@@ -415,5 +415,14 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("mpeg2video", mediaInfo.VideoStreams.First().Format);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
+
+        [Fact]
+        public async Task ExtractAdditionalValuesTest()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+
+            Assert.Equal(1, inputFile.VideoStreams.First().Default.Value);
+            Assert.Equal(0, inputFile.VideoStreams.First().Forced.Value);
+        }
     }
 }

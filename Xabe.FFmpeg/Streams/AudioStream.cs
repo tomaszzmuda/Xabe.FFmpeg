@@ -137,6 +137,15 @@ namespace Xabe.FFmpeg.Streams
         public AudioCodec Codec { get; private set; }
 
         /// <inheritdoc />
+        public string Language { get; set; }
+
+        /// <inheritdoc />
+        public int? Default { get; set; }
+
+        /// <inheritdoc />
+        public int? Forced { get; set; }
+
+        /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
             return new[] { Source.FullName };

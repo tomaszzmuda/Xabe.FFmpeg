@@ -59,6 +59,12 @@ namespace Xabe.FFmpeg.Streams
         public VideoCodec Codec { get; private set; }
 
         /// <inheritdoc />
+        public int? Default { get; set; }
+
+        /// <inheritdoc />
+        public int? Forced { get; set; }
+
+        /// <inheritdoc />
         public string Build()
         {
             var builder = new StringBuilder();

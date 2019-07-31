@@ -62,6 +62,8 @@ namespace Xabe.FFmpeg.Test
             {
                 Assert.Equal("spa", resultInfo.SubtitleStreams.First().Language);
             }
+            Assert.Equal(0, resultInfo.SubtitleStreams.First().Default.Value);
+            Assert.Equal(0, resultInfo.SubtitleStreams.First().Forced.Value);
         }
     }
 }

@@ -162,22 +162,28 @@ namespace Xabe.FFmpeg
                     Index = model.index,
                     Bitrate = Math.Abs(model.bit_rate),
                     Channels = model.channels,
-                    SampleRate = model.sample_rate
+                    SampleRate = model.sample_rate,
+                    Language = model.tags?.language,
+                    Default = model.disposition?._default,
+                    Forced = model.disposition?.forced,
                 };
                 yield return stream;
             }
         }
 
-        private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> subtitleStreamModels)
         {
-            foreach (ProbeModel.Stream model in audioStreamModels)
+            foreach (ProbeModel.Stream model in subtitleStreamModels)
             {
                 var stream = new SubtitleStream
                 {
                     Format = model.codec_name,
                     Source = fileInfo,
                     Index = model.index,
-                    Language = model.tags?.language
+                    Language = model.tags?.language,
+                    Title = model.tags?.title,
+                    Default = model.disposition?._default,
+                    Forced = model.disposition?.forced,
                 };
                 yield return stream;
             }
@@ -197,7 +203,9 @@ namespace Xabe.FFmpeg
                     Ratio = GetVideoAspectRatio(model.width, model.height),
                     Source = fileInfo,
                     Index = model.index,
-                    Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate
+                    Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate,
+                    Default = model.disposition?._default,
+                    Forced = model.disposition?.forced,
                 };
                 yield return stream;
             }
