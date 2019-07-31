@@ -309,14 +309,13 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion BuildVideoFromImages(int startNumber, IEnumerable<string> imageFiles)
+        public IConversion BuildVideoFromImages(IEnumerable<string> imageFiles)
         {
             InputBuilder builder = new InputBuilder();
             string directory = string.Empty;
 
             _buildInputFileName = builder.PrepareInputFiles(imageFiles.ToList(), out directory);
 
-            AddParameter($"-start_number {startNumber}", ParameterPosition.PreInput);
             return this;
         }
 

@@ -65,10 +65,9 @@ namespace Xabe.FFmpeg
         /// <summary>
         /// Builds a video from a directory containing one or more sequentially named images
         /// </summary>
-        /// <param name="startNumber">The number of the image to start building video from</param>
         /// <param name="imageFiles"> List of Image Files to Build into a Video</param>
         /// <returns>IConversion object</returns>
-        IConversion BuildVideoFromImages(int startNumber, IEnumerable<string> imageFiles);
+        IConversion BuildVideoFromImages(IEnumerable<string> imageFiles);
 
         /// <summary>
         /// Builds the -framerate option for the output of this conversion
