@@ -54,7 +54,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildInputFormat());
                 builder.Append(_inputTime);
                 builder.Append(BuildParameters(ParameterPosition.PreInput));
-                                
+
                 if (!_capturing)
                 {
                     builder.Append(BuildInputParameters());

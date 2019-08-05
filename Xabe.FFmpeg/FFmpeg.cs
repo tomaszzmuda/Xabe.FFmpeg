@@ -58,12 +58,12 @@ namespace Xabe.FFmpeg
 
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
-        /// <param id="gpuSupport">Determine if a fully compiled FFPmpeg is downloaded</param>
+        /// <param id="fullVersion">Determine if a fully compiled FFPmpeg is downloaded (with gpu support and etc)</param>
         /// </summary>
-        public static Task GetLatestVersion(bool gpuSupport = false)
+        public static Task GetLatestVersion(bool fullVersion = false)
         {
-            IFFMpegDownloader downloader;
-            if (gpuSupport)
+            IFFmpegDownloader downloader;
+            if (fullVersion)
             {
                 downloader = new FullFFmpegDownloader();
             }

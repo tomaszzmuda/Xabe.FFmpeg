@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -10,7 +8,7 @@ namespace Xabe.FFmpeg.Downloader.Official
 {
     internal class FFmpegDownloader : FFmpegDownloaderBase
     {
-        internal LinkProvider _linkProvider = new LinkProvider();
+        internal LinkProvider LinkProvider { get; set; } = new LinkProvider();
 
         public override async Task GetLatestVersion()
         {
@@ -35,7 +33,7 @@ namespace Xabe.FFmpeg.Downloader.Official
 
         internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries)
         {
-            Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
+            Links links = LinkProvider.GetLinks(latestFFmpegBinaries);
 
             var ffmpegZipDownloadTask = DownloadFile(links.FFmpegLink);
             var ffprobeZipDownloadTask = DownloadFile(links.FFprobeLink);

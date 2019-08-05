@@ -12,7 +12,6 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
     ///<summary>Download a Fullbuild from zeranoe.com for Windows or macOS</summary>
     internal class FullFFmpegDownloader : FFmpegDownloaderBase
     {
-
         private string GenerateLink()
         {
             switch (s_os)
@@ -39,7 +38,6 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
             var fullPackZip = await DownloadFile(link).ConfigureAwait(false);
 
             Extract(fullPackZip, FFmpeg.ExecutablesPath ?? ".");
-
         }
 
         /// <summary>Extract only binary files from the zip archive</summary>
@@ -67,6 +65,5 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
 
             File.Delete(ffMpegZipPath);
         }
-
     }
 }

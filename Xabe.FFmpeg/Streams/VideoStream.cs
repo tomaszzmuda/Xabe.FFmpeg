@@ -172,7 +172,7 @@ namespace Xabe.FFmpeg.Streams
             _flags = $"-flags {flags} ";
             return this;
         }
-        
+
         /// <inheritdoc />
         public IVideoStream SetFramerate(int framerate)
         {

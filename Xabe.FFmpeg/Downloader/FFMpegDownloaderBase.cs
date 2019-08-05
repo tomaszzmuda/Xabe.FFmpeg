@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Xabe.FFmpeg.Downloader
 {
-    internal abstract class FFmpegDownloaderBase : IFFMpegDownloader
+    internal abstract class FFmpegDownloaderBase : IFFmpegDownloader
     {
         protected readonly OperatingSystem s_os = new OperatingSystemProvider().GetOperatingSystem();
         private string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", s_os);
@@ -76,5 +76,4 @@ namespace Xabe.FFmpeg.Downloader
             return tempPath;
         }
     }
-
 }
