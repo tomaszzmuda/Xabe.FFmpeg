@@ -34,6 +34,21 @@ namespace Xabe.FFmpeg.Streams
         int Channels { get; set; }
 
         /// <summary>
+        /// Language 
+        /// </summary>
+        string Language { get; set; }
+
+        /// <summary>
+        /// Default
+        /// </summary>
+        int? Default { get; set; }
+
+        /// <summary>
+        /// Forced
+        /// </summary>
+        int? Forced { get; set; }
+
+        /// <summary>
         ///     Set stream to copy with orginal codec
         /// </summary>
         /// <returns>IAudioStream</returns>

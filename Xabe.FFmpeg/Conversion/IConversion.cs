@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,11 +55,33 @@ namespace Xabe.FFmpeg
         IConversion ExtractNthFrame(int frameNo, Func<string, string> buildOutputFileName);
 
         /// <summary>
-        /// Builds the -framerate option for this conversion
+        /// Builds a video from a directory containing one or more sequentially named images
         /// </summary>
-        /// <param name="frameRate"></param>
+        /// <param name="startNumber">The number of the image to start building video from</param>
+        /// <param name="buildInputFileName"> Delegate Function to build up custom filename when inputting multiple files </param>
+        /// <returns>IConversion object</returns>
+        IConversion BuildVideoFromImages(int startNumber, Func<string, string> buildInputFileName);
+
+        /// <summary>
+        /// Builds a video from a directory containing one or more sequentially named images
+        /// </summary>
+        /// <param name="imageFiles"> List of Image Files to Build into a Video</param>
+        /// <returns>IConversion object</returns>
+        IConversion BuildVideoFromImages(IEnumerable<string> imageFiles);
+
+        /// <summary>
+        /// Builds the -framerate option for the output of this conversion
+        /// </summary>
+        /// <param name="frameRate">The desired framerate of the output</param>
         /// <returns>IConversion object</returns>
         IConversion SetFrameRate(double frameRate);
+
+        /// <summary>
+        /// Builds the -framerate option for the input of this conversion
+        /// </summary>
+        /// <param name="frameRate">the desired framerate of the input</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetInputFrameRate(double frameRate);
 
         /// <summary>
         ///     Seeks in output file to position. (-ss argument)
@@ -153,6 +176,13 @@ namespace Xabe.FFmpeg
         /// <param name="outputFormat">The output format to set</param>
         /// <returns>IConversion object</returns>
         IConversion SetOutputFormat(MediaFormat outputFormat);
+
+        /// <summary>
+        /// Sets the pixel format for the output file using the -pix_fmt option before the output file name
+        /// </summary>
+        /// <param name="pixelFormat">The output pixel format to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetOutputPixelFormat(PixelFormat pixelFormat);
 
         /// <summary>
         ///     Fires when FFmpeg progress changes

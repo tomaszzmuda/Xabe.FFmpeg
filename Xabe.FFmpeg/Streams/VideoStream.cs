@@ -53,10 +53,28 @@ namespace Xabe.FFmpeg.Streams
         public string Ratio { get; internal set; }
 
         /// <inheritdoc />
+        public TimeSpan Duration { get; internal set; }
+
+        /// <inheritdoc />
+        public string Format { get; internal set; }
+
+        /// <inheritdoc />
+        public int Index { get; internal set; }
+
+        /// <inheritdoc />
         public FileInfo Source { get; internal set; }
 
         /// <inheritdoc />
-        public VideoCodec Codec { get; private set; }
+        public VideoCodec Codec { get; internal set; }
+
+        /// <inheritdoc />
+        public string PixelFormat { get; internal set; }
+
+        /// <inheritdoc />
+        public int? Default { get; set; }
+
+        /// <inheritdoc />
+        public int? Forced { get; set; }
 
         /// <inheritdoc />
         public string Build()
@@ -236,15 +254,6 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public TimeSpan Duration { get; internal set; }
-
-        /// <inheritdoc />
-        public string Format { get; internal set; }
-
-        /// <inheritdoc />
-        public int Index { get; internal set; }
-
-        /// <inheritdoc />
         public IVideoStream SetWatermark(string imagePath, Position position)
         {
             _watermarkSource = imagePath;
@@ -280,6 +289,13 @@ namespace Xabe.FFmpeg.Streams
                     break;
             }
             _videoFilters["overlay"] = argument;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetPixelFormat(PixelFormat pixelFormat)
+        {
+            PixelFormat = pixelFormat.ToString();
             return this;
         }
 
