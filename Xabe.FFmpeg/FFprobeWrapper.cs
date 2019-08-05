@@ -204,8 +204,9 @@ namespace Xabe.FFmpeg
                     Source = fileInfo,
                     Index = model.index,
                     Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate,
+                    PixelFormat = model.pix_fmt,
                     Default = model.disposition?._default,
-                    Forced = model.disposition?.forced,
+                    Forced = model.disposition?.forced
                 };
                 yield return stream;
             }

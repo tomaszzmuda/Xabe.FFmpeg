@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Streams
         ///     Channels
         /// </summary>
         int Channels { get; set; }
-        
+
         /// <summary>
         /// Language 
         /// </summary>
