@@ -120,7 +120,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
-        
+
         [RunnableInDebugOnly]
         public async Task GetScreenCaptureTest()
         {

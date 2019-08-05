@@ -24,7 +24,7 @@ namespace Xabe.FFmpeg
         {
             Guid directoryGuid = Guid.NewGuid();
 
-            for(int i = 0; i < files.Count; i++)
+            for (int i = 0; i < files.Count; i++)
             {
                 string destinationPath = Path.Combine(Path.GetTempPath(), directoryGuid.ToString(), BuildFileName(i + 1, Path.GetExtension(files[i])));
 

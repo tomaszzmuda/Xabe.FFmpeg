@@ -69,7 +69,6 @@ namespace Xabe.FFmpeg.Streams
 
         /// <inheritdoc />
         public string PixelFormat { get; internal set; }
-        public VideoCodec Codec { get; private set; }
 
         /// <inheritdoc />
         public int? Default { get; set; }
@@ -191,7 +190,7 @@ namespace Xabe.FFmpeg.Streams
             _flags = $"-flags {flags} ";
             return this;
         }
-        
+
         /// <inheritdoc />
         public IVideoStream SetFramerate(int framerate)
         {

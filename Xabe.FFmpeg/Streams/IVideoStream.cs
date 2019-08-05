@@ -47,8 +47,9 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         /// Pixel Format
         /// </summary>
-        string PixelFormat{ get; }
+        string PixelFormat { get; }
 
+        /// <summary>
         /// Default
         /// </summary>
         int? Default { get; set; }
@@ -57,6 +58,11 @@ namespace Xabe.FFmpeg.Streams
         /// Forced
         /// </summary>
         int? Forced { get; set; }
+
+        /// <summary>
+        /// Video Codec
+        /// </summary>
+        VideoCodec Codec { get; }
 
         /// <summary>
         ///     Rotate video
