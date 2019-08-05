@@ -69,6 +69,13 @@ namespace Xabe.FFmpeg.Streams
 
         /// <inheritdoc />
         public string PixelFormat { get; internal set; }
+        public VideoCodec Codec { get; private set; }
+
+        /// <inheritdoc />
+        public int? Default { get; set; }
+
+        /// <inheritdoc />
+        public int? Forced { get; set; }
 
         /// <inheritdoc />
         public string Build()

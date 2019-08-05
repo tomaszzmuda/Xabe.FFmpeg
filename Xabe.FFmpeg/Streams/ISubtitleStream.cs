@@ -13,6 +13,21 @@ namespace Xabe.FFmpeg.Streams
         string Language { get; }
 
         /// <summary>
+        /// Default
+        /// </summary>
+        int? Default { get; set; }
+
+        /// <summary>
+        /// Forced
+        /// </summary>
+        int? Forced { get; set; }
+
+        /// <summary>
+        /// Title
+        /// </summary>
+        string Title { get; set; }
+
+        /// <summary>
         ///     Set subtitle format
         /// </summary>
         /// <param name="format">Subtitle format</param>

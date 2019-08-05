@@ -132,6 +132,16 @@ namespace Xabe.FFmpeg.Test
             Assert.True(currentProgress <= videoLength);
             Assert.True(videoLength == TimeSpan.FromSeconds(7));
         }
+
+        [Fact]
+        public async Task ExtractAdditionalValuesTest()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+
+            Assert.Equal(1, inputFile.AudioStreams.First().Default.Value);
+            Assert.Equal(0, inputFile.AudioStreams.First().Forced.Value);
+            Assert.Null(inputFile.AudioStreams.First().Language);
+        }
     }
 }
 
