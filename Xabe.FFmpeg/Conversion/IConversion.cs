@@ -54,11 +54,33 @@ namespace Xabe.FFmpeg
         IConversion ExtractNthFrame(int frameNo, Func<string, string> buildOutputFileName);
 
         /// <summary>
+        /// Builds the -framerate option for this conversion
+        /// </summary>
+        /// <param name="frameRate"></param>
+        /// <returns>IConversion object</returns>
+        IConversion SetFrameRate(double frameRate);
+
+        /// <summary>
         ///     Seeks in output file to position. (-ss argument)
         /// </summary>
         /// <param name="seek">Position</param>
         /// <returns>IConversion</returns>
         IConversion SetSeek(TimeSpan? seek);
+
+        /// <summary>
+        ///     Sets input capture length (-t input argument)
+        ///     Typically used with the GetScreenCapture Function to stop capturing after a time interval
+        /// </summary>
+        /// <param name="seek">Output Length</param>
+        /// <returns>IConversion</returns>
+        IConversion SetInputTime(TimeSpan? seek);
+
+        /// <summary>
+        ///     Sets output file length (-t output argument)
+        /// </summary>
+        /// <param name="seek">Output Length</param>
+        /// <returns>IConversion</returns>
+        IConversion SetOutputTime(TimeSpan? seek);
 
         /// <summary>
         ///     Set preset of IConversion. Slower speed equals better compression and quality.
@@ -110,6 +132,27 @@ namespace Xabe.FFmpeg
         /// <param name="overwrite">Should be output file overwritten or not. If not overwrite and file exists conversion will throw ConversionException</param>
         /// <returns>>IConversion object</returns>
         IConversion SetOverwriteOutput(bool overwrite);
+
+        /// <summary>
+        ///     Captures the entire display for length seconds at the specified framerate 
+        /// </summary>
+        /// <param name="frameRate">The framrate at which to capture the display</param>
+        /// <returns>IConversion object</returns>
+        IConversion GetScreenCapture(double frameRate);
+
+        /// <summary>
+        /// Sets the format for the input file using the -f option before the input file name
+        /// </summary>
+        /// <param name="inputFormat">The input format to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetInputFormat(MediaFormat inputFormat);
+
+        /// <summary>
+        /// Sets the format for the output file using the -f option before the output file name
+        /// </summary>
+        /// <param name="outputFormat">The output format to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetOutputFormat(MediaFormat outputFormat);
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
