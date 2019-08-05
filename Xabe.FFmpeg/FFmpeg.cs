@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Downloader;
+using Xabe.FFmpeg.Downloader.Official;
+using Xabe.FFmpeg.Downloader.Zeranoe;
 using Xabe.FFmpeg.Exceptions;
 using FileInfo = Xabe.FFmpeg.Model.FileInfo;
 
@@ -56,10 +58,20 @@ namespace Xabe.FFmpeg
 
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
+        /// <param id="fullVersion">Determine if a fully compiled FFPmpeg is downloaded (with gpu support and etc)</param>
         /// </summary>
-        public static Task GetLatestVersion()
+        public static Task GetLatestVersion(bool fullVersion = false)
         {
-            return FFmpegDownloader.GetLatestVersion();
+            IFFmpegDownloader downloader;
+            if (fullVersion)
+            {
+                downloader = new FullFFmpegDownloader();
+            }
+            else
+            {
+                downloader = new FFmpegDownloader();
+            }
+            return downloader.GetLatestVersion();
         }
 
         /// <summary>
