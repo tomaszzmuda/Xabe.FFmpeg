@@ -44,6 +44,11 @@ namespace Xabe.FFmpeg.Streams
         double Bitrate { get; }
 
         /// <summary>
+        ///     Video Codec
+        /// </summary>
+        VideoCodec Codec { get; }
+
+        /// <summary>
         ///     Rotate video
         /// </summary>
         /// <param name="rotateDegrees">Rotate type</param>
