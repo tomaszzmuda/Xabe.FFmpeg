@@ -123,5 +123,23 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
             Assert.Equal(2107842, mediaInfo.Size);
         }
+
+        [Theory]
+        [InlineData("檔")]
+        [InlineData("אספירין")]
+        [InlineData("एस्पिरि")]
+        [InlineData("阿司匹林")]
+        [InlineData("アセチルサリチル酸")]
+        public async Task GetMediaInfo_NonUTF8CharactersInPath(string path)
+        {
+            var dir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), path));
+            var destFile = Path.Combine(dir.FullName, "temp.mp4");
+            File.Copy(Resources.Mp4WithAudio, destFile, true);
+
+            IMediaInfo mediaInfo = await MediaInfo.Get(destFile).ConfigureAwait(false);
+
+            Assert.NotNull(mediaInfo);
+            Assert.Equal(FileExtensions.Mp4, mediaInfo.FileInfo.Extension);
+        }
     }
 }
