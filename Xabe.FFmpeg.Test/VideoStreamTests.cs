@@ -242,7 +242,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
-            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(0), mediaInfo.Duration);
             Assert.Equal("gif", mediaInfo.VideoStreams.First().Format);
             Assert.Equal("16:9", mediaInfo.VideoStreams.First().Ratio);
             Assert.Equal(25, mediaInfo.VideoStreams.First().FrameRate);
