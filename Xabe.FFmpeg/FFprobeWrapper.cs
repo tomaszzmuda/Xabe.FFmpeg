@@ -48,7 +48,7 @@ namespace Xabe.FFmpeg
 
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
-            string stringResult = await Start($"-v quiet -print_format json -show_format \"{videoPath}\"").ConfigureAwait(false);
+            string stringResult = await Start($"-v quiet -print_format json -show_entries format=size,duration,bit_rate  \"{videoPath}\"").ConfigureAwait(false);
             var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult);
             return root.format;
         }
