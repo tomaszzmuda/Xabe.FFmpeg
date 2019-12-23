@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
 using Xabe.FFmpeg.Model;
@@ -483,14 +482,14 @@ namespace Xabe.FFmpeg.Test
             cancellationToken.CancelAfter(2000);
             await Task.Delay(500).ConfigureAwait(false);
             var ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
-            ffmpegProcesses.Any(_ => _.Id == conversion.FFmpegProcessId && !_.HasExited).Should().BeTrue();
+            Assert.Contains(ffmpegProcesses, _ => _.Id == conversion.FFmpegProcessId && !_.HasExited);
 
             await Assert.ThrowsAsync<OperationCanceledException>(async () => await conversionTask.ConfigureAwait(false)).ConfigureAwait(false);
 
-            conversion.FFmpegProcessId.Should().BeGreaterThan(0);
-
+            Assert.True(conversion.FFmpegProcessId > 0);
             ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
-            ffmpegProcesses.Any(_ => _.Id == conversion.FFmpegProcessId && !_.HasExited).Should().BeFalse();
+            Assert.DoesNotContain(ffmpegProcesses, _ => _.Id == conversion.FFmpegProcessId && !_.HasExited);
+            
         }
 
         [Fact]
