@@ -324,10 +324,11 @@ namespace Xabe.FFmpeg.Streams
             if (_watermarkSources.Count > 0)
             {
                 List<string> list = new List<string>();
-                list.Add(Source.FullName); //new[] { Source.FullName, _watermarkSource };
+                list.Add(Source.FullName);
                 list.AddRange(_watermarkSources);
                 return list.ToArray();
             }
+
             return new[] { Source.FullName };
         }
 
