@@ -1,51 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>false</IsPackable>
     <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
     <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
     <DebugType>Full</DebugType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn />
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
   <ItemGroup>
-    <None Remove="Resources\**\*.*" />
     <Content Include="Resources\**\*.*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="NSubstitute" Version="4.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.*" />
+    <PackageReference Include="NSubstitute" Version="4.2.1" />
     <PackageReference Include="OpenCover" Version="4.7.922" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
-    <PackageReference Include="FluentAssertions" Version="5.6.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resources\sampleSubtitles.srt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\sampleSubtitles.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Dotnet.CodeFormatter.BuildTask.Fork" Version="0.0.2" />
-    <PackageReference Update="Microsoft.Net.Compilers" Version="3.0.0" />
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.0.102" />
   </ItemGroup>
 
 </Project>
