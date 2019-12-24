@@ -12,7 +12,7 @@ namespace Xabe.FFmpeg.Streams
     {
         private readonly List<string> _parameters = new List<string>();
         private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
-        private string _watermarkSource;
+        private List<string> _watermarkSources = new List<string>();
         private string _bitrate;
         private string _bitsreamFilter;
         private string _frameCount;
@@ -256,7 +256,15 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IVideoStream SetWatermark(string imagePath, Position position)
         {
-            _watermarkSource = imagePath;
+            return SetWatermark(imagePath, position, new TimeSpan(), Duration);
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetWatermark(string imagePath, Position position, TimeSpan startTime, TimeSpan duration)
+        {
+            string watermarkDuration = $":enable='between(t, {startTime.TotalSeconds}, {duration.TotalSeconds})'";
+
+            _watermarkSources.Add(imagePath);
             string argument = string.Empty;
             switch (position)
             {
@@ -264,7 +272,7 @@ namespace Xabe.FFmpeg.Streams
                     argument += "(main_w-overlay_w)/2:main_h-overlay_h";
                     break;
                 case Position.Center:
-                    argument += "x=(main_w-overlay_w)/2:y=(main_h-overlay_h)/2";
+                    argument += "(main_w-overlay_w)/2:(main_h-overlay_h)/2";
                     break;
                 case Position.BottomLeft:
                     argument += "5:main_h-overlay_h";
@@ -288,7 +296,11 @@ namespace Xabe.FFmpeg.Streams
                     argument += "(main_w-overlay_w)/2:5";
                     break;
             }
-            _videoFilters["overlay"] = argument;
+            if (_videoFilters.Keys.Contains("overlay"))
+                _videoFilters["overlay"] += ($",overlay={argument}{watermarkDuration}");
+            else
+                _videoFilters["overlay"] = $"{argument}{watermarkDuration}";
+
             return this;
         }
 
@@ -309,8 +321,13 @@ namespace Xabe.FFmpeg.Streams
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            if (!string.IsNullOrWhiteSpace(_watermarkSource))
-                return new[] { Source.FullName, _watermarkSource };
+            if (_watermarkSources.Count > 0)
+            {
+                List<string> list = new List<string>();
+                list.Add(Source.FullName); //new[] { Source.FullName, _watermarkSource };
+                list.AddRange(_watermarkSources);
+                return list.ToArray();
+            }
             return new[] { Source.FullName };
         }
 

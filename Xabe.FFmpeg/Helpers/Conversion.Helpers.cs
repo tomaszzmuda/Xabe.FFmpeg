@@ -133,6 +133,29 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
+        ///     Melt watermark into video
+        /// </summary>
+        /// <param name="inputPath">Input video path</param>
+        /// <param name="outputPath">Output file</param>
+        /// <param name="inputImage">Watermark</param>
+        /// <param name="position">Position of watermark</param>
+        /// <param name="startTime">Second to add watermark</param>
+        /// <param name="duration">Duration of watermark is visible</param>
+        /// <returns>Conversion result</returns>
+        public static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position, TimeSpan startTime, TimeSpan duration)
+        {
+            IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           .SetWatermark(inputImage, position, startTime, duration);
+
+            return New()
+                .AddStream(videoStream)
+                .AddStream(info.AudioStreams.ToArray())
+                .SetOutput(outputPath);
+        }
+
+        /// <summary>
         ///     Extract video from file
         /// </summary>
         /// <param name="inputPath">Input path</param>
