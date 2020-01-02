@@ -186,6 +186,7 @@ namespace Xabe.FFmpeg
 
             return New()
                 .AddStream(audioStream)
+                .SetAudioBitrate(string.Format("{0}K", audioStream.Bitrate / 1000))
                 .SetOutput(outputPath);
         }
 
