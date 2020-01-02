@@ -1,3 +1,4 @@
+[![Board Status](https://xabe.visualstudio.com/f3a8b4d1-7ce4-4c40-9082-08c3837e956f/608ec0ba-6b98-407a-837c-5306ae471c87/_apis/work/boardbadge/2b84fe0a-8a49-4d35-a16f-2e8190978f2e)](https://xabe.visualstudio.com/f3a8b4d1-7ce4-4c40-9082-08c3837e956f/_boards/board/t/608ec0ba-6b98-407a-837c-5306ae471c87/Microsoft.RequirementCategory)
 # Xabe.FFmpeg  
 [![Build Status](https://travis-ci.org/tomaszzmuda/Xabe.FFmpeg.svg?branch=master)](https://travis-ci.org/tomaszzmuda/Xabe.FFmpeg)
 [![NuGet version](https://badge.fury.io/nu/Xabe.FFmpeg.svg)](https://badge.fury.io/nu/Xabe.FFmpeg)
