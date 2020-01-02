@@ -239,7 +239,7 @@ namespace Xabe.FFmpeg.Streams
             {
                 if (seek > Duration)
                 {
-                    throw new ArgumentException("Seek can not be greater than video duration");
+                    throw new ArgumentException("Seek can not be greater than video duration. Seek: " + seek.TotalSeconds  + " Duration: " + Duration.TotalSeconds );
                 }
                 _seek = $"-ss {seek} ";
             }

@@ -106,7 +106,17 @@ namespace Xabe.FFmpeg
                             return false;
                         }
 
-                        if (_outputLog.Any(x => x.Contains("Unknown decoder")))
+                        if (_outputLog.Any(x => x.Contains("Invalid NAL unit size")))
+                        {
+                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("Packet mismatch") && _outputLog.Any(y => y.Contains("Output file is empty") )))
+                        {
+                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+                        
+                        if (_outputLog.Any(x => x.Contains("multiple fourcc not supported")))
                         {
                             throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
                         }
@@ -114,6 +124,41 @@ namespace Xabe.FFmpeg
                         if (_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
                         {
                             throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("Unknown decoder")))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("asf_read_pts failed")))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("Missing key frame while searching for timestamp")))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("Old interlaced mode is not supported")))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("Failed to open codec in avformat_find_stream_info")))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("mpeg1video") && _outputLog.Any(y => y.Contains("Output file is empty"))))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                        }
+
+                        if (_outputLog.Any(x => x.Contains("Frame rate very high for a muxer not efficiently supporting it") && _outputLog.Any(y => y.Contains("Output file is empty"))))
+                        {
+                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
                         }
 
                         if (process.ExitCode != 0)
