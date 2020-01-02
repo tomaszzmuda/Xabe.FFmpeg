@@ -164,6 +164,8 @@ namespace Xabe.FFmpeg.Test
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
             Assert.NotNull(audioStream);
             Assert.Equal("mp3", audioStream.Format);
+            Assert.Equal(TimeSpan.FromSeconds(13), audioStream.Duration);
+            Assert.Equal(320000, audioStream.Bitrate);
         }
 
         [Fact]
