@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg.Streams
@@ -86,6 +85,16 @@ namespace Xabe.FFmpeg.Streams
         /// <param name="position">Position of watermark</param>
         /// <returns>IVideoStream</returns>
         IVideoStream SetWatermark(string imagePath, Position position);
+
+        /// <summary>
+        ///     Melt watermark into video
+        /// </summary>
+        /// <param name="imagePath">Watermark</param>
+        /// <param name="position">Position of watermark</param>
+        /// <param name="startTime">Start time of watermark melted into video</param>
+        /// <param name="duration">Duration of watermark is visible</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetWatermark(string imagePath, Position position, TimeSpan startTime, TimeSpan duration);
 
         /// <summary>
         ///     Reverse video

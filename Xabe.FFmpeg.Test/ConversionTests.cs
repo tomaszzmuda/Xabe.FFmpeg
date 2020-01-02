@@ -46,6 +46,33 @@ namespace Xabe.FFmpeg.Test
             Assert.False(mediaInfo.AudioStreams.Any());
         }
 
+
+        [Fact]
+        public async Task MultipleWatermarkTest()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IVideoStream stream = inputFile.VideoStreams.First()
+                                  .SetWatermark(Resources.PngSample, Position.UpperRight, new TimeSpan(), TimeSpan.FromSeconds(3))
+                                  .SetWatermark(Resources.PngSample, Position.Center, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(5))
+                                  .SetWatermark(Resources.PngSample, Position.BottomLeft, TimeSpan.FromSeconds(5), inputFile.Duration);
+
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .SetPreset(ConversionPreset.UltraFast)
+                                                                 .AddStream(stream)
+                                                                 .SetOutput(outputPath)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            Assert.True(3 == conversionResult.Arguments.Split(' ').Where(x => x.Contains("overlay")).Count());
+            Assert.Contains(Resources.PngSample, conversionResult.Arguments);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
         [Fact]
         public async Task SetInputFormatTest()
         {
