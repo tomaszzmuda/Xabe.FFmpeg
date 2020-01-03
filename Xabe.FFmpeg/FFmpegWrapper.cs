@@ -136,7 +136,7 @@ namespace Xabe.FFmpeg
                             throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
                         }
 
-                        if (_outputLog.Any(x => x.Contains("Missing key frame while searching for timestamp")))
+                        if (_outputLog.Any(x => x.Contains("Missing key frame while searching for timestamp") && _outputLog.Any(y => y.Contains("Output file is empty"))) )
                         {
                             throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
                         }
