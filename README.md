@@ -1,5 +1,5 @@
 # Xabe.FFmpeg  
-[![Build Status](https://xabe.visualstudio.com/ffmpeg/_apis/build/status/ffmpeg?branchName=master)
+![Build Status](https://xabe.visualstudio.com/ffmpeg/_apis/build/status/ffmpeg?branchName=master)
 [![NuGet version](https://badge.fury.io/nu/Xabe.FFmpeg.svg)](https://badge.fury.io/nu/Xabe.FFmpeg)
 [![GitHub issues](https://img.shields.io/github/issues/tomaszzmuda/Xabe.FFmpeg.svg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/issues)
 [![GitHub stars](https://img.shields.io/github/stars/tomaszzmuda/Xabe.FFmpeg.svg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/stargazers)
