@@ -53,9 +53,6 @@ namespace Xabe.FFmpeg
         private TimeSpan _totalTime;
         private bool _wasKilled = false;
 
-        private readonly string[] ConversionExceptionStrings = { "", "" };
-        private readonly string[] UnknownDecoderExceptionStrings = { "", "" };
-
         /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
