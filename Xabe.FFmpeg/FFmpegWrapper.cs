@@ -11,6 +11,34 @@ using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {
+
+
+    internal class ExceptionCheck
+    {
+        private string lookFor;
+        private bool ContainsOutputfileisempty;
+        Exception ex;
+        public ExceptionCheck(Exception ex, string lookFor, bool ContainsOutputfileisempty = false) 
+        {
+            this.ex = ex;
+            this.lookFor = lookFor;
+            this.ContainsOutputfileisempty = ContainsOutputfileisempty;
+        }
+
+        /// <summary>
+        /// Checks outputlog and throws Exception - some errors are only fatal if the text "Output file is empty" is found in the log
+        /// </summary>
+        /// <param name="log"></param>
+        public void checkLog(List<string> log)
+        {
+            if (log.Any(x => x.Contains(this.lookFor) && (!this.ContainsOutputfileisempty || log.Any(y => y.Contains("Output file is empty")))))
+            {
+                throw ex;
+            }
+        }
+
+    }
+
     // ReSharper disable once InconsistentNaming
 
     /// <inheritdoc />
@@ -24,6 +52,9 @@ namespace Xabe.FFmpeg
         private List<string> _outputLog;
         private TimeSpan _totalTime;
         private bool _wasKilled = false;
+
+        private readonly string[] ConversionExceptionStrings = { "", "" };
+        private readonly string[] UnknownDecoderExceptionStrings = { "", "" };
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
@@ -106,64 +137,34 @@ namespace Xabe.FFmpeg
                             return false;
                         }
 
-                        if (_outputLog.Any(x => x.Contains("Invalid NAL unit size")))
-                        {
-                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
+                        List<ExceptionCheck> allExceptions = new List<ExceptionCheck>();
+                        string exceptionOutput = string.Join(Environment.NewLine, _outputLog.ToArray());
 
-                        if (_outputLog.Any(x => x.Contains("Packet mismatch") && _outputLog.Any(y => y.Contains("Output file is empty") )))
-                        {
-                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
-                        
-                        if (_outputLog.Any(x => x.Contains("multiple fourcc not supported")))
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
+                        ConversionException conversionException = new ConversionException(exceptionOutput, args);
+                        allExceptions.Add(new ExceptionCheck(conversionException, "Invalid NAL unit size"));
+                        allExceptions.Add(new ExceptionCheck(conversionException, "Packet mismatch", true));
 
-                        if (_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
-                        {
-                            throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
+                        UnknownDecoderException unknownDecoderException = new UnknownDecoderException(exceptionOutput, args);
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "asf_read_pts failed", true));
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "Missing key frame while searching for timestamp", true));
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "Old interlaced mode is not supported", true));
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "mpeg1video", true));
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "Frame rate very high for a muxer not efficiently supporting it", true));
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "multiple fourcc not supported"));
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "Unknown decoder"));
+                        allExceptions.Add(new ExceptionCheck(unknownDecoderException, "Failed to open codec in avformat_find_stream_info"));
 
-                        if (_outputLog.Any(x => x.Contains("Unknown decoder")))
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
+                        HardwareAcceleratorNotFoundException hardwareAcceleratorNotFoundException = new HardwareAcceleratorNotFoundException(exceptionOutput, args);
+                        allExceptions.Add(new ExceptionCheck(hardwareAcceleratorNotFoundException, "Unrecognized hwaccel: "));
 
-                        if (_outputLog.Any(x => x.Contains("asf_read_pts failed")))
+                        foreach(ExceptionCheck item in allExceptions)
                         {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
-
-                        if (_outputLog.Any(x => x.Contains("Missing key frame while searching for timestamp") && _outputLog.Any(y => y.Contains("Output file is empty"))) )
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
-
-                        if (_outputLog.Any(x => x.Contains("Old interlaced mode is not supported")))
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
-
-                        if (_outputLog.Any(x => x.Contains("Failed to open codec in avformat_find_stream_info")))
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
-
-                        if (_outputLog.Any(x => x.Contains("mpeg1video") && _outputLog.Any(y => y.Contains("Output file is empty"))))
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
-
-                        if (_outputLog.Any(x => x.Contains("Frame rate very high for a muxer not efficiently supporting it") && _outputLog.Any(y => y.Contains("Output file is empty"))))
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                            item.checkLog(_outputLog);
                         }
 
                         if (process.ExitCode != 0)
                         {
-                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                            throw new ConversionException(exceptionOutput, args);
                         }
                     }
                 }
