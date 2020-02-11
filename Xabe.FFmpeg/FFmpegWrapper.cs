@@ -106,19 +106,13 @@ namespace Xabe.FFmpeg
                             return false;
                         }
 
-                        if (_outputLog.Any(x => x.Contains("Unknown decoder")))
-                        {
-                            throw new UnknownDecoderException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
-
-                        if (_outputLog.Any(x => x.Contains("Unrecognized hwaccel: ")))
-                        {
-                            throw new HardwareAcceleratorNotFoundException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
-                        }
+                        string output = string.Join(Environment.NewLine, _outputLog.ToArray());
+                        var exceptionsCatcher = new FFmpegExceptionCatcher();
+                        exceptionsCatcher.CatchFFmpegErrors(output, args);
 
                         if (process.ExitCode != 0)
                         {
-                            throw new ConversionException(string.Join(Environment.NewLine, _outputLog.ToArray()), args);
+                            throw new ConversionException(output, args);
                         }
                     }
                 }
