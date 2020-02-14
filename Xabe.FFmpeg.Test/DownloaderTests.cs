@@ -172,7 +172,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                SharedFFMpegDownloader downloader = new SharedFFMpegDownloader();
+                SharedFFmpegDownloader downloader = new SharedFFmpegDownloader();
                 await downloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
