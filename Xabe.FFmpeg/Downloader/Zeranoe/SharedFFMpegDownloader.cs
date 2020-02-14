@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Xabe.FFmpeg.Downloader.Zeranoe
 {
     ///<summary>Download a Full Shared build from zeranoe.com for Windows or macOS</summary>
-    internal class SharedFullFFmpegDownloader : FFmpegDownloaderBase
+    internal class SharedFFMpegDownloader : FFmpegDownloaderBase
     {
         private string GenerateLink()
         {
