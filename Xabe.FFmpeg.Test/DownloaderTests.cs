@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using NSubstitute;
 using Xabe.FFmpeg.Downloader;
 using Xabe.FFmpeg.Downloader.Official;
+using Xabe.FFmpeg.Downloader.Zeranoe;
 using Xunit;
 using OperatingSystem = Xabe.FFmpeg.Downloader.OperatingSystem;
 
@@ -112,6 +113,67 @@ namespace Xabe.FFmpeg.Test
                 FFmpegDownloader downloader = new FFmpegDownloader();
                 downloader.LinkProvider = linkProvider;
                 await downloader.DownloadLatestVersion(currentVersion).ConfigureAwait(false);
+
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
+            }
+            finally
+            {
+                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+            }
+        }
+
+        [Theory]
+        [InlineData(OperatingSystem.Windows64)]
+        [InlineData(OperatingSystem.Windows32)]
+        [InlineData(OperatingSystem.Osx64)]
+        internal async Task DownloadLatestFullVersionTest(OperatingSystem os)
+        {
+            var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
+            operatingSystemProvider.GetOperatingSystem().Returns(x => os);
+
+            var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
+
+            try
+            {
+                FFmpeg.ExecutablesPath = "assemblies";
+                if (Directory.Exists("assemblies"))
+                {
+                    Directory.Delete("assemblies", true);
+                }
+                FullFFmpegDownloader downloader = new FullFFmpegDownloader();
+
+                await downloader.GetLatestVersion().ConfigureAwait(false);
+
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
+            }
+            finally
+            {
+                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+            }
+        }
+
+        [Theory]
+        [InlineData(OperatingSystem.Windows64)]
+        [InlineData(OperatingSystem.Windows32)]
+        [InlineData(OperatingSystem.Osx64)]
+        internal async Task DownloadLatestSharedVersionTest(OperatingSystem os)
+        {
+            var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
+            operatingSystemProvider.GetOperatingSystem().Returns(x => os);
+
+            var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
+
+            try
+            {
+                FFmpeg.ExecutablesPath = "assemblies";
+                if (Directory.Exists("assemblies"))
+                {
+                    Directory.Delete("assemblies", true);
+                }
+                SharedFFmpegDownloader downloader = new SharedFFmpegDownloader();
+                await downloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
