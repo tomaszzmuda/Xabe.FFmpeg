@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Xabe.FFmpeg.Downloader;
 using Xabe.FFmpeg.Downloader.Official;
 using Xabe.FFmpeg.Downloader.Zeranoe;
+using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
 using FileInfo = Xabe.FFmpeg.Model.FileInfo;
 
@@ -60,6 +61,7 @@ namespace Xabe.FFmpeg
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
         /// <param id="fullVersion">Determine if a fully compiled FFPmpeg is downloaded (with gpu support and etc)</param>
         /// </summary>
+        [Obsolete("This method is obsolete. Please use the GetLatestVersion(FFmpegVersions version) method instead.")]
         public static Task GetLatestVersion(bool fullVersion = false)
         {
             IFFmpegDownloader downloader;
@@ -70,6 +72,30 @@ namespace Xabe.FFmpeg
             else
             {
                 downloader = new FFmpegDownloader();
+            }
+            return downloader.GetLatestVersion();
+        }
+
+        /// <summary>
+        ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
+        /// <param id="version">Determine which version of FFmpeg should be downloaded</param>
+        /// </summary>
+        public static Task GetLatestVersion(FFmpegVersions version)
+        {
+            IFFmpegDownloader downloader;
+            switch (version)
+            {
+                case FFmpegVersions.Official:
+                    downloader = new FFmpegDownloader();
+                    break;
+                case FFmpegVersions.Full:
+                    downloader = new FullFFmpegDownloader();
+                    break;
+                case FFmpegVersions.Shared:
+                    downloader = new SharedFFmpegDownloader();
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
             return downloader.GetLatestVersion();
         }
