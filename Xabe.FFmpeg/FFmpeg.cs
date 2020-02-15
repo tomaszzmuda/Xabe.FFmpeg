@@ -80,18 +80,18 @@ namespace Xabe.FFmpeg
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
         /// <param id="version">Determine which version of FFmpeg should be downloaded</param>
         /// </summary>
-        public static Task GetLatestVersion(FFmpegVersions version)
+        public static Task GetLatestVersion(FFmpegVersion version)
         {
             IFFmpegDownloader downloader;
             switch (version)
             {
-                case FFmpegVersions.Official:
+                case FFmpegVersion.Official:
                     downloader = new FFmpegDownloader();
                     break;
-                case FFmpegVersions.Full:
+                case FFmpegVersion.Full:
                     downloader = new FullFFmpegDownloader();
                     break;
-                case FFmpegVersions.Shared:
+                case FFmpegVersion.Shared:
                     downloader = new SharedFFmpegDownloader();
                     break;
                 default:
