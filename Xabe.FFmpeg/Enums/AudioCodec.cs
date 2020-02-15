@@ -11,6 +11,11 @@
         public static readonly AudioCodec Aac = new AudioCodec("aac");
 
         /// <summary>
+        ///     Copy
+        /// </summary>
+        public static readonly AudioCodec Copy = new AudioCodec("copy");
+
+        /// <summary>
         ///     AC3 (Dolby Digital audio codec)
         /// </summary>
         public static readonly AudioCodec Ac3 = new AudioCodec("ac3");

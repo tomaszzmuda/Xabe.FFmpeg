@@ -94,6 +94,11 @@
         /// </summary>
         public static MediaFormat X11Grab => new MediaFormat("x11grab");
 
+        /// <summary>
+        ///     Hash
+        /// </summary>
+        public static MediaFormat Hash => new MediaFormat("hash");
+
         /// <inheritdoc />
         public override string ToString()
         {

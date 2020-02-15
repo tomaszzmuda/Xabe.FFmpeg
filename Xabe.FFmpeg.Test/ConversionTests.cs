@@ -120,6 +120,27 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
+        [Fact]
+        public async Task SetHashFormatTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Sha256);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Copy);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Copy);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutputFormat(MediaFormat.Hash)
+                                                                 .SetHashFormat(HashFormat.SHA256)
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            Assert.Equal(".sha256", resultFile.FileInfo.Extension);
+        }
+
         [RunnableInDebugOnly]
         public async Task GetScreenCaptureTest()
         {
