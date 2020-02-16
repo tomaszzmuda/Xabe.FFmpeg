@@ -137,8 +137,9 @@ namespace Xabe.FFmpeg.Test
                                                                  .Start().ConfigureAwait(false);
 
             Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
-            Assert.Equal(".sha256", resultFile.FileInfo.Extension);
+            System.IO.FileInfo fi = new System.IO.FileInfo(output);
+            Assert.Equal(".sha256", fi.Extension);
+            Assert.Equal(72L, fi.Length);
         }
 
         [RunnableInDebugOnly]
