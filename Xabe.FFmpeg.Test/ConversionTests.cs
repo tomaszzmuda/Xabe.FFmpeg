@@ -120,10 +120,32 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
-        [Fact]
-        public async Task SetHashFormatTest()
+        [Theory]
+        [InlineData("MD5")]
+        [InlineData("murmur3")]
+        [InlineData("RIPEMD128")]
+        [InlineData("RIPEMD160")]
+        [InlineData("RIPEMD256")]
+        [InlineData("RIPEMD320")]
+        [InlineData("SHA160")]
+        [InlineData("SHA224")]
+        [InlineData("SHA256")]
+        [InlineData("SHA512/224")]
+        [InlineData("SHA512/256")]
+        [InlineData("SHA384")]
+        [InlineData("SHA512")]
+        [InlineData("CRC32")]
+        [InlineData("Adler32")]
+        public async Task SetHashFormatTest(string hashFormat)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Sha256);
+            string fileExtension = string.Empty;
+
+            if (hashFormat == "SHA256")
+                fileExtension = FileExtensions.Sha256;
+            else
+                fileExtension = FileExtensions.Txt;
+
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Copy);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Copy);
@@ -132,14 +154,66 @@ namespace Xabe.FFmpeg.Test
                                                                  .AddStream(videoStream)
                                                                  .AddStream(audioStream)
                                                                  .SetOutputFormat(MediaFormat.Hash)
-                                                                 .SetHashFormat(HashFormat.SHA256)
+                                                                 .SetHashFormat(new HashFormat(hashFormat))
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(false);
 
             Assert.True(conversionResult.Success);
             System.IO.FileInfo fi = new System.IO.FileInfo(output);
-            Assert.Equal(".sha256", fi.Extension);
-            Assert.Equal(72L, fi.Length);
+            
+            Assert.Equal(fileExtension, fi.Extension);
+
+            switch (hashFormat)
+            {
+                case "MD5":
+                    Assert.Equal(37L, fi.Length);
+                    break;
+                case "murmur3":
+                    Assert.Equal(41L, fi.Length);
+                    break;
+                case "RIPEMD128":
+                    Assert.Equal(43L, fi.Length);
+                    break;
+                case "RIPEMD160":
+                    Assert.Equal(51L, fi.Length);
+                    break;
+                case "RIPEMD256":
+                    Assert.Equal(75L, fi.Length);
+                    break;
+                case "RIPEMD320":
+                    Assert.Equal(91L, fi.Length);
+                    break;
+                case "SHA160":
+                    Assert.Equal(48L, fi.Length);
+                    break;
+                case "SHA224":
+                    Assert.Equal(64L, fi.Length);
+                    break;
+                case "SHA256":
+                    Assert.Equal(72L, fi.Length);
+                    break;
+                case "SHA512/224":
+                    Assert.Equal(68L, fi.Length);
+                    break;
+                case "SHA512/256":
+                    Assert.Equal(76L, fi.Length);
+                    break;
+                case "SHA384":
+                    Assert.Equal(104L, fi.Length);
+                    break;
+                case "SHA512":
+                    Assert.Equal(136L, fi.Length);
+                    break;
+                case "CRC32":
+                    Assert.Equal(15L, fi.Length);
+                    break;
+                case "Adler32":
+                    Assert.Equal(17L, fi.Length);
+                    break;
+                default:
+                    Assert.True(false, "Should Never Reach Here.");
+                    break;
+            }
         }
 
         [RunnableInDebugOnly]
