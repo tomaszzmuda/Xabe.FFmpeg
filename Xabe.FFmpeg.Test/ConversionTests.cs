@@ -121,22 +121,22 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Theory]
-        [InlineData("MD5")]
-        [InlineData("murmur3")]
-        [InlineData("RIPEMD128")]
-        [InlineData("RIPEMD160")]
-        [InlineData("RIPEMD256")]
-        [InlineData("RIPEMD320")]
-        [InlineData("SHA160")]
-        [InlineData("SHA224")]
-        [InlineData("SHA256")]
-        [InlineData("SHA512/224")]
-        [InlineData("SHA512/256")]
-        [InlineData("SHA384")]
-        [InlineData("SHA512")]
-        [InlineData("CRC32")]
-        [InlineData("Adler32")]
-        public async Task SetHashFormatTest(string hashFormat)
+        [InlineData("MD5", 37L)]
+        [InlineData("murmur3", 41L)]
+        [InlineData("RIPEMD128", 43L)]
+        [InlineData("RIPEMD160", 51L)]
+        [InlineData("RIPEMD256", 75L)]
+        [InlineData("RIPEMD320", 91L)]
+        [InlineData("SHA160", 48L)]
+        [InlineData("SHA224", 64L)]
+        [InlineData("SHA256", 72L)]
+        [InlineData("SHA512/224", 68L)]
+        [InlineData("SHA512/256", 76L)]
+        [InlineData("SHA384", 104L)]
+        [InlineData("SHA512", 136L)]
+        [InlineData("CRC32", 15L)]
+        [InlineData("Adler32", 17L)]
+        public async Task SetHashFormatTest(string hashFormat, long expectedLength)
         {
             string fileExtension = string.Empty;
 
@@ -162,58 +162,8 @@ namespace Xabe.FFmpeg.Test
             System.IO.FileInfo fi = new System.IO.FileInfo(output);
             
             Assert.Equal(fileExtension, fi.Extension);
+            Assert.Equal(expectedLength, fi.Length);
 
-            switch (hashFormat)
-            {
-                case "MD5":
-                    Assert.Equal(37L, fi.Length);
-                    break;
-                case "murmur3":
-                    Assert.Equal(41L, fi.Length);
-                    break;
-                case "RIPEMD128":
-                    Assert.Equal(43L, fi.Length);
-                    break;
-                case "RIPEMD160":
-                    Assert.Equal(51L, fi.Length);
-                    break;
-                case "RIPEMD256":
-                    Assert.Equal(75L, fi.Length);
-                    break;
-                case "RIPEMD320":
-                    Assert.Equal(91L, fi.Length);
-                    break;
-                case "SHA160":
-                    Assert.Equal(48L, fi.Length);
-                    break;
-                case "SHA224":
-                    Assert.Equal(64L, fi.Length);
-                    break;
-                case "SHA256":
-                    Assert.Equal(72L, fi.Length);
-                    break;
-                case "SHA512/224":
-                    Assert.Equal(68L, fi.Length);
-                    break;
-                case "SHA512/256":
-                    Assert.Equal(76L, fi.Length);
-                    break;
-                case "SHA384":
-                    Assert.Equal(104L, fi.Length);
-                    break;
-                case "SHA512":
-                    Assert.Equal(136L, fi.Length);
-                    break;
-                case "CRC32":
-                    Assert.Equal(15L, fi.Length);
-                    break;
-                case "Adler32":
-                    Assert.Equal(17L, fi.Length);
-                    break;
-                default:
-                    Assert.True(false, "Should Never Reach Here.");
-                    break;
-            }
         }
 
         [RunnableInDebugOnly]
