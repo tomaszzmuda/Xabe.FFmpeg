@@ -120,6 +120,52 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
+        [Theory]
+        [InlineData("MD5", 37L)]
+        [InlineData("murmur3", 41L)]
+        [InlineData("RIPEMD128", 43L)]
+        [InlineData("RIPEMD160", 51L)]
+        [InlineData("RIPEMD256", 75L)]
+        [InlineData("RIPEMD320", 91L)]
+        [InlineData("SHA160", 48L)]
+        [InlineData("SHA224", 64L)]
+        [InlineData("SHA256", 72L)]
+        [InlineData("SHA512/224", 68L)]
+        [InlineData("SHA512/256", 76L)]
+        [InlineData("SHA384", 104L)]
+        [InlineData("SHA512", 136L)]
+        [InlineData("CRC32", 15L)]
+        [InlineData("Adler32", 17L)]
+        public async Task SetHashFormatTest(string hashFormat, long expectedLength)
+        {
+            string fileExtension = string.Empty;
+
+            if (hashFormat == "SHA256")
+                fileExtension = FileExtensions.Sha256;
+            else
+                fileExtension = FileExtensions.Txt;
+
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Copy);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Copy);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutputFormat(MediaFormat.Hash)
+                                                                 .SetHashFormat(new HashFormat(hashFormat))
+                                                                 .SetOutput(output)
+                                                                 .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            System.IO.FileInfo fi = new System.IO.FileInfo(output);
+            
+            Assert.Equal(fileExtension, fi.Extension);
+            Assert.Equal(expectedLength, fi.Length);
+
+        }
+
         [RunnableInDebugOnly]
         public async Task GetScreenCaptureTest()
         {

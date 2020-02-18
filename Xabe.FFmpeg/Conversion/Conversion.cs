@@ -26,6 +26,7 @@ namespace Xabe.FFmpeg
         private IEnumerable<FieldInfo> _fields;
         private string _output;
         private string _preset;
+        private string _hashFormat;
         private string _hardwareAcceleration;
         private bool _overwriteOutput;
         private string _shortestInput;
@@ -76,6 +77,7 @@ namespace Xabe.FFmpeg
                 builder.Append(_outputTime);
                 builder.Append(BuildOutputPixelFormat());
                 builder.Append(BuildOutputFormat());
+                builder.Append(_hashFormat);
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -183,6 +185,13 @@ namespace Xabe.FFmpeg
                     _streams.Add(stream);
                 }
             }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetHashFormat(HashFormat hashFormat)
+        {
+            _hashFormat = $"-hash {hashFormat.ToString()} ";
             return this;
         }
 

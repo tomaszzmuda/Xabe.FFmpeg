@@ -54,5 +54,15 @@
         ///     .gif
         /// </summary>
         public const string Gif = ".gif";
+
+        /// <summary>
+        ///     .txt
+        /// </summary>
+        public const string Txt = ".txt";
+
+        /// <summary>
+        ///     .sha256
+        /// </summary>
+        public const string Sha256 = ".sha256";
     }
 }
