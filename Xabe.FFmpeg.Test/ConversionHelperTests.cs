@@ -39,14 +39,14 @@ namespace Xabe.FFmpeg.Test
 
         public static IEnumerable<object[]> JoinFiles => new[]
         {
-            new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720},
-            new object[] {Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240},
-            new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720}
+            new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720, "16:9"},
+            new object[] {Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240, "4:3"},
+            new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720, "16:9" }
         };
 
         [Theory]
         [MemberData(nameof(JoinFiles))]
-        public async Task JoinWith(string firstFile, string secondFile, int duration, int width, int height)
+        public async Task Concatenate_Test(string firstFile, string secondFile, int duration, int width, int height, string ratio)
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
@@ -60,6 +60,7 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(videoStream);
             Assert.Equal(width, videoStream.Width);
             Assert.Equal(height, videoStream.Height);
+            Assert.Contains($"-aspect {ratio}", result.Arguments);
         }
 
         [Fact]
