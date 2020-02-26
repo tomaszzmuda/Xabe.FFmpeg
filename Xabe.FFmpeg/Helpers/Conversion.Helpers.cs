@@ -348,13 +348,13 @@ namespace Xabe.FFmpeg
                 conversion.AddParameter(
                     $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
             }
-
             for (var i = 0; i < mediaInfos.Count; i++)
             {
                 conversion.AddParameter(!mediaInfos[i].AudioStreams.Any() ? $"[v{i}]" : $"[v{i}][{i}:a]");
             }
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
+            conversion.AddParameter($"-aspect {maxResolutionMedia.Ratio}");
             conversion.SetOutput(output);
             return conversion.Start();
         }
