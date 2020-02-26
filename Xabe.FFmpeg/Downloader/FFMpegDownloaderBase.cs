@@ -10,9 +10,16 @@ namespace Xabe.FFmpeg.Downloader
 {
     internal abstract class FFmpegDownloaderBase : IFFmpegDownloader
     {
-        protected readonly OperatingSystem s_os = new OperatingSystemProvider().GetOperatingSystem();
-        private string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", s_os);
-        private string FfprobeDestinationPath => ComputeFileDestinationPath("ffprobe", s_os);
+        protected OperatingSystem OperatingSystem => _operatingSystemProvider.GetOperatingSystem();
+        private IOperatingSystemProvider _operatingSystemProvider;
+
+        protected FFmpegDownloaderBase(IOperatingSystemProvider operatingSystemProvider)
+        {
+            _operatingSystemProvider = operatingSystemProvider;
+        }
+
+        private string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", OperatingSystem);
+        private string FfprobeDestinationPath => ComputeFileDestinationPath("ffprobe", OperatingSystem);
 
         public abstract Task GetLatestVersion();
 

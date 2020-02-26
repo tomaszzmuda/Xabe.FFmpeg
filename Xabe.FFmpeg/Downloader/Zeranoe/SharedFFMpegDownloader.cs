@@ -11,9 +11,13 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
     ///<summary>Download a Full Shared build from zeranoe.com for Windows or macOS</summary>
     internal class SharedFFmpegDownloader : FFmpegDownloaderBase
     {
+        internal SharedFFmpegDownloader(IOperatingSystemProvider operatingSystemProvider = default) : base(operatingSystemProvider)
+        {
+        }
+
         private string GenerateLink()
         {
-            switch (s_os)
+            switch (OperatingSystem)
             {
                 case OperatingSystem.Windows64:
                     return "https://ffmpeg.zeranoe.com/builds/win64/shared/ffmpeg-latest-win64-shared.zip";
@@ -22,7 +26,7 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
                 case OperatingSystem.Osx64:
                     return "https://ffmpeg.zeranoe.com/builds/macos64/shared/ffmpeg-latest-macos64-shared.zip";
                 default:
-                    throw new NotSupportedException($"The automated download of the full Shared FFMpeg package is not supported for the current Operation System: {s_os}.");
+                    throw new NotSupportedException($"The automated download of the full Shared FFMpeg package is not supported for the current Operation System: {OperatingSystem}.");
             }
         }
 
