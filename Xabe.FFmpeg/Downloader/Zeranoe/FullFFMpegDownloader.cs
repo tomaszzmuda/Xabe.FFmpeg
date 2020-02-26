@@ -12,9 +12,13 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
     ///<summary>Download a Fullbuild from zeranoe.com for Windows or macOS</summary>
     internal class FullFFmpegDownloader : FFmpegDownloaderBase
     {
+        internal FullFFmpegDownloader(IOperatingSystemProvider operatingSystemProvider = default) : base(operatingSystemProvider)
+        {
+        }
+
         private string GenerateLink()
         {
-            switch (s_os)
+            switch (OperatingSystem)
             {
                 case OperatingSystem.Windows64:
                     return "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip";
@@ -23,7 +27,7 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
                 case OperatingSystem.Osx64:
                     return "https://ffmpeg.zeranoe.com/builds/macos64/static/ffmpeg-latest-macos64-static.zip";
                 default:
-                    throw new NotSupportedException($"The automated download of the full FFMpeg package is not supported for the current Operation System: {s_os}.");
+                    throw new NotSupportedException($"The automated download of the full FFMpeg package is not supported for the current Operation System: {OperatingSystem}.");
             }
         }
 
