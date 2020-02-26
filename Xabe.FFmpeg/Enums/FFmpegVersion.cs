@@ -13,14 +13,14 @@ namespace Xabe.FFmpeg.Enums
         /// The official release from ffbinaries
         /// </summary>
         Official = 1,
-        
+
         /// <summary>
-        /// The Full Release from Zenaroe
+        /// The Full Release from Zenaroe (Only Windows and macOS)
         /// </summary>
         Full = 2,
 
         /// <summary>
-        /// The Shared Release from Zenaroe
+        /// The Shared Release from Zenaroe (Only Windows and macOS)
         /// </summary>
         Shared = 3,
     }
