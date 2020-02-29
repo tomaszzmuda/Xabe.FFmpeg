@@ -220,17 +220,11 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 
-            IStream[] streams = info.Streams.ToArray();
-            foreach (IStream stream in streams)
-            {
-                if (stream is ILocalStream localStream)
-                {
-                    localStream.Split(startTime, duration);
-                }
-            }
-
             return New()
-                .AddStream(streams)
+                .AddStream(info.Streams.ToArray())
+                .SetInputTime(startTime+duration)
+                .SetOutputTime(duration)
+                .AddParameter("-c copy")
                 .SetOutput(outputPath);
         }
 
