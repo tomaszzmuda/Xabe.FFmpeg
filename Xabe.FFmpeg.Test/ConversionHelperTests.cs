@@ -194,16 +194,18 @@ namespace Xabe.FFmpeg.Test
                                                                                     .Start().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        [Fact]
-        public async Task SnapshotTest()
+        [Theory]
+        [InlineData(FileExtensions.Png, 1825653)]
+        [InlineData(FileExtensions.Jpg, 84461)]
+        public async Task SnapshotTest(string extension, long expectedLength)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + extension);
             IConversionResult result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0))
                                              .Start().ConfigureAwait(false);
 
             Assert.True(result.Success);
             Assert.True(File.Exists(output));
-            Assert.Equal(1825653, (await File.ReadAllBytesAsync(output).ConfigureAwait(false)).LongLength);
+            Assert.Equal(expectedLength, (await File.ReadAllBytesAsync(output).ConfigureAwait(false)).LongLength);
         }
 
         [Fact]

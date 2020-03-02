@@ -45,5 +45,22 @@ namespace Xabe.FFmpeg.Test
             //Assert
             Assert.Null(exception);
         }
+
+        [Fact]
+        public void CatchErrors_NoSuitableOutputFormat_ThrowFFmpegNoSuitableOutputFormatFoundException()
+        {
+            //Arrange
+            var args = "args";
+            var output = @"Unable to find a suitable output format for 'C:\Users\tomas\AppData\Local\Temp\4da4b324-3e25-42cb-b7b3-f9da041cf20c' C: \Users\tomas\AppData\Local\Temp\4da4b324 - 3e25 - 42cb - b7b3 - f9da041cf20c: Invalid argument";
+
+            //Act
+            var exception = Record.Exception(() => _sut.CatchFFmpegErrors(output, args));
+
+            //Assert
+            Assert.IsType<FFmpegNoSuitableOutputFormatFoundException>(exception);
+            Assert.Equal(output, exception.Message);
+            var conversionException = (FFmpegNoSuitableOutputFormatFoundException)exception;
+            Assert.Equal(args, conversionException.InputParameters);
+        }
     }
 }
