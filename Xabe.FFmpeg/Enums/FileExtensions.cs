@@ -64,5 +64,10 @@
         ///     .sha256
         /// </summary>
         public const string Sha256 = ".sha256";
+
+        /// <summary>
+        ///     .jpg
+        /// </summary>
+        public const string Jpg = ".jpg";
     }
 }

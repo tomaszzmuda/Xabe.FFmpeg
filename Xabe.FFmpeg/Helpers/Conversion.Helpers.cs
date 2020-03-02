@@ -179,7 +179,6 @@ namespace Xabe.FFmpeg
             IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           .SetCodec(VideoCodec.Png)
                                            .SetOutputFramesCount(1)
                                            .SetSeek(captureTime);
 
