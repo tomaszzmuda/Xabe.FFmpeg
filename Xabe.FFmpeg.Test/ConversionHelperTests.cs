@@ -209,16 +209,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task CannotFindSuitableOutputFormatTest()
-        {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            IConversionResult result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0))
-                                             .Start().ConfigureAwait(false);
-
-            Assert.True(result.Success);
-        }
-
-        [Fact]
         public async Task SplitVideoTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
