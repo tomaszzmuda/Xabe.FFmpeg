@@ -113,6 +113,13 @@ namespace Xabe.FFmpeg
         IConversion SetPreset(ConversionPreset preset);
 
         /// <summary>
+        ///     Set the hash format of IConversion.
+        /// </summary>
+        /// <param name="format">The required hash format</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetHashFormat(HashFormat format);
+
+        /// <summary>
         ///     Sets The bitrate of the video streams to the supplied value
         ///     Acceptable values include 1200K for 1200kbit/s or 1M for 1mbit/s
         /// </summary>

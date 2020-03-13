@@ -8,7 +8,12 @@ namespace Xabe.FFmpeg.Downloader.Official
 {
     internal class FFmpegDownloader : FFmpegDownloaderBase
     {
-        internal LinkProvider LinkProvider { get; set; } = new LinkProvider();
+        private readonly LinkProvider _linkProvider;
+
+        internal FFmpegDownloader(IOperatingSystemProvider operatingSystemProvider = default) : base(operatingSystemProvider)
+        {
+            _linkProvider = new LinkProvider(operatingSystemProvider);
+        }
 
         public override async Task GetLatestVersion()
         {
@@ -33,7 +38,7 @@ namespace Xabe.FFmpeg.Downloader.Official
 
         internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries)
         {
-            Links links = LinkProvider.GetLinks(latestFFmpegBinaries);
+            Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
 
             var ffmpegZipDownloadTask = DownloadFile(links.FFmpegLink);
             var ffprobeZipDownloadTask = DownloadFile(links.FFprobeLink);

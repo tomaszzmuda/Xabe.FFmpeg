@@ -22,10 +22,8 @@ namespace Xabe.FFmpeg.Test
 
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
             operatingSystemProvider.GetOperatingSystem().Returns(x => os);
-            FFmpegDownloader downloader = new FFmpegDownloader
-            {
-                LinkProvider = new LinkProvider(operatingSystemProvider)
-            };
+            FFmpegDownloader downloader = new FFmpegDownloader(operatingSystemProvider);
+
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
             try
@@ -110,8 +108,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                FFmpegDownloader downloader = new FFmpegDownloader();
-                downloader.LinkProvider = linkProvider;
+                FFmpegDownloader downloader = new FFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion).ConfigureAwait(false);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
@@ -141,7 +138,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                FullFFmpegDownloader downloader = new FullFFmpegDownloader();
+                FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
 
                 await downloader.GetLatestVersion().ConfigureAwait(false);
 
@@ -172,7 +169,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                SharedFFmpegDownloader downloader = new SharedFFmpegDownloader();
+                SharedFFmpegDownloader downloader = new SharedFFmpegDownloader(operatingSystemProvider);
                 await downloader.GetLatestVersion().ConfigureAwait(false);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));

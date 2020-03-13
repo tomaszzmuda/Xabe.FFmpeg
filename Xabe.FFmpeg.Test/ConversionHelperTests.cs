@@ -39,14 +39,14 @@ namespace Xabe.FFmpeg.Test
 
         public static IEnumerable<object[]> JoinFiles => new[]
         {
-            new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720},
-            new object[] {Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240},
-            new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720}
+            new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720, "16:9"},
+            new object[] {Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240, "4:3"},
+            new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720, "16:9" }
         };
 
         [Theory]
         [MemberData(nameof(JoinFiles))]
-        public async Task JoinWith(string firstFile, string secondFile, int duration, int width, int height)
+        public async Task Concatenate_Test(string firstFile, string secondFile, int duration, int width, int height, string ratio)
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
@@ -60,6 +60,7 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(videoStream);
             Assert.Equal(width, videoStream.Width);
             Assert.Equal(height, videoStream.Height);
+            Assert.Contains($"-aspect {ratio}", result.Arguments);
         }
 
         [Fact]
@@ -193,16 +194,18 @@ namespace Xabe.FFmpeg.Test
                                                                                     .Start().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        [Fact]
-        public async Task SnapshotTest()
+        [Theory]
+        [InlineData(FileExtensions.Png, 1825653)]
+        [InlineData(FileExtensions.Jpg, 84461)]
+        public async Task SnapshotTest(string extension, long expectedLength)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + extension);
             IConversionResult result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0))
                                              .Start().ConfigureAwait(false);
 
             Assert.True(result.Success);
             Assert.True(File.Exists(output));
-            Assert.Equal(1825653, (await File.ReadAllBytesAsync(output).ConfigureAwait(false)).LongLength);
+            Assert.Equal(expectedLength, (await File.ReadAllBytesAsync(output).ConfigureAwait(false)).LongLength);
         }
 
         [Fact]

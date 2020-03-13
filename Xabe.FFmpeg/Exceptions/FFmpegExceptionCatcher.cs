@@ -47,6 +47,8 @@ namespace Xabe.FFmpeg.Exceptions
             Checks.Add(new ExceptionCheck("Failed to open codec in avformat_find_stream_info"), (output, args) => throw new UnknownDecoderException(output, args));
 
             Checks.Add(new ExceptionCheck("Unrecognized hwaccel: "), (output, args) => throw new HardwareAcceleratorNotFoundException(output, args));
+
+            Checks.Add(new ExceptionCheck("Unable to find a suitable output format"), (output, args) => throw new FFmpegNoSuitableOutputFormatFoundException(output, args));
         }
 
         internal void CatchFFmpegErrors(string output, string args)

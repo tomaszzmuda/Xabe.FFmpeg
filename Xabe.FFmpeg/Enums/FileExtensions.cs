@@ -56,13 +56,24 @@
         public const string Gif = ".gif";
 
         /// <summary>
-        ///     .webp
+        ///     .txt
         /// </summary>
-        public const string WebP = ".webp";
+        public const string Txt = ".txt";
+
+        /// <summary>
+        ///     .sha256
+        /// </summary>
+        public const string Sha256 = ".sha256";
 
         /// <summary>
         ///     .jpg
         /// </summary>
         public const string Jpg = ".jpg";
+        
+        /// <summary>
+        ///     .webp
+        /// </summary>
+        public const string WebP = ".webp";
+        
     }
 }
