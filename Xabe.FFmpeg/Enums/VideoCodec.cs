@@ -37,6 +37,11 @@
         public static readonly VideoCodec Tiff = new VideoCodec("tiff");
 
         /// <summary>
+        ///     WebP image
+        /// </summary>
+        public static readonly VideoCodec WebP = new VideoCodec("webp");
+
+        /// <summary>
         ///     On2 VP8 (decoders: vp8 libvpx ) (encoders: libvpx )
         /// </summary>
         public static readonly VideoCodec Vp8 = new VideoCodec("vp8");

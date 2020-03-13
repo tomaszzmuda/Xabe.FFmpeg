@@ -294,13 +294,16 @@ namespace Xabe.FFmpeg.Test
             Assert.InRange<double>(resultFile.VideoStreams.First().Bitrate, lowerBound, upperBound);
         }
 
-        [Fact]
-        public async Task ExtractEveryNthFrameTest()
+        [Theory]
+        [InlineData(FileExtensions.Png)]
+        [InlineData(FileExtensions.WebP)]
+        [InlineData(FileExtensions.Jpg)]
+        public async Task ExtractEveryNthFrameTest(string extension)
         {
             Guid fileGuid = Guid.NewGuid();
-            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
-            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
+            IVideoStream videoStream = info.VideoStreams.First();
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
@@ -310,18 +313,21 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversionResult.Success);
 
             int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
-                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == FileExtensions.Png).Count();
+                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == extension).Count();
 
             Assert.Equal(26, outputFilesCount);
         }
 
-        [Fact]
-        public async Task ExtractNthFrameTest()
+        [Theory]
+        [InlineData(FileExtensions.Png)]
+        [InlineData(FileExtensions.WebP)]
+        [InlineData(FileExtensions.Jpg)]
+        public async Task ExtractNthFrameTest(string extension)
         {
             Guid fileGuid = Guid.NewGuid();
-            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + FileExtensions.Png); };
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
-            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Png);
+            IVideoStream videoStream = info.VideoStreams.First();
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
@@ -331,7 +337,7 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversionResult.Success);
 
             int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
-                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == FileExtensions.Png).Count();
+                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == extension).Count();
 
             Assert.Equal(1, outputFilesCount);
         }

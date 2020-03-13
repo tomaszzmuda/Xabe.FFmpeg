@@ -54,5 +54,15 @@
         ///     .gif
         /// </summary>
         public const string Gif = ".gif";
+
+        /// <summary>
+        ///     .webp
+        /// </summary>
+        public const string WebP = ".webp";
+
+        /// <summary>
+        ///     .jpg
+        /// </summary>
+        public const string Jpg = ".jpg";
     }
 }
