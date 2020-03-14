@@ -349,7 +349,7 @@ namespace Xabe.FFmpeg.Test
             Guid fileGuid = Guid.NewGuid();
             Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
-            IVideoStream videoStream = info.VideoStreams.First();
+            IVideoStream videoStream = info.VideoStreams.First().SetCodec(VideoCodec.Png);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
@@ -373,7 +373,7 @@ namespace Xabe.FFmpeg.Test
             Guid fileGuid = Guid.NewGuid();
             Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
-            IVideoStream videoStream = info.VideoStreams.First();
+            IVideoStream videoStream = info.VideoStreams.First().SetCodec(VideoCodec.Png);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
