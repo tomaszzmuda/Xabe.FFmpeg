@@ -15,7 +15,7 @@ namespace Xabe.FFmpeg.Downloader
 
         protected FFmpegDownloaderBase(IOperatingSystemProvider operatingSystemProvider)
         {
-            _operatingSystemProvider = operatingSystemProvider;
+            _operatingSystemProvider = operatingSystemProvider ?? new OperatingSystemProvider();
         }
 
         private string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", OperatingSystem);
