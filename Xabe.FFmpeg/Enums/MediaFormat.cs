@@ -95,6 +95,31 @@
         public static MediaFormat X11Grab => new MediaFormat("x11grab");
 
         /// <summary>
+        ///    ALSA
+        /// </summary>
+        public static MediaFormat ALSA => new MediaFormat("alsa");
+
+        /// <summary>
+        ///    OSS
+        /// </summary>
+        public static MediaFormat OSS => new MediaFormat("oss");
+
+        /// <summary>
+        ///    Pulse
+        /// </summary>
+        public static MediaFormat Pulse => new MediaFormat("pulse");
+
+        /// <summary>
+        ///    DShow
+        /// </summary>
+        public static MediaFormat DShow => new MediaFormat("dshow");
+
+        /// <summary>
+        ///    JACK
+        /// </summary>
+        public static MediaFormat JACK => new MediaFormat("jack");
+
+        /// <summary>
         ///     Hash
         /// </summary>
         public static MediaFormat Hash => new MediaFormat("hash");
