@@ -10,7 +10,12 @@ namespace Xabe.FFmpeg.Downloader.Official
     {
         private readonly LinkProvider _linkProvider;
 
-        internal FFmpegDownloader(IOperatingSystemProvider operatingSystemProvider = default) : base(operatingSystemProvider)
+        internal FFmpegDownloader() : base()
+        {
+            _linkProvider = new LinkProvider(_operatingSystemProvider);
+        }
+
+        internal FFmpegDownloader(IOperatingSystemProvider operatingSystemProvider) : base(operatingSystemProvider)
         {
             _linkProvider = new LinkProvider(operatingSystemProvider);
         }

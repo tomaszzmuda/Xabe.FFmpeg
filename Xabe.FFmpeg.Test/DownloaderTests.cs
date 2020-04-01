@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -151,15 +152,20 @@ namespace Xabe.FFmpeg.Test
             }
         }
 
-        [Theory]
-        [InlineData(OperatingSystem.Windows64)]
-        [InlineData(OperatingSystem.Windows32)]
-        [InlineData(OperatingSystem.Osx64)]
-        internal async Task DownloadLatestSharedVersionTest(OperatingSystem os)
+        public static IEnumerable<object[]> FFmpegDownloaders
         {
-            var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
-            operatingSystemProvider.GetOperatingSystem().Returns(x => os);
+            get
+            {
+                yield return new object[] { new FFmpegDownloader() };
+                yield return new object[] { new FullFFmpegDownloader() };
+                yield return new object[] { new SharedFFmpegDownloader() };
+            }
+        }
 
+        [Theory]
+        [MemberData(nameof(FFmpegDownloaders))]
+        internal async Task DownloadLatestVersion_NoOperatingSystemProviderIsSpecified_UseDefaultOne(IFFmpegDownloader downloader)
+        {
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
             try
@@ -169,11 +175,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                SharedFFmpegDownloader downloader = new SharedFFmpegDownloader(operatingSystemProvider);
                 await downloader.GetLatestVersion().ConfigureAwait(false);
-
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
             }
             finally
             {

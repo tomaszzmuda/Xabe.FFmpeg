@@ -11,7 +11,11 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
     ///<summary>Download a Full Shared build from zeranoe.com for Windows or macOS</summary>
     internal class SharedFFmpegDownloader : FFmpegDownloaderBase
     {
-        internal SharedFFmpegDownloader(IOperatingSystemProvider operatingSystemProvider = default) : base(operatingSystemProvider)
+        internal SharedFFmpegDownloader() : base()
+        {
+        }
+
+        internal SharedFFmpegDownloader(IOperatingSystemProvider operatingSystemProvider) : base(operatingSystemProvider)
         {
         }
 
