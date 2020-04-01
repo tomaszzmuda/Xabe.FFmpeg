@@ -1,21 +1,24 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Xabe.FFmpeg.Downloader
 {
     internal abstract class FFmpegDownloaderBase : IFFmpegDownloader
     {
         protected OperatingSystem OperatingSystem => _operatingSystemProvider.GetOperatingSystem();
-        private IOperatingSystemProvider _operatingSystemProvider;
+        protected IOperatingSystemProvider _operatingSystemProvider;
 
         protected FFmpegDownloaderBase(IOperatingSystemProvider operatingSystemProvider)
         {
-            _operatingSystemProvider = operatingSystemProvider ?? new OperatingSystemProvider();
+            _operatingSystemProvider = operatingSystemProvider;
+        }
+
+        protected FFmpegDownloaderBase()
+        {
+            _operatingSystemProvider = new OperatingSystemProvider();
         }
 
         private string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", OperatingSystem);

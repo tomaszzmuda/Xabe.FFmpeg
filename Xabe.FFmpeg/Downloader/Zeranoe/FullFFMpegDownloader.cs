@@ -2,17 +2,19 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Xabe.FFmpeg.Downloader.Zeranoe
 {
     ///<summary>Download a Fullbuild from zeranoe.com for Windows or macOS</summary>
     internal class FullFFmpegDownloader : FFmpegDownloaderBase
     {
-        internal FullFFmpegDownloader(IOperatingSystemProvider operatingSystemProvider = default) : base(operatingSystemProvider)
+        internal FullFFmpegDownloader() : base()
+        {
+
+        }
+
+        internal FullFFmpegDownloader(IOperatingSystemProvider operatingSystemProvider) : base(operatingSystemProvider)
         {
         }
 
