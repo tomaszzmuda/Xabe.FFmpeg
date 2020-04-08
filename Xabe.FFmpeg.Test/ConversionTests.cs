@@ -270,7 +270,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(audioStream)
-                                                                 .SetAudioBitrate("128K")
+                                                                 .SetAudioBitrate(128000)
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(false);
 
