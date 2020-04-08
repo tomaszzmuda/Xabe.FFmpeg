@@ -21,7 +21,7 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         ///     Bit Rate
         /// </summary>
-        double Bitrate { get; }
+        long Bitrate { get; }
 
         /// <summary>
         ///     Sample Rate
