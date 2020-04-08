@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -423,6 +424,28 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Equal(1, inputFile.VideoStreams.First().Default.Value);
             Assert.Equal(0, inputFile.VideoStreams.First().Forced.Value);
+        }
+
+        [Fact]
+        public async Task ChangeSpeed_CommaAsASeparator_CorrectResult()
+        {
+            CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("pl-PL");
+
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.H264).ChangeSpeed(0.5))
+                                                    .SetPreset(ConversionPreset.UltraFast)
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            Assert.Equal(TimeSpan.FromSeconds(19), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(19), mediaInfo.VideoStreams.First().Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
         }
     }
 }
