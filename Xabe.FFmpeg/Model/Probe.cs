@@ -21,7 +21,7 @@ namespace Xabe.FFmpeg.Model
 
             public double duration { get; set; }
 
-            public double bit_rate { get; set; }
+            public long bit_rate { get; set; }
 
             public int index { get; set; }
 

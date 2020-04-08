@@ -79,9 +79,9 @@ namespace Xabe.FFmpeg
         /// <summary>
         /// Builds the -framerate option for the input of this conversion
         /// </summary>
-        /// <param name="frameRate">the desired framerate of the input</param>
+        /// <param name="frameRate">the desired framerate of the input in bytes</param>
         /// <returns>IConversion object</returns>
-        IConversion SetInputFrameRate(double frameRate);
+        IConversion SetInputFrameRate(long frameRate);
 
         /// <summary>
         ///     Seeks in output file to position. (-ss argument)
@@ -120,20 +120,18 @@ namespace Xabe.FFmpeg
         IConversion SetHashFormat(HashFormat format);
 
         /// <summary>
-        ///     Sets The bitrate of the video streams to the supplied value
-        ///     Acceptable values include 1200K for 1200kbit/s or 1M for 1mbit/s
+        ///     Sets The bitrate of the video streams to the supplied value in bytes
         /// </summary>
         /// <param name="bitrate">The required Bitrate Value</param>
         /// <returns>IConversion object</returns>
-        IConversion SetVideoBitrate(string bitrate);
+        IConversion SetVideoBitrate(long bitrate);
 
         /// <summary>
-        ///     Sets The bitrate of the audio streams to the supplied value
-        ///     Acceptable values include 1200K for 1200kbit/s or 1M for 1mbit/s
+        ///     Sets The bitrate of the audio streams to the supplied value in bytes
         /// </summary>
         /// <param name="bitrate">The required Bitrate Value</param>
         /// <returns>IConversion object</returns>
-        IConversion SetAudioBitrate(string bitrate);
+        IConversion SetAudioBitrate(long bitrate);
 
         /// <summary>
         ///     Defines thread count used by converter

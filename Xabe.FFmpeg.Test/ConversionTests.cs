@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -289,7 +290,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .SetVideoBitrate("1500K")
+                                                                 .SetVideoBitrate(1500000)
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(false);
 
@@ -309,7 +310,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .SetVideoBitrate("1500K")
+                                                                 .SetVideoBitrate(1500000)
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(false);
 
@@ -329,7 +330,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .SetVideoBitrate("1500K")
+                                                                 .SetVideoBitrate(1500000)
                                                                  .SetOutput(output)
                                                                  .Start().ConfigureAwait(false);
 
