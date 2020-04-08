@@ -256,7 +256,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetVideoBitrate(string bitrate)
+        public IConversion SetVideoBitrate(long bitrate)
         {
             AddParameter(string.Format("-b:v {0}", bitrate));
             AddParameter(string.Format("-minrate {0}", bitrate));
@@ -270,9 +270,9 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetAudioBitrate(string bitrate)
+        public IConversion SetAudioBitrate(long bitrate)
         {
-            AddParameter(string.Format("-b:a {0}", bitrate));
+            AddParameter($"-b:a {bitrate} ");
             return this;
         }
 
@@ -329,7 +329,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetInputFrameRate(double frameRate)
+        public IConversion SetInputFrameRate(long frameRate)
         {
             AddParameter($"-framerate {frameRate}", ParameterPosition.PreInput);
             return this;

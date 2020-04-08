@@ -125,7 +125,7 @@ namespace Xabe.FFmpeg.Streams
         public string Format { get; internal set; }
 
         /// <inheritdoc />
-        public double Bitrate { get; set; }
+        public long Bitrate { get; set; }
 
         /// <inheritdoc />
         public int Channels { get; set; }

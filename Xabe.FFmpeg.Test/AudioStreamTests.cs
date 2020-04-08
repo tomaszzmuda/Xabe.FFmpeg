@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -141,6 +142,27 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(1, inputFile.AudioStreams.First().Default.Value);
             Assert.Equal(0, inputFile.AudioStreams.First().Forced.Value);
             Assert.Null(inputFile.AudioStreams.First().Language);
+        }
+
+        [Fact]
+        public async Task ChangeSpeed_CommaAsASeparator_CorrectResult()
+        {
+            CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("pl-PL");
+
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(inputFile.AudioStreams.First().ChangeSpeed(0.5))
+                                                    .SetOutput(outputPath)
+                                                    .Start().ConfigureAwait(false);
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
         }
     }
 }

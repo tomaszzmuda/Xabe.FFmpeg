@@ -71,10 +71,10 @@ namespace Xabe.FFmpeg.Streams
         public string PixelFormat { get; internal set; }
 
         /// <inheritdoc />
-        public int? Default { get; set; }
+        public int? Default { get; internal set; }
 
         /// <inheritdoc />
-        public int? Forced { get; set; }
+        public int? Forced { get; internal set; }
 
         /// <inheritdoc />
         public string Build()
@@ -129,7 +129,7 @@ namespace Xabe.FFmpeg.Streams
         public CodecType CodecType { get; } = CodecType.Video;
 
         /// <inheritdoc />
-        public double Bitrate { get; internal set; }
+        public long Bitrate { get; internal set; }
 
         /// <inheritdoc />
         public IVideoStream CopyStream()
@@ -178,7 +178,7 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public IVideoStream SetBitrate(double bitrate)
+        public IVideoStream SetBitrate(long bitrate)
         {
             _bitrate = $"-b:v {bitrate} ";
             return this;

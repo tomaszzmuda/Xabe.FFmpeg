@@ -42,7 +42,7 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         ///     Video bitrate
         /// </summary>
-        double Bitrate { get; }
+        long Bitrate { get; }
 
         /// <summary>
         /// Pixel Format
@@ -52,12 +52,12 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         /// Default
         /// </summary>
-        int? Default { get; set; }
+        int? Default { get; }
 
         /// <summary>
         /// Forced
         /// </summary>
-        int? Forced { get; set; }
+        int? Forced { get; }
 
         /// <summary>
         /// Video Codec
@@ -112,7 +112,7 @@ namespace Xabe.FFmpeg.Streams
         /// </summary>
         /// <param name="bitrate">Bitrate in bits</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetBitrate(double bitrate);
+        IVideoStream SetBitrate(long bitrate);
 
         /// <summary>
         ///     Set size of video

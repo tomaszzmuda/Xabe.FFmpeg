@@ -21,32 +21,32 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         ///     Bit Rate
         /// </summary>
-        double Bitrate { get; set; }
+        long Bitrate { get; }
 
         /// <summary>
         ///     Sample Rate
         /// </summary>
-        int SampleRate { get; set; }
+        int SampleRate { get; }
 
         /// <summary>
         ///     Channels
         /// </summary>
-        int Channels { get; set; }
+        int Channels { get; }
 
         /// <summary>
         /// Language 
         /// </summary>
-        string Language { get; set; }
+        string Language { get; }
 
         /// <summary>
         /// Default
         /// </summary>
-        int? Default { get; set; }
+        int? Default { get; }
 
         /// <summary>
         /// Forced
         /// </summary>
-        int? Forced { get; set; }
+        int? Forced { get; }
 
         /// <summary>
         ///     Set stream to copy with orginal codec

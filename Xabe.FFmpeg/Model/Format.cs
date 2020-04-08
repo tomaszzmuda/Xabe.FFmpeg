@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg.Model
         {
             public string size { get; set; }
 
-            public double bit_Rate { get; set; }
+            public long bit_Rate { get; set; }
 
             public double duration { get; set; }
         }
