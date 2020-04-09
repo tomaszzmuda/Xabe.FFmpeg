@@ -55,17 +55,15 @@ namespace Xabe.FFmpeg.Exceptions
         {
             foreach(var check in Checks)
             {
-                if (check.Key.CheckLog(output))
-                    check.Value(output, args);
-            }
-        }
-
-        private void ThrowException<T>(Func<T> ctor, string _output, string _args, Func<bool> errorOccurs) where T : ConversionException
-        {
-            if (errorOccurs())
-            {
-                var exception = ctor();
-                throw exception;
+                try
+                {
+                    if (check.Key.CheckLog(output))
+                        check.Value(output, args);
+                }
+                catch(FFmpegNoSuitableOutputFormatFoundException e)
+                {
+                    throw new ConversionException(e.Message, e, e.InputParameters);
+                }
             }
         }
     }

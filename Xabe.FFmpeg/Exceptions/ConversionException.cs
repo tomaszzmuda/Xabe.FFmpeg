@@ -8,6 +8,11 @@ namespace Xabe.FFmpeg.Exceptions
     /// </summary>
     public class ConversionException : Exception
     {
+        public ConversionException(string message, Exception innerException, string inputParameters) : base(message, innerException)
+        {
+            InputParameters = inputParameters;
+        }
+
         /// <inheritdoc />
         /// <summary>
         ///     The exception that is thrown when a FFmpeg process return error.

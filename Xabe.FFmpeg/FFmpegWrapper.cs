@@ -47,8 +47,6 @@ namespace Xabe.FFmpeg
                 {
                     process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
                     process.BeginErrorReadLine();
-                    // VSTHRD101: Avoid using async lambda for a void returning delegate type, becaues any exceptions not handled by the delegate will crash the process
-                    // https://github.com/Microsoft/vs-threading/blob/master/doc/analyzers/VSTHRD101.md
                     var ctr = cancellationToken.Register(() =>
                     {
                         if (Environment.OSVersion.Platform != PlatformID.Win32NT)

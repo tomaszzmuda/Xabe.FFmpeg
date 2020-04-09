@@ -136,7 +136,7 @@ namespace Xabe.FFmpeg
             var result = new ConversionResult
             {
                 StartTime = DateTime.Now,
-                Success = await _ffmpeg.RunProcess(parameters, cancellationToken).ConfigureAwait(false),
+                Success = await _ffmpeg.RunProcess(parameters, cancellationToken),
                 EndTime = DateTime.Now,
                 MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
                                                                 .Result),

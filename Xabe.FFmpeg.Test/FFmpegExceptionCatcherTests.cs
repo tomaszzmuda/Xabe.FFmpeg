@@ -57,9 +57,10 @@ namespace Xabe.FFmpeg.Test
             var exception = Record.Exception(() => _sut.CatchFFmpegErrors(output, args));
 
             //Assert
-            Assert.IsType<FFmpegNoSuitableOutputFormatFoundException>(exception);
+            Assert.IsType<ConversionException>(exception);
+            Assert.IsType<FFmpegNoSuitableOutputFormatFoundException>(exception.InnerException);
             Assert.Equal(output, exception.Message);
-            var conversionException = (FFmpegNoSuitableOutputFormatFoundException)exception;
+            var conversionException = (ConversionException)exception;
             Assert.Equal(args, conversionException.InputParameters);
         }
     }
