@@ -88,7 +88,7 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public IAudioStream ChangeBitrate(double bitRate)
+        public IAudioStream SetBitrate(long bitRate)
         {
             _bitrate = $"-b:a:{Index} {bitRate} ";
             return this;

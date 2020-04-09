@@ -37,14 +37,14 @@ namespace Xabe.FFmpeg.Test
         [Theory]
         [InlineData(192000)]
         [InlineData(32000)]
-        public async Task ChangeBitrate(int expectedBitrate)
+        public async Task SetBitrate(int expectedBitrate)
         {
             IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 
             var audioStream = inputFile.AudioStreams.First();
             var bitrate = audioStream.Bitrate;
-            audioStream.ChangeBitrate(expectedBitrate);
+            audioStream.SetBitrate(expectedBitrate);
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)

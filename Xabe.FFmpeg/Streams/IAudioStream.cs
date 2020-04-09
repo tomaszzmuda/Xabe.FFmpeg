@@ -86,7 +86,7 @@ namespace Xabe.FFmpeg.Streams
         /// </summary>
         /// <param name="bitRate">Bitrate for the AudioStream in bytes</param>
         /// <returns>IAudioStream</returns>
-        IAudioStream ChangeBitrate(double bitRate);
+        IAudioStream SetBitrate(long bitRate);
 
         /// <summary>
         ///     Sets the SampleRate of the AudioStream (-ar option)

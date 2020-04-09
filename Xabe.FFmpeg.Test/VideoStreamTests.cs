@@ -56,7 +56,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task ChangeBitrate()
+        public async Task SetBitrate()
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
