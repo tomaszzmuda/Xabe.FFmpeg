@@ -181,7 +181,7 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("h264", resultFile.VideoStreams.First().Format);
-            Assert.Equal(29.97, resultFile.VideoStreams.First().FrameRate);
+            Assert.Equal(29.97, resultFile.VideoStreams.First().Framerate);
             Assert.Equal(TimeSpan.FromSeconds(10), resultFile.VideoStreams.First().Duration);
         }
 
@@ -412,7 +412,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal(builder.FileList.Count, preparedFilesCount);
             Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
-            Assert.Equal(1, resultFile.VideoStreams.First().FrameRate);
+            Assert.Equal(1, resultFile.VideoStreams.First().Framerate);
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
@@ -434,7 +434,7 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
-            Assert.Equal(1, resultFile.VideoStreams.First().FrameRate);
+            Assert.Equal(1, resultFile.VideoStreams.First().Framerate);
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 

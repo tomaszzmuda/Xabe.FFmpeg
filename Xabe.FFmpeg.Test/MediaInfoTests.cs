@@ -84,7 +84,7 @@ namespace Xabe.FFmpeg.Test
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.NotNull(videoStream);
             Assert.Equal(0, videoStream.Index);
-            Assert.Equal(25, videoStream.FrameRate);
+            Assert.Equal(25, videoStream.Framerate);
             Assert.Equal(240, videoStream.Height);
             Assert.Equal(320, videoStream.Width);
             Assert.Equal("4:3", videoStream.Ratio);
@@ -113,7 +113,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(mediaInfo.VideoStreams);
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.NotNull(videoStream);
-            Assert.Equal(25, videoStream.FrameRate);
+            Assert.Equal(25, videoStream.Framerate);
             Assert.Equal(720, videoStream.Height);
             Assert.Equal(1280, videoStream.Width);
             Assert.Equal("16:9", videoStream.Ratio);

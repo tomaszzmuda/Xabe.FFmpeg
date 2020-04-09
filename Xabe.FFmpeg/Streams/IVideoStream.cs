@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         ///     Frame rate
         /// </summary>
-        double FrameRate { get; }
+        double Framerate { get; }
 
         /// <summary>
         ///     Screen ratio
@@ -74,10 +74,10 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         ///     Change speed of video
         /// </summary>
-        /// <param name="multiplaction">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
+        /// <param name="multiplicator">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
         /// <returns>IVideoStream</returns>
         /// <exception cref="ArgumentOutOfRangeException">When speed isn't between 0.5 - 2.0.</exception>
-        IVideoStream ChangeSpeed(double multiplaction);
+        IVideoStream ChangeSpeed(double multiplicator);
 
         /// <summary>
         ///     Melt watermark into video
@@ -105,7 +105,7 @@ namespace Xabe.FFmpeg.Streams
         /// </summary>
         /// <param name="framerate">Framerates in FPS</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetFramerate(int framerate);
+        IVideoStream SetFramerate(double framerate);
 
         /// <summary>
         ///     Set Bitrate of the video (-b:v option)

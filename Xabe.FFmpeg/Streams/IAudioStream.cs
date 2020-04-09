@@ -19,7 +19,7 @@ namespace Xabe.FFmpeg.Streams
         CodecType CodecType { get; }
 
         /// <summary>
-        ///     Bit Rate
+        ///     Bitrate
         /// </summary>
         long Bitrate { get; }
 
@@ -98,10 +98,10 @@ namespace Xabe.FFmpeg.Streams
         /// <summary>
         ///     Change speed of media
         /// </summary>
-        /// <param name="multiplaction">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
+        /// <param name="multiplicator">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
         /// <returns>IAudioStream</returns>
         /// <exception cref="ArgumentOutOfRangeException">When speed isn't between 0.5 - 2.0.</exception>
-        IAudioStream ChangeSpeed(double multiplaction);
+        IAudioStream ChangeSpeed(double multiplicator);
 
         /// <summary>
         ///     Get part of audio

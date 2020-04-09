@@ -199,7 +199,7 @@ namespace Xabe.FFmpeg
                     Duration = GetVideoDuration(model, format),
                     Width = model.width,
                     Height = model.height,
-                    FrameRate = GetVideoFramerate(model),
+                    Framerate = GetVideoFramerate(model),
                     Ratio = GetVideoAspectRatio(model.width, model.height),
                     Source = fileInfo,
                     Index = model.index,

@@ -39,7 +39,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
 
             var videoStream = inputFile.VideoStreams.First();
-            var originalFramerate = videoStream.FrameRate;
+            var originalFramerate = videoStream.Framerate;
             Assert.Equal(25, originalFramerate);
             videoStream.SetFramerate(24);
 
@@ -50,7 +50,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(result.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
-            Assert.Equal(24, mediaInfo.VideoStreams.First().FrameRate);
+            Assert.Equal(24, mediaInfo.VideoStreams.First().Framerate);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
@@ -196,7 +196,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(2), mediaInfo.Duration);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
             Assert.False(mediaInfo.AudioStreams.Any());
-            Assert.Equal(50, mediaInfo.Duration.TotalSeconds * mediaInfo.VideoStreams.First().FrameRate);
+            Assert.Equal(50, mediaInfo.Duration.TotalSeconds * mediaInfo.VideoStreams.First().Framerate);
         }
 
         [Fact]
@@ -246,7 +246,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
             Assert.Equal("gif", mediaInfo.VideoStreams.First().Format);
             Assert.Equal("16:9", mediaInfo.VideoStreams.First().Ratio);
-            Assert.Equal(25, mediaInfo.VideoStreams.First().FrameRate);
+            Assert.Equal(25, mediaInfo.VideoStreams.First().Framerate);
             Assert.Equal(1280, mediaInfo.VideoStreams.First().Width);
             Assert.Equal(720, mediaInfo.VideoStreams.First().Height);
             Assert.False(mediaInfo.AudioStreams.Any());

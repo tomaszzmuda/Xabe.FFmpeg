@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Xabe.FFmpeg.Streams
         private string _bitrate;
         private string _bitsreamFilter;
         private string _frameCount;
-        private string _frameRate;
+        private string _framerate;
         private string _loop;
         private string _reverse;
         private string _rotate;
@@ -47,7 +48,7 @@ namespace Xabe.FFmpeg.Streams
         public int Height { get; internal set; }
 
         /// <inheritdoc />
-        public double FrameRate { get; internal set; }
+        public double Framerate { get; internal set; }
 
         /// <inheritdoc />
         public string Ratio { get; internal set; }
@@ -85,7 +86,7 @@ namespace Xabe.FFmpeg.Streams
             builder.Append(BuildVideoCodec());
             builder.Append(_bitsreamFilter);
             builder.Append(_bitrate);
-            builder.Append(_frameRate);
+            builder.Append(_framerate);
             builder.Append(_frameCount);
             builder.Append(_loop);
             builder.Append(_split);
@@ -192,9 +193,9 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public IVideoStream SetFramerate(int framerate)
+        public IVideoStream SetFramerate(double framerate)
         {
-            _frameRate = $"-r {framerate} ";
+            _framerate = $"-r {string.Format(CultureInfo.GetCultureInfo("en-US"), "{0}", framerate)} ";
             return this;
         }
 
