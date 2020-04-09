@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
-using Xabe.FFmpeg.Model;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test

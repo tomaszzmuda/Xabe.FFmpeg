@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Enums;
-using Xabe.FFmpeg.Model;
-using Xabe.FFmpeg.Streams;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test

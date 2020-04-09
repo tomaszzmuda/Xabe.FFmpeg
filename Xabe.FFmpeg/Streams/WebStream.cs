@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xabe.FFmpeg.Streams
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Stream with web source

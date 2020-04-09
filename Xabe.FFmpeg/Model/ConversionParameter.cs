@@ -1,6 +1,6 @@
 ﻿using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg.Model
+namespace Xabe.FFmpeg
 {
     internal class ConversionParameter
     {

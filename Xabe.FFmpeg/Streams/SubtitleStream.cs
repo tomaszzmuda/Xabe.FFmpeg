@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg.Streams
+namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
     public class SubtitleStream : ISubtitleStream

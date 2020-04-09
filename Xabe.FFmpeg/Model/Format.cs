@@ -1,7 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 
-namespace Xabe.FFmpeg.Model
-{
+namespace Xabe.FFmpeg
+{ 
     internal class FormatModel
     {
         private FormatModel()

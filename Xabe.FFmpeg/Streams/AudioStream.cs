@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg.Streams
+namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IAudioStream" />
     public class AudioStream : IAudioStream, IFilterable
@@ -116,13 +116,13 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public int Index { get; internal set; }
+        public int Index { get; set; }
 
         /// <inheritdoc />
-        public TimeSpan Duration { get; internal set; }
+        public TimeSpan Duration { get; set; }
 
         /// <inheritdoc />
-        public string Format { get; internal set; }
+        public string Format { get; set; }
 
         /// <inheritdoc />
         public long Bitrate { get; set; }
@@ -134,7 +134,7 @@ namespace Xabe.FFmpeg.Streams
         public int SampleRate { get; set; }
 
         /// <inheritdoc />
-        public AudioCodec Codec { get; private set; }
+        public AudioCodec Codec { get; set; }
 
         /// <inheritdoc />
         public string Language { get; set; }
@@ -152,7 +152,7 @@ namespace Xabe.FFmpeg.Streams
         }
 
         /// <inheritdoc />
-        public FileInfo Source { get; internal set; }
+        public FileInfo Source { get; set; }
 
         /// <inheritdoc />
         public IAudioStream SetSeek(TimeSpan? seek)

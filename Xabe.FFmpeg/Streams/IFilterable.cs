@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Xabe.FFmpeg.Streams
+namespace Xabe.FFmpeg
 {
     internal interface IFilterable
     {

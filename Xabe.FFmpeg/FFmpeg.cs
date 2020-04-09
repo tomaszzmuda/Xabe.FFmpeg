@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Xabe.FFmpeg.Exceptions;
-using FileInfo = Xabe.FFmpeg.Model.FileInfo;
 
 namespace Xabe.FFmpeg
 {
@@ -167,11 +166,7 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            IEnumerable<FileInfo> files = new DirectoryInfo(path).GetFiles().Select(x => new FileInfo
-            {
-                Name = x.Name,
-                FullName = x.FullName
-            });
+            IEnumerable<FileInfo> files = new DirectoryInfo(path).GetFiles();
 
             FFprobePath = FFmpegExecutablesHelper.SelectFFprobePath(files);
             FFmpegPath = FFmpegExecutablesHelper.SelectFFmpegPath(files);

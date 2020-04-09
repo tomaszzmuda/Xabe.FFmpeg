@@ -1,6 +1,6 @@
 ﻿using Xabe.FFmpeg.Enums;
 
-namespace Xabe.FFmpeg.Streams
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Subtitle stream

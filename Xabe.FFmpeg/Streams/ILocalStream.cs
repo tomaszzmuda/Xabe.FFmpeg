@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Xabe.FFmpeg.Streams
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Stream with local source

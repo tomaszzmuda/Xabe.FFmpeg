@@ -1,7 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 using Newtonsoft.Json;
 
-namespace Xabe.FFmpeg.Model
+namespace Xabe.FFmpeg
 {
     internal class ProbeModel
     {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -10,11 +12,11 @@ namespace Xabe.FFmpeg.Test
         {
             const string expected = "ffmpeg.exe";
 
-            IEnumerable<Model.FileInfo> files = GetWindowsPathMocks();
+            IEnumerable<FileInfo> files = GetWindowsPathMocks();
 
             string path = FFmpegExecutablesHelper.SelectFFmpegPath(files);
 
-            Assert.Equal(expected, path);
+            Assert.EndsWith(expected, path);
         }
 
         [Fact]
@@ -22,11 +24,11 @@ namespace Xabe.FFmpeg.Test
         {
             const string expected = "ffprobe.exe";
 
-            IEnumerable<Model.FileInfo> files = GetWindowsPathMocks();
+            IEnumerable<FileInfo> files = GetWindowsPathMocks();
 
             string path = FFmpegExecutablesHelper.SelectFFprobePath(files);
 
-            Assert.Equal(expected, path);
+            Assert.EndsWith(expected, path);
         }
 
         [Fact]
@@ -34,11 +36,11 @@ namespace Xabe.FFmpeg.Test
         {
             const string expected = "ffmpeg";
 
-            IEnumerable<Model.FileInfo> files = GetLinuxPathMocks();
+            IEnumerable<FileInfo> files = GetLinuxPathMocks();
 
             string path = FFmpegExecutablesHelper.SelectFFmpegPath(files);
 
-            Assert.Equal(expected, path);
+            Assert.EndsWith(expected, path);
         }
 
         [Fact]
@@ -46,53 +48,33 @@ namespace Xabe.FFmpeg.Test
         {
             const string expected = "ffprobe";
 
-            IEnumerable<Model.FileInfo> files = GetLinuxPathMocks();
+            IEnumerable<FileInfo> files = GetLinuxPathMocks();
 
             string path = FFmpegExecutablesHelper.SelectFFprobePath(files);
 
-            Assert.Equal(expected, path);
+            Assert.EndsWith(expected, path);
         }
 
-        private IEnumerable<Model.FileInfo> GetWindowsPathMocks()
+        private IEnumerable<FileInfo> GetWindowsPathMocks()
         {
-            yield return new Model.FileInfo
-            {
-                Name = "ffmpeg",
-                FullName = "ffmpeg.exe"
-            };
-
-            yield return new Model.FileInfo
-            {
-                Name = "FFmpeg.AutoGen",
-                FullName = "FFmpeg.AutoGen.dll"
-            };
-
-            yield return new Model.FileInfo
-            {
-                Name = "ffprobe",
-                FullName = "ffprobe.exe"
-            };
+            var tmpDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n"));
+            var dir = new DirectoryInfo(tmpDir);
+            dir.Create();
+            File.Create(Path.Combine(tmpDir, "ffmpeg.exe"));
+            File.Create(Path.Combine(tmpDir, "FFmpeg.AutoGen.dll"));
+            File.Create(Path.Combine(tmpDir, "ffprobe.exe"));
+            return dir.EnumerateFiles();
         }
 
-        private IEnumerable<Model.FileInfo> GetLinuxPathMocks()
+        private IEnumerable<FileInfo> GetLinuxPathMocks()
         {
-            yield return new Model.FileInfo
-            {
-                Name = "ffmpeg",
-                FullName = "ffmpeg"
-            };
-
-            yield return new Model.FileInfo
-            {
-                Name = "FFmpeg.AutoGen",
-                FullName = "FFmpeg.AutoGen"
-            };
-
-            yield return new Model.FileInfo
-            {
-                Name = "ffprobe",
-                FullName = "ffprobe"
-            };
+            var tmpDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n"));
+            var dir = new DirectoryInfo(tmpDir);
+            dir.Create();
+            File.Create(Path.Combine(tmpDir, "ffmpeg"));
+            File.Create(Path.Combine(tmpDir, "FFmpeg.AutoGen.dll"));
+            File.Create(Path.Combine(tmpDir, "ffprobe"));
+            return dir.EnumerateFiles();
         }
     }
 }

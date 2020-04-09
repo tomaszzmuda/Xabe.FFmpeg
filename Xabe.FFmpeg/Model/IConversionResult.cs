@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xabe.FFmpeg.Model
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Information about conversion

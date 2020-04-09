@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Xabe.FFmpeg.Model;
 
 namespace Xabe.FFmpeg
 {
@@ -10,13 +10,13 @@ namespace Xabe.FFmpeg
         internal const string FFmpegExecutableName = "ffmpeg";
         internal const string FFprobeExecutableName = "ffprobe";
 
-        internal static string SelectFFmpegPath(IEnumerable<IFileInfo> files)
+        internal static string SelectFFmpegPath(IEnumerable<FileInfo> files)
         {
             return files.FirstOrDefault(x => CompareFileNames(x.Name, FFmpegExecutableName))
                         ?.FullName;
         }
 
-        internal static string SelectFFprobePath(IEnumerable<IFileInfo> files)
+        internal static string SelectFFprobePath(IEnumerable<FileInfo> files)
         {
             return files.FirstOrDefault(x => CompareFileNames(x.Name, FFprobeExecutableName))
                         ?.FullName;

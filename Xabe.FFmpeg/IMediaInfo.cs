@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {

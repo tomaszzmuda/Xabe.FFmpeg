@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Exceptions;
-using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {
