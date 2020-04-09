@@ -14,8 +14,7 @@ using FileInfo = Xabe.FFmpeg.Model.FileInfo;
 
 namespace Xabe.FFmpeg
 {
-    /// <inheritdoc />
-    /// <summary>
+    /// <inheritdoc /> 
     ///     Wrapper for FFmpeg
     /// </summary>
     public abstract class FFmpeg
@@ -25,12 +24,6 @@ namespace Xabe.FFmpeg
 
         private static readonly object s_ffmpegPathLock = new object();
         private static readonly object s_ffprobePathLock = new object();
-
-        /// <summary>
-        ///     Directory contains FFmpeg and FFprobe
-        /// </summary>
-        [Obsolete("Please use ExecutablePath property.")]
-        public static string FFmpegDir { get => ExecutablesPath; set => ExecutablesPath = value; }
 
         /// <summary>
         ///     Directory containing FFmpeg and FFprobe
@@ -56,25 +49,6 @@ namespace Xabe.FFmpeg
         /// FFmpeg process id
         /// </summary>
         public int FFmpegProcessId { get; private set; }
-
-        /// <summary>
-        ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
-        /// <param id="fullVersion">Determine if a fully compiled FFPmpeg is downloaded (with gpu support and etc)</param>
-        /// </summary>
-        [Obsolete("This method is obsolete. Please use the GetLatestVersion(FFmpegVersions version) method instead.")]
-        public static Task GetLatestVersion(bool fullVersion = false)
-        {
-            IFFmpegDownloader downloader;
-            if (fullVersion)
-            {
-                downloader = new FullFFmpegDownloader();
-            }
-            else
-            {
-                downloader = new FFmpegDownloader();
-            }
-            return downloader.GetLatestVersion();
-        }
 
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
@@ -286,13 +260,5 @@ namespace Xabe.FFmpeg
 
             return process;
         }
-    }
-
-    /// <summary>
-    ///     Base FFmpeg class
-    /// </summary>
-    [Obsolete("Please use class FFmpeg.")]
-    public abstract class FFbase : FFmpeg
-    {
     }
 }
