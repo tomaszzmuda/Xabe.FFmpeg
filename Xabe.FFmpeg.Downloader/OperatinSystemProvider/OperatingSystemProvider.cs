@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Xabe.FFmpeg.Downloader
 {
-    internal partial class OperatingSystemProvider : IOperatingSystemProvider
+    internal class OperatingSystemProvider : IOperatingSystemProvider
     {
         public OperatingSystem GetOperatingSystem()
         {

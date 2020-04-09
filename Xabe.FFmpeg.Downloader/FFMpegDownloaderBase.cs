@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg.Downloader
 {
-    internal abstract class FFmpegDownloaderBase : IFFmpegDownloader
+    internal abstract class FFmpegDownloaderBase : IFFMpegDownloaderBase
     {
         protected OperatingSystem OperatingSystem => _operatingSystemProvider.GetOperatingSystem();
         protected IOperatingSystemProvider _operatingSystemProvider;

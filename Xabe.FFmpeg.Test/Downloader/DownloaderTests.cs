@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NSubstitute;
 using Xabe.FFmpeg.Downloader;
-using Xabe.FFmpeg.Downloader.Official;
-using Xabe.FFmpeg.Downloader.Zeranoe;
 using Xunit;
 using OperatingSystem = Xabe.FFmpeg.Downloader.OperatingSystem;
 
@@ -23,7 +19,7 @@ namespace Xabe.FFmpeg.Test
 
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
             operatingSystemProvider.GetOperatingSystem().Returns(x => os);
-            FFmpegDownloader downloader = new FFmpegDownloader(operatingSystemProvider);
+            OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
 
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
@@ -109,7 +105,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                FFmpegDownloader downloader = new FFmpegDownloader(operatingSystemProvider);
+                OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion).ConfigureAwait(false);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
@@ -156,7 +152,7 @@ namespace Xabe.FFmpeg.Test
         {
             get
             {
-                yield return new object[] { new FFmpegDownloader() };
+                yield return new object[] { new OfficialFFmpegDownloader() };
                 yield return new object[] { new FullFFmpegDownloader() };
                 yield return new object[] { new SharedFFmpegDownloader() };
             }
@@ -164,7 +160,7 @@ namespace Xabe.FFmpeg.Test
 
         [Theory]
         [MemberData(nameof(FFmpegDownloaders))]
-        internal async Task DownloadLatestVersion_NoOperatingSystemProviderIsSpecified_UseDefaultOne(IFFmpegDownloader downloader)
+        internal async Task DownloadLatestVersion_NoOperatingSystemProviderIsSpecified_UseDefaultOne(IFFMpegDownloaderBase downloader)
         {
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 

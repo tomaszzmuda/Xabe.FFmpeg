@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Xabe.FFmpeg.Enums
+﻿namespace Xabe.FFmpeg.Downloader
 {
     /// <summary>
     /// Enum to describe the versions of FFmpeg that can be automatically downloaded

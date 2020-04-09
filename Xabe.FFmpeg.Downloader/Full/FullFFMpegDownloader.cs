@@ -4,9 +4,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Xabe.FFmpeg.Downloader.Zeranoe
+namespace Xabe.FFmpeg.Downloader
 {
-    ///<summary>Download a Fullbuild from zeranoe.com for Windows or macOS</summary>
     internal class FullFFmpegDownloader : FFmpegDownloaderBase
     {
         internal FullFFmpegDownloader() : base()
@@ -46,7 +45,6 @@ namespace Xabe.FFmpeg.Downloader.Zeranoe
             Extract(fullPackZip, FFmpeg.ExecutablesPath ?? ".");
         }
 
-        /// <summary>Extract only binary files from the zip archive</summary>
         protected override void Extract(string ffMpegZipPath, string destinationDir)
         {
             using (ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))

@@ -4,18 +4,18 @@ using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Xabe.FFmpeg.Downloader.Official
+namespace Xabe.FFmpeg.Downloader
 {
-    internal class FFmpegDownloader : FFmpegDownloaderBase
+    internal class OfficialFFmpegDownloader : FFmpegDownloaderBase
     {
         private readonly LinkProvider _linkProvider;
 
-        internal FFmpegDownloader() : base()
+        internal OfficialFFmpegDownloader() : base()
         {
             _linkProvider = new LinkProvider(_operatingSystemProvider);
         }
 
-        internal FFmpegDownloader(IOperatingSystemProvider operatingSystemProvider) : base(operatingSystemProvider)
+        internal OfficialFFmpegDownloader(IOperatingSystemProvider operatingSystemProvider) : base(operatingSystemProvider)
         {
             _linkProvider = new LinkProvider(operatingSystemProvider);
         }
@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg.Downloader.Official
             if (!CheckIfUpdateAvailable(latestVersion.Version) && !CheckIfFilesExist())
                 return;
 
-            await DownloadLatestVersion(latestVersion).ConfigureAwait(false);
+            await DownloadLatestVersion(latestVersion);
 
             SaveVersion(latestVersion);
         }
@@ -54,8 +54,8 @@ namespace Xabe.FFmpeg.Downloader.Official
             Extract(ffmpegZip, FFmpeg.ExecutablesPath ?? ".");
             Extract(ffprobeZip, FFmpeg.ExecutablesPath ?? ".");
 
-            if (Directory.Exists(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX")))
-                Directory.Delete(Path.Combine(FFmpeg.ExecutablesPath ?? ".", "__MACOSX"), true);
+            File.Delete(ffmpegZip);
+            File.Delete(ffprobeZip);
         }
 
         private bool CheckIfUpdateAvailable(string latestVersion)

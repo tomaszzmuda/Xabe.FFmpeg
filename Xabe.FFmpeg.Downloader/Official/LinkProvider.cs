@@ -1,4 +1,4 @@
-﻿namespace Xabe.FFmpeg.Downloader.Official
+﻿namespace Xabe.FFmpeg.Downloader
 {
     internal class LinkProvider
     {
