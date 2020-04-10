@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Xabe.FFmpeg.Downloader\Xabe.FFmpeg.Downloader.csproj" />
-    <ProjectReference Include="..\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
+    <ProjectReference Include="..\..\src\Xabe.FFmpeg.Downloader\Xabe.FFmpeg.Downloader.csproj" />
+    <ProjectReference Include="..\..\src\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
   </ItemGroup>
 
 </Project>
