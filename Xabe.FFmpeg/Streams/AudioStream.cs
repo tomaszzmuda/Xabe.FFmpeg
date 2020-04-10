@@ -148,11 +148,11 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            return new[] { Source.FullName };
+            return new[] { Path };
         }
 
         /// <inheritdoc />
-        public FileInfo Source { get; set; }
+        public string Path { get; set; }
 
         /// <inheritdoc />
         public IAudioStream SetSeek(TimeSpan? seek)

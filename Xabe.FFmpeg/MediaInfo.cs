@@ -10,9 +10,9 @@ namespace Xabe.FFmpeg
     /// <inheritdoc cref="IMediaInfo" />
     public class MediaInfo : IMediaInfo
     {
-        private MediaInfo(FileInfo fileInfo)
+        private MediaInfo(string path)
         {
-            FileInfo = fileInfo;
+            Path = path;
         }
 
         /// <inheritdoc />
@@ -35,15 +35,17 @@ namespace Xabe.FFmpeg
         public IEnumerable<ISubtitleStream> SubtitleStreams { get; internal set; }
 
         /// <inheritdoc />
-        public FileInfo FileInfo { get; }
+        public string Path { get; }
 
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
-        public static Task<IMediaInfo> Get(string filePath)
+        public static async Task<IMediaInfo> Get(string filePath)
         {
-            return Get(new FileInfo(filePath));
+            var mediaInfo = new MediaInfo(filePath);
+            mediaInfo = await new FFprobeWrapper().SetProperties(mediaInfo);
+            return mediaInfo;
         }
 
         /// <summary>
@@ -56,10 +58,7 @@ namespace Xabe.FFmpeg
             {
                 throw new InvalidInputException($"Input file {fileInfo.FullName} doesn't exists.");
             }
-
-            var mediaInfo = new MediaInfo(fileInfo);
-            mediaInfo = await new FFprobeWrapper().GetProperties(fileInfo, mediaInfo).ConfigureAwait(false);
-            return mediaInfo;
+            return await Get(fileInfo.FullName);
         }
     }
 }

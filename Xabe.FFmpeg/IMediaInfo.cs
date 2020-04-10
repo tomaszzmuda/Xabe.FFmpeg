@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Xabe.FFmpeg
 {
@@ -15,9 +14,9 @@ namespace Xabe.FFmpeg
         IEnumerable<IStream> Streams { get; }
 
         /// <summary>
-        ///     Source file info
+        ///     Source info
         /// </summary>
-        FileInfo FileInfo { get; }
+        string Path { get; }
 
         /// <summary>
         ///     Duration of media

@@ -11,7 +11,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     File source of stream
         /// </summary>
-        FileInfo Source { get; }
+        string Path { get; }
 
         /// <summary>
         ///     Get part of media

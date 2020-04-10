@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg
         public string Format { get; internal set; }
 
         /// <inheritdoc />
-        public FileInfo Source { get; internal set; }
+        public string Path { get; internal set; }
 
         /// <inheritdoc />
         public string Build()
@@ -79,7 +79,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IEnumerable<string> GetSource()
         {
-            return new[] { Source.FullName };
+            return new[] { Path };
         }
 
         private string BuildLanguage()

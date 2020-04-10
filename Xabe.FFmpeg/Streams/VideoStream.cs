@@ -63,7 +63,7 @@ namespace Xabe.FFmpeg
         public int Index { get; internal set; }
 
         /// <inheritdoc />
-        public FileInfo Source { get; internal set; }
+        public string Path { get; internal set; }
 
         /// <inheritdoc />
         public VideoCodec Codec { get; internal set; }
@@ -311,8 +311,8 @@ namespace Xabe.FFmpeg
         public IEnumerable<string> GetSource()
         {
             if (!string.IsNullOrWhiteSpace(_watermarkSource))
-                return new[] { Source.FullName, _watermarkSource };
-            return new[] { Source.FullName };
+                return new[] { Path, _watermarkSource };
+            return new[] { Path };
         }
 
         void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)

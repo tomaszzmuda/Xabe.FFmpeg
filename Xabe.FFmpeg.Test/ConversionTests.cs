@@ -78,7 +78,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
-            Assert.Equal(".ts", resultFile.FileInfo.Extension);
+            Assert.Equal(".ts", Path.GetExtension(resultFile.Path));
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Format);
-            Assert.Equal(".avi", resultFile.FileInfo.Extension);
+            Assert.Equal(".avi", Path.GetExtension(resultFile.Path));
         }
 
         [Fact]
@@ -548,13 +548,13 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
             var cancellationTokenSource = new CancellationTokenSource();
-
-            var task = Conversion.ToWebM(Resources.Mp4WithAudio, output)
+            var conversion = await Conversion.ToWebM(Resources.Mp4WithAudio, output);
+            var task = conversion
                     .SetPreset(ConversionPreset.UltraFast)
                     .Start(cancellationTokenSource.Token);
 
             cancellationTokenSource.Cancel();
-            await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task.ConfigureAwait(false)).ConfigureAwait(false);
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await task);
         }
 
         [Theory]

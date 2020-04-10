@@ -75,9 +75,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ToWebM(string inputPath, string outputPath)
+        public static async Task<IConversion> ToWebM(string inputPath, string outputPath)
         {
-            IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
+            IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.Vp8);

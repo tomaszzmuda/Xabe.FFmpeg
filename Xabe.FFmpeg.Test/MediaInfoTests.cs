@@ -14,9 +14,9 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
 
-            Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
-            Assert.Equal(FileExtensions.Mp3, mediaInfo.FileInfo.Extension);
-            Assert.Equal("audio.mp3", mediaInfo.FileInfo.Name);
+            Assert.True(File.Exists(mediaInfo.Path));
+            Assert.Equal(FileExtensions.Mp3, Path.GetExtension(mediaInfo.Path));
+            Assert.EndsWith("audio.mp3", mediaInfo.Path);
 
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
@@ -68,9 +68,9 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
 
-            Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
-            Assert.Equal(FileExtensions.Mkv, mediaInfo.FileInfo.Extension);
-            Assert.Equal("SampleVideo_360x240_1mb.mkv", mediaInfo.FileInfo.Name);
+            Assert.True(File.Exists(mediaInfo.Path));
+            Assert.Equal(FileExtensions.Mkv, Path.GetExtension(mediaInfo.Path));
+            Assert.EndsWith("SampleVideo_360x240_1mb.mkv", mediaInfo.Path);
 
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
@@ -99,9 +99,9 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp4WithAudio).ConfigureAwait(false);
 
-            Assert.True(File.Exists(mediaInfo.FileInfo.FullName));
-            Assert.Equal(FileExtensions.Mp4, mediaInfo.FileInfo.Extension);
-            Assert.Equal("input.mp4", mediaInfo.FileInfo.Name);
+            Assert.True(File.Exists(mediaInfo.Path));
+            Assert.Equal(FileExtensions.Mp4, Path.GetExtension(mediaInfo.Path));
+            Assert.EndsWith("input.mp4", mediaInfo.Path);
 
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
@@ -138,7 +138,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(destFile).ConfigureAwait(false);
 
             Assert.NotNull(mediaInfo);
-            Assert.Equal(FileExtensions.Mp4, mediaInfo.FileInfo.Extension);
+            Assert.Equal(FileExtensions.Mp4, Path.GetExtension(mediaInfo.Path));
         }
     }
 }

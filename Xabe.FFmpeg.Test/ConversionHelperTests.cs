@@ -296,7 +296,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
 
-            IConversionResult result = await Conversion.ToWebM(Resources.Mp4WithAudio, output)
+            IConversionResult result = await (await Conversion.ToWebM(Resources.Mp4WithAudio, output))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start().ConfigureAwait(false);
 

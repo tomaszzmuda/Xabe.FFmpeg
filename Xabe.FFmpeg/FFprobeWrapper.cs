@@ -116,23 +116,24 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Get proporties prom media file
         /// </summary>
-        /// <param name="fileInfo">Media file info</param>
+        /// <param name="path">Media file info</param>
         /// <param name="mediaInfo">Empty media info</param>
         /// <returns>Properties</returns>
-        public async Task<MediaInfo> GetProperties(System.IO.FileInfo fileInfo, MediaInfo mediaInfo)
+        public async Task<MediaInfo> SetProperties(MediaInfo mediaInfo)
         {
-            ProbeModel.Stream[] streams = await GetStream(fileInfo.FullName).ConfigureAwait(false);
+            var path = mediaInfo.Path;
+            ProbeModel.Stream[] streams = await GetStream(path).ConfigureAwait(false);
             if (!streams.Any())
             {
-                throw new ArgumentException($"Invalid file. Cannot load file {fileInfo.Name}");
+                throw new ArgumentException($"Invalid file. Cannot load file {path}");
             }
 
-            FormatModel.Format format = await GetFormat(fileInfo.FullName).ConfigureAwait(false);
+            FormatModel.Format format = await GetFormat(path).ConfigureAwait(false);
             mediaInfo.Size = long.Parse(format.size);
 
-            mediaInfo.VideoStreams = PrepareVideoStreams(fileInfo, streams.Where(x => x.codec_type == "video"), format);
-            mediaInfo.AudioStreams = PrepareAudioStreams(fileInfo, streams.Where(x => x.codec_type == "audio"));
-            mediaInfo.SubtitleStreams = PrepareSubtitleStreams(fileInfo, streams.Where(x => x.codec_type == "subtitle"));
+            mediaInfo.VideoStreams = PrepareVideoStreams(path, streams.Where(x => x.codec_type == "video"), format);
+            mediaInfo.AudioStreams = PrepareAudioStreams(path, streams.Where(x => x.codec_type == "audio"));
+            mediaInfo.SubtitleStreams = PrepareSubtitleStreams(path, streams.Where(x => x.codec_type == "subtitle"));
 
             mediaInfo.Duration = CalculateDuration(mediaInfo.VideoStreams, mediaInfo.AudioStreams);
             return mediaInfo;
@@ -146,7 +147,7 @@ namespace Xabe.FFmpeg
             return TimeSpan.FromSeconds(Math.Max(audioMax, videoMax));
         }
 
-        private IEnumerable<IAudioStream> PrepareAudioStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> audioStreamModels)
+        private IEnumerable<IAudioStream> PrepareAudioStreams(string path, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
             foreach (ProbeModel.Stream model in audioStreamModels)
             {
@@ -154,7 +155,7 @@ namespace Xabe.FFmpeg
                 {
                     Format = model.codec_name,
                     Duration = GetAudioDuration(model),
-                    Source = fileInfo,
+                    Path = path,
                     Index = model.index,
                     Bitrate = Math.Abs(model.bit_rate),
                     Channels = model.channels,
@@ -167,14 +168,14 @@ namespace Xabe.FFmpeg
             }
         }
 
-        private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> subtitleStreamModels)
+        private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(string path, IEnumerable<ProbeModel.Stream> subtitleStreamModels)
         {
             foreach (ProbeModel.Stream model in subtitleStreamModels)
             {
                 var stream = new SubtitleStream
                 {
                     Format = model.codec_name,
-                    Source = fileInfo,
+                    Path = path,
                     Index = model.index,
                     Language = model.tags?.language,
                     Title = model.tags?.title,
@@ -185,7 +186,7 @@ namespace Xabe.FFmpeg
             }
         }
 
-        private IEnumerable<IVideoStream> PrepareVideoStreams(System.IO.FileInfo fileInfo, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
+        private IEnumerable<IVideoStream> PrepareVideoStreams(string path, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
         {
             foreach (ProbeModel.Stream model in videoStreamModels)
             {
@@ -197,7 +198,7 @@ namespace Xabe.FFmpeg
                     Height = model.height,
                     Framerate = GetVideoFramerate(model),
                     Ratio = GetVideoAspectRatio(model.width, model.height),
-                    Source = fileInfo,
+                    Path = path,
                     Index = model.index,
                     Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate,
                     PixelFormat = model.pix_fmt,
