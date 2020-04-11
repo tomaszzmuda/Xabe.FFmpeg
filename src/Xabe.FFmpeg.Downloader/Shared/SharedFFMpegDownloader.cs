@@ -33,9 +33,9 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        public override async Task GetLatestVersion()
+        public override async Task GetLatestVersion(string path)
         {
-            if (!CheckIfFilesExist())
+            if (!CheckIfFilesExist(path))
             {
                 return;
             }
@@ -43,7 +43,7 @@ namespace Xabe.FFmpeg.Downloader
             string link = GenerateLink();
             var fullPackZip = await DownloadFile(link);
 
-            Extract(fullPackZip, FFmpeg.ExecutablesPath ?? ".");
+            Extract(fullPackZip, path ?? ".");
         }
 
         /// <summary>Extract only binary files from the zip archive</summary>

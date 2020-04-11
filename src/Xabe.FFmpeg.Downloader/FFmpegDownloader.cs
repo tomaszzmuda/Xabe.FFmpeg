@@ -9,7 +9,7 @@ namespace Xabe.FFmpeg.Downloader
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
         /// <param id="version">Determine which version of FFmpeg should be downloaded</param>
         /// </summary>
-        public static Task GetLatestVersion(FFmpegVersion version)
+        public static Task GetLatestVersion(FFmpegVersion version, string path)
         {
             IFFMpegDownloaderBase downloader;
             switch (version)
@@ -26,7 +26,7 @@ namespace Xabe.FFmpeg.Downloader
                 default:
                     throw new NotImplementedException();
             }
-            return downloader.GetLatestVersion();
+            return downloader.GetLatestVersion(path);
         }
     }
 }

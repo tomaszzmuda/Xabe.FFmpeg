@@ -21,19 +21,16 @@ namespace Xabe.FFmpeg.Downloader
             _operatingSystemProvider = new OperatingSystemProvider();
         }
 
-        private string FfmpegDestinationPath => ComputeFileDestinationPath("ffmpeg", OperatingSystem);
-        private string FfprobeDestinationPath => ComputeFileDestinationPath("ffprobe", OperatingSystem);
+        public abstract Task GetLatestVersion(string path);
 
-        public abstract Task GetLatestVersion();
-
-        protected bool CheckIfFilesExist()
+        protected bool CheckIfFilesExist(string path)
         {
-            return !File.Exists(FfmpegDestinationPath) || !File.Exists(FfprobeDestinationPath);
+            return !File.Exists(ComputeFileDestinationPath("ffmpeg", OperatingSystem, path)) || !File.Exists(ComputeFileDestinationPath("ffprobe", OperatingSystem, path));
         }
 
-        internal string ComputeFileDestinationPath(string filename, OperatingSystem os)
+        internal string ComputeFileDestinationPath(string filename, OperatingSystem os, string destinationPath)
         {
-            string path = Path.Combine(FFmpeg.ExecutablesPath ?? ".", filename);
+            string path = Path.Combine(destinationPath ?? ".", filename);
 
             if (os == OperatingSystem.Windows32 || os == OperatingSystem.Windows64)
                 path += ".exe";

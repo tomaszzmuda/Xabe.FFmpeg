@@ -20,16 +20,16 @@ namespace Xabe.FFmpeg.Downloader
             _linkProvider = new LinkProvider(operatingSystemProvider);
         }
 
-        public override async Task GetLatestVersion()
+        public override async Task GetLatestVersion(string path)
         {
             var latestVersion = GetLatestVersionInfo();
 
-            if (!CheckIfUpdateAvailable(latestVersion.Version) && !CheckIfFilesExist())
+            if (!CheckIfUpdateAvailable(latestVersion.Version, path) && !CheckIfFilesExist(path))
+
                 return;
+            await DownloadLatestVersion(latestVersion, path);
 
-            await DownloadLatestVersion(latestVersion);
-
-            SaveVersion(latestVersion);
+            SaveVersion(latestVersion, path);
         }
 
         internal FFbinariesVersionInfo GetLatestVersionInfo()
@@ -41,7 +41,7 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries)
+        internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries, string path)
         {
             Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
 
@@ -51,16 +51,16 @@ namespace Xabe.FFmpeg.Downloader
             var ffmpegZip = await ffmpegZipDownloadTask;
             var ffprobeZip = await ffprobeZipDownloadTask;
 
-            Extract(ffmpegZip, FFmpeg.ExecutablesPath ?? ".");
-            Extract(ffprobeZip, FFmpeg.ExecutablesPath ?? ".");
+            Extract(ffmpegZip, path ?? ".");
+            Extract(ffprobeZip, path ?? ".");
 
             File.Delete(ffmpegZip);
             File.Delete(ffprobeZip);
         }
 
-        private bool CheckIfUpdateAvailable(string latestVersion)
+        private bool CheckIfUpdateAvailable(string latestVersion, string path)
         {
-            var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
+            var versionPath = Path.Combine(path ?? ".", "version.json");
             if (!File.Exists(versionPath))
                 return true;
 
@@ -74,9 +74,9 @@ namespace Xabe.FFmpeg.Downloader
             return false;
         }
 
-        internal void SaveVersion(FFbinariesVersionInfo latestVersion)
+        internal void SaveVersion(FFbinariesVersionInfo latestVersion, string path)
         {
-            var versionPath = Path.Combine(FFmpeg.ExecutablesPath ?? ".", "version.json");
+            var versionPath = Path.Combine(path ?? ".", "version.json");
             File.WriteAllText(versionPath, JsonConvert.SerializeObject(new DownloadedVersion()
             {
                 Version = latestVersion.Version

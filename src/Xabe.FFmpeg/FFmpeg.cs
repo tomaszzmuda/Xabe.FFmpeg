@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Xabe.FFmpeg.Downloader;
 using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
@@ -43,6 +45,15 @@ namespace Xabe.FFmpeg
         /// FFmpeg process id
         /// </summary>
         public int FFmpegProcessId { get; private set; }
+
+        /// <summary>
+        ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
+        /// <param id="version">Determine which version of FFmpeg should be downloaded</param>
+        /// </summary>
+        public static Task GetLatestVersion(FFmpegVersion version)
+        {
+            return FFmpegDownloader.GetLatestVersion(version, ExecutablesPath);
+        }
 
         /// <summary>
         ///     Initalize new FFmpeg. Search FFmpeg and FFprobe in PATH

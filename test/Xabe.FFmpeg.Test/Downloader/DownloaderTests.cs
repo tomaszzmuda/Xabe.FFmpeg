@@ -27,19 +27,19 @@ namespace Xabe.FFmpeg.Test
             {
                 FFmpeg.ExecutablesPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
 
-                string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os);
-                string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os);
+                string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
+                string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
 
                 // 1- First download
 
-                await downloader.GetLatestVersion();
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
 
                 // 2- Check updates (same version)
 
-                await downloader.GetLatestVersion();
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -50,9 +50,9 @@ namespace Xabe.FFmpeg.Test
                 {
                     Version = new Version().ToString() // "0.0"
                 };
-                downloader.SaveVersion(fFbinariesVersionInfo);
+                downloader.SaveVersion(fFbinariesVersionInfo, FFmpeg.ExecutablesPath);
 
-                await downloader.GetLatestVersion();
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -61,7 +61,7 @@ namespace Xabe.FFmpeg.Test
 
                 File.Delete(ffmpegPath);
 
-                await downloader.GetLatestVersion();
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -70,7 +70,7 @@ namespace Xabe.FFmpeg.Test
 
                 File.Delete(ffprobePath);
 
-                await downloader.GetLatestVersion();
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -106,10 +106,10 @@ namespace Xabe.FFmpeg.Test
                     Directory.Delete("assemblies", true);
                 }
                 OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
-                await downloader.DownloadLatestVersion(currentVersion);
+                await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath);
 
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath)));
             }
             finally
             {
@@ -137,10 +137,10 @@ namespace Xabe.FFmpeg.Test
                 }
                 FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
 
-                await downloader.GetLatestVersion();
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath)));
             }
             finally
             {
@@ -171,7 +171,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                await downloader.GetLatestVersion();
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
             }
             finally
             {
