@@ -10,6 +10,7 @@ namespace Xabe.FFmpeg.Test
         internal static readonly string Mp3 = GetResourceFilePath("audio.mp3");
         internal static readonly string Mp4 = GetResourceFilePath("mute.mp4");
         internal static readonly string MkvWithAudio = GetResourceFilePath("SampleVideo_360x240_1mb.mkv");
+        internal static readonly string MkvWithSubtitles = GetResourceFilePath("mkvWithSubtitles.mkv");
         internal static readonly string MultipleStream = GetResourceFilePath("multipleStreamSample.mkv");
         internal static readonly string TsWithAudio = GetResourceFilePath("sample.ts");
         internal static readonly string FlvWithAudio = GetResourceFilePath("sample.flv");

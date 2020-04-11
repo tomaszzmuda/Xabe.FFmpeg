@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Xabe.FFmpeg.Enums
+namespace Xabe.FFmpeg
 {
     /// <summary>
     /// Hash Formats ("ffmpeg -i INPUT -f hash")

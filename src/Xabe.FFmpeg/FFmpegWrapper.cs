@@ -54,7 +54,7 @@ namespace Xabe.FFmpeg
                             try
                             {
                                 process.StandardInput.Write("q");
-                                Task.Delay(1000 * 5).ConfigureAwait(false).GetAwaiter().GetResult();
+                                Task.Delay(1000 * 5).GetAwaiter().GetResult();
                             }
                             catch (InvalidOperationException)
                             {

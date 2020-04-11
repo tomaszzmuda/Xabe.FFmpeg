@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
@@ -371,7 +371,8 @@ namespace Xabe.FFmpeg
 
             foreach (var stream in info.Streams)
             {
-                conversion.AddStream(stream);
+                if(!typeof(ISubtitleStream).IsAssignableFrom(stream.GetType()))
+                    conversion.AddStream(stream);
             }
 
             return conversion;

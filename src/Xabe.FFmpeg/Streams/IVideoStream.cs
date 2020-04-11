@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {

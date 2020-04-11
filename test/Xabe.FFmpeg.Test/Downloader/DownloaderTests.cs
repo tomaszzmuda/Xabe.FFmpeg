@@ -32,14 +32,14 @@ namespace Xabe.FFmpeg.Test
 
                 // 1- First download
 
-                await downloader.GetLatestVersion().ConfigureAwait(false);
+                await downloader.GetLatestVersion();
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
 
                 // 2- Check updates (same version)
 
-                await downloader.GetLatestVersion().ConfigureAwait(false);
+                await downloader.GetLatestVersion();
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -52,7 +52,7 @@ namespace Xabe.FFmpeg.Test
                 };
                 downloader.SaveVersion(fFbinariesVersionInfo);
 
-                await downloader.GetLatestVersion().ConfigureAwait(false);
+                await downloader.GetLatestVersion();
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -61,7 +61,7 @@ namespace Xabe.FFmpeg.Test
 
                 File.Delete(ffmpegPath);
 
-                await downloader.GetLatestVersion().ConfigureAwait(false);
+                await downloader.GetLatestVersion();
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -70,7 +70,7 @@ namespace Xabe.FFmpeg.Test
 
                 File.Delete(ffprobePath);
 
-                await downloader.GetLatestVersion().ConfigureAwait(false);
+                await downloader.GetLatestVersion();
 
                 Assert.True(File.Exists(ffmpegPath));
                 Assert.True(File.Exists(ffprobePath));
@@ -106,7 +106,7 @@ namespace Xabe.FFmpeg.Test
                     Directory.Delete("assemblies", true);
                 }
                 OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
-                await downloader.DownloadLatestVersion(currentVersion).ConfigureAwait(false);
+                await downloader.DownloadLatestVersion(currentVersion);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
@@ -137,7 +137,7 @@ namespace Xabe.FFmpeg.Test
                 }
                 FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
 
-                await downloader.GetLatestVersion().ConfigureAwait(false);
+                await downloader.GetLatestVersion();
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os)));
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", os)));
@@ -171,7 +171,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     Directory.Delete("assemblies", true);
                 }
-                await downloader.GetLatestVersion().ConfigureAwait(false);
+                await downloader.GetLatestVersion();
             }
             finally
             {

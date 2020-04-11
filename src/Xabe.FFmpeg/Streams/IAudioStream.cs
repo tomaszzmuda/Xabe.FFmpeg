@@ -1,5 +1,4 @@
 ﻿using System;
-using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {

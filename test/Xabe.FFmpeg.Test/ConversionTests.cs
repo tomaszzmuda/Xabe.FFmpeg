@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Exceptions;
 using Xunit;
 
@@ -25,7 +24,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(Position.Bottom)]
         public async Task WatermarkTest(Position position)
         {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             IVideoStream stream = inputFile.VideoStreams.First()
                                   .SetWatermark(Resources.PngSample, position);
@@ -34,12 +33,12 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetPreset(ConversionPreset.UltraFast)
                                                                  .AddStream(stream)
                                                                  .SetOutput(outputPath)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             Assert.Contains("overlay", conversionResult.Arguments);
             Assert.Contains(Resources.PngSample, conversionResult.Arguments);
-            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
             Assert.False(mediaInfo.AudioStreams.Any());
@@ -49,14 +48,14 @@ namespace Xabe.FFmpeg.Test
         public async Task SetInputFormatTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mpeg);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .SetInputFormat(MediaFormat.Matroska)
                                                                  .AddStream(videoStream)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -67,14 +66,14 @@ namespace Xabe.FFmpeg.Test
         public async Task SetOutputFormatTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .SetOutputFormat(MediaFormat.Mpegts)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -85,7 +84,7 @@ namespace Xabe.FFmpeg.Test
         public async Task SetInputAndOutputFormatTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Avi);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
@@ -93,7 +92,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .AddStream(videoStream)
                                                                  .SetOutputFormat(MediaFormat.Avi)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -105,14 +104,14 @@ namespace Xabe.FFmpeg.Test
         public async Task SetOutputPixelFormatTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .SetOutputPixelFormat(PixelFormat.Yuv420P)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -145,7 +144,7 @@ namespace Xabe.FFmpeg.Test
                 fileExtension = FileExtensions.Txt;
 
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Copy);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Copy);
 
@@ -155,7 +154,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutputFormat(MediaFormat.Hash)
                                                                  .SetHashFormat(new HashFormat(hashFormat))
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             System.IO.FileInfo fi = new System.IO.FileInfo(output);
@@ -171,29 +170,29 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                                 .GetScreenCapture(29.97)
-                                                                 .SetInputTime(TimeSpan.FromSeconds(10))
+                                                                 .GetScreenCapture(30)
+                                                                 .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
             Assert.Equal("h264", resultFile.VideoStreams.First().Format);
             Assert.Equal(29.97, resultFile.VideoStreams.First().Framerate);
-            Assert.Equal(TimeSpan.FromSeconds(10), resultFile.VideoStreams.First().Duration);
+            Assert.Equal(TimeSpan.FromSeconds(3), resultFile.VideoStreams.First().Duration);
         }
 
         [Fact]
         public async Task SetVideoCodecTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -204,13 +203,13 @@ namespace Xabe.FFmpeg.Test
         public async Task SetAudioCodecTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Ac3);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(audioStream)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -221,7 +220,7 @@ namespace Xabe.FFmpeg.Test
         public async Task SetInputTimeTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First();
             IVideoStream videoStream = info.VideoStreams.First();
 
@@ -230,7 +229,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .AddStream(audioStream)
                                                                  .SetInputTime(TimeSpan.FromSeconds(5))
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -242,7 +241,7 @@ namespace Xabe.FFmpeg.Test
         public async Task SetOutputTimeTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First();
             IVideoStream videoStream = info.VideoStreams.First();
 
@@ -251,7 +250,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .AddStream(audioStream)
                                                                  .SetOutputTime(TimeSpan.FromSeconds(5))
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -263,14 +262,14 @@ namespace Xabe.FFmpeg.Test
         public async Task SetAudioBitrateTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Ac3);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(audioStream)
                                                                  .SetAudioBitrate(128000)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             double lowerBound = 128000 * 0.95;
             double upperBound = 128000 * 1.05;
@@ -283,14 +282,14 @@ namespace Xabe.FFmpeg.Test
         public async Task SetLibH264VideoBitrateTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Libx264);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .SetVideoBitrate(1500000)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             double lowerBound = 1500000 * 0.95;
             double upperBound = 1500000 * 1.05;
@@ -303,14 +302,14 @@ namespace Xabe.FFmpeg.Test
         public async Task SetH264VideoBitrateTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.H264);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .SetVideoBitrate(1500000)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             double lowerBound = 1500000 * 0.95;
             double upperBound = 1500000 * 1.05;
@@ -323,14 +322,14 @@ namespace Xabe.FFmpeg.Test
         public async Task SetNonH264VideoBitrateTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .SetVideoBitrate(1500000)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             double lowerBound = 1500000 * 0.95;
             double upperBound = 1500000 * 1.05;
@@ -347,13 +346,13 @@ namespace Xabe.FFmpeg.Test
         {
             Guid fileGuid = Guid.NewGuid();
             Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First().SetCodec(VideoCodec.Png);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .ExtractEveryNthFrame(10, outputBuilder)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
 
@@ -371,13 +370,13 @@ namespace Xabe.FFmpeg.Test
         {
             Guid fileGuid = Guid.NewGuid();
             Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First().SetCodec(VideoCodec.Png);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .ExtractNthFrame(10, outputBuilder)
-                                                                 .Start().ConfigureAwait(true);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
 
@@ -402,7 +401,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetFrameRate(1)
                                                                  .SetOutputPixelFormat(PixelFormat.Yuv420P)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(true);
+                                                                 .Start();
 
             int preparedFilesCount = Directory.EnumerateFiles(preparedFilesDir).ToList().Count;
 
@@ -427,7 +426,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetFrameRate(1)
                                                                  .SetOutputPixelFormat(PixelFormat.Yuv420P)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(true);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -440,13 +439,13 @@ namespace Xabe.FFmpeg.Test
         public async Task OverwriteFilesTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Ac3);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(audioStream)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             Assert.Contains("-n ", conversionResult.Arguments);
@@ -455,7 +454,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .AddStream(audioStream)
                                                                  .SetOverwriteOutput(true)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(secondConversionResult.Success);
             Assert.Contains(" -y ", secondConversionResult.Arguments);
@@ -466,13 +465,13 @@ namespace Xabe.FFmpeg.Test
         public async Task OverwriteFilesExceptionTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Ac3);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(audioStream)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             Assert.Contains("-n ", conversionResult.Arguments);
@@ -480,16 +479,16 @@ namespace Xabe.FFmpeg.Test
             await Assert.ThrowsAsync<ConversionException>(() => Conversion.New()
                                                                           .AddStream(audioStream)
                                                                           .SetOutput(output)
-                                                                          .Start()).ConfigureAwait(false);
+                                                                          .Start());
         }
 
         [RunnableInDebugOnly]
         public async Task UseHardwareAcceleration()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
-            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_cuvid, VideoCodec.H264_nvenc, 0).Start().ConfigureAwait(false);
+            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_cuvid, VideoCodec.H264_nvenc, 0).Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -502,25 +501,25 @@ namespace Xabe.FFmpeg.Test
         public async Task MissingHardwareAccelerator(string hardwareAccelerator)
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
             await Assert.ThrowsAsync<HardwareAcceleratorNotFoundException>(async () =>
             {
-                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), VideoCodec.H264_cuvid, VideoCodec.H264_nvenc).Start().ConfigureAwait(false);
-            }).ConfigureAwait(false);
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), VideoCodec.H264_cuvid, VideoCodec.H264_nvenc).Start();
+            });
         }
 
         [Fact]
         public async Task UnknownDecoderException()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
             await Assert.ThrowsAsync<UnknownDecoderException>(async () =>
             {
-                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start().ConfigureAwait(false);
-            }).ConfigureAwait(false);
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start();
+            });
         }
 
         [Fact]
@@ -531,11 +530,11 @@ namespace Xabe.FFmpeg.Test
             var conversion = Conversion.New().AddStream(new WebStream(new Uri(@"rtsp://192.168.1.123:554/"), "M3U8", TimeSpan.FromMinutes(5))).SetOutput(output);
             var conversionTask = conversion.Start(cancellationToken.Token);
             cancellationToken.CancelAfter(2000);
-            await Task.Delay(500).ConfigureAwait(false);
+            await Task.Delay(500);
             var ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
             Assert.Contains(ffmpegProcesses, _ => _.Id == conversion.FFmpegProcessId && !_.HasExited);
 
-            await Assert.ThrowsAsync<OperationCanceledException>(async () => await conversionTask.ConfigureAwait(false)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await conversionTask);
 
             Assert.True(conversion.FFmpegProcessId > 0);
             ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
@@ -564,13 +563,13 @@ namespace Xabe.FFmpeg.Test
         public async Task UseMultithreadTest(int expectedThreadsCount)
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .UseMultiThread(expectedThreadsCount)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -582,13 +581,13 @@ namespace Xabe.FFmpeg.Test
         public async Task UseMultithreadTest_WithoutThreadCount_AllThreads()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .UseMultiThread(true)
                                                                  .SetOutput(output)
-                                                                 .Start().ConfigureAwait(false);
+                                                                 .Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -600,14 +599,14 @@ namespace Xabe.FFmpeg.Test
         public async Task UseMultithreadTest_WithoutMultithread_OneThreadOnly()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .UseMultiThread(false)
                                                                  .SetOutput(output)
                                                                  .Start()
-                                                                 .ConfigureAwait(false);
+                                                                 ;
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -619,14 +618,14 @@ namespace Xabe.FFmpeg.Test
         public async Task AddPreParameterTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .AddParameter("-re", ParameterPosition.PreInput)
                                                                  .SetOutput(output)
                                                                  .Start()
-                                                                 .ConfigureAwait(false);
+                                                                 ;
 
             Assert.StartsWith("-re", conversionResult.Arguments);
         }

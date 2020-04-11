@@ -18,9 +18,9 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 
             IConversionResult result = await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)
-                                             .SetPreset(Enums.ConversionPreset.UltraFast)
+                                             .SetPreset(ConversionPreset.UltraFast)
                                              .SetPriority(priority)
-                                             .Start().ConfigureAwait(false);
+                                             .Start();
 
             Assert.True(result.Success);
             Assert.NotNull(result.MediaInfo.Value);
@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ConversionWithWrongInputTest2()
         {
-            await Assert.ThrowsAsync<InvalidInputException>(async () => await MediaInfo.Get("Z:\\test.mp4").ConfigureAwait(false)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<ArgumentException>(async () => await MediaInfo.Get("Z:\\test.mp4"));
         }
     }
 }

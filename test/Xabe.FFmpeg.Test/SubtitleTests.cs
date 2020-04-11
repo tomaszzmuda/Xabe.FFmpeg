@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -16,7 +15,7 @@ namespace Xabe.FFmpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), extension);
 
-            IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault()
                                                  .SetFormat(new SubtitleFormat(format));
@@ -24,10 +23,10 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await Conversion.New()
                                           .AddStream(subtitleStream)
                                           .SetOutput(outputPath)
-                                          .Start().ConfigureAwait(false);
+                                          .Start();
 
             Assert.True(result.Success);
-            IMediaInfo resultInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
             Assert.Single(resultInfo.SubtitleStreams);
             ISubtitleStream resultSteam = resultInfo.SubtitleStreams.First();
             Assert.Equal(expectedFormat, resultSteam.Format.ToLower());
@@ -40,7 +39,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractSubtitles(string format, string expectedFormat, bool checkOutputLanguage)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), format);
-            IMediaInfo info = await MediaInfo.Get(Resources.MultipleStream).ConfigureAwait(false);
+            IMediaInfo info = await MediaInfo.Get(Resources.MultipleStream);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x => x.Language == "spa");
             Assert.NotNull(subtitleStream);
@@ -48,10 +47,10 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await Conversion.New()
                                                        .AddStream(subtitleStream)
                                                        .SetOutput(outputPath)
-                                                       .Start().ConfigureAwait(false);
+                                                       .Start();
 
             Assert.True(result.Success);
-            IMediaInfo resultInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
             Assert.Empty(resultInfo.VideoStreams);
             Assert.Empty(resultInfo.AudioStreams);
             Assert.Single(resultInfo.SubtitleStreams);

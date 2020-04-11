@@ -72,11 +72,11 @@ namespace Xabe.FFmpeg.Downloader
 
             using (var client = new HttpClient())
             {
-                using (var result = await client.GetAsync(url).ConfigureAwait(false))
+                using (var result = await client.GetAsync(url))
                 {
                     if (!result.IsSuccessStatusCode)
                         return null;
-                    var readedData = await result.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    var readedData = await result.Content.ReadAsByteArrayAsync();
                     if (readedData == null)
                         return null;
                     File.WriteAllBytes(tempPath, readedData);

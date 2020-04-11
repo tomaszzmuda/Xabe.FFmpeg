@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg
         private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
         {
             ProbeModel probe = null;
-            string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"").ConfigureAwait(false);
+            string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
             if (string.IsNullOrEmpty(stringResult))
             {
                 return new ProbeModel.Stream[0];
@@ -44,7 +44,7 @@ namespace Xabe.FFmpeg
 
         private async Task<FormatModel.Format> GetFormat(string videoPath)
         {
-            string stringResult = await Start($"-v quiet -print_format json -show_entries format=size,duration,bit_rate  \"{videoPath}\"").ConfigureAwait(false);
+            string stringResult = await Start($"-v quiet -print_format json -show_entries format=size,duration,bit_rate  \"{videoPath}\"");
             var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult);
             return root.format;
         }
@@ -122,13 +122,13 @@ namespace Xabe.FFmpeg
         public async Task<MediaInfo> SetProperties(MediaInfo mediaInfo)
         {
             var path = mediaInfo.Path;
-            ProbeModel.Stream[] streams = await GetStream(path).ConfigureAwait(false);
+            ProbeModel.Stream[] streams = await GetStream(path);
             if (!streams.Any())
             {
                 throw new ArgumentException($"Invalid file. Cannot load file {path}");
             }
 
-            FormatModel.Format format = await GetFormat(path).ConfigureAwait(false);
+            FormatModel.Format format = await GetFormat(path);
             mediaInfo.Size = long.Parse(format.size);
 
             mediaInfo.VideoStreams = PrepareVideoStreams(path, streams.Where(x => x.codec_type == "video"), format);

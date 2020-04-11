@@ -1,4 +1,4 @@
-﻿namespace Xabe.FFmpeg.Enums
+﻿namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Preset of conversion. Faster speed causes worse optimization and quality.

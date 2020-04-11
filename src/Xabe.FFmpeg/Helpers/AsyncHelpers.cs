@@ -16,6 +16,7 @@ namespace Xabe.FFmpeg
         /// <param name="task">Task method to execute</param>
         public static void RunSync(Func<Task> task)
         {
+            task().Wait();
             var oldContext = SynchronizationContext.Current;
             using (var synch = new ExclusiveSynchronizationContext())
             {
@@ -24,7 +25,7 @@ namespace Xabe.FFmpeg
                 {
                     try
                     {
-                        task().ConfigureAwait(false).GetAwaiter().GetResult();
+                        task().GetAwaiter().GetResult();
                     }
                     catch (Exception e)
                     {
@@ -50,6 +51,7 @@ namespace Xabe.FFmpeg
         /// <returns></returns>
         public static T RunSync<T>(Func<Task<T>> task)
         {
+            return task().Result;
             var oldContext = SynchronizationContext.Current;
             using (var synch = new ExclusiveSynchronizationContext())
             {
@@ -59,7 +61,7 @@ namespace Xabe.FFmpeg
                 {
                     try
                     {
-                        ret = task().ConfigureAwait(false).GetAwaiter().GetResult();
+                        ret = task().GetAwaiter().GetResult();
                     }
                     catch (Exception e)
                     {

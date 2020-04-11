@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Events;
 using Xabe.FFmpeg.Exceptions;
 

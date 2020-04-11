@@ -40,7 +40,7 @@ namespace Xabe.FFmpeg.Downloader
             }
 
             string link = GenerateLink();
-            var fullPackZip = await DownloadFile(link).ConfigureAwait(false);
+            var fullPackZip = await DownloadFile(link);
 
             Extract(fullPackZip, FFmpeg.ExecutablesPath ?? ".");
         }

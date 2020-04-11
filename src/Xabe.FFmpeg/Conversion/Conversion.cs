@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 using Xabe.FFmpeg.Events;
 
 namespace Xabe.FFmpeg

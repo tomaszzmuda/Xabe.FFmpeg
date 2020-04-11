@@ -3,7 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -16,17 +15,17 @@ namespace Xabe.FFmpeg.Test
         [InlineData(27, 27, 0.5)]
         public async Task ChangeSpeedTest(int expectedDuration, int expectedAudioDuration, double speed)
         {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(inputFile.AudioStreams.First().ChangeSpeed(speed))
                                                     //.SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
-                                                    .Start().ConfigureAwait(false);
+                                                    .Start();
 
             Assert.True(conversionResult.Success);
-            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(expectedDuration), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), mediaInfo.AudioStreams.First().Duration);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
@@ -38,7 +37,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(32000)]
         public async Task SetBitrate(int expectedBitrate)
         {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 
             var audioStream = inputFile.AudioStreams.First();
@@ -48,10 +47,10 @@ namespace Xabe.FFmpeg.Test
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
                                                     .SetOutput(outputPath)
-                                                    .Start().ConfigureAwait(false);
+                                                    .Start();
 
             Assert.True(conversionResult.Success);
-            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(expectedBitrate, mediaInfo.AudioStreams.First().Bitrate);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
@@ -61,7 +60,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ChangeChannels()
         {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 
             var audioStream = inputFile.AudioStreams.First();
@@ -72,10 +71,10 @@ namespace Xabe.FFmpeg.Test
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
                                                     .SetOutput(outputPath)
-                                                    .Start().ConfigureAwait(false);
+                                                    .Start();
 
             Assert.True(conversionResult.Success);
-            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(1, mediaInfo.AudioStreams.First().Channels);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
@@ -85,7 +84,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ChangeSamplerate()
         {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 
             var audioStream = inputFile.AudioStreams.First();
@@ -96,10 +95,10 @@ namespace Xabe.FFmpeg.Test
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(audioStream)
                                                     .SetOutput(outputPath)
-                                                    .Start().ConfigureAwait(false);
+                                                    .Start();
 
             Assert.True(conversionResult.Success);
-            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(44100, mediaInfo.AudioStreams.First().SampleRate);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
@@ -110,7 +109,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task OnConversion_ExtractOnlyAudioStream_OnProgressFires()
         {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
             IConversion conversion = Conversion.New()
@@ -126,7 +125,7 @@ namespace Xabe.FFmpeg.Test
                 videoLength = e.TotalLength;
             };
 
-            await conversion.Start().ConfigureAwait(false);
+            await conversion.Start();
 
             Assert.True(currentProgress > TimeSpan.Zero);
             Assert.True(currentProgress <= videoLength);
@@ -136,7 +135,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ExtractAdditionalValuesTest()
         {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
 
             Assert.Equal(1, inputFile.AudioStreams.First().Default.Value);
             Assert.Equal(0, inputFile.AudioStreams.First().Forced.Value);
@@ -148,16 +147,16 @@ namespace Xabe.FFmpeg.Test
         {
             CultureInfo.CurrentCulture = CultureInfo.CreateSpecificCulture("pl-PL");
 
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3).ConfigureAwait(false);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp3);
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
 
             IConversionResult conversionResult = await Conversion.New()
                                                     .AddStream(inputFile.AudioStreams.First().ChangeSpeed(0.5))
                                                     .SetOutput(outputPath)
-                                                    .Start().ConfigureAwait(false);
+                                                    .Start();
 
             Assert.True(conversionResult.Success);
-            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath).ConfigureAwait(false);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.AudioStreams.First().Duration);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);

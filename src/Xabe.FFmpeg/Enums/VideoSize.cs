@@ -1,6 +1,6 @@
 ﻿// ReSharper disable InconsistentNaming
 
-namespace Xabe.FFmpeg.Enums
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Video size

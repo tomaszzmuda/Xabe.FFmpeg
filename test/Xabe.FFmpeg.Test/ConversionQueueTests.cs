@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Enums;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -38,7 +37,7 @@ namespace Xabe.FFmpeg.Test
 
         private void Queue_OnConverted(int conversionNumber, int totalConversionsCount, IConversion currentConversion, AutoResetEvent resetEvent)
         {
-            IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).ConfigureAwait(false).GetAwaiter().GetResult();
+            IMediaInfo mediaInfo = MediaInfo.Get(currentConversion.OutputFilePath).GetAwaiter().GetResult();
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);

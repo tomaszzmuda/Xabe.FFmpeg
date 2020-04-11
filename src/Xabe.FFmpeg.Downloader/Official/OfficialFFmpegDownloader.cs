@@ -48,8 +48,8 @@ namespace Xabe.FFmpeg.Downloader
             var ffmpegZipDownloadTask = DownloadFile(links.FFmpegLink);
             var ffprobeZipDownloadTask = DownloadFile(links.FFprobeLink);
 
-            var ffmpegZip = await ffmpegZipDownloadTask.ConfigureAwait(false);
-            var ffprobeZip = await ffprobeZipDownloadTask.ConfigureAwait(false);
+            var ffmpegZip = await ffmpegZipDownloadTask;
+            var ffprobeZip = await ffprobeZipDownloadTask;
 
             Extract(ffmpegZip, FFmpeg.ExecutablesPath ?? ".");
             Extract(ffprobeZip, FFmpeg.ExecutablesPath ?? ".");

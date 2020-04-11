@@ -1,4 +1,4 @@
-﻿namespace Xabe.FFmpeg.Enums
+﻿namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Video codec ("ffmpeg -codecs")

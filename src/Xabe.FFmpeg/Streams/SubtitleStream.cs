@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Xabe.FFmpeg.Enums;
 
 namespace Xabe.FFmpeg
 {
