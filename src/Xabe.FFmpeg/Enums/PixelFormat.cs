@@ -5,7 +5,7 @@ using System.Text;
 namespace Xabe.FFmpeg
 {
     /// <summary>
-    ///     Pixel Format ("ffmpeg -pix_fmt")
+    ///     Pixel Format ("ffmpeg -pix_fmts")
     /// </summary>
     public class PixelFormat
     {
