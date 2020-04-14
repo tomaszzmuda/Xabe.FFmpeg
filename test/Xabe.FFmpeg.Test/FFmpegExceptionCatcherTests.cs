@@ -26,9 +26,9 @@ namespace Xabe.FFmpeg.Test
             var exception = Record.Exception(() => _sut.CatchFFmpegErrors(output, args));
 
             //Assert
-            Assert.IsType<HardwareAcceleratorNotFoundException>(exception);
+            Assert.IsType<ConversionException>(exception);
             Assert.Equal(output, exception.Message);
-            var hardwareException = (HardwareAcceleratorNotFoundException)exception;
+            var hardwareException = (HardwareAcceleratorNotFoundException)exception.InnerException;
             Assert.Equal(args, hardwareException.InputParameters);
         }
 

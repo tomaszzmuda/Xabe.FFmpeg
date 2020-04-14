@@ -61,7 +61,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         /// Video Codec
         /// </summary>
-        VideoCodec Codec { get; }
+        string Codec { get; }
 
         /// <summary>
         ///     Rotate video
@@ -140,6 +140,13 @@ namespace Xabe.FFmpeg
         /// <param name="codec">Video codec</param>
         /// <returns>IVideoStream</returns>
         IVideoStream SetCodec(VideoCodec codec);
+
+        /// <summary>
+        ///     Set video codec
+        /// </summary>
+        /// <param name="codec">Video codec</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetCodec(string codec);
 
         /// <summary>
         ///     Set video pixel format

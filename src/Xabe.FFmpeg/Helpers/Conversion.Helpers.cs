@@ -20,7 +20,7 @@ namespace Xabe.FFmpeg
             IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.H264);
+                                      ?.SetCodec(VideoCodec.h264);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
                                       ?.SetCodec(AudioCodec.Aac);
 
@@ -40,7 +40,7 @@ namespace Xabe.FFmpeg
             IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(new VideoCodec("mpeg2video"));
+                                      ?.SetCodec(VideoCodec.mpeg2video);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
                                       ?.SetCodec(new AudioCodec("mp2"));
 
@@ -60,7 +60,7 @@ namespace Xabe.FFmpeg
             IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.Theora);
+                                      ?.SetCodec(VideoCodec.theora);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
                                       ?.SetCodec(AudioCodec.Libvorbis);
 
@@ -80,7 +80,7 @@ namespace Xabe.FFmpeg
             IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.Vp8);
+                                      ?.SetCodec(VideoCodec.vp8);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
                                       ?.SetCodec(AudioCodec.Libvorbis);
 

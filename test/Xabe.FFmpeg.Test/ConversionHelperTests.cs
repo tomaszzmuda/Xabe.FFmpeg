@@ -379,7 +379,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.ConvertWithHardware(Resources.MkvWithAudio, output, HardwareAccelerator.cuvid, VideoCodec.H264_cuvid, VideoCodec.H264_nvenc).Start();
+            IConversionResult result = await Conversion.ConvertWithHardware(Resources.MkvWithAudio, output, HardwareAccelerator.cuvid, VideoCodec.h264_cuvid, VideoCodec.h264_nvenc).Start();
 
             Assert.True(result.Success);
             Assert.Equal(TimeSpan.FromSeconds(10), result.MediaInfo.Value.Duration);

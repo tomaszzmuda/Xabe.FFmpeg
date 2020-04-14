@@ -178,7 +178,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.H264).ChangeSpeed(speed))
+                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.h264).ChangeSpeed(speed))
                                                     .SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -201,7 +201,7 @@ namespace Xabe.FFmpeg.Test
 
             await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await Conversion.New()
                                                                                               .AddStream(inputFile.VideoStreams.First()
-                                                                                                                  .SetCodec(VideoCodec.H264)
+                                                                                                                  .SetCodec(VideoCodec.h264)
                                                                                                                   .ChangeSpeed(multiplication))
                                                                                               .SetPreset(ConversionPreset.UltraFast)
                                                                                               .SetOutput(outputPath)
@@ -279,7 +279,7 @@ namespace Xabe.FFmpeg.Test
                 {
                     await Conversion.New()
                                     .AddStream(inputFile.VideoStreams.First()
-                                                                     .SetCodec(VideoCodec.H264)
+                                                                     .SetCodec(VideoCodec.h264)
                                                                      .Reverse()
                                                                      .CopyStream())
                                     .SetOutput(outputPath)
@@ -328,7 +328,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                    .AddStream(inputFile.VideoStreams.First()
-                                                                                    .SetCodec(VideoCodec.H264)
+                                                                                    .SetCodec(VideoCodec.h264)
                                                                                     .Reverse())
                                                    .SetPreset(ConversionPreset.UltraFast)
                                                    .SetOutput(outputPath)
@@ -350,7 +350,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult conversionResult = await Conversion.New()
                                                    .AddStream(inputFile.VideoStreams.First()
                                                                                      .SetScale(VideoSize.Sqcif)
-                                                                                     .SetCodec(VideoCodec.H264))
+                                                                                     .SetCodec(VideoCodec.h264))
                                                    .SetPreset(ConversionPreset.UltraFast)
                                                    .SetOutput(outputPath)
                                                    .Start();
@@ -415,7 +415,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(inputFile.VideoStreams.First()
-                                                                                                  .SetCodec(VideoCodec.Hevc))
+                                                                                                  .SetCodec(VideoCodec.hevc))
                .SetOutput(outputPath)
                .Start();
 
@@ -474,7 +474,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(inputFile.VideoStreams.First()
-                                                                 .SetCodec(new VideoCodec("mpeg2video")))
+                                                                 .SetCodec(VideoCodec.mpeg2video))
                                                    .SetOutput(outputPath)
                                                    .Start();
 
@@ -503,7 +503,7 @@ namespace Xabe.FFmpeg.Test
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.H264).ChangeSpeed(0.5))
+                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.h264).ChangeSpeed(0.5))
                                                     .SetPreset(ConversionPreset.UltraFast)
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -582,6 +582,24 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(exception);
             Assert.IsType<ConversionException>(exception);
             Assert.IsType<InvalidBitstreamFilterException>(exception.InnerException);
+        }
+
+        [Theory]
+        [InlineData(VideoCodec._4xm, "4xm")]
+        [InlineData(VideoCodec._8bps, "8bps")]
+        [InlineData(VideoCodec._012v, "012v")]
+        public async Task SetCodec_SpecialNames_EverythingIsCorrect(VideoCodec videoCodec, string expectedCodec)
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var args = Conversion.New()
+               .AddStream(inputFile.VideoStreams.First()
+                    .SetCodec(videoCodec))
+               .SetOutput(outputPath)
+               .Build();
+
+            Assert.Contains($"-c:v {expectedCodec}", args);
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Xabe.FFmpeg
         public string Path { get; internal set; }
 
         /// <inheritdoc />
-        public VideoCodec Codec { get; internal set; }
+        public string Codec { get; internal set; }
 
         /// <inheritdoc />
         public string PixelFormat { get; internal set; }
@@ -134,8 +134,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream CopyStream()
         {
-            Codec = VideoCodec.Copy;
-            return this;
+            return SetCodec(VideoCodec.copy);
         }
 
         /// <inheritdoc />
@@ -232,6 +231,25 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public IVideoStream SetCodec(VideoCodec codec)
+        {
+            string input = codec.ToString();
+            if(codec == VideoCodec._8bps)
+            {
+                input = "8bps";
+            }
+            else if (codec == VideoCodec._4xm)
+            {
+                input = "4xm";
+            }
+            else if (codec == VideoCodec._012v)
+            {
+                input = "012v";
+            }
+            return SetCodec($"{input}");
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetCodec(string codec)
         {
             Codec = codec;
             return this;
