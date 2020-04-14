@@ -119,29 +119,26 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Theory]
-        [InlineData("MD5", 37L)]
-        [InlineData("murmur3", 41L)]
-        [InlineData("RIPEMD128", 43L)]
-        [InlineData("RIPEMD160", 51L)]
-        [InlineData("RIPEMD256", 75L)]
-        [InlineData("RIPEMD320", 91L)]
-        [InlineData("SHA160", 48L)]
-        [InlineData("SHA224", 64L)]
-        [InlineData("SHA256", 72L)]
-        [InlineData("SHA512/224", 68L)]
-        [InlineData("SHA512/256", 76L)]
-        [InlineData("SHA384", 104L)]
-        [InlineData("SHA512", 136L)]
-        [InlineData("CRC32", 15L)]
-        [InlineData("Adler32", 17L)]
-        public async Task SetHashFormatTest(string hashFormat, long expectedLength)
+        [InlineData(HashFormat.MD5, 37L)]
+        [InlineData(HashFormat.murmur3, 41L)]
+        [InlineData(HashFormat.RIPEMD128, 43L)]
+        [InlineData(HashFormat.RIPEMD160, 51L)]
+        [InlineData(HashFormat.RIPEMD256, 75L)]
+        [InlineData(HashFormat.RIPEMD320, 91L)]
+        [InlineData(HashFormat.SHA160, 48L)]
+        [InlineData(HashFormat.SHA224, 64L)]
+        [InlineData(HashFormat.SHA256, 72L)]
+        [InlineData(HashFormat.SHA512_224, 68L)]
+        [InlineData(HashFormat.SHA512_256, 76L)]
+        [InlineData(HashFormat.SHA384, 104L)]
+        [InlineData(HashFormat.SHA512, 136L)]
+        [InlineData(HashFormat.CRC32, 15L)]
+        [InlineData(HashFormat.adler32, 17L)]
+        public async Task SetHashFormatTest(HashFormat hashFormat, long expectedLength)
         {
-            string fileExtension = string.Empty;
-
-            if (hashFormat == "SHA256")
+            string fileExtension = FileExtensions.Txt;
+            if (hashFormat == HashFormat.SHA256)
                 fileExtension = FileExtensions.Sha256;
-            else
-                fileExtension = FileExtensions.Txt;
 
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
@@ -152,15 +149,40 @@ namespace Xabe.FFmpeg.Test
                                                                  .AddStream(videoStream)
                                                                  .AddStream(audioStream)
                                                                  .SetOutputFormat(MediaFormat.Hash)
-                                                                 .SetHashFormat(new HashFormat(hashFormat))
+                                                                 .SetHashFormat(hashFormat)
                                                                  .SetOutput(output)
                                                                  .Start();
 
             Assert.True(conversionResult.Success);
-            System.IO.FileInfo fi = new System.IO.FileInfo(output);
+            FileInfo fi = new FileInfo(output);
             
             Assert.Equal(fileExtension, fi.Extension);
             Assert.Equal(expectedLength, fi.Length);
+        }
+
+        [Fact]
+        public async Task SetHashFormat_HashInString_CorrectLenght()
+        {
+            string fileExtension = FileExtensions.Txt;
+
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Copy);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.Copy);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutputFormat(MediaFormat.Hash)
+                                                                 .SetHashFormat("SHA512/224")
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.True(conversionResult.Success);
+            FileInfo fi = new FileInfo(output);
+
+            Assert.Equal(fileExtension, fi.Extension);
+            Assert.Equal(68L, fi.Length);
 
         }
 
@@ -503,10 +525,14 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
-            await Assert.ThrowsAsync<HardwareAcceleratorNotFoundException>(async () =>
+            var exception = await Record.ExceptionAsync(async () =>
             {
                 await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(hardwareAccelerator, VideoCodec.H264_cuvid.ToString(), VideoCodec.H264_nvenc.ToString()).Start();
             });
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+            Assert.IsType<HardwareAcceleratorNotFoundException>(exception.InnerException);
         }
 
         [Fact]
@@ -516,10 +542,13 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.Mpeg4);
 
-            await Assert.ThrowsAsync<UnknownDecoderException>(async () =>
-            {
+            var exception = await Record.ExceptionAsync(async() => { 
                 await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start();
             });
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+            Assert.IsType<UnknownDecoderException>(exception.InnerException);
         }
 
         [Fact]

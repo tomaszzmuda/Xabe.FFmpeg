@@ -117,6 +117,13 @@ namespace Xabe.FFmpeg
         IConversion SetHashFormat(HashFormat format);
 
         /// <summary>
+        ///     Set the hash format of IConversion.
+        /// </summary>
+        /// <param name="format">The required hash format</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetHashFormat(string format);
+
+        /// <summary>
         ///     Sets The bitrate of the video streams to the supplied value in bytes
         /// </summary>
         /// <param name="bitrate">The required Bitrate Value</param>

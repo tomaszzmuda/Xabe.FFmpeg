@@ -187,7 +187,23 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetHashFormat(HashFormat hashFormat)
         {
-            _hashFormat = $"-hash {hashFormat.ToString()} ";
+            var format = hashFormat.ToString();
+            if (hashFormat == HashFormat.SHA512_256)
+            {
+                format = "SHA512/256";
+            }
+            else if (hashFormat == HashFormat.SHA512_224)
+            {
+                format = "SHA512/224";
+            }
+
+            return SetHashFormat(format);
+        }
+
+        /// <inheritdoc />
+        public IConversion SetHashFormat(string hashFormat)
+        {
+            _hashFormat = $"-hash {hashFormat} ";
             return this;
         }
 
