@@ -3,56 +3,46 @@
     /// <summary>
     ///     Hardware accelerators ("ffmpeg -hwaccels")
     /// </summary>
-    public class HardwareAccelerator
+    public enum HardwareAccelerator
     {
         /// <summary>
         ///     d3d11va
         /// </summary>
-        public static readonly HardwareAccelerator d3d11va = new HardwareAccelerator("d3d11va");
+        d3d11va,
 
         /// <summary>
-        ///     Use the first available option
+        ///     Automatically select the hardware acceleration method.
         /// </summary>
-        public static readonly HardwareAccelerator Auto = new HardwareAccelerator("auto");
+        auto,
 
         /// <summary>
-        ///     dxva2
+        ///     Use DXVA2 (DirectX Video Acceleration) hardware acceleration.
         /// </summary>
-        public static readonly HardwareAccelerator dxva2 = new HardwareAccelerator("dxva2");
+        dxva2,
 
         /// <summary>
-        ///     qsv
+        ///     Use the Intel QuickSync Video acceleration for video transcoding.
         /// </summary>
-        public static readonly HardwareAccelerator qsv = new HardwareAccelerator("qsv");
+        qsv,
 
         /// <summary>
-        ///     qsv
+        ///     cuvid
         /// </summary>
-        public static readonly HardwareAccelerator cuvid = new HardwareAccelerator("cuvid");
+        cuvid,
 
         /// <summary>
-        ///     qsv
+        ///     Use VDPAU (Video Decode and Presentation API for Unix) hardware acceleration.
         /// </summary>
-        public static readonly HardwareAccelerator vdpau = new HardwareAccelerator("vdpau");
-
-        /// <inheritdoc />
-        public HardwareAccelerator(string accelerator)
-        {
-            Accelerator = accelerator;
-        }
+        vdpau,
 
         /// <summary>
-        ///     Hardware accelerator
+        ///     Use VAAPI (Video Acceleration API) hardware acceleration.
         /// </summary>
-        public string Accelerator { get; }
+        vaapi,
 
         /// <summary>
-        ///     Convert to string format
+        ///     
         /// </summary>
-        /// <returns>Accelerator string</returns>
-        public override string ToString()
-        {
-            return Accelerator;
-        }
+        libmfx
     }
 }

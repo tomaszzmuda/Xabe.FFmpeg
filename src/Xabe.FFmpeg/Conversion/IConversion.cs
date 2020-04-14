@@ -279,5 +279,15 @@ namespace Xabe.FFmpeg
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
         /// <returns>IConversion object</returns>
         IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0);
+
+        /// <summary>
+        ///     Use hardware acceleration. This option set -threads to 1 for compatibility reasons. This should be use with proper codec (e.g. -c:v h264_nvenc or h264_cuvid)
+        /// </summary>
+        /// <param name="hardwareAccelerator">Hardware accelerator. List of all accelerators available for your system - "ffmpeg -hwaccels"</param>
+        /// <param name="decoder">Codec using to decode input video.</param>
+        /// <param name="encoder">Codec using to encode output video.</param>
+        /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
+        /// <returns>IConversion object</returns>
+        IConversion UseHardwareAcceleration(string hardwareAccelerator, string decoder, string encoder, int device = 0);
     }
 }

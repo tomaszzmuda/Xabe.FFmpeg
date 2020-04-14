@@ -488,7 +488,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
             IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
 
-            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_cuvid, VideoCodec.H264_nvenc, 0).Start();
+            IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.H264_cuvid, VideoCodec.H264_nvenc, 0).Start();
 
             Assert.True(conversionResult.Success);
             IMediaInfo resultFile = conversionResult.MediaInfo.Value;
@@ -505,7 +505,7 @@ namespace Xabe.FFmpeg.Test
 
             await Assert.ThrowsAsync<HardwareAcceleratorNotFoundException>(async () =>
             {
-                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(new HardwareAccelerator(hardwareAccelerator), VideoCodec.H264_cuvid, VideoCodec.H264_nvenc).Start();
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(hardwareAccelerator, VideoCodec.H264_cuvid.ToString(), VideoCodec.H264_nvenc.ToString()).Start();
             });
         }
 
@@ -518,7 +518,7 @@ namespace Xabe.FFmpeg.Test
 
             await Assert.ThrowsAsync<UnknownDecoderException>(async () =>
             {
-                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.Auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start();
+                await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.H264_nvenc, VideoCodec.H264_cuvid).Start();
             });
         }
 

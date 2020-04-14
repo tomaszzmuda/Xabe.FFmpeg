@@ -571,7 +571,13 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
         {
-            _hardwareAcceleration = $"-hwaccel {hardwareAccelerator.ToString()} -c:v {decoder} ";
+            return UseHardwareAcceleration($"{hardwareAccelerator}", decoder.ToString(), encoder.ToString(), device);
+        }
+
+        /// <inheritdoc />
+        public IConversion UseHardwareAcceleration(string hardwareAccelerator, string decoder, string encoder, int device = 0)
+        {
+            _hardwareAcceleration = $"-hwaccel {hardwareAccelerator} -c:v {decoder} ";
             AddParameter($"-c:v {encoder?.ToString()} ");
 
             if (device != 0)
