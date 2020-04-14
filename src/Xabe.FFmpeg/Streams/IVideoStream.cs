@@ -97,7 +97,14 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="flags">Flags to use</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetFlags(Flags flags);
+        IVideoStream SetFlags(params Flag[] flags);
+
+        /// <summary>
+        ///     Set Flags for conversion (-flags option)
+        /// </summary>
+        /// <param name="flags">Flags to use</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetFlags(params string[] flags);
 
         /// <summary>
         ///     Set Framerate of the video (-r option)

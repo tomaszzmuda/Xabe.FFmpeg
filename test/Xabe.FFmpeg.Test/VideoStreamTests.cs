@@ -85,7 +85,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
 
             var videoStream = inputFile.VideoStreams.First();
-            videoStream.SetFlags(Flags.Interlaced);
+            videoStream.SetFlags("ilme", "ildct");
 
             IConversionResult result = await Conversion.New()
                                                     .AddStream(videoStream)
@@ -96,6 +96,76 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
             Assert.False(mediaInfo.AudioStreams.Any());
+            Assert.Contains("-flags +ilme+ildct", result.Arguments);
+        }
+
+        // Check if Filter Flags do work. FFProbe does not support checking for Interlaced or Progressive,
+        //  so there is no "real check" here
+        [Fact]
+        public async Task SetFlags_FlagsWithPlus_CorrectConversion()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            var videoStream = inputFile.VideoStreams.First();
+            videoStream.SetFlags("ilme", "ildct");
+
+            IConversionResult result = await Conversion.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            Assert.True(result.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+            Assert.Contains("-flags +ilme+ildct", result.Arguments);
+        }
+
+        // Check if Filter Flags do work. FFProbe does not support checking for Interlaced or Progressive,
+        //  so there is no "real check" here
+        [Fact]
+        public async Task SetFlags_UseString_CorrectConversion()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            var videoStream = inputFile.VideoStreams.First();
+            videoStream.SetFlags(Flag.ilme, Flag.ildct);
+
+            IConversionResult result = await Conversion.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            Assert.True(result.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+            Assert.Contains("-flags +ilme+ildct", result.Arguments);
+        }
+
+        // Check if Filter Flags do work. FFProbe does not support checking for Interlaced or Progressive,
+        //  so there is no "real check" here
+        [Fact]
+        public async Task SetFlags_ContatenatedFlags_CorrectConversion()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+
+            var videoStream = inputFile.VideoStreams.First();
+            videoStream.SetFlags("+ilme+ildct");
+
+            IConversionResult result = await Conversion.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            Assert.True(result.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
+            Assert.False(mediaInfo.AudioStreams.Any());
+            Assert.Contains("-flags +ilme+ildct", result.Arguments);
         }
 
         [Theory]

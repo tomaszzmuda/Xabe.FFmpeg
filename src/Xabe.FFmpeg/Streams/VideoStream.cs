@@ -185,11 +185,23 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IVideoStream SetFlags(Flags flags)
+        public IVideoStream SetFlags(params Flag[] flags)
         {
-            _flags = $"-flags {flags} ";
+            return SetFlags(flags.Select(x => x.ToString()).ToArray());
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetFlags(params string[] flags)
+        {
+            var input = string.Join("+", flags);
+            if(input[0] != '+')
+            {
+                input = "+" + input;
+            }
+            _flags = $"-flags {input} ";
             return this;
         }
+
 
         /// <inheritdoc />
         public IVideoStream SetFramerate(double framerate)
