@@ -82,6 +82,12 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetBitstreamFilter(BitstreamFilter filter)
         {
+            return SetBitstreamFilter($"{filter}");
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetBitstreamFilter(string filter)
+        {
             _bitsreamFilter = $"-bsf:a {filter} ";
             return this;
         }

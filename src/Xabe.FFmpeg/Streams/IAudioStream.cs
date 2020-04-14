@@ -116,5 +116,12 @@ namespace Xabe.FFmpeg
         /// <param name="seek">Position</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetSeek(TimeSpan? seek);
+
+        /// <summary>
+        ///     Set filter
+        /// </summary>
+        /// <param name="filter">Filter</param>
+        /// <returns>IAudioStream</returns>
+        IAudioStream SetBitstreamFilter(string filter);
     }
 }

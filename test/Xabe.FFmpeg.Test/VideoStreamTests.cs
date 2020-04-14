@@ -445,5 +445,73 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Format);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
+
+        [Fact]
+        public async Task SetBitstreamFilter_CorrectInput_CorrectResult()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(inputFile.VideoStreams.First().SetBitstreamFilter(BitstreamFilter.h264_mp4toannexb))
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.VideoStreams.First().Duration);
+            Assert.NotEmpty(mediaInfo.VideoStreams);
+        }
+
+        [Fact]
+        public async Task SetBitstreamFilter_IncorrectFilter_ThrowConversionException()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var exception = await Record.ExceptionAsync(async () => await Conversion.New()
+                                                    .AddStream(inputFile.VideoStreams.First().SetBitstreamFilter(BitstreamFilter.aac_adtstoasc))
+                                                    .SetOutput(outputPath)
+                                                    .Start()); ;
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+            Assert.IsType<InvalidBitstreamFilterException>(exception.InnerException);
+        }
+
+        [Fact]
+        public async Task SetBitstreamFilter_CorrectInputAsString_CorrectResult()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(inputFile.VideoStreams.First().SetBitstreamFilter("h264_mp4toannexb"))
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.VideoStreams.First().Duration);
+            Assert.NotEmpty(mediaInfo.VideoStreams);
+        }
+
+        [Fact]
+        public async Task SetBitstreamFilter_IncorrectFilterAsString_ThrowConversionException()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp4);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var exception = await Record.ExceptionAsync(async () => await Conversion.New()
+                                                    .AddStream(inputFile.VideoStreams.First().SetBitstreamFilter("aac_adtstoasc"))
+                                                    .SetOutput(outputPath)
+                                                    .Start()); ;
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+            Assert.IsType<InvalidBitstreamFilterException>(exception.InnerException);
+        }
     }
 }

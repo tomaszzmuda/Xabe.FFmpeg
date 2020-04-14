@@ -228,6 +228,12 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetBitstreamFilter(BitstreamFilter filter)
         {
+            return SetBitstreamFilter($"{filter}");
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetBitstreamFilter(string filter)
+        {
             _bitsreamFilter = $"-bsf:v {filter} ";
             return this;
         }

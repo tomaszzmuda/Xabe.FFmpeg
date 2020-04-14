@@ -199,5 +199,12 @@ namespace Xabe.FFmpeg
         /// <param name="duration">Duration of new video</param>
         /// <returns>IVideoStream</returns>
         new IVideoStream Split(TimeSpan startTime, TimeSpan duration);
+
+        /// <summary>
+        ///     Set filter
+        /// </summary>
+        /// <param name="filter">Filter</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetBitstreamFilter(string filter);
     }
 }

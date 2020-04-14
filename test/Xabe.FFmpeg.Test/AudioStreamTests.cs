@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Exceptions;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -161,6 +162,76 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.AudioStreams.First().Duration);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
             Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
+        [Fact]
+        public async Task SetBitstreamFilter_CorrectInput_CorrectResult()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(inputFile.AudioStreams.First().SetBitstreamFilter(BitstreamFilter.aac_adtstoasc))
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First().Format);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
+        [Fact]
+        public async Task SetBitstreamFilter_IncorrectFilter_ThrowConversionException()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var exception = await Record.ExceptionAsync(async () => await Conversion.New()
+                                                    .AddStream(inputFile.AudioStreams.First().SetBitstreamFilter(BitstreamFilter.h264_mp4toannexb))
+                                                    .SetOutput(outputPath)
+                                                    .Start()); ;
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+            Assert.IsType<InvalidBitstreamFilterException>(exception.InnerException);
+        }
+
+        [Fact]
+        public async Task SetBitstreamFilter_CorrectInputAsString_CorrectResult()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await Conversion.New()
+                                                    .AddStream(inputFile.AudioStreams.First().SetBitstreamFilter("aac_adtstoasc"))
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First().Format);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
+        [Fact]
+        public async Task SetBitstreamFilter_IncorrectFilterAsString_ThrowConversionException()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var exception = await Record.ExceptionAsync(async () => await Conversion.New()
+                                                    .AddStream(inputFile.AudioStreams.First().SetBitstreamFilter("h264_mp4toannexb"))
+                                                    .SetOutput(outputPath)
+                                                    .Start()); ;
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+            Assert.IsType<InvalidBitstreamFilterException>(exception.InnerException);
         }
     }
 }

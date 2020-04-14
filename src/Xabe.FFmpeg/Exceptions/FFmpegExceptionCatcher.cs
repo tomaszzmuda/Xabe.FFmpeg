@@ -49,6 +49,8 @@ namespace Xabe.FFmpeg.Exceptions
             Checks.Add(new ExceptionCheck("Unrecognized hwaccel: "), (output, args) => throw new HardwareAcceleratorNotFoundException(output, args));
 
             Checks.Add(new ExceptionCheck("Unable to find a suitable output format"), (output, args) => throw new FFmpegNoSuitableOutputFormatFoundException(output, args));
+
+            Checks.Add(new ExceptionCheck("is not supported by the bitstream filter"), (output, args) => throw new InvalidBitstreamFilterException(output, args));
         }
 
         internal void CatchFFmpegErrors(string output, string args)
@@ -60,7 +62,7 @@ namespace Xabe.FFmpeg.Exceptions
                     if (check.Key.CheckLog(output))
                         check.Value(output, args);
                 }
-                catch(FFmpegNoSuitableOutputFormatFoundException e)
+                catch(ConversionException e)
                 {
                     throw new ConversionException(e.Message, e, e.InputParameters);
                 }
