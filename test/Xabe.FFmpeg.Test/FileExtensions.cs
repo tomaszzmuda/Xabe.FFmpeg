@@ -1,4 +1,4 @@
-﻿namespace Xabe.FFmpeg
+﻿namespace Xabe.FFmpeg.Test
 {
     /// <summary>
     ///     Files extensions
