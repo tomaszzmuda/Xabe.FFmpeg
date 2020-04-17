@@ -29,7 +29,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(expectedDuration), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), mediaInfo.AudioStreams.First().Duration);
-            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
@@ -54,7 +54,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(expectedBitrate, mediaInfo.AudioStreams.First().Bitrate);
-            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
@@ -78,7 +78,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(1, mediaInfo.AudioStreams.First().Channels);
-            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
@@ -102,7 +102,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(44100, mediaInfo.AudioStreams.First().SampleRate);
-            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
@@ -160,7 +160,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.AudioStreams.First().Duration);
-            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
@@ -179,7 +179,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
-            Assert.Equal("aac", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
@@ -214,7 +214,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
-            Assert.Equal("aac", mediaInfo.AudioStreams.First().Format);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
@@ -232,6 +232,67 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(exception);
             Assert.IsType<ConversionException>(exception);
             Assert.IsType<InvalidBitstreamFilterException>(exception.InnerException);
+        }
+
+        [Theory]
+        [InlineData(AudioCodec.mp2, "mp2")]
+        [InlineData(AudioCodec._4gv, "4gv")]
+        [InlineData(AudioCodec._8svx_exp, "8svx_exp")]
+        [InlineData(AudioCodec._8svx_fib, "8svx_fib")]
+        public async Task ChangeCodec_EnumValue_EverythingMapsCorrectly(AudioCodec audioCodec, string expectedCodec)
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp4WithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var audioStream = inputFile.AudioStreams.First();
+            audioStream.SetCodec(audioCodec);
+
+            var args = Conversion.New()
+                                .AddStream(audioStream)
+                                .SetOutput(outputPath)
+                                .Build();
+
+            Assert.Contains($"-c:a {expectedCodec}", args);
+        }
+
+        [Fact]
+        public async Task ChangeCodec_StringValue_CorrectResult()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp4WithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var audioStream = inputFile.AudioStreams.First();
+            audioStream.SetCodec("mp3");
+
+            IConversionResult conversionResult = await Conversion.New()
+                                .AddStream(audioStream)
+                                .SetOutput(outputPath)
+                                .Start();
+
+            Assert.True(conversionResult.Success);
+            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
+            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
+        [Fact]
+        public async Task ChangeCodec_IncorrectCodec_NotFound()
+        {
+            IMediaInfo inputFile = await MediaInfo.Get(Resources.Mp4WithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var audioStream = inputFile.AudioStreams.First();
+            audioStream.SetCodec("notExisting");
+
+            var exception = await Record.ExceptionAsync(async() => await Conversion.New()
+                                .AddStream(audioStream)
+                                .SetOutput(outputPath)
+                                .Start());
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
         }
     }
 }

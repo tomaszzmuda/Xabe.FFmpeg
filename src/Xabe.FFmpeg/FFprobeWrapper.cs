@@ -153,7 +153,7 @@ namespace Xabe.FFmpeg
             {
                 var stream = new AudioStream
                 {
-                    Format = model.codec_name,
+                    Codec = model.codec_name,
                     Duration = GetAudioDuration(model),
                     Path = path,
                     Index = model.index,
@@ -174,7 +174,7 @@ namespace Xabe.FFmpeg
             {
                 var stream = new SubtitleStream
                 {
-                    Format = model.codec_name,
+                    Codec = model.codec_name,
                     Path = path,
                     Index = model.index,
                     Language = model.tags?.language,
@@ -192,7 +192,7 @@ namespace Xabe.FFmpeg
             {
                 var stream = new VideoStream
                 {
-                    Format = model.codec_name,
+                    Codec = model.codec_name,
                     Duration = GetVideoDuration(model, format),
                     Width = model.width,
                     Height = model.height,

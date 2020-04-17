@@ -18,6 +18,7 @@ namespace Xabe.FFmpeg
         private string _sampleRate;
         private string _channels;
         private string _bitrate;
+        private string _codec;
 
         /// <inheritdoc />
         public IAudioStream Reverse()
@@ -49,8 +50,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string BuildAudioCodec()
         {
-            if (Codec != null)
-                return $"-c:a {Codec.ToString()} ";
+            if (_codec != null)
+                return $"-c:a {_codec.ToString()} ";
             else
                 return string.Empty;
         }
@@ -70,7 +71,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public CodecType CodecType { get; } = CodecType.Audio;
+        public StreamType StreamType { get; } = StreamType.Audio;
 
         /// <inheritdoc />
         public IAudioStream SetChannels(int channels)
@@ -116,39 +117,55 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetCodec(AudioCodec codec)
         {
-            Codec = codec;
+            string input = codec.ToString();
+            if (codec == AudioCodec._4gv)
+            {
+                input = "4gv";
+            }
+            else if (codec == AudioCodec._8svx_exp)
+            {
+                input = "8svx_exp";
+            }
+            else if (codec == AudioCodec._8svx_fib)
+            {
+                input = "8svx_fib";
+            }
+            return SetCodec($"{input}");
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetCodec(string codec)
+        {
+            _codec = codec;
             return this;
         }
 
         /// <inheritdoc />
-        public int Index { get; set; }
+        public int Index { get; internal set; }
 
         /// <inheritdoc />
-        public TimeSpan Duration { get; set; }
+        public TimeSpan Duration { get; internal set; }
 
         /// <inheritdoc />
-        public string Format { get; set; }
+        public string Codec { get; internal set; }
 
         /// <inheritdoc />
-        public long Bitrate { get; set; }
+        public long Bitrate { get; internal set; }
 
         /// <inheritdoc />
-        public int Channels { get; set; }
+        public int Channels { get; internal set; }
 
         /// <inheritdoc />
-        public int SampleRate { get; set; }
+        public int SampleRate { get; internal set; }
 
         /// <inheritdoc />
-        public AudioCodec Codec { get; set; }
+        public string Language { get; internal set; }
 
         /// <inheritdoc />
-        public string Language { get; set; }
+        public int? Default { get; internal set; }
 
         /// <inheritdoc />
-        public int? Default { get; set; }
-
-        /// <inheritdoc />
-        public int? Forced { get; set; }
+        public int? Forced { get; internal set; }
 
         /// <inheritdoc />
         public IEnumerable<string> GetSource()

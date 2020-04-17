@@ -20,7 +20,7 @@ namespace Xabe.FFmpeg
         /// <param name="duration">Duration of video</param>
         public WebStream(Uri uri, string format, TimeSpan? duration)
         {
-            Format = format;
+            Codec = format;
             _uri = uri;
             _duration = duration;
         }
@@ -47,6 +47,6 @@ namespace Xabe.FFmpeg
         public int Index => 0;
 
         /// <inheritdoc />
-        public string Format { get; }
+        public string Codec { get; }
     }
 }

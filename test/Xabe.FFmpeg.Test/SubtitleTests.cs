@@ -29,7 +29,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
             Assert.Single(resultInfo.SubtitleStreams);
             ISubtitleStream resultSteam = resultInfo.SubtitleStreams.First();
-            Assert.Equal(expectedFormat, resultSteam.Format.ToLower());
+            Assert.Equal(expectedFormat, resultSteam.Codec.ToLower());
         }
 
         [Theory]
@@ -54,7 +54,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Empty(resultInfo.VideoStreams);
             Assert.Empty(resultInfo.AudioStreams);
             Assert.Single(resultInfo.SubtitleStreams);
-            Assert.Equal(expectedFormat, resultInfo.SubtitleStreams.First().Format);
+            Assert.Equal(expectedFormat, resultInfo.SubtitleStreams.First().Codec);
             if (checkOutputLanguage)
             {
                 Assert.Equal("spa", resultInfo.SubtitleStreams.First().Language);

@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.h264);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.Aac);
+                                      ?.SetCodec(AudioCodec.aac);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -42,7 +42,7 @@ namespace Xabe.FFmpeg
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.mpeg2video);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(new AudioCodec("mp2"));
+                                      ?.SetCodec(AudioCodec.mp2);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -62,7 +62,7 @@ namespace Xabe.FFmpeg
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.theora);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.Libvorbis);
+                                      ?.SetCodec(AudioCodec.libvorbis);
 
             return New()
                 .AddStream(videoStream, audioStream)
@@ -82,7 +82,7 @@ namespace Xabe.FFmpeg
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.vp8);
             IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.Libvorbis);
+                                      ?.SetCodec(AudioCodec.libvorbis);
 
             return New()
                 .AddStream(videoStream, audioStream)

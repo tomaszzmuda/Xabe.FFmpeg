@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Format
         /// </summary>
-        string Format { get; }
+        string Codec { get; }
 
         /// <summary>
         ///     Get stream input

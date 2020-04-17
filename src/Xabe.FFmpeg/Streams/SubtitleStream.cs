@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public string Format { get; internal set; }
+        public string Codec { get; internal set; }
 
         /// <inheritdoc />
         public string Path { get; internal set; }

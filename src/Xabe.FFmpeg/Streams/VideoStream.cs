@@ -25,6 +25,7 @@ namespace Xabe.FFmpeg
         private string _size;
         private string _split;
         private string _flags;
+        private string _codec;
 
         /// <inheritdoc />
         public IEnumerable<IFilterConfiguration> GetFilters()
@@ -56,16 +57,13 @@ namespace Xabe.FFmpeg
         public TimeSpan Duration { get; internal set; }
 
         /// <inheritdoc />
-        public string Format { get; internal set; }
+        public string Codec { get; internal set; }
 
         /// <inheritdoc />
         public int Index { get; internal set; }
 
         /// <inheritdoc />
         public string Path { get; internal set; }
-
-        /// <inheritdoc />
-        public string Codec { get; internal set; }
 
         /// <inheritdoc />
         public string PixelFormat { get; internal set; }
@@ -105,8 +103,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string BuildVideoCodec()
         {
-            if (Codec != null)
-                return $"-c:v {Codec.ToString()} ";
+            if (_codec != null)
+                return $"-c:v {_codec.ToString()} ";
             else
                 return string.Empty;
         }
@@ -126,7 +124,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public CodecType CodecType { get; } = CodecType.Video;
+        public StreamType StreamType { get; } = StreamType.Video;
 
         /// <inheritdoc />
         public long Bitrate { get; internal set; }
@@ -251,7 +249,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetCodec(string codec)
         {
-            Codec = codec;
+            _codec = codec;
             return this;
         }
 

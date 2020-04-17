@@ -42,9 +42,9 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);
             Assert.Equal("h264", mediaInfo.VideoStreams.First()
-                                          .Format);
+                                          .Codec);
             Assert.Equal("aac", mediaInfo.AudioStreams.First()
-                                         .Format);
+                                         .Codec);
             if (conversionNumber == totalConversionsCount)
                 resetEvent.Set();
         }

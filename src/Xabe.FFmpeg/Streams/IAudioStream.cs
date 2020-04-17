@@ -15,7 +15,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Codec type
         /// </summary>
-        CodecType CodecType { get; }
+        StreamType StreamType { get; }
 
         /// <summary>
         ///     Bitrate
@@ -48,6 +48,11 @@ namespace Xabe.FFmpeg
         int? Forced { get; }
 
         /// <summary>
+        /// Audio Codec
+        /// </summary>
+        string Codec { get; }
+
+        /// <summary>
         ///     Set stream to copy with orginal codec
         /// </summary>
         /// <returns>IAudioStream</returns>
@@ -72,6 +77,13 @@ namespace Xabe.FFmpeg
         /// <param name="codec">Audio odec</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetCodec(AudioCodec codec);
+
+        /// <summary>
+        ///     Set audio codec and bitrate
+        /// </summary>
+        /// <param name="codec">Audio odec</param>
+        /// <returns>IAudioStream</returns>
+        IAudioStream SetCodec(string codec);
 
         /// <summary>
         ///     Set filter

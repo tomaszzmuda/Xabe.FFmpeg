@@ -3,7 +3,7 @@
     /// <summary>
     ///     Stream type
     /// </summary>
-    public enum CodecType
+    public enum StreamType
     {
         /// <summary>
         ///     Video stream

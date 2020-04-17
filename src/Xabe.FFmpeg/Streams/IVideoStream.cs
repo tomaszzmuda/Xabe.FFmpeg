@@ -36,7 +36,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Codec type
         /// </summary>
-        CodecType CodecType { get; }
+        StreamType StreamType { get; }
 
         /// <summary>
         ///     Video bitrate
