@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
@@ -7,16 +8,6 @@ namespace Xabe.FFmpeg
     /// </summary>
     public interface IConversionResult
     {
-        /// <summary>
-        ///     Result of conversion
-        /// </summary>
-        bool Success { get; }
-
-        /// <summary>
-        ///     Output IMediaInfo
-        /// </summary>
-        Lazy<IMediaInfo> MediaInfo { get; }
-
         /// <summary>
         ///     Date and time of starting conversion
         /// </summary>

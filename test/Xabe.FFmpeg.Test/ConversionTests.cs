@@ -35,7 +35,6 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(outputPath)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
             Assert.Contains("overlay", conversionResult.Arguments);
             Assert.Contains(Resources.PngSample, conversionResult.Arguments);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
@@ -57,8 +56,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Codec);
         }
 
@@ -75,8 +73,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal(".ts", Path.GetExtension(resultFile.Path));
         }
 
@@ -94,8 +92,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Codec);
             Assert.Equal(".avi", Path.GetExtension(resultFile.Path));
         }
@@ -113,8 +111,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
@@ -153,7 +151,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
+
             FileInfo fi = new FileInfo(output);
             
             Assert.Equal(fileExtension, fi.Extension);
@@ -178,7 +176,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
+
             FileInfo fi = new FileInfo(output);
 
             Assert.Equal(fileExtension, fi.Extension);
@@ -197,8 +195,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
             Assert.Equal(29.97, resultFile.VideoStreams.First().Framerate);
             Assert.Equal(TimeSpan.FromSeconds(3), resultFile.VideoStreams.First().Duration);
@@ -216,8 +214,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("mpeg4", resultFile.VideoStreams.First().Codec);
         }
 
@@ -233,8 +231,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("ac3", resultFile.AudioStreams.First().Codec);
         }
 
@@ -253,8 +251,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(5), resultFile.AudioStreams.First().Duration);
             Assert.Equal(TimeSpan.FromSeconds(5), resultFile.VideoStreams.First().Duration);
         }
@@ -274,8 +272,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(5), resultFile.AudioStreams.First().Duration);
             Assert.Equal(TimeSpan.FromSeconds(5), resultFile.VideoStreams.First().Duration);
         }
@@ -295,8 +293,8 @@ namespace Xabe.FFmpeg.Test
 
             double lowerBound = 128000 * 0.95;
             double upperBound = 128000 * 1.05;
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.InRange<double>(resultFile.AudioStreams.First().Bitrate, lowerBound, upperBound);
         }
 
@@ -315,8 +313,7 @@ namespace Xabe.FFmpeg.Test
 
             double lowerBound = 1500000 * 0.95;
             double upperBound = 1500000 * 1.05;
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.InRange<double>(resultFile.VideoStreams.First().Bitrate, lowerBound, upperBound);
         }
 
@@ -335,8 +332,8 @@ namespace Xabe.FFmpeg.Test
 
             double lowerBound = 1500000 * 0.95;
             double upperBound = 1500000 * 1.05;
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.InRange<double>(resultFile.VideoStreams.First().Bitrate, lowerBound, upperBound);
         }
 
@@ -355,8 +352,8 @@ namespace Xabe.FFmpeg.Test
 
             double lowerBound = 1500000 * 0.95;
             double upperBound = 1500000 * 1.05;
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.InRange<double>(resultFile.VideoStreams.First().Bitrate, lowerBound, upperBound);
         }
 
@@ -376,7 +373,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .ExtractEveryNthFrame(10, outputBuilder)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
+
 
             int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
                 .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == extension).Count();
@@ -400,7 +397,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .ExtractNthFrame(10, outputBuilder)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
+
 
             int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
                 .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == extension).Count();
@@ -427,8 +424,8 @@ namespace Xabe.FFmpeg.Test
 
             int preparedFilesCount = Directory.EnumerateFiles(preparedFilesDir).ToList().Count;
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal(builder.FileList.Count, preparedFilesCount);
             Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
             Assert.Equal(1, resultFile.VideoStreams.First().Framerate);
@@ -450,8 +447,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
             Assert.Equal(1, resultFile.VideoStreams.First().Framerate);
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
@@ -469,7 +466,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
+
             Assert.Contains("-n ", conversionResult.Arguments);
 
             IConversionResult secondConversionResult = await Conversion.New()
@@ -478,7 +475,6 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(secondConversionResult.Success);
             Assert.Contains(" -y ", secondConversionResult.Arguments);
             Assert.DoesNotContain(" -n ", secondConversionResult.Arguments);
         }
@@ -495,7 +491,7 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
+
             Assert.Contains("-n ", conversionResult.Arguments);
 
             await Assert.ThrowsAsync<ConversionException>(() => Conversion.New()
@@ -512,8 +508,8 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.Convert(Resources.MkvWithAudio, output).UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.h264_cuvid, VideoCodec.h264_nvenc, 0).Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
         }
 
@@ -568,7 +564,6 @@ namespace Xabe.FFmpeg.Test
             Assert.True(conversion.FFmpegProcessId > 0);
             ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
             Assert.DoesNotContain(ffmpegProcesses, _ => _.Id == conversion.FFmpegProcessId && !_.HasExited);
-            
         }
 
         [Fact]
@@ -600,8 +595,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
             Assert.Contains($"-threads {expectedThreadsCount}", conversionResult.Arguments);
         }
@@ -618,8 +613,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .SetOutput(output)
                                                                  .Start();
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
             Assert.Contains($"-threads {Environment.ProcessorCount}", conversionResult.Arguments);
         }
@@ -637,8 +632,8 @@ namespace Xabe.FFmpeg.Test
                                                                  .Start()
                                                                  ;
 
-            Assert.True(conversionResult.Success);
-            IMediaInfo resultFile = conversionResult.MediaInfo.Value;
+
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
             Assert.Contains($"-threads 1", conversionResult.Arguments);
         }

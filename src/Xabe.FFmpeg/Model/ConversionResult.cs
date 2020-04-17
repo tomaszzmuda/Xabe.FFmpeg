@@ -1,16 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc />
     internal class ConversionResult : IConversionResult
     {
-        /// <inheritdoc />
-        public bool Success { get; internal set; }
-
-        /// <inheritdoc />
-        public Lazy<IMediaInfo> MediaInfo { get; internal set; }
-
         /// <inheritdoc />
         public DateTime StartTime { get; internal set; }
 

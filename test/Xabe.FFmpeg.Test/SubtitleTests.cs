@@ -25,7 +25,6 @@ namespace Xabe.FFmpeg.Test
                                           .SetOutput(outputPath)
                                           .Start();
 
-            Assert.True(result.Success);
             IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
             Assert.Single(resultInfo.SubtitleStreams);
             ISubtitleStream resultSteam = resultInfo.SubtitleStreams.First();
@@ -49,7 +48,6 @@ namespace Xabe.FFmpeg.Test
                                                        .SetOutput(outputPath)
                                                        .Start();
 
-            Assert.True(result.Success);
             IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
             Assert.Empty(resultInfo.VideoStreams);
             Assert.Empty(resultInfo.AudioStreams);

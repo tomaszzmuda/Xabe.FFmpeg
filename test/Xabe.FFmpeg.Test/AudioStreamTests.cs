@@ -25,7 +25,6 @@ namespace Xabe.FFmpeg.Test
                                                     .SetOutput(outputPath)
                                                     .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(expectedDuration), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), mediaInfo.AudioStreams.First().Duration);
@@ -50,7 +49,6 @@ namespace Xabe.FFmpeg.Test
                                                     .SetOutput(outputPath)
                                                     .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(expectedBitrate, mediaInfo.AudioStreams.First().Bitrate);
@@ -74,7 +72,6 @@ namespace Xabe.FFmpeg.Test
                                                     .SetOutput(outputPath)
                                                     .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(1, mediaInfo.AudioStreams.First().Channels);
@@ -98,7 +95,6 @@ namespace Xabe.FFmpeg.Test
                                                     .SetOutput(outputPath)
                                                     .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
 
             Assert.Equal(44100, mediaInfo.AudioStreams.First().SampleRate);
@@ -156,7 +152,6 @@ namespace Xabe.FFmpeg.Test
                                                     .SetOutput(outputPath)
                                                     .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.AudioStreams.First().Duration);
@@ -175,7 +170,6 @@ namespace Xabe.FFmpeg.Test
                                                     .SetOutput(outputPath)
                                                     .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
@@ -210,7 +204,6 @@ namespace Xabe.FFmpeg.Test
                                                     .SetOutput(outputPath)
                                                     .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
@@ -269,7 +262,6 @@ namespace Xabe.FFmpeg.Test
                                 .SetOutput(outputPath)
                                 .Start();
 
-            Assert.True(conversionResult.Success);
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
             Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.AudioStreams.First().Duration);

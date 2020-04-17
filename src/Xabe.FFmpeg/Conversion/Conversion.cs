@@ -131,13 +131,11 @@ namespace Xabe.FFmpeg
             _ffmpeg.Priority = _priority;
             _ffmpeg.OnProgress += OnProgress;
             _ffmpeg.OnDataReceived += OnDataReceived;
+            await _ffmpeg.RunProcess(parameters, cancellationToken);
             var result = new ConversionResult
             {
                 StartTime = DateTime.Now,
-                Success = await _ffmpeg.RunProcess(parameters, cancellationToken),
                 EndTime = DateTime.Now,
-                MediaInfo = new Lazy<IMediaInfo>(() => MediaInfo.Get(OutputFilePath)
-                                                                .Result),
                 Arguments = parameters
             };
             return result;

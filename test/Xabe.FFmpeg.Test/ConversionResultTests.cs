@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Exceptions;
 using Xunit;
@@ -17,16 +18,18 @@ namespace Xabe.FFmpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 
-            IConversionResult result = await Conversion.ToMp4(Resources.Mp4WithAudio, outputPath)
+            IConversionResult result = await Conversion.ToMp4(Resources.FlvWithAudio, outputPath)
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .SetPriority(priority)
                                              .Start();
 
-            Assert.True(result.Success);
-            Assert.NotNull(result.MediaInfo.Value);
+
+            var mediaInfo = await MediaInfo.Get(outputPath);
+            Assert.NotNull(mediaInfo);
             Assert.True(result.StartTime != DateTime.MinValue);
             Assert.True(result.EndTime != DateTime.MinValue);
-            Assert.True(result.Duration > TimeSpan.FromMilliseconds(1));
+            Assert.Equal(TimeSpan.FromSeconds(5), mediaInfo.Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
         }
 
         [Fact]
