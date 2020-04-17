@@ -234,7 +234,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversion conversion = Conversion.New()
                                                .AddStream(inputFile.VideoStreams.First()
-                                               .AddSubtitles(Resources.SubtitleSrt, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30", new VideoSize(1024, 768)))
+                                               .AddSubtitles(Resources.SubtitleSrt, VideoSize.Xga, "UTF-8", "Fontsize=20,PrimaryColour=&H00ffff&,MarginV=30"))
                                                .SetOutput(outputPath);
             IConversionResult conversionResult = await conversion.Start();
 
@@ -342,28 +342,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task ScaleTest()
-        {
-            IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-
-            IConversionResult conversionResult = await Conversion.New()
-                                                   .AddStream(inputFile.VideoStreams.First()
-                                                                                     .SetScale(VideoSize.Sqcif)
-                                                                                     .SetCodec(VideoCodec.h264))
-                                                   .SetPreset(ConversionPreset.UltraFast)
-                                                   .SetOutput(outputPath)
-                                                   .Start();
-
-
-            IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-            Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
-            Assert.Equal(128, mediaInfo.VideoStreams.First().Width);
-            Assert.Equal(96, mediaInfo.VideoStreams.First().Height);
-        }
-
-        [Fact]
         public async Task SeekLengthTest()
         {
             IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
@@ -434,7 +412,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(inputFile.VideoStreams.First()
-                                                                                                  .SetSize(new VideoSize(640, 480)))
+                                                                                                  .SetSize(640, 480))
                                                                  .SetOutput(outputPath)
                                                                  .Start();
 
@@ -448,22 +426,24 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task SetNullSizeTest()
+        public async Task SetSize_UseEnum_ResultsAreCorrect()
         {
             IMediaInfo inputFile = await MediaInfo.Get(Resources.MkvWithAudio);
-
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(inputFile.VideoStreams.First()
-                                                                                                  .SetSize(null))
-                                                   .SetOutput(outputPath)
-                                                   .Start();
+                                                                                                  .SetSize(VideoSize.Sntsc))
+                                                                 .SetOutput(outputPath)
+                                                                 .Start();
 
 
             IMediaInfo mediaInfo = await MediaInfo.Get(outputPath);
-            Assert.Equal(inputFile.VideoStreams.First().Width, mediaInfo.VideoStreams.First().Width);
-            Assert.Equal(inputFile.VideoStreams.First().Height, mediaInfo.VideoStreams.First().Height);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
+            Assert.Equal(640, mediaInfo.VideoStreams.First().Width);
+            Assert.Equal(480, mediaInfo.VideoStreams.First().Height);
         }
 
         [Fact]

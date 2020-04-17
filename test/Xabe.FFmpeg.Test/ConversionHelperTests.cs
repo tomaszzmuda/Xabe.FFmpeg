@@ -131,7 +131,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             string input = Resources.MkvWithAudio;
 
-            IConversionResult result = await Conversion.ChangeSize(input, output, new VideoSize(640, 360))
+            IConversionResult result = await Conversion.ChangeSize(input, output, 640, 360)
                                              .Start();
 
 

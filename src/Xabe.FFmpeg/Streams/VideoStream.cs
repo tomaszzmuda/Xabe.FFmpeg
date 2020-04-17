@@ -20,7 +20,6 @@ namespace Xabe.FFmpeg
         private string _loop;
         private string _reverse;
         private string _rotate;
-        private string _scale;
         private string _seek;
         private string _size;
         private string _split;
@@ -79,7 +78,6 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             builder.Append(string.Join(" ", _parameters));
-            builder.Append(_scale);
             builder.Append(BuildVideoCodec());
             builder.Append(_bitsreamFilter);
             builder.Append(_bitrate);
@@ -147,7 +145,18 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IVideoStream AddSubtitles(string subtitlePath, string encode, string style, VideoSize originalSize)
+        public IVideoStream AddSubtitles(string subtitlePath, VideoSize originalSize, string encode, string style)
+        {
+            return BuildSubtitleFilter(subtitlePath, originalSize, encode, style);
+        }
+
+        /// <inheritdoc />
+        public IVideoStream AddSubtitles(string subtitlePath, string encode, string style)
+        {
+            return BuildSubtitleFilter(subtitlePath, null, encode, style);
+        }
+
+        private IVideoStream BuildSubtitleFilter(string subtitlePath, VideoSize? originalSize, string encode, string style)
         {
             string filter = $"'{subtitlePath}'".Replace("\\", "\\\\")
                                                .Replace(":", "\\:");
@@ -161,7 +170,7 @@ namespace Xabe.FFmpeg
             }
             if (originalSize != null)
             {
-                filter += $":original_size={originalSize}";
+                filter += $":original_size={originalSize.Value.ToFFmpegFormat()}";
             }
             _videoFilters.Add("subtitles", filter);
             return this;
@@ -208,22 +217,16 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IVideoStream SetScale(VideoSize size)
+        public IVideoStream SetSize(VideoSize size)
         {
-            if (size != null)
-            {
-                _scale = $"-vf scale={size} ";
-            }
+            _size = $"-s {size.ToFFmpegFormat()} ";
             return this;
         }
 
         /// <inheritdoc />
-        public IVideoStream SetSize(VideoSize size)
+        public IVideoStream SetSize(int width, int height)
         {
-            if (size != null)
-            {
-                _size = $"-s {size} ";
-            }
+            _size = $"-s {width}x{height} ";
             return this;
         }
 

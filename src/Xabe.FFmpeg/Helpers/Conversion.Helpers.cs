@@ -190,6 +190,27 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output path</param>
+        /// <param name="width">Expected width</param>
+        /// <param name="height">Expected height</param>
+        /// <returns>Conversion result</returns>
+        public static IConversion ChangeSize(string inputPath, string outputPath, int width, int height)
+        {
+            IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
+
+            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
+                                           .SetSize(width, height);
+            return New()
+                .AddStream(videoStream)
+                .AddStream(info.AudioStreams.ToArray())
+                .AddStream(info.SubtitleStreams.ToArray())
+                .SetOutput(outputPath);
+        }
+
+        /// <summary>
+        ///     Change video size
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output path</param>
         /// <param name="size">Expected size</param>
         /// <returns>Conversion result</returns>
         public static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
@@ -197,7 +218,7 @@ namespace Xabe.FFmpeg
             IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           .SetScale(size);
+                                           .SetSize(size);
             return New()
                 .AddStream(videoStream)
                 .AddStream(info.AudioStreams.ToArray())

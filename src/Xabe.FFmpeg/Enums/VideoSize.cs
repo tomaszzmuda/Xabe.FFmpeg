@@ -1,307 +1,395 @@
 ﻿// ReSharper disable InconsistentNaming
 
+using System;
+
 namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Video size
     /// </summary>
-    public class VideoSize
+    public enum VideoSize
     {
-        /// <summary>
-        ///     FFmpeg resolution height
-        /// </summary>
-        internal readonly int Height;
-
-        /// <summary>
-        ///     FFmpeg resolution width
-        /// </summary>
-        internal readonly int Width;
-
-        private string _resoulution;
-
-        /// <summary>
-        ///     VideoSize in FFmpeg format
-        /// </summary>
-        /// <param name="width">Width of output video</param>
-        /// <param name="height">Height of output video</param>
-        public VideoSize(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
-
         /// <summary>
         ///     720x480
         /// </summary>
-        public static VideoSize Ntsc => new VideoSize(720, 480);
+        Ntsc,
 
         /// <summary>
         ///     720x576
         /// </summary>
-        public static VideoSize Pal => new VideoSize(720, 576);
+        Pal,
 
         /// <summary>
         ///     352x240
         /// </summary>
-        public static VideoSize Qntsc => new VideoSize(352, 240);
+        Qntsc,
 
         /// <summary>
         ///     352x288
         /// </summary>
-        public static VideoSize Qpal => new VideoSize(352, 288);
+        Qpal,
 
         /// <summary>
         ///     640x480
         /// </summary>
-        public static VideoSize Sntsc => new VideoSize(640, 480);
+        Sntsc,
 
         /// <summary>
         ///     768x576
         /// </summary>
-        public static VideoSize Spal => new VideoSize(768, 576);
+        Spal,
 
         /// <summary>
         ///     352x240
         /// </summary>
-        public static VideoSize Film => new VideoSize(352, 240);
+        Film,
 
         /// <summary>
         ///     352x240
         /// </summary>
-        public static VideoSize NtscFilm => new VideoSize(352, 240);
+        NtscFilm,
 
         /// <summary>
         ///     128x96
         /// </summary>
-        public static VideoSize Sqcif => new VideoSize(128, 96);
+        Sqcif,
 
         /// <summary>
         ///     176x144
         /// </summary>
-        public static VideoSize Qcif => new VideoSize(176, 144);
+        Qcif,
 
         /// <summary>
         ///     352x288
         /// </summary>
-        public static VideoSize Cif => new VideoSize(352, 288);
+        Cif,
 
         /// <summary>
         ///     704x576
         /// </summary>
-        public static VideoSize _4Cif => new VideoSize(704, 576);
+        _4Cif,
 
         /// <summary>
         ///     1408x1152
         /// </summary>
-        public static VideoSize _16cif => new VideoSize(1408, 1152);
+        _16cif,
 
         /// <summary>
         ///     160x120
         /// </summary>
-        public static VideoSize Qqvga => new VideoSize(160, 120);
+        Qqvga,
 
         /// <summary>
         ///     320x240
         /// </summary>
-        public static VideoSize Qvga => new VideoSize(320, 240);
+        Qvga,
 
         /// <summary>
         ///     640x480
         /// </summary>
-        public static VideoSize Vga => new VideoSize(640, 480);
+        Vga,
 
         /// <summary>
         ///     800x600
         /// </summary>
-        public static VideoSize Svga => new VideoSize(800, 600);
+        Svga,
 
         /// <summary>
         ///     1024x768
         /// </summary>
-        public static VideoSize Xga => new VideoSize(1024, 768);
+        Xga,
 
         /// <summary>
         ///     1600x1200
         /// </summary>
-        public static VideoSize Uxga => new VideoSize(1600, 1200);
+        Uxga,
 
         /// <summary>
         ///     2048x1536
         /// </summary>
-        public static VideoSize Qxga => new VideoSize(2048, 1536);
+        Qxga,
 
         /// <summary>
         ///     1280x1024
         /// </summary>
-        public static VideoSize Sxga => new VideoSize(1280, 1024);
+        Sxga,
 
         /// <summary>
         ///     2560x2048
         /// </summary>
-        public static VideoSize Qsxga => new VideoSize(2560, 2048);
+        Qsxga,
 
         /// <summary>
         ///     5120x4096
         /// </summary>
-        public static VideoSize Hsxga => new VideoSize(5120, 4096);
+        Hsxga,
 
         /// <summary>
         ///     852x480
         /// </summary>
-        public static VideoSize Wvga => new VideoSize(852, 480);
+        Wvga,
 
         /// <summary>
         ///     1366x768
         /// </summary>
-        public static VideoSize Wxga => new VideoSize(1366, 768);
+        Wxga,
 
         /// <summary>
         ///     1600x1024
         /// </summary>
-        public static VideoSize Wsxga => new VideoSize(1600, 1024);
+        Wsxga,
 
         /// <summary>
         ///     1920x1200
         /// </summary>
-        public static VideoSize Wuxga => new VideoSize(1920, 1200);
+        Wuxga,
 
         /// <summary>
         ///     2560x1600
         /// </summary>
-        public static VideoSize Woxga => new VideoSize(2560, 1600);
+        Woxga,
 
         /// <summary>
         ///     3200x2048
         /// </summary>
-        public static VideoSize Wqsxga => new VideoSize(3200, 2048);
+        Wqsxga,
 
         /// <summary>
         ///     3840x2400
         /// </summary>
-        public static VideoSize Wquxga => new VideoSize(3840, 2400);
+        Wquxga,
 
         /// <summary>
         ///     6400x4096
         /// </summary>
-        public static VideoSize Whsxga => new VideoSize(6400, 4096);
+        Whsxga,
 
         /// <summary>
         ///     7680x4800
         /// </summary>
-        public static VideoSize Whuxga => new VideoSize(7680, 4800);
+        Whuxga,
 
         /// <summary>
         ///     320x200
         /// </summary>
-        public static VideoSize Cga => new VideoSize(320, 200);
+        Cga,
 
         /// <summary>
         ///     640x350
         /// </summary>
-        public static VideoSize Ega => new VideoSize(640, 350);
+        Ega,
 
         /// <summary>
         ///     852x480
         /// </summary>
-        public static VideoSize Hd480 => new VideoSize(852, 480);
+        Hd480,
 
         /// <summary>
         ///     1280x720
         /// </summary>
-        public static VideoSize Hd720 => new VideoSize(1280, 720);
+        Hd720,
 
         /// <summary>
         ///     1920x1080
         /// </summary>
-        public static VideoSize Hd1080 => new VideoSize(1920, 1080);
+        Hd1080,
 
         /// <summary>
         ///     2048x1080
         /// </summary>
-        public static VideoSize _2K => new VideoSize(2048, 1080);
+        _2K,
 
         /// <summary>
         ///     1998x1080
         /// </summary>
-        public static VideoSize _2Kflat => new VideoSize(1998, 1080);
+        _2Kflat,
 
         /// <summary>
         ///     2048x858
         /// </summary>
-        public static VideoSize _2Kscope => new VideoSize(2048, 858);
+        _2Kscope,
 
         /// <summary>
         ///     4096x2160
         /// </summary>
-        public static VideoSize _4K => new VideoSize(4096, 2160);
+        _4K,
 
         /// <summary>
         ///     3996x2160
         /// </summary>
-        public static VideoSize _4Kflat => new VideoSize(3996, 2160);
+        _4Kflat,
 
         /// <summary>
         ///     4096x1716
         /// </summary>
-        public static VideoSize _4Kscope => new VideoSize(4096, 1716);
+        _4Kscope,
 
         /// <summary>
         ///     640x360
         /// </summary>
-        public static VideoSize Nhd => new VideoSize(640, 360);
+        Nhd,
 
         /// <summary>
         ///     240x160
         /// </summary>
-        public static VideoSize Hqvga => new VideoSize(240, 160);
+        Hqvga,
 
         /// <summary>
         ///     400x240
         /// </summary>
-        public static VideoSize Wqvga => new VideoSize(400, 240);
+        Wqvga,
 
         /// <summary>
         ///     432x240
         /// </summary>
-        public static VideoSize Fwqvga => new VideoSize(432, 240);
+        Fwqvga,
 
         /// <summary>
         ///     480x320
         /// </summary>
-        public static VideoSize Hvga => new VideoSize(480, 320);
+        Hvga,
 
         /// <summary>
         ///     960x540
         /// </summary>
-        public static VideoSize Qhd => new VideoSize(960, 540);
+        Qhd,
 
         /// <summary>
         ///     2048x1080
         /// </summary>
-        public static VideoSize _2Kdci => new VideoSize(2048, 1080);
+        _2Kdci,
 
         /// <summary>
         ///     4096x2160
         /// </summary>
-        public static VideoSize _4Kdci => new VideoSize(4096, 2160);
+        _4Kdci,
 
         /// <summary>
         ///     3840x2160
         /// </summary>
-        public static VideoSize Uhd2160 => new VideoSize(3840, 2160);
+        Uhd2160,
 
         /// <summary>
         ///     7680x4320
         /// </summary>
-        public static VideoSize Uhd4320 => new VideoSize(7680, 4320);
+        Uhd4320
+    }
 
-        /// <summary>
-        ///     Convert video size to string format
-        /// </summary>
-        /// <returns>Formatted video size</returns>
-        public override string ToString()
+    internal static class VideoSizeExtensions
+    {
+        public static string ToFFmpegFormat(this VideoSize videoSize)
         {
-            return _resoulution ?? (_resoulution = $"{Width}x{Height}");
+            switch (videoSize)
+            {
+                case VideoSize.Ntsc:
+                    return "720x480";
+                case VideoSize.Pal:
+                    return "720x576";
+                case VideoSize.Qntsc:
+                    return "352x240";
+                case VideoSize.Qpal:
+                    return "352x288";
+                case VideoSize.Sntsc:
+                    return "640x480";
+                case VideoSize.Spal:
+                    return "768x576";
+                case VideoSize.Film:
+                    return "352x240";
+                case VideoSize.NtscFilm:
+                    return "352x240";
+                case VideoSize.Sqcif:
+                    return "128x96";
+                case VideoSize.Qcif:
+                    return "176x144";
+                case VideoSize.Cif:
+                    return "352x288";
+                case VideoSize._4Cif:
+                    return "704x576";
+                case VideoSize._16cif:
+                    return "1408x1152";
+                case VideoSize.Qqvga:
+                    return "160x120";
+                case VideoSize.Qvga:
+                    return "320x240";
+                case VideoSize.Vga:
+                    return "640x480";
+                case VideoSize.Svga:
+                    return "800x600";
+                case VideoSize.Xga:
+                    return "1024x768";
+                case VideoSize.Uxga:
+                    return "1600x1200";
+                case VideoSize.Qxga:
+                    return "2048x1536";
+                case VideoSize.Sxga:
+                    return "1280x1024";
+                case VideoSize.Qsxga:
+                    return "2560x2048";
+                case VideoSize.Hsxga:
+                    return "5120x4096";
+                case VideoSize.Wvga:
+                    return "852x480";
+                case VideoSize.Wxga:
+                    return "1366x768";
+                case VideoSize.Wsxga:
+                    return "1600x1024";
+                case VideoSize.Wuxga:
+                    return "1920x1200";
+                case VideoSize.Woxga:
+                    return "2560x1600";
+                case VideoSize.Wqsxga:
+                    return "3200x2048";
+                case VideoSize.Wquxga:
+                    return "3840x2400";
+                case VideoSize.Whsxga:
+                    return "6400x4096";
+                case VideoSize.Whuxga:
+                    return "7680x4800";
+                case VideoSize.Cga:
+                    return "320x200";
+                case VideoSize.Ega:
+                    return "640x350";
+                case VideoSize.Hd480:
+                    return "852x480";
+                case VideoSize.Hd720:
+                    return "1280x720";
+                case VideoSize.Hd1080:
+                    return "1920x1080";
+                case VideoSize._2K:
+                    return "2048x1080";
+                case VideoSize._2Kflat:
+                    return "1998x1080";
+                case VideoSize._2Kscope:
+                    return "2048x858";
+                case VideoSize._4K:
+                    return "4096x2160";
+                case VideoSize._4Kflat:
+                    return "3996x2160";
+                case VideoSize._4Kscope:
+                    return "4096x1716";
+                case VideoSize.Nhd:
+                    return "640x360";
+                case VideoSize.Hqvga:
+                    return "240x160";
+                case VideoSize.Wqvga:
+                    return "400x240";
+                case VideoSize.Fwqvga:
+                    return "432x240";
+                case VideoSize.Hvga:
+                    return "480x320";
+                case VideoSize.Qhd:
+                    return "960x540";
+                case VideoSize._2Kdci:
+                    return "2048x1080";
+                case VideoSize._4Kdci:
+                    return "4096x2160";
+                case VideoSize.Uhd2160:
+                    return "3840x2160";
+                case VideoSize.Uhd4320:
+                    return "7680x4320";
+                default:
+                    throw new InvalidOperationException();
+            }
         }
     }
 }

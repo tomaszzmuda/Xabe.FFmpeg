@@ -125,14 +125,15 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="size">VideoSize</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetScale(VideoSize size);
+        IVideoStream SetSize(VideoSize size);
 
         /// <summary>
         ///     Set size of video
         /// </summary>
-        /// <param name="size">VideoSize</param>
+        /// <param name="width">Width</param>
+        /// <param name="height">Height</param>
         /// <returns>IVideoStream</returns>
-        IVideoStream SetSize(VideoSize size);
+        IVideoStream SetSize(int width, int height);
 
         /// <summary>
         ///     Set video codec
@@ -199,12 +200,24 @@ namespace Xabe.FFmpeg
         ///     Override default style or script info parameters of the subtitles. It accepts a string containing
         ///     ASS style format KEY=VALUE couples separated by ","
         /// </param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream AddSubtitles(string subtitlePath, string encode = null, string style = null);
+
+        /// <summary>
+        ///     Burn subtitle into file
+        /// </summary>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="encode">Set subtitles input character encoding. Only useful if not UTF-8.</param>
+        /// <param name="style">
+        ///     Override default style or script info parameters of the subtitles. It accepts a string containing
+        ///     ASS style format KEY=VALUE couples separated by ","
+        /// </param>
         /// <param name="originalSize">
         ///     Specify the size of the original video, the video for which the ASS style was composed. This
         ///     is necessary to correctly scale the fonts if the aspect ratio has been changed.
         /// </param>
         /// <returns>IVideoStream</returns>
-        IVideoStream AddSubtitles(string subtitlePath, string encode = null, string style = null, VideoSize originalSize = null);
+        IVideoStream AddSubtitles(string subtitlePath, VideoSize originalSize, string encode = null, string style = null);
 
         /// <summary>
         ///     Get part of video
