@@ -333,7 +333,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetInputFrameRate(long frameRate)
+        public IConversion SetInputFrameRate(double frameRate)
         {
             AddParameter($"-framerate {frameRate}", ParameterPosition.PreInput);
             return this;

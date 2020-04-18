@@ -114,6 +114,59 @@ namespace Xabe.FFmpeg.Test
             Assert.IsType<ConversionException>(exception);
         }
 
+        [Theory]
+        [InlineData(Format._3dostr, "3dostr")]
+        [InlineData(Format._3g2, "3g2")]
+        [InlineData(Format._3gp, "3gp")]
+        [InlineData(Format._4xm, "4xm")]
+        [InlineData(Format.matroska, "matroska")]
+        public async Task SetFormat_ValuesFromEnum_CorrectParams(Format format, string expectedFormat)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+
+            string args = Conversion.New()
+                                            .AddStream(videoStream)
+                                            .SetInputFormat(format)
+                                            .SetOutput(output)
+                                            .Build();
+
+            Assert.Contains($"-f {expectedFormat}", args);
+        }
+
+        [Fact]
+        public async Task SetFormat_ValueAsString_CorrectParams()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+
+            string args = Conversion.New()
+                                            .AddStream(videoStream)
+                                            .SetInputFormat("matroska")
+                                            .SetOutput(output)
+                                            .Build();
+
+            Assert.Contains($"-f matroska", args);
+        }
+
+        [Fact]
+        public async Task SetFormat_NotExistingFormat_ThrowConversionException()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+
+            var exception = await Record.ExceptionAsync(async () => await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetInputFormat("notExisting")
+                                                                 .SetOutput(output)
+                                                                 .Start());
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+        }
+
         [Fact]
         public async Task SetInputAndOutputFormatTest()
         {

@@ -78,7 +78,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="frameRate">the desired framerate of the input in bytes</param>
         /// <returns>IConversion object</returns>
-        IConversion SetInputFrameRate(long frameRate);
+        IConversion SetInputFrameRate(double frameRate);
 
         /// <summary>
         ///     Seeks in output file to position. (-ss argument)
@@ -171,6 +171,13 @@ namespace Xabe.FFmpeg
         /// <param name="frameRate">The framrate at which to capture the display</param>
         /// <returns>IConversion object</returns>
         IConversion GetScreenCapture(double frameRate);
+
+        /// <summary>
+        /// Sets the format for the input file using the -f option before the input file name
+        /// </summary>
+        /// <param name="inputFormat">The input format to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetInputFormat(string inputFormat);
 
         /// <summary>
         /// Sets the format for the input file using the -f option before the input file name
