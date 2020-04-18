@@ -7,7 +7,7 @@ namespace Xabe.FFmpeg
     /// <summary>
     /// Hash Formats ("ffmpeg -i INPUT -f hash")
     /// </summary>
-    public enum HashFormat
+    public enum Hash
     {
         /// <summary>
         ///     MD5 Hashing Algorithm

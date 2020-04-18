@@ -114,7 +114,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="format">The required hash format</param>
         /// <returns>IConversion object</returns>
-        IConversion SetHashFormat(HashFormat format);
+        IConversion SetHashFormat(Hash format);
 
         /// <summary>
         ///     Set the hash format of IConversion.

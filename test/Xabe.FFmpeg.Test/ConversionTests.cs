@@ -117,25 +117,25 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
         }
 
         [Theory]
-        [InlineData(HashFormat.MD5, 37L)]
-        [InlineData(HashFormat.murmur3, 41L)]
-        [InlineData(HashFormat.RIPEMD128, 43L)]
-        [InlineData(HashFormat.RIPEMD160, 51L)]
-        [InlineData(HashFormat.RIPEMD256, 75L)]
-        [InlineData(HashFormat.RIPEMD320, 91L)]
-        [InlineData(HashFormat.SHA160, 48L)]
-        [InlineData(HashFormat.SHA224, 64L)]
-        [InlineData(HashFormat.SHA256, 72L)]
-        [InlineData(HashFormat.SHA512_224, 68L)]
-        [InlineData(HashFormat.SHA512_256, 76L)]
-        [InlineData(HashFormat.SHA384, 104L)]
-        [InlineData(HashFormat.SHA512, 136L)]
-        [InlineData(HashFormat.CRC32, 15L)]
-        [InlineData(HashFormat.adler32, 17L)]
-        public async Task SetHashFormatTest(HashFormat hashFormat, long expectedLength)
+        [InlineData(Hash.MD5, 37L)]
+        [InlineData(Hash.murmur3, 41L)]
+        [InlineData(Hash.RIPEMD128, 43L)]
+        [InlineData(Hash.RIPEMD160, 51L)]
+        [InlineData(Hash.RIPEMD256, 75L)]
+        [InlineData(Hash.RIPEMD320, 91L)]
+        [InlineData(Hash.SHA160, 48L)]
+        [InlineData(Hash.SHA224, 64L)]
+        [InlineData(Hash.SHA256, 72L)]
+        [InlineData(Hash.SHA512_224, 68L)]
+        [InlineData(Hash.SHA512_256, 76L)]
+        [InlineData(Hash.SHA384, 104L)]
+        [InlineData(Hash.SHA512, 136L)]
+        [InlineData(Hash.CRC32, 15L)]
+        [InlineData(Hash.adler32, 17L)]
+        public async Task SetHashFormatTest(Hash hashFormat, long expectedLength)
         {
             string fileExtension = FileExtensions.Txt;
-            if (hashFormat == HashFormat.SHA256)
+            if (hashFormat == Hash.SHA256)
                 fileExtension = FileExtensions.Sha256;
 
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
