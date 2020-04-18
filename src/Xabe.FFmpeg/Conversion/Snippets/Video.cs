@@ -157,7 +157,7 @@ namespace Xabe.FFmpeg
         /// <param name="output">Concatenated inputVideos</param>
         /// <param name="inputVideos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        public static async Task<IConversionResult> Concatenate(string output, params string[] inputVideos)
+        public static IConversion Concatenate(string output, params string[] inputVideos)
         {
             if (inputVideos.Length <= 1)
             {
@@ -169,7 +169,7 @@ namespace Xabe.FFmpeg
             IConversion conversion = New();
             foreach (string inputVideo in inputVideos)
             {
-                IMediaInfo mediaInfo = await MediaInfo.Get(inputVideo);
+                IMediaInfo mediaInfo = MediaInfo.Get(inputVideo).GetAwaiter().GetResult();
 
                 mediaInfos.Add(mediaInfo);
                 conversion.AddParameter($"-i \"{inputVideo}\" ");
@@ -193,8 +193,7 @@ namespace Xabe.FFmpeg
 
             conversion.AddParameter($"concat=n={inputVideos.Length}:v=1:a=1 [v] [a]\" -map \"[v]\" -map \"[a]\"");
             conversion.AddParameter($"-aspect {maxResolutionMedia.Ratio}");
-            conversion.SetOutput(output);
-            return await conversion.Start();
+            return conversion.SetOutput(output);
         }
 
 

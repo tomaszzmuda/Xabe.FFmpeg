@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.Concatenate(output, firstFile, secondFile);
+            IConversionResult result = await Conversion.Concatenate(output, firstFile, secondFile).Start();
 
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(duration), mediaInfo.Duration);
