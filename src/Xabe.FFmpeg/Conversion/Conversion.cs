@@ -356,7 +356,7 @@ namespace Xabe.FFmpeg
                 SetInputFormat(Format.gdigrab);
                 SetFrameRate(frameRate);
                 AddParameter("-i desktop ", ParameterPosition.PreInput);
-                SetOutputPixelFormat(PixelFormat.yuv420p);
+                SetPixelFormat(PixelFormat.yuv420p);
                 AddParameter("-preset ultrafast");
                 return this;
             }
@@ -367,7 +367,7 @@ namespace Xabe.FFmpeg
                 SetInputFormat(Format.avfoundation);
                 SetFrameRate(frameRate);
                 AddParameter("-i 1:1 ", ParameterPosition.PreInput);
-                SetOutputPixelFormat(PixelFormat.yuv420p);
+                SetPixelFormat(PixelFormat.yuv420p);
                 AddParameter("-preset ultrafast");
                 return this;
             }
@@ -378,7 +378,7 @@ namespace Xabe.FFmpeg
                 SetInputFormat(Format.x11grab);
                 SetFrameRate(frameRate);
                 AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
-                SetOutputPixelFormat(PixelFormat.yuv420p);
+                SetPixelFormat(PixelFormat.yuv420p);
                 AddParameter("-preset ultrafast");
                 return this;
             }
@@ -640,10 +640,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetOutputPixelFormat(PixelFormat outputPixelFormat)
+        public IConversion SetPixelFormat(PixelFormat pixelFormat)
         {
-            string format = outputPixelFormat.ToString();
-            switch(outputPixelFormat)
+            string format = pixelFormat.ToString();
+            switch(pixelFormat)
             {
                 case PixelFormat._0bgr:
                     format = "0bgr";
@@ -652,14 +652,14 @@ namespace Xabe.FFmpeg
                     format = "0rgb";
                     break;
             }
-            return SetOutputPixelFormat(format);
+            return SetPixelFormat(format);
         }
 
         /// <inheritdoc />
-        public IConversion SetOutputPixelFormat(string outputPixelFormat)
+        public IConversion SetPixelFormat(string pixelFormat)
         {
-            if (outputPixelFormat != null)
-                _outputPixelFormat = $"-pix_fmt {outputPixelFormat} ";
+            if (pixelFormat != null)
+                _outputPixelFormat = $"-pix_fmt {pixelFormat} ";
             return this;
         }
     }

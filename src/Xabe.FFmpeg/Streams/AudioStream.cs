@@ -71,7 +71,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public StreamType StreamType { get; } = StreamType.Audio;
+        public StreamType StreamType => StreamType.Audio;
 
         /// <inheritdoc />
         public IAudioStream SetChannels(int channels)

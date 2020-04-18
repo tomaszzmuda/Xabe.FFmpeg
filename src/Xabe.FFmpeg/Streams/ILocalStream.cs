@@ -14,6 +14,11 @@ namespace Xabe.FFmpeg
         string Path { get; }
 
         /// <summary>
+        ///     Codec type
+        /// </summary>
+        StreamType StreamType { get; }
+
+        /// <summary>
         ///     Get part of media
         /// </summary>
         /// <param name="startTime">Start point</param>

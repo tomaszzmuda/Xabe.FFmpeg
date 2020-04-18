@@ -65,13 +65,13 @@ namespace Xabe.FFmpeg
         public string Path { get; internal set; }
 
         /// <inheritdoc />
-        public string PixelFormat { get; internal set; }
-
-        /// <inheritdoc />
         public int? Default { get; internal set; }
 
         /// <inheritdoc />
         public int? Forced { get; internal set; }
+
+        /// <inheritdoc />
+        public string PixelFormat { get; internal set; }
 
         /// <inheritdoc />
         public string Build()
@@ -122,7 +122,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public StreamType StreamType { get; } = StreamType.Video;
+        public StreamType StreamType => StreamType.Video;
 
         /// <inheritdoc />
         public long Bitrate { get; internal set; }
@@ -326,13 +326,6 @@ namespace Xabe.FFmpeg
                     break;
             }
             _videoFilters["overlay"] = argument;
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IVideoStream SetPixelFormat(PixelFormat pixelFormat)
-        {
-            PixelFormat = pixelFormat.ToString();
             return this;
         }
 

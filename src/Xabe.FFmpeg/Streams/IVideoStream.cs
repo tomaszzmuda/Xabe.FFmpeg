@@ -34,34 +34,29 @@ namespace Xabe.FFmpeg
         string Ratio { get; }
 
         /// <summary>
-        ///     Codec type
-        /// </summary>
-        StreamType StreamType { get; }
-
-        /// <summary>
         ///     Video bitrate
         /// </summary>
         long Bitrate { get; }
 
         /// <summary>
-        /// Pixel Format
-        /// </summary>
-        string PixelFormat { get; }
-
-        /// <summary>
-        /// Default
+        ///     Default
         /// </summary>
         int? Default { get; }
 
         /// <summary>
-        /// Forced
+        ///     Forced
         /// </summary>
         int? Forced { get; }
 
         /// <summary>
-        /// Video Codec
+        ///     Video Codec
         /// </summary>
         string Codec { get; }
+
+        /// <summary>
+        ///     Pixel Format
+        /// </summary>
+        string PixelFormat { get; }
 
         /// <summary>
         ///     Rotate video
@@ -148,13 +143,6 @@ namespace Xabe.FFmpeg
         /// <param name="codec">Video codec</param>
         /// <returns>IVideoStream</returns>
         IVideoStream SetCodec(string codec);
-
-        /// <summary>
-        ///     Set video pixel format
-        /// </summary>
-        /// <param name="pixelFormat">Pixel Format</param>
-        /// <returns>IVideoStream</returns>
-        IVideoStream SetPixelFormat(PixelFormat pixelFormat);
 
         /// <summary>
         ///     Set stream to copy with orginal codec

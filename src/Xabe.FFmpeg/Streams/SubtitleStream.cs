@@ -47,6 +47,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string Title { get; internal set; }
 
+        public StreamType StreamType => StreamType.Subtitle;
+
         /// <inheritdoc />
         public ISubtitleStream SetLanguage(string lang)
         {

@@ -57,8 +57,61 @@ namespace Xabe.FFmpeg.Test
                                                                  .Start();
 
 
-IMediaInfo resultFile = await MediaInfo.Get(output);
+            IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal(".ts", Path.GetExtension(resultFile.Path));
+        }
+
+        [Theory]
+        [InlineData(Format._3dostr, "3dostr")]
+        [InlineData(Format._3g2, "3g2")]
+        [InlineData(Format._3gp, "3gp")]
+        [InlineData(Format._4xm, "4xm")]
+        [InlineData(Format.matroska, "matroska")]
+        public async Task SetOutputFormat_ValuesFromEnum_CorrectParams(Format format, string expectedFormat)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+
+            string args = Conversion.New()
+                                            .AddStream(videoStream)
+                                            .SetOutputFormat(format)
+                                            .SetOutput(output)
+                                            .Build();
+
+            Assert.Contains($"-f {expectedFormat}", args);
+        }
+
+        [Fact]
+        public async Task SetOutputFormat_ValueAsString_CorrectParams()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+
+            string args = Conversion.New()
+                                            .AddStream(videoStream)
+                                            .SetOutputFormat("matroska")
+                                            .SetOutput(output)
+                                            .Build();
+
+            Assert.Contains($"-f matroska", args);
+        }
+
+        [Fact]
+        public async Task SetOutputFormat_NotExistingFormat_ThrowConversionException()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+
+            var exception = await Record.ExceptionAsync(async() => await Conversion.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetOutputFormat("notExisting")
+                                                                 .SetOutput(output)
+                                                                 .Start());
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
         }
 
         [Fact]
@@ -90,7 +143,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .SetOutputPixelFormat(PixelFormat.yuv420p)
+                                                                 .SetPixelFormat(PixelFormat.yuv420p)
                                                                  .SetOutput(output)
                                                                  .Start();
 
@@ -401,7 +454,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
                                                                  .SetInputFrameRate(1)
                                                                  .BuildVideoFromImages(1, inputBuilder)
                                                                  .SetFrameRate(1)
-                                                                 .SetOutputPixelFormat(PixelFormat.yuv420p)
+                                                                 .SetPixelFormat(PixelFormat.yuv420p)
                                                                  .SetOutput(output)
                                                                  .Start();
 
@@ -424,7 +477,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
             string args = Conversion.New()
-                                    .SetOutputPixelFormat(pixelFormat)
+                                    .SetPixelFormat(pixelFormat)
                                     .SetOutput(output)
                                     .Build();
 
@@ -437,7 +490,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
             string args = Conversion.New()
-                                    .SetOutputPixelFormat("testFormat")
+                                    .SetPixelFormat("testFormat")
                                     .SetOutput(output)
                                     .Build();
 
@@ -450,7 +503,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
             var exception = await Record.ExceptionAsync(async () => await Conversion.New()
-                                    .SetOutputPixelFormat("notExistingFormat")
+                                    .SetPixelFormat("notExistingFormat")
                                     .SetOutput(output)
                                     .Start());
 
@@ -469,7 +522,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
                                                                  .SetInputFrameRate(1)
                                                                  .BuildVideoFromImages(files)
                                                                  .SetFrameRate(1)
-                                                                 .SetOutputPixelFormat(PixelFormat.yuv420p)
+                                                                 .SetPixelFormat(PixelFormat.yuv420p)
                                                                  .SetOutput(output)
                                                                  .Start();
 
