@@ -415,6 +415,49 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
+        [Theory]
+        [InlineData(PixelFormat._0bgr, "0bgr")]
+        [InlineData(PixelFormat._0rgb, "0rgb")]
+        [InlineData(PixelFormat.yuv410p, "yuv410p")]
+        public void SetPixelFormat_DataFromEnum_CorrectArgs(PixelFormat pixelFormat, string expectedPixelFormat)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            string args = Conversion.New()
+                                    .SetOutputPixelFormat(pixelFormat)
+                                    .SetOutput(output)
+                                    .Build();
+
+            Assert.Contains($"-pix_fmt {expectedPixelFormat}", args);
+        }
+
+        [Fact]
+        public void SetPixelFormat_DataFromString_CorrectArgs()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            string args = Conversion.New()
+                                    .SetOutputPixelFormat("testFormat")
+                                    .SetOutput(output)
+                                    .Build();
+
+            Assert.Contains($"-pix_fmt testFormat", args);
+        }
+
+        [Fact]
+        public async Task SetPixelFormat_NotExistingFormat_ThrowConversionException()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            var exception = await Record.ExceptionAsync(async () => await Conversion.New()
+                                    .SetOutputPixelFormat("notExistingFormat")
+                                    .SetOutput(output)
+                                    .Start());
+
+            Assert.NotNull(exception);
+            Assert.IsType<ConversionException>(exception);
+        }
+
         [Fact]
         public async Task BuildVideoFromImagesListTest()
         {

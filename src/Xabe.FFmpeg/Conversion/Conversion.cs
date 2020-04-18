@@ -649,7 +649,7 @@ namespace Xabe.FFmpeg
                     format = "0bgr";
                     break;
                 case PixelFormat._0rgb:
-                    format = "0bgr";
+                    format = "0rgb";
                     break;
             }
             return SetOutputPixelFormat(format);

@@ -186,6 +186,14 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         IConversion SetOutputFormat(Format outputFormat);
 
+
+        /// <summary>
+        /// Sets the pixel format for the output file using the -pix_fmt option before the output file name
+        /// </summary>
+        /// <param name="pixelFormat">The output pixel format to set</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetOutputPixelFormat(string pixelFormat);
+
         /// <summary>
         /// Sets the pixel format for the output file using the -pix_fmt option before the output file name
         /// </summary>
