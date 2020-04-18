@@ -44,23 +44,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task SetInputFormatTest()
-        {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mpeg);
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
-            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
-
-            IConversionResult conversionResult = await Conversion.New()
-                                                                 .SetInputFormat(MediaFormat.Matroska)
-                                                                 .AddStream(videoStream)
-                                                                 .SetOutput(output)
-                                                                 .Start();
-
-IMediaInfo resultFile = await MediaInfo.Get(output);
-            Assert.Equal("mpeg4", resultFile.VideoStreams.First().Codec);
-        }
-
-        [Fact]
         public async Task SetOutputFormatTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
@@ -69,7 +52,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .SetOutputFormat(MediaFormat.Mpegts)
+                                                                 .SetOutputFormat(Format.mpegts)
                                                                  .SetOutput(output)
                                                                  .Start();
 
@@ -86,9 +69,9 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
             IConversionResult conversionResult = await Conversion.New()
-                                                                 .SetInputFormat(MediaFormat.Matroska)
+                                                                 .SetInputFormat(Format.matroska)
                                                                  .AddStream(videoStream)
-                                                                 .SetOutputFormat(MediaFormat.Avi)
+                                                                 .SetOutputFormat(Format.avi)
                                                                  .SetOutput(output)
                                                                  .Start();
 
@@ -146,7 +129,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .AddStream(audioStream)
-                                                                 .SetOutputFormat(MediaFormat.Hash)
+                                                                 .SetOutputFormat(Format.hash)
                                                                  .SetHashFormat(hashFormat)
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -171,7 +154,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
                                                                  .AddStream(audioStream)
-                                                                 .SetOutputFormat(MediaFormat.Hash)
+                                                                 .SetOutputFormat(Format.hash)
                                                                  .SetHashFormat("SHA512/224")
                                                                  .SetOutput(output)
                                                                  .Start();

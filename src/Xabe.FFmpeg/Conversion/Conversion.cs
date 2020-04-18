@@ -32,6 +32,8 @@ namespace Xabe.FFmpeg
         private int? _threadsCount;
         private string _inputTime;
         private string _outputTime;
+        private string _outputFormat;
+        private string _inputFormat;
 
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
@@ -49,7 +51,7 @@ namespace Xabe.FFmpeg
                     _buildOutputFileName = (number) => { return _output; };
 
                 builder.Append(_hardwareAcceleration);
-                builder.Append(BuildInputFormat());
+                builder.Append(_inputFormat);
                 builder.Append(_inputTime);
                 builder.Append(BuildParameters(ParameterPosition.PreInput));
 
@@ -72,7 +74,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
                 builder.Append(_outputTime);
                 builder.Append(BuildOutputPixelFormat());
-                builder.Append(BuildOutputFormat());
+                builder.Append(_outputFormat);
                 builder.Append(_hashFormat);
                 builder.Append(_buildOutputFileName("_%03d"));
 
@@ -91,12 +93,6 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public string OutputFilePath { get; private set; }
-
-        /// <inheritdoc />
-        public MediaFormat InputFormat { get; private set; }
-
-        /// <inheritdoc />
-        public MediaFormat OutputFormat { get; private set; }
 
         /// <inheritdoc />
         public PixelFormat OutputPixelFormat { get; private set; }
@@ -359,7 +355,7 @@ namespace Xabe.FFmpeg
             {
                 _capturing = true;
 
-                SetInputFormat(MediaFormat.GdiGrab);
+                SetInputFormat(Format.gdigrab);
                 SetFrameRate(frameRate);
                 AddParameter("-i desktop ", ParameterPosition.PreInput);
                 SetOutputPixelFormat(PixelFormat.Yuv420P);
@@ -370,7 +366,7 @@ namespace Xabe.FFmpeg
             {
                 _capturing = true;
 
-                SetInputFormat(MediaFormat.AVFoundation);
+                SetInputFormat(Format.avfoundation);
                 SetFrameRate(frameRate);
                 AddParameter("-i 1:1 ", ParameterPosition.PreInput);
                 SetOutputPixelFormat(PixelFormat.Yuv420P);
@@ -381,7 +377,7 @@ namespace Xabe.FFmpeg
             {
                 _capturing = true;
 
-                SetInputFormat(MediaFormat.X11Grab);
+                SetInputFormat(Format.x11grab);
                 SetFrameRate(frameRate);
                 AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
                 SetOutputPixelFormat(PixelFormat.Yuv420P);
@@ -532,22 +528,6 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        private string BuildInputFormat()
-        {
-            if (InputFormat != null)
-                return $"-f {InputFormat.ToString()} ";
-            else
-                return string.Empty;
-        }
-
-        private string BuildOutputFormat()
-        {
-            if (OutputFormat != null)
-                return $"-f {OutputFormat.ToString()} ";
-            else
-                return string.Empty;
-        }
-
         private string BuildOutputPixelFormat()
         {
             if (OutputPixelFormat != null)
@@ -609,18 +589,63 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <inheritdoc />
+        public IConversion SetInputFormat(Format inputFormat)
+        {
+            var format = inputFormat.ToString();
+            switch (inputFormat)
+            {
+                case Format._3dostr:
+                    format = "3dostr";
+                    break;
+                case Format._3g2:
+                    format = "3g2";
+                    break;
+                case Format._3gp:
+                    format = "3gp";
+                    break;
+                case Format._4xm:
+                    format = "4xm";
+                    break;
+            }
+            return SetInputFormat(format);
+        }
 
         /// <inheritdoc />
-        public IConversion SetInputFormat(MediaFormat inputFormat)
+        public IConversion SetInputFormat(string format)
         {
-            InputFormat = inputFormat;
+            if (format != null)
+                _inputFormat = $"-f {format} ";
             return this;
         }
 
         /// <inheritdoc />
-        public IConversion SetOutputFormat(MediaFormat outputFormat)
+        public IConversion SetOutputFormat(Format outputFormat)
         {
-            OutputFormat = outputFormat;
+            var format = outputFormat.ToString();
+            switch(outputFormat)
+            {
+                case Format._3dostr:
+                    format = "3dostr";
+                    break;
+                case Format._3g2:
+                    format = "3g2";
+                    break;
+                case Format._3gp:
+                    format = "3gp";
+                    break;
+                case Format._4xm:
+                    format = "4xm";
+                    break;
+            }
+            return SetOutputFormat(format);
+        }
+
+        /// <inheritdoc />
+        public IConversion SetOutputFormat(string format)
+        {
+            if (format != null)
+                _outputFormat = $"-f {format} ";
             return this;
         }
 

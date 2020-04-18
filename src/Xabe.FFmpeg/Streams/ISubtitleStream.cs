@@ -13,24 +13,17 @@
         /// <summary>
         /// Default
         /// </summary>
-        int? Default { get; set; }
+        int? Default { get; }
 
         /// <summary>
         /// Forced
         /// </summary>
-        int? Forced { get; set; }
+        int? Forced { get; }
 
         /// <summary>
         /// Title
         /// </summary>
-        string Title { get; set; }
-
-        /// <summary>
-        ///     Set subtitle format
-        /// </summary>
-        /// <param name="format">Subtitle format</param>
-        /// <returns>ISubtitleStream</returns>
-        ISubtitleStream SetFormat(SubtitleFormat format);
+        string Title { get; }
 
         /// <summary>
         ///     Set subtitle language

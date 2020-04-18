@@ -9,18 +9,7 @@ namespace Xabe.FFmpeg
     public class SubtitleStream : ISubtitleStream
     {
         private string _configuredLanguage;
-        private string _format;
         private string _split;
-
-        /// <inheritdoc />
-        public ISubtitleStream SetFormat(SubtitleFormat format)
-        {
-            if (!string.IsNullOrEmpty(format.Format))
-            {
-                _format = $"-f {format} ";
-            }
-            return this;
-        }
 
         /// <inheritdoc />
         public string Codec { get; internal set; }
@@ -32,7 +21,6 @@ namespace Xabe.FFmpeg
         public string Build()
         {
             var builder = new StringBuilder();
-            builder.Append(_format);
             builder.Append(_split);
             builder.Append(BuildLanguage());
             return builder.ToString();
@@ -51,13 +39,13 @@ namespace Xabe.FFmpeg
         public string Language { get; internal set; }
 
         /// <inheritdoc />
-        public int? Default { get; set; }
+        public int? Default { get; internal set; }
 
         /// <inheritdoc />
-        public int? Forced { get; set; }
+        public int? Forced { get; internal set; }
 
         /// <inheritdoc />
-        public string Title { get; set; }
+        public string Title { get; internal set; }
 
         /// <inheritdoc />
         public ISubtitleStream SetLanguage(string lang)
