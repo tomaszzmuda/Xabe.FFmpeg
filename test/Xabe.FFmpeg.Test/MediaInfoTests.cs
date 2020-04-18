@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -138,6 +139,27 @@ namespace Xabe.FFmpeg.Test
 
             Assert.NotNull(mediaInfo);
             Assert.Equal(FileExtensions.Mp4, Path.GetExtension(mediaInfo.Path));
+        }
+
+        [Fact]
+        public async Task RTSP_NotExistingStream_CancelledAfter30Seconds()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            var exception = await Record.ExceptionAsync(async () => await MediaInfo.Get(@"rtsp://192.168.1.123:554/"));
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
+        }
+
+        [Fact]
+        public async Task RTSP_NotExistingStream_CancelledAfter2Seconds()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            var cancellationTokenSource = new CancellationTokenSource(2000);
+            var exception = await Record.ExceptionAsync(async () => await MediaInfo.Get(@"rtsp://192.168.1.123:554/", cancellationTokenSource.Token));
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
     }
 }

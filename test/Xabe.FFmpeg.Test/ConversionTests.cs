@@ -680,26 +680,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task RTSP_NotExistingStream_CancelledSucesfully()
-        {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
-            var cancellationToken = new CancellationTokenSource();
-            var mediaInfo = await MediaInfo.Get(@"rtsp://192.168.1.123:554/");
-            var conversion = Conversion.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromMinutes(5)).SetOutput(output);
-            var conversionTask = conversion.Start(cancellationToken.Token);
-            cancellationToken.CancelAfter(2000);
-            await Task.Delay(500);
-            var ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
-            Assert.Contains(ffmpegProcesses, _ => _.Id == conversion.FFmpegProcessId && !_.HasExited);
-
-            await Assert.ThrowsAsync<OperationCanceledException>(async () => await conversionTask);
-
-            Assert.True(conversion.FFmpegProcessId > 0);
-            ffmpegProcesses = System.Diagnostics.Process.GetProcessesByName("ffmpeg");
-            Assert.DoesNotContain(ffmpegProcesses, _ => _.Id == conversion.FFmpegProcessId && !_.HasExited);
-        }
-
-        [Fact]
         public async Task Conversion_CancellationOccurs_ExeptionWasThrown()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);

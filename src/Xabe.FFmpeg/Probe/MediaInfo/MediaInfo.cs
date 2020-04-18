@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Exceptions;
 
@@ -43,9 +44,19 @@ namespace Xabe.FFmpeg
         /// <param name="filePath">FullPath to file</param>
         public static async Task<IMediaInfo> Get(string filePath)
         {
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+            return await MediaInfo.Get(filePath, cancellationToken);
+        }
+
+        /// <summary>
+        ///     Get MediaInfo from file
+        /// </summary>
+        /// <param name="filePath">FullPath to file</param>
+        public static async Task<IMediaInfo> Get(string filePath, CancellationToken cancellationToken)
+        {
             var mediaInfo = new MediaInfo(filePath);
             var wrapper = new FFprobeWrapper();
-            mediaInfo = await wrapper.SetProperties(mediaInfo);
+            mediaInfo = await wrapper.SetProperties(mediaInfo, cancellationToken);
             return mediaInfo;
         }
 

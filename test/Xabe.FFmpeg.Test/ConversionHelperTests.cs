@@ -335,18 +335,10 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
 
-            Task<IConversionResult> ConversionAction() => Conversion.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1))
-                                                                    .Start();
+            var exception = await Record.ExceptionAsync(async() => await Conversion.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1))
+                                                                    .Start());
 
-            if (success)
-            {
-                IConversionResult result = await ConversionAction();
-    
-            }
-            else
-            {
-                await Assert.ThrowsAsync<UriFormatException>(ConversionAction);
-            }
+            Assert.Equal(success, exception == null);
         }
 
         [Fact]
@@ -422,6 +414,24 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Equal(2, mediaInfo.AudioStreams.Count());
             Assert.Empty(mediaInfo.SubtitleStreams);
+        }
+
+        [Fact]
+        public async Task Rtsp_GotTwoStreams_SaveEverything()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            var mediaInfo = await MediaInfo.Get("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
+
+            var conversionResult = await Conversion.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
+
+
+            IMediaInfo result = await MediaInfo.Get(output);
+            Assert.Equal(TimeSpan.FromSeconds(9 * 60 + 56), mediaInfo.Duration);
+            Assert.Single(mediaInfo.VideoStreams);
+            Assert.Single(mediaInfo.AudioStreams);
+            Assert.Empty(mediaInfo.SubtitleStreams);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
+            Assert.Equal("aac", mediaInfo.AudioStreams.First().Codec);
         }
     }
 }

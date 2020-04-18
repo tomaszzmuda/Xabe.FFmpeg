@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
@@ -15,10 +16,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public Task<string> Start(string args)
+        public Task<string> Start(string args, CancellationToken cancellationToken = default)
         {
             var wrapper = new FFprobeWrapper();
-            return wrapper.Start(args);
+            return wrapper.Start(args, cancellationToken);
         }
     }
 }

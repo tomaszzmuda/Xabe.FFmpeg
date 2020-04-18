@@ -1745,7 +1745,6 @@
         ///<summary>
         yuv4mpegpipe,
         x11grab,
-        avfoundation,
-        m3u8,
+        avfoundation
     }
 }

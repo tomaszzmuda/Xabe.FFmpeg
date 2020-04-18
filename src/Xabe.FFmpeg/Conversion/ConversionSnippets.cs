@@ -330,7 +330,6 @@ namespace Xabe.FFmpeg
             return New()
                 .AddStream(mediaInfo.Streams)
                 .SetInputTime(duration)
-                .SetInputFormat(Format.m3u8)
                 .SetOutput(outputPath);
         }
 

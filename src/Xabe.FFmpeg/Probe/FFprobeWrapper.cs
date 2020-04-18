@@ -14,10 +14,10 @@ namespace Xabe.FFmpeg
     // ReSharper disable once InheritdocConsiderUsage
     internal sealed class FFprobeWrapper : FFmpeg
     {
-        private async Task<ProbeModel.Stream[]> GetStreams(string videoPath)
+        private async Task<ProbeModel.Stream[]> GetStreams(string videoPath, CancellationToken cancellationToken)
         {
             ProbeModel probe = null;
-            string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
+            string stringResult = await Start($"-v panic -print_format json -show_streams \"{videoPath}\"", cancellationToken);
             if (string.IsNullOrEmpty(stringResult))
             {
                 return new ProbeModel.Stream[0];
@@ -42,9 +42,9 @@ namespace Xabe.FFmpeg
             return width / cd + ":" + height / cd;
         }
 
-        private async Task<FormatModel.Format> GetFormat(string videoPath)
+        private async Task<FormatModel.Format> GetFormat(string videoPath, CancellationToken cancellationToken)
         {
-            string stringResult = await Start($"-v quiet -print_format json -show_entries format=size,duration,bit_rate  \"{videoPath}\"");
+            string stringResult = await Start($"-v panic -print_format json -show_entries format=size,duration,bit_rate \"{videoPath}\"", cancellationToken);
             var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult);
             return root.format;
         }
@@ -82,17 +82,32 @@ namespace Xabe.FFmpeg
             return width == 0 ? height : width;
         }
 
-        public Task<string> Start(string args)
+        public Task<string> Start(string args, CancellationToken cancellationToken)
         {
-            return RunProcess(args);
+            return RunProcess(args, cancellationToken);
         }
 
-        private Task<string> RunProcess(string args)
+        private Task<string> RunProcess(string args, CancellationToken cancellationToken)
         {
             return Task.Factory.StartNew(() =>
             {
                 using (Process process = RunProcess(args, FFprobePath, Priority, standardOutput: true))
                 {
+                    cancellationToken.Register(() =>
+                    {
+                        try
+                        {
+                            if (!process.HasExited)
+                            {
+                                process.CloseMainWindow();
+                                process.Kill();
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    });
                     while (!process.HasExited)
                     {
                         process.WaitForExit(10);
@@ -108,7 +123,7 @@ namespace Xabe.FFmpeg
                     return output;
                 }
             },
-            CancellationToken.None,
+            cancellationToken,
             TaskCreationOptions.LongRunning,
             TaskScheduler.Default);
         }
@@ -119,17 +134,20 @@ namespace Xabe.FFmpeg
         /// <param name="path">Media file info</param>
         /// <param name="mediaInfo">Empty media info</param>
         /// <returns>Properties</returns>
-        public async Task<MediaInfo> SetProperties(MediaInfo mediaInfo)
+        public async Task<MediaInfo> SetProperties(MediaInfo mediaInfo, CancellationToken cancellationToken)
         {
             var path = mediaInfo.Path;
-            ProbeModel.Stream[] streams = await GetStreams(path);
+            ProbeModel.Stream[] streams = await GetStreams(path, cancellationToken);
             if (!streams.Any())
             {
                 throw new ArgumentException($"Invalid file. Cannot load file {path}");
             }
 
-            FormatModel.Format format = await GetFormat(path);
-            mediaInfo.Size = long.Parse(format.size);
+            FormatModel.Format format = await GetFormat(path, cancellationToken);
+            if (format.size != null)
+            {
+                mediaInfo.Size = long.Parse(format.size);
+            }
 
             mediaInfo.VideoStreams = PrepareVideoStreams(path, streams.Where(x => x.codec_type == "video"), format);
             mediaInfo.AudioStreams = PrepareAudioStreams(path, streams.Where(x => x.codec_type == "audio"));
@@ -149,64 +167,52 @@ namespace Xabe.FFmpeg
 
         private IEnumerable<IAudioStream> PrepareAudioStreams(string path, IEnumerable<ProbeModel.Stream> audioStreamModels)
         {
-            foreach (ProbeModel.Stream model in audioStreamModels)
+            return audioStreamModels.Select(model => new AudioStream()
             {
-                var stream = new AudioStream
-                {
-                    Codec = model.codec_name,
-                    Duration = GetAudioDuration(model),
-                    Path = path,
-                    Index = model.index,
-                    Bitrate = Math.Abs(model.bit_rate),
-                    Channels = model.channels,
-                    SampleRate = model.sample_rate,
-                    Language = model.tags?.language,
-                    Default = model.disposition?._default,
-                    Forced = model.disposition?.forced,
-                };
-                yield return stream;
-            }
+                Codec = model.codec_name,
+                Duration = GetAudioDuration(model),
+                Path = path,
+                Index = model.index,
+                Bitrate = Math.Abs(model.bit_rate),
+                Channels = model.channels,
+                SampleRate = model.sample_rate,
+                Language = model.tags?.language,
+                Default = model.disposition?._default,
+                Forced = model.disposition?.forced,
+            });
         }
 
         private static IEnumerable<ISubtitleStream> PrepareSubtitleStreams(string path, IEnumerable<ProbeModel.Stream> subtitleStreamModels)
         {
-            foreach (ProbeModel.Stream model in subtitleStreamModels)
+            return subtitleStreamModels.Select(model => new SubtitleStream()
             {
-                var stream = new SubtitleStream
-                {
-                    Codec = model.codec_name,
-                    Path = path,
-                    Index = model.index,
-                    Language = model.tags?.language,
-                    Title = model.tags?.title,
-                    Default = model.disposition?._default,
-                    Forced = model.disposition?.forced,
-                };
-                yield return stream;
-            }
+                Codec = model.codec_name,
+                Path = path,
+                Index = model.index,
+                Language = model.tags?.language,
+                Title = model.tags?.title,
+                Default = model.disposition?._default,
+                Forced = model.disposition?.forced,
+            });
         }
 
         private IEnumerable<IVideoStream> PrepareVideoStreams(string path, IEnumerable<ProbeModel.Stream> videoStreamModels, FormatModel.Format format)
         {
-            foreach (ProbeModel.Stream model in videoStreamModels)
+            return videoStreamModels.Select(model => new VideoStream()
             {
-                var stream = new VideoStream
-                {
-                    Codec = model.codec_name,
-                    Duration = GetVideoDuration(model, format),
-                    Width = model.width,
-                    Height = model.height,
-                    Framerate = GetVideoFramerate(model),
-                    Ratio = GetVideoAspectRatio(model.width, model.height),
-                    Path = path,
-                    Index = model.index,
-                    Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate,
-                    PixelFormat = model.pix_fmt,
-                    Default = model.disposition?._default,
-                    Forced = model.disposition?.forced
-                };
-                yield return stream;
-            }
+                Codec = model.codec_name,
+                Duration = GetVideoDuration(model, format),
+                Width = model.width,
+                Height = model.height,
+                Framerate = GetVideoFramerate(model),
+                Ratio = GetVideoAspectRatio(model.width, model.height),
+                Path = path,
+                Index = model.index,
+                Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate,
+                PixelFormat = model.pix_fmt,
+                Default = model.disposition?._default,
+                Forced = model.disposition?.forced
+            });
         }
     }
 }
