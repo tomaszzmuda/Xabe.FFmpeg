@@ -177,6 +177,16 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public IConversion AddStream(IEnumerable<IStream> streams)
+        {
+            foreach (var stream in streams)
+            {
+                AddStream(stream);
+            }
+            return this;
+        }
+
+        /// <inheritdoc />
         public IConversion SetHashFormat(Hash hashFormat)
         {
             var format = hashFormat.ToString();

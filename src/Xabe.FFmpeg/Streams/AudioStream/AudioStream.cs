@@ -186,11 +186,6 @@ namespace Xabe.FFmpeg
             return this;
         }
 
-        void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)
-        {
-            Split(startTime, duration);
-        }
-
         /// <inheritdoc />
         public IEnumerable<IFilterConfiguration> GetFilters()
         {

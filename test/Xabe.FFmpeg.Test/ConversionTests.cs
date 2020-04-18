@@ -684,7 +684,8 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
             var cancellationToken = new CancellationTokenSource();
-            var conversion = Conversion.New().AddStream(new WebStream(new Uri(@"rtsp://192.168.1.123:554/"), "M3U8", TimeSpan.FromMinutes(5))).SetOutput(output);
+            var mediaInfo = await MediaInfo.Get(@"rtsp://192.168.1.123:554/");
+            var conversion = Conversion.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromMinutes(5)).SetOutput(output);
             var conversionTask = conversion.Start(cancellationToken.Token);
             cancellationToken.CancelAfter(2000);
             await Task.Delay(500);

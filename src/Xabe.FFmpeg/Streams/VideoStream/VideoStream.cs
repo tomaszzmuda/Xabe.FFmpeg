@@ -343,10 +343,5 @@ namespace Xabe.FFmpeg
                 return new[] { Path, _watermarkSource };
             return new[] { Path };
         }
-
-        void ILocalStream.Split(TimeSpan startTime, TimeSpan duration)
-        {
-            Split(startTime, duration);
-        }
     }
 }

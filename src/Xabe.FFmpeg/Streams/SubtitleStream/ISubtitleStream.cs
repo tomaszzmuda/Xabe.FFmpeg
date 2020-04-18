@@ -1,9 +1,11 @@
-﻿namespace Xabe.FFmpeg
+﻿using System;
+
+namespace Xabe.FFmpeg
 {
     /// <summary>
     ///     Subtitle stream
     /// </summary>
-    public interface ISubtitleStream : ILocalStream
+    public interface ISubtitleStream : IStream
     {
         /// <summary>
         ///     Subtitle language

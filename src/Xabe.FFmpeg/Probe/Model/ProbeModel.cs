@@ -1,5 +1,4 @@
-﻿// ReSharper disable InconsistentNaming
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Xabe.FFmpeg
 {

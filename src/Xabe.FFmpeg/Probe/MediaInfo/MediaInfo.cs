@@ -44,7 +44,8 @@ namespace Xabe.FFmpeg
         public static async Task<IMediaInfo> Get(string filePath)
         {
             var mediaInfo = new MediaInfo(filePath);
-            mediaInfo = await new FFprobeWrapper().SetProperties(mediaInfo);
+            var wrapper = new FFprobeWrapper();
+            mediaInfo = await wrapper.SetProperties(mediaInfo);
             return mediaInfo;
         }
 

@@ -238,13 +238,14 @@ namespace Xabe.FFmpeg
         {
             IMediaInfo info = AsyncHelper.RunSync(() => MediaInfo.Get(inputPath));
 
-            IStream[] streams = info.Streams.ToArray();
-            foreach (IStream stream in streams)
+            var streams = new List<IStream>();
+            foreach (IVideoStream stream in info.VideoStreams)
             {
-                if (stream is ILocalStream localStream)
-                {
-                    localStream.Split(startTime, duration);
-                }
+                streams.Add(stream.Split(startTime, duration));
+            }
+            foreach (IAudioStream stream in info.AudioStreams)
+            {
+                streams.Add(stream.Split(startTime, duration));
             }
 
             return New()
@@ -325,9 +326,11 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public static IConversion SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
         {
-            var stream = new WebStream(uri, "M3U8", duration);
+            var mediaInfo = AsyncHelper.RunSync(() => MediaInfo.Get(uri.ToString()));
             return New()
-                .AddStream(stream)
+                .AddStream(mediaInfo.Streams)
+                .SetInputTime(duration)
+                .SetInputFormat(Format.m3u8)
                 .SetOutput(outputPath);
         }
 

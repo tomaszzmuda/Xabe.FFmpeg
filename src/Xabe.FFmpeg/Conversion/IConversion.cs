@@ -299,6 +299,13 @@ namespace Xabe.FFmpeg
         IConversion AddStream<T>(params T[] streams) where T : IStream;
 
         /// <summary>
+        ///     Add streams to output file
+        /// </summary>
+        /// <param name="streams">Streams to add</param>
+        /// <returns>IConversion object</returns>
+        IConversion AddStream(IEnumerable<IStream> streams);
+
+        /// <summary>
         ///     Use hardware acceleration. This option set -threads to 1 for compatibility reasons. This should be use with proper codec (e.g. -c:v h264_nvenc or h264_cuvid)
         /// </summary>
         /// <param name="hardwareAccelerator">Hardware accelerator. List of all accelerators available for your system - "ffmpeg -hwaccels"</param>

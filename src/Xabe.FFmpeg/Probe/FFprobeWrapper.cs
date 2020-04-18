@@ -14,7 +14,7 @@ namespace Xabe.FFmpeg
     // ReSharper disable once InheritdocConsiderUsage
     internal sealed class FFprobeWrapper : FFmpeg
     {
-        private async Task<ProbeModel.Stream[]> GetStream(string videoPath)
+        private async Task<ProbeModel.Stream[]> GetStreams(string videoPath)
         {
             ProbeModel probe = null;
             string stringResult = await Start($"-v quiet -print_format json -show_streams \"{videoPath}\"");
@@ -122,7 +122,7 @@ namespace Xabe.FFmpeg
         public async Task<MediaInfo> SetProperties(MediaInfo mediaInfo)
         {
             var path = mediaInfo.Path;
-            ProbeModel.Stream[] streams = await GetStream(path);
+            ProbeModel.Stream[] streams = await GetStreams(path);
             if (!streams.Any())
             {
                 throw new ArgumentException($"Invalid file. Cannot load file {path}");
