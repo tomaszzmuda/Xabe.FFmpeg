@@ -8,7 +8,7 @@ namespace Xabe.FFmpeg
     /// <inheritdoc />
     public class SubtitleStream : ISubtitleStream
     {
-        private string _configuredLanguage;
+        private string _language;
         private string _split;
 
         /// <inheritdoc />
@@ -24,6 +24,11 @@ namespace Xabe.FFmpeg
             builder.Append(_split);
             builder.Append(BuildLanguage());
             return builder.ToString();
+        }
+
+        internal SubtitleStream()
+        {
+
         }
 
         /// <inheritdoc />
@@ -54,7 +59,7 @@ namespace Xabe.FFmpeg
         {
             if (!string.IsNullOrEmpty(lang))
             {
-                _configuredLanguage = lang;
+                _language = lang;
             }
             return this;
         }
@@ -67,18 +72,12 @@ namespace Xabe.FFmpeg
 
         private string BuildLanguage()
         {
-            string language = string.Empty;
-            language = !string.IsNullOrEmpty(_configuredLanguage) ? _configuredLanguage : Language;
+            string language = !string.IsNullOrEmpty(_language) ? _language : Language;
             if (!string.IsNullOrEmpty(language))
             {
                 language = $"-metadata:s:s:{Index} language={language} ";
             }
             return language;
-        }
-
-        private void Split(TimeSpan startTime, TimeSpan duration)
-        {
-            _split = $"-ss {startTime.ToFFmpeg()} -t {duration.ToFFmpeg()} ";
         }
     }
 }

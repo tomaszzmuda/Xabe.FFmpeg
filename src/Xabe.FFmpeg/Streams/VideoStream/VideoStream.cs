@@ -26,6 +26,11 @@ namespace Xabe.FFmpeg
         private string _flags;
         private string _codec;
 
+        internal VideoStream()
+        {
+
+        }
+
         /// <inheritdoc />
         public IEnumerable<IFilterConfiguration> GetFilters()
         {

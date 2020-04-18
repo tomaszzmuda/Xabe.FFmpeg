@@ -20,6 +20,11 @@ namespace Xabe.FFmpeg
         private string _bitrate;
         private string _codec;
 
+        internal AudioStream()
+        {
+
+        }
+
         /// <inheritdoc />
         public IAudioStream Reverse()
         {
