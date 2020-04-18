@@ -110,8 +110,18 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream ChangeSpeed(double multiplication)
         {
-            _audioFilters["atempo"] = $"{string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", MediaSpeedHelper.GetAudioSpeed(multiplication))}";
+            _audioFilters["atempo"] = $"{string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", GetAudioSpeed(multiplication))}";
             return this;
+        }
+
+        private string GetAudioSpeed(double multiplication)
+        {
+            if (multiplication < 0.5 || multiplication > 2.0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(multiplication), "Value has to be greater than 0.5 and less than 2.0.");
+            }
+
+            return $"{string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", multiplication)} ";
         }
 
         /// <inheritdoc />
