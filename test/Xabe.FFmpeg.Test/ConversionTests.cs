@@ -90,7 +90,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
 
             IConversionResult conversionResult = await Conversion.New()
                                                                  .AddStream(videoStream)
-                                                                 .SetOutputPixelFormat(PixelFormat.Yuv420P)
+                                                                 .SetOutputPixelFormat(PixelFormat.yuv420p)
                                                                  .SetOutput(output)
                                                                  .Start();
 
@@ -401,7 +401,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
                                                                  .SetInputFrameRate(1)
                                                                  .BuildVideoFromImages(1, inputBuilder)
                                                                  .SetFrameRate(1)
-                                                                 .SetOutputPixelFormat(PixelFormat.Yuv420P)
+                                                                 .SetOutputPixelFormat(PixelFormat.yuv420p)
                                                                  .SetOutput(output)
                                                                  .Start();
 
@@ -426,7 +426,7 @@ IMediaInfo resultFile = await MediaInfo.Get(output);
                                                                  .SetInputFrameRate(1)
                                                                  .BuildVideoFromImages(files)
                                                                  .SetFrameRate(1)
-                                                                 .SetOutputPixelFormat(PixelFormat.Yuv420P)
+                                                                 .SetOutputPixelFormat(PixelFormat.yuv420p)
                                                                  .SetOutput(output)
                                                                  .Start();
 

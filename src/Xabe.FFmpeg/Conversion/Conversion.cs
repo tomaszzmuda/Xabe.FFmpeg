@@ -34,6 +34,7 @@ namespace Xabe.FFmpeg
         private string _outputTime;
         private string _outputFormat;
         private string _inputFormat;
+        private string _outputPixelFormat;
 
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
@@ -73,7 +74,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildMap());
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
                 builder.Append(_outputTime);
-                builder.Append(BuildOutputPixelFormat());
+                builder.Append(_outputPixelFormat);
                 builder.Append(_outputFormat);
                 builder.Append(_hashFormat);
                 builder.Append(_buildOutputFileName("_%03d"));
@@ -93,9 +94,6 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public string OutputFilePath { get; private set; }
-
-        /// <inheritdoc />
-        public PixelFormat OutputPixelFormat { get; private set; }
 
         /// <inheritdoc />
         public Task<IConversionResult> Start()
@@ -358,7 +356,7 @@ namespace Xabe.FFmpeg
                 SetInputFormat(Format.gdigrab);
                 SetFrameRate(frameRate);
                 AddParameter("-i desktop ", ParameterPosition.PreInput);
-                SetOutputPixelFormat(PixelFormat.Yuv420P);
+                SetOutputPixelFormat(PixelFormat.yuv420p);
                 AddParameter("-preset ultrafast");
                 return this;
             }
@@ -369,7 +367,7 @@ namespace Xabe.FFmpeg
                 SetInputFormat(Format.avfoundation);
                 SetFrameRate(frameRate);
                 AddParameter("-i 1:1 ", ParameterPosition.PreInput);
-                SetOutputPixelFormat(PixelFormat.Yuv420P);
+                SetOutputPixelFormat(PixelFormat.yuv420p);
                 AddParameter("-preset ultrafast");
                 return this;
             }
@@ -380,7 +378,7 @@ namespace Xabe.FFmpeg
                 SetInputFormat(Format.x11grab);
                 SetFrameRate(frameRate);
                 AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
-                SetOutputPixelFormat(PixelFormat.Yuv420P);
+                SetOutputPixelFormat(PixelFormat.yuv420p);
                 AddParameter("-preset ultrafast");
                 return this;
             }
@@ -528,14 +526,6 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        private string BuildOutputPixelFormat()
-        {
-            if (OutputPixelFormat != null)
-                return $"-pix_fmt {OutputPixelFormat.ToString()} ";
-            else
-                return string.Empty;
-        }
-
         private bool HasH264Stream()
         {
             foreach (IStream stream in _streams)
@@ -652,7 +642,24 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetOutputPixelFormat(PixelFormat outputPixelFormat)
         {
-            OutputPixelFormat = outputPixelFormat;
+            string format = outputPixelFormat.ToString();
+            switch(outputPixelFormat)
+            {
+                case PixelFormat._0bgr:
+                    format = "0bgr";
+                    break;
+                case PixelFormat._0rgb:
+                    format = "0bgr";
+                    break;
+            }
+            return SetOutputPixelFormat(format);
+        }
+
+        /// <inheritdoc />
+        public IConversion SetOutputPixelFormat(string outputPixelFormat)
+        {
+            if (outputPixelFormat != null)
+                _outputPixelFormat = $"-pix_fmt {outputPixelFormat} ";
             return this;
         }
     }
