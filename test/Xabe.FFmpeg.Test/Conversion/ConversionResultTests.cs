@@ -12,7 +12,6 @@ namespace Xabe.FFmpeg.Test
     {
         [Theory]
         [InlineData(null)]
-        //[InlineData(ProcessPriorityClass.High)]
         [InlineData(ProcessPriorityClass.BelowNormal)]
         public async Task ConversionResultTest(ProcessPriorityClass? priority)
         {

@@ -10,106 +10,6 @@ namespace Xabe.FFmpeg
     public partial class Conversion
     {
         /// <summary>
-        ///     Convert file to MP4
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToMp4(string inputPath, string outputPath)
-        {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-
-            IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.h264);
-            IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.aac);
-
-            return New()
-                .AddStream(videoStream, audioStream)
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Convert file to TS
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToTs(string inputPath, string outputPath)
-        {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-
-            IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.mpeg2video);
-            IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.mp2);
-
-            return New()
-                .AddStream(videoStream, audioStream)
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Convert file to OGV
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToOgv(string inputPath, string outputPath)
-        {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-
-            IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.theora);
-            IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.libvorbis);
-
-            return New()
-                .AddStream(videoStream, audioStream)
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Convert file to WebM
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Destination file</param>
-        /// <returns>Conversion result</returns>
-        public static async Task<IConversion> ToWebM(string inputPath, string outputPath)
-        {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
-
-            IStream videoStream = info.VideoStreams.FirstOrDefault()
-                                      ?.SetCodec(VideoCodec.vp8);
-            IStream audioStream = info.AudioStreams.FirstOrDefault()
-                                      ?.SetCodec(AudioCodec.libvorbis);
-
-            return New()
-                .AddStream(videoStream, audioStream)
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Convert image video stream to gif
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Output path</param>
-        /// <param name="loop">Number of repeats</param>
-        /// <param name="delay">Delay between repeats (in seconds)</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ToGif(string inputPath, string outputPath, int loop, int delay = 0)
-        {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.SetLoop(loop, delay);
-
-            return New()
-                .AddStream(videoStream)
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
         ///     Melt watermark into video
         /// </summary>
         /// <param name="inputPath">Input video path</param>
@@ -144,24 +44,6 @@ namespace Xabe.FFmpeg
 
             return New()
                 .AddStream(videoStream)
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Extract audio from file
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Output video stream</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion ExtractAudio(string inputPath, string outputPath)
-        {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-
-            IAudioStream audioStream = info.AudioStreams.FirstOrDefault();
-
-            return New()
-                .AddStream(audioStream)
-                .SetAudioBitrate(audioStream.Bitrate)
                 .SetOutput(outputPath);
         }
 
@@ -254,70 +136,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Add audio stream to video file
-        /// </summary>
-        /// <param name="videoPath">Video</param>
-        /// <param name="audioPath">Audio</param>
-        /// <param name="outputPath">Output file</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion AddAudio(string videoPath, string audioPath, string outputPath)
-        {
-            IMediaInfo videoInfo = MediaInfo.Get(videoPath).GetAwaiter().GetResult();
-
-            IMediaInfo audioInfo = MediaInfo.Get(audioPath).GetAwaiter().GetResult();
-
-            return New()
-                .AddStream(videoInfo.VideoStreams.FirstOrDefault())
-                .AddStream(audioInfo.AudioStreams.FirstOrDefault())
-                .AddStream(videoInfo.SubtitleStreams.ToArray())
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Add subtitles to video stream
-        /// </summary>
-        /// <param name="inputPath">Video</param>
-        /// <param name="outputPath">Output file</param>
-        /// <param name="subtitlesPath">Subtitles</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
-        {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-
-            IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
-                                           ?.AddSubtitles(subtitlesPath);
-
-            return New()
-                .AddStream(videoStream)
-                .AddStream(info.AudioStreams.FirstOrDefault())
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
-        ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
-        ///     SetSubtitles method.
-        /// </summary>
-        /// <param name="inputPath">Input path</param>
-        /// <param name="outputPath">Output path</param>
-        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
-        /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
-        /// <returns>Conversion result</returns>
-        public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
-        {
-            IMediaInfo mediaInfo = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-            IMediaInfo subtitleInfo = MediaInfo.Get(subtitlePath).GetAwaiter().GetResult();
-
-            ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
-                                                         .SetLanguage(language);
-
-            return New()
-                .AddStream(mediaInfo.VideoStreams.ToArray())
-                .AddStream(mediaInfo.AudioStreams.ToArray())
-                .AddStream(subtitleStream)
-                .SetOutput(outputPath);
-        }
-
-        /// <summary>
         /// Save M3U8 stream
         /// </summary>
         /// <param name="uri">Uri to stream</param>
@@ -398,23 +216,6 @@ namespace Xabe.FFmpeg
                     conversion.AddStream(stream);
             }
 
-            return conversion;
-        }
-
-        /// <summary>
-        ///     Convert one file to another with destination format using hardware acceleration (if possible). Using cuvid. Works only on Windows/Linux with NVidia GPU.
-        /// </summary>
-        /// <param name="inputFilePath">Path to file</param>
-        /// <param name="outputFilePath">Path to file</param>
-        /// <param name="hardwareAccelerator">Hardware accelerator. List of all acceclerators available for your system - "ffmpeg -hwaccels"</param>
-        /// <param name="decoder">Codec using to decoding input video (e.g. h264_cuvid)</param>
-        /// <param name="encoder">Codec using to encode output video (e.g. h264_nvenc)</param>
-        /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
-        /// <returns>IConversion object</returns>
-        public static IConversion ConvertWithHardware(string inputFilePath, string outputFilePath, HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
-        {
-            var conversion = Convert(inputFilePath, outputFilePath);
-            conversion.UseHardwareAcceleration(hardwareAccelerator, decoder, encoder, device);
             return conversion;
         }
     }

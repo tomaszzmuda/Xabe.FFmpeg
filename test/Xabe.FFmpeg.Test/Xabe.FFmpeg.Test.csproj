@@ -27,4 +27,8 @@
     <ProjectReference Include="..\..\src\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
