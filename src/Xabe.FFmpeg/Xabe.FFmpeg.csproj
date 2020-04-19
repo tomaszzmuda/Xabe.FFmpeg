@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <DebugType>full</DebugType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Xabe.FFmpeg</AssemblyName>
