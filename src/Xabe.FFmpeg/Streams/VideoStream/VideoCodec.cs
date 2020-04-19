@@ -136,7 +136,7 @@
         bethsoftvid,
 
         ///<summary>
-        ///      Brute Force & Ignorance
+        ///      Brute Force and Ignorance
         ///</summary>
         bfi,
 
@@ -1219,8 +1219,20 @@
         ///      copy
         ///</summary>
         copy,
+
+        ///<summary>
+        ///      h264_nvenc
+        ///</summary>
         h264_nvenc,
+
+        ///<summary>
+        ///      h264_cuvid
+        ///</summary>
         h264_cuvid,
+
+        ///<summary>
+        ///      libx264
+        ///</summary>
         libx264
     }
 }

@@ -13,11 +13,6 @@ namespace Xabe.FFmpeg
         TimeSpan Duration { get; }
 
         /// <summary>
-        ///     Codec type
-        /// </summary>
-        StreamType StreamType { get; }
-
-        /// <summary>
         ///     Bitrate
         /// </summary>
         long Bitrate { get; }

@@ -13,6 +13,7 @@ namespace Xabe.FFmpeg.Exceptions
         ///     The exception that is thrown when a FFmpeg process cannot find suitable output format.
         /// </summary>
         /// <param name="errorMessage">FFmpeg error output</param>
+        /// <param name="inputParameters">FFmpeg input parameters</param>
         internal FFmpegNoSuitableOutputFormatFoundException(string errorMessage, string inputParameters) : base(errorMessage, inputParameters)
         {
         }

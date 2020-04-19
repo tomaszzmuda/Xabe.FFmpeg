@@ -894,7 +894,15 @@
         ///     Xbox Media Audio 2
         ///</summary>
         xma2,
+
+        ///<summary>
+        ///     libvorbis
+        ///</summary>
         libvorbis,
+
+        ///<summary>
+        ///     copy
+        ///</summary>
         copy
     }
 }

@@ -131,7 +131,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Get proporties prom media file
         /// </summary>
-        /// <param name="path">Media file info</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         /// <param name="mediaInfo">Empty media info</param>
         /// <returns>Properties</returns>
         public async Task<MediaInfo> SetProperties(MediaInfo mediaInfo, CancellationToken cancellationToken)

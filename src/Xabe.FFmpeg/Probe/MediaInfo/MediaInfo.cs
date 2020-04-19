@@ -52,6 +52,7 @@ namespace Xabe.FFmpeg
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
+        /// <param name="cancellationToken">Cancellation token</param>
         public static async Task<IMediaInfo> Get(string filePath, CancellationToken cancellationToken)
         {
             var mediaInfo = new MediaInfo(filePath);

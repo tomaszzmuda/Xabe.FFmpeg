@@ -9,7 +9,6 @@ namespace Xabe.FFmpeg
     public class SubtitleStream : ISubtitleStream
     {
         private string _language;
-        private string _split;
 
         /// <inheritdoc />
         public string Codec { get; internal set; }
@@ -21,7 +20,6 @@ namespace Xabe.FFmpeg
         public string Build()
         {
             var builder = new StringBuilder();
-            builder.Append(_split);
             builder.Append(BuildLanguage());
             return builder.ToString();
         }
@@ -52,6 +50,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string Title { get; internal set; }
 
+        /// <inheritdoc />
         public StreamType StreamType => StreamType.Subtitle;
 
         /// <inheritdoc />

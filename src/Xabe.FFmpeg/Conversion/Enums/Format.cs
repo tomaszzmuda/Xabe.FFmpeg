@@ -226,7 +226,7 @@
         bethsoftvid,
 
         ///<summary>
-        ///     Brute Force & Ignorance
+        ///     Brute Force and Ignorance
         ///</summary>
         bfi,
 
@@ -1744,7 +1744,15 @@
         ///     YUV4MPEG pipe
         ///</summary>
         yuv4mpegpipe,
+
+        ///<summary>
+        ///     x11grab
+        ///</summary>
         x11grab,
+
+        ///<summary>
+        ///         avfoundation
+        ///</summary>
         avfoundation
     }
 }
