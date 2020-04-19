@@ -5,10 +5,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Xabe.FFmpeg.Downloader</AssemblyName>
     <RootNamespace>Xabe.FFmpeg.Downloader</RootNamespace>
-    <Authors>Tomasz Żmuda</Authors>
+    <Authors>Xabe</Authors>
     <Company>Xabe Tomasz Żmuda</Company>
     <Description>FFmpeg assemly downloader. Download ffmpeg binary data on Windows, Mac or Linux.</Description>
-    <Copyright>Copyright 2017-2018 (c) Xabe Tomasz Zmuda.</Copyright>
+    <Copyright>Copyright 2017-2020 (c) Xabe Tomasz Zmuda.</Copyright>
     <PackageLicenseUrl>https://xabe.net/product/xabe_ffmpeg/#license</PackageLicenseUrl>
     <PackageProjectUrl>https://xabe.net/product/xabe_ffmpeg/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>

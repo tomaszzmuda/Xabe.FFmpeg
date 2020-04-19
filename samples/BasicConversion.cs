@@ -18,7 +18,7 @@ namespace MyVideosConverter
             //Set directory where app should look for FFmpeg executables.
             FFmpeg.ExecutablesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg");
             //Get latest version of FFmpeg. It's great idea if you don't know if you had installed FFmpe1g.
-            await FFmpeg.GetLatestVersion(FFmpegVersion.Official);
+            await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
 
             //Run conversion
             await RunConversion(fileToConvert);

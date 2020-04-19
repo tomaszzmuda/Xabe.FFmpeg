@@ -20,7 +20,7 @@ namespace MyVideosConverter
             //Set directory where app should look for FFmpeg executables.
             FFmpeg.ExecutablesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg");
             //Get latest version of FFmpeg. It's great idea if you don't know if you had installed FFmpe1g.
-            await FFmpeg.GetLatestVersion(FFmpegVersion.Official);
+            await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
 
             //Run conversion
             await RunConversion(filesToConvert);
@@ -46,7 +46,7 @@ namespace MyVideosConverter
                     //Set size to 480p
                     .SetSize(VideoSize.Hd480)
                     //Set codec which will be used to encode file. If not set it's set automatically according to output file extension
-                    .SetCodec(VideoCodec.H264);
+                    .SetCodec(VideoCodec.h264);
 
                 var conversion = Conversion.Convert(fileToConvert.FullName, outputFileName)
                     //Set output file path
