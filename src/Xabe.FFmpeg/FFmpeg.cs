@@ -8,7 +8,7 @@ using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {
-    /// <inheritdoc /> 
+    /// <summary> 
     ///     Wrapper for FFmpeg
     /// </summary>
     public abstract class FFmpeg

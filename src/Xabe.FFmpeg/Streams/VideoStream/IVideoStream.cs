@@ -49,11 +49,6 @@ namespace Xabe.FFmpeg
         int? Forced { get; }
 
         /// <summary>
-        ///     Video Codec
-        /// </summary>
-        string Codec { get; }
-
-        /// <summary>
         ///     Pixel Format
         /// </summary>
         string PixelFormat { get; }
@@ -213,7 +208,7 @@ namespace Xabe.FFmpeg
         /// <param name="startTime">Start point</param>
         /// <param name="duration">Duration of new video</param>
         /// <returns>IVideoStream</returns>
-        new IVideoStream Split(TimeSpan startTime, TimeSpan duration);
+        IVideoStream Split(TimeSpan startTime, TimeSpan duration);
 
         /// <summary>
         ///     Set filter

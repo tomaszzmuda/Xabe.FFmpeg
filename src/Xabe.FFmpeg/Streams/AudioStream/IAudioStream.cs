@@ -48,11 +48,6 @@ namespace Xabe.FFmpeg
         int? Forced { get; }
 
         /// <summary>
-        /// Audio Codec
-        /// </summary>
-        string Codec { get; }
-
-        /// <summary>
         ///     Set stream to copy with orginal codec
         /// </summary>
         /// <returns>IAudioStream</returns>
@@ -120,7 +115,7 @@ namespace Xabe.FFmpeg
         /// <param name="startTime">Start point</param>
         /// <param name="duration">Duration of new audio</param>
         /// <returns>IAudioStream</returns>
-        new IAudioStream Split(TimeSpan startTime, TimeSpan duration);
+        IAudioStream Split(TimeSpan startTime, TimeSpan duration);
 
         /// <summary>
         ///     Seeks in input file to position. (-ss argument)
