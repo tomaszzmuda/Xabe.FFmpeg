@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), ".mp4");
 
-            IConversionResult result = await Conversion.ToMp4(Resources.FlvWithAudio, outputPath)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToMp4(Resources.FlvWithAudio, outputPath))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .SetPriority(priority)
                                              .Start();

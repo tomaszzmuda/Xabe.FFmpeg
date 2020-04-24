@@ -11,28 +11,15 @@ namespace Xabe.FFmpeg
     /// <summary> 
     ///     Wrapper for FFmpeg
     /// </summary>
-    public abstract class FFmpeg
+    public abstract partial class FFmpeg
     {
         private static string _ffmpegPath;
         private static string _ffprobePath;
 
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
-
-        /// <summary>
-        ///     Directory containing FFmpeg and FFprobe
-        /// </summary>
-        public static string ExecutablesPath { get; set; }
-
-        /// <summary>
-        ///     Name of FFmpeg executable name (Case insensitive)
-        /// </summary>
-        public static string FFmpegExecutableName { get; set; } = "ffmpeg";
-
-        /// <summary>
-        ///     Name of FFprobe executable name (Case insensitive)
-        /// </summary>
-        public static string FFprobeExecutableName { get; set; } = "ffprobe";
+        private static string _ffmpegExecutableName = "ffmpeg";
+        private static string _ffprobeExecutableName = "ffprobe";
 
         /// <summary>
         ///     Initalize new FFmpeg. Search FFmpeg and FFprobe in PATH
@@ -53,12 +40,12 @@ namespace Xabe.FFmpeg
             if (!string.IsNullOrWhiteSpace(ExecutablesPath))
             {
                 FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                          .FirstOrDefault(x => x.Name.ToLower()
-                                                                                .Contains(FFprobeExecutableName.ToLower()))
+                                                          .First(x => x.Name.ToLower()
+                                                                                .Contains(_ffprobeExecutableName.ToLower()))
                                                           .FullName;
                 FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                         .FirstOrDefault(x => x.Name.ToLower()
-                                                                               .Contains(FFmpegExecutableName.ToLower()))
+                                                         .First(x => x.Name.ToLower()
+                                                                               .Contains(_ffmpegExecutableName.ToLower()))
                                                          .FullName;
                 ValidateExecutables();
                 return;
@@ -163,8 +150,8 @@ namespace Xabe.FFmpeg
 
             IEnumerable<FileInfo> files = new DirectoryInfo(path).GetFiles();
 
-            FFprobePath = GetFullName(files, FFprobeExecutableName);
-            FFmpegPath = GetFullName(files, FFmpegExecutableName);
+            FFprobePath = GetFullName(files, _ffprobeExecutableName);
+            FFmpegPath = GetFullName(files, _ffmpegExecutableName);
         }
 
         internal static string GetFullName(IEnumerable<FileInfo> files, string fileName)

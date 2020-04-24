@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.Concatenate(output, firstFile, secondFile).Start();
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Concatenate(output, firstFile, secondFile)).Start();
 
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
             Assert.Equal(TimeSpan.FromSeconds(duration), mediaInfo.Duration);
@@ -40,7 +40,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             string input = Resources.MkvWithAudio;
 
-            IConversionResult result = await Conversion.ChangeSize(input, output, 640, 360)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ChangeSize(input, output, 640, 360))
                                              .Start();
 
 
@@ -57,7 +57,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(Resources.Mp4WithAudio));
 
-            IConversionResult result = await Conversion.ExtractVideo(Resources.Mp4WithAudio, output)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ExtractVideo(Resources.Mp4WithAudio, output))
                                              .Start();
 
 
@@ -73,7 +73,7 @@ namespace Xabe.FFmpeg.Test
         public async Task SnapshotInvalidArgumentTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
-            await Assert.ThrowsAsync<ArgumentException>(async () => await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(999))
+            await Assert.ThrowsAsync<ArgumentException>(async () => await (await FFmpeg.Conversions.FromSnippet.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(999)))
                                                                                     .Start());
         }
 
@@ -83,7 +83,7 @@ namespace Xabe.FFmpeg.Test
         public async Task SnapshotTest(string extension, long expectedLength)
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + extension);
-            IConversionResult result = await Conversion.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0))
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0)))
                                              .Start();
 
 
@@ -95,7 +95,7 @@ namespace Xabe.FFmpeg.Test
         public async Task SplitVideoTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-            IConversionResult result = await Conversion.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8))
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8)))
                                              .Start();
 
 
@@ -117,7 +117,7 @@ namespace Xabe.FFmpeg.Test
         public async Task WatermarkTest()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-            IConversionResult result = await Conversion.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center))
                                              .Start();
 
 
@@ -136,12 +136,12 @@ namespace Xabe.FFmpeg.Test
 
         [Theory]
         [InlineData("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", true)]
-        [InlineData("www.bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", false)]
+        [InlineData("http://www.bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", false)]
         public async Task SaveM3U8Stream(string input, bool success)
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
 
-            var exception = await Record.ExceptionAsync(async() => await Conversion.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1))
+            var exception = await Record.ExceptionAsync(async() => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1)))
                                                                     .Start());
 
             Assert.Equal(success, exception == null);
@@ -152,7 +152,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.Convert(Resources.MkvWithSubtitles, output).Start();
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
 
 
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
@@ -173,7 +173,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.Convert(Resources.MultipleStream, output).Start();
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MultipleStream, output)).Start();
 
 
             IMediaInfo mediaInfo = await MediaInfo.Get(output);

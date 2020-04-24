@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
@@ -16,11 +17,11 @@ namespace Xabe.FFmpeg
         /// <param name="encoder">Codec using to encode output video (e.g. h264_nvenc)</param>
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
         /// <returns>IConversion object</returns>
-        public static IConversion ConvertWithHardware(string inputFilePath, string outputFilePath, HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static async Task<IConversion> ConvertWithHardware(string inputFilePath, string outputFilePath, HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
         {
-            var conversion = Convert(inputFilePath, outputFilePath);
-            conversion.UseHardwareAcceleration(hardwareAccelerator, decoder, encoder, device);
-            return conversion;
+            var conversion = await Convert(inputFilePath, outputFilePath);
+            return conversion.UseHardwareAcceleration(hardwareAccelerator, decoder, encoder, device);
         }
     }
 }

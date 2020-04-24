@@ -13,14 +13,14 @@ namespace Xabe.FFmpeg.Test
         [Theory]
         [InlineData(true)]
         [InlineData(false)]
-        public void QueueTest(bool parallel)
+        public async Task QueueTest(bool parallel)
         {
             var queue = new ConversionQueue(parallel);
 
             for (var i = 0; i < 2; i++)
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-                IConversion conversion = Conversion.ToTs(Resources.Mp4, output);
+                IConversion conversion = await FFmpeg.Conversions.FromSnippet.ToTs(Resources.Mp4, output);
                 queue.Add(conversion);
             }
 
@@ -50,7 +50,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public void QueueExceptionTest()
+        public async Task QueueExceptionTest()
         {
             var queue = new ConversionQueue();
             var exceptionOccures = false;
@@ -59,7 +59,7 @@ namespace Xabe.FFmpeg.Test
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
-                IConversion conversion = Conversion.ToMp4(Resources.MkvWithAudio, output);
+                IConversion conversion = await FFmpeg.Conversions.FromSnippet.ToMp4(Resources.MkvWithAudio, output);
                 queue.Add(conversion);
             }
 
@@ -75,7 +75,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public void QueueNumberIncrementExceptionTest()
+        public async Task QueueNumberIncrementExceptionTest()
         {
             var queue = new ConversionQueue();
             var currentItemNumber = 0;
@@ -85,7 +85,7 @@ namespace Xabe.FFmpeg.Test
             {
                 string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
                 File.Create(output);
-                IConversion conversion = Conversion.ToMp4(Resources.MkvWithAudio, output);
+                IConversion conversion = await FFmpeg.Conversions.FromSnippet.ToMp4(Resources.MkvWithAudio, output);
                 queue.Add(conversion);
             }
 

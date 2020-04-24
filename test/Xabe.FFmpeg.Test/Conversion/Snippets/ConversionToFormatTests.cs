@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
 
-            IConversionResult result = await Conversion.ToGif(Resources.Mp4, output, loopCount, delay)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToGif(Resources.Mp4, output, loopCount, delay))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
@@ -45,7 +45,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.ToMp4(Resources.MkvWithAudio, output)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToMp4(Resources.MkvWithAudio, output))
                                           .Start();
 
 
@@ -66,7 +66,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ogv);
 
-            IConversionResult result = await Conversion.ToOgv(Resources.MkvWithAudio, output)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToOgv(Resources.MkvWithAudio, output))
                                              .Start();
 
 
@@ -87,7 +87,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
 
-            IConversionResult result = await Conversion.ToTs(Resources.Mp4WithAudio, output)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToTs(Resources.Mp4WithAudio, output))
                                              .Start();
 
 
@@ -130,7 +130,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
+            IConversionResult result = await (await Conversion.Convert(Resources.MkvWithAudio, output)).Start();
 
 
             IMediaInfo mediaInfo = await MediaInfo.Get(output);

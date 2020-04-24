@@ -24,8 +24,8 @@ namespace Xabe.FFmpeg.Test
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
             try
-            {
-                FFmpeg.ExecutablesPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N"));
+            { 
+                FFmpeg.SetExecutablesPath(Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N")));
 
                 string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
                 string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
@@ -77,7 +77,7 @@ namespace Xabe.FFmpeg.Test
             }
             finally
             {
-                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+                FFmpeg.SetExecutablesPath(ffmpegExecutablesPath);
             }
         }
 
@@ -100,7 +100,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.ExecutablesPath = "assemblies";
+                FFmpeg.SetExecutablesPath("assemblies");
                 if (Directory.Exists("assemblies"))
                 {
                     Directory.Delete("assemblies", true);
@@ -113,7 +113,7 @@ namespace Xabe.FFmpeg.Test
             }
             finally
             {
-                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+                FFmpeg.SetExecutablesPath(ffmpegExecutablesPath);
             }
         }
 
@@ -130,7 +130,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.ExecutablesPath = "assemblies";
+                FFmpeg.SetExecutablesPath("assemblies");
                 if (Directory.Exists("assemblies"))
                 {
                     Directory.Delete("assemblies", true);
@@ -144,7 +144,7 @@ namespace Xabe.FFmpeg.Test
             }
             finally
             {
-                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+                FFmpeg.SetExecutablesPath(ffmpegExecutablesPath);
             }
         }
 
@@ -166,7 +166,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.ExecutablesPath = "assemblies";
+                FFmpeg.SetExecutablesPath("assemblies");
                 if (Directory.Exists("assemblies"))
                 {
                     Directory.Delete("assemblies", true);
@@ -175,7 +175,7 @@ namespace Xabe.FFmpeg.Test
             }
             finally
             {
-                FFmpeg.ExecutablesPath = ffmpegExecutablesPath;
+                FFmpeg.SetExecutablesPath(ffmpegExecutablesPath);
             }
         }
     }

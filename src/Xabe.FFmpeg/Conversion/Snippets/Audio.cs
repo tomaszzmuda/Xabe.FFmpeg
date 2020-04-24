@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
@@ -13,9 +14,10 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output video stream</param>
         /// <returns>Conversion result</returns>
-        public static IConversion ExtractAudio(string inputPath, string outputPath)
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static async Task<IConversion> ExtractAudio(string inputPath, string outputPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IAudioStream audioStream = info.AudioStreams.FirstOrDefault();
 
@@ -32,11 +34,12 @@ namespace Xabe.FFmpeg
         /// <param name="audioPath">Audio</param>
         /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
-        public static IConversion AddAudio(string videoPath, string audioPath, string outputPath)
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static async Task<IConversion> AddAudio(string videoPath, string audioPath, string outputPath)
         {
-            IMediaInfo videoInfo = MediaInfo.Get(videoPath).GetAwaiter().GetResult();
+            IMediaInfo videoInfo = await MediaInfo.Get(videoPath);
 
-            IMediaInfo audioInfo = MediaInfo.Get(audioPath).GetAwaiter().GetResult();
+            IMediaInfo audioInfo = await MediaInfo.Get(audioPath);
 
             return New()
                 .AddStream(videoInfo.VideoStreams.FirstOrDefault())

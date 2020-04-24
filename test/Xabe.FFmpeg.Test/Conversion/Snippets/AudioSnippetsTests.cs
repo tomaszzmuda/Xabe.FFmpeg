@@ -13,7 +13,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
-            IConversionResult result = await Conversion.AddAudio(Resources.Mp4, Resources.Mp3, output)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddAudio(Resources.Mp4, Resources.Mp3, output))
                                              .Start();
 
             IMediaInfo mediaInfo = await MediaInfo.Get(output);
@@ -28,7 +28,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractAudio()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
-            IConversionResult result = await Conversion.ExtractAudio(Resources.Mp4WithAudio, output)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ExtractAudio(Resources.Mp4WithAudio, output))
                                              .Start();
 
 

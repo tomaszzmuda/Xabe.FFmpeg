@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
@@ -14,9 +15,10 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output file</param>
         /// <param name="subtitlesPath">Subtitles</param>
         /// <returns>Conversion result</returns>
-        public static IConversion AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static async Task<IConversion> AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await MediaInfo.Get(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.AddSubtitles(subtitlesPath);
@@ -36,10 +38,11 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
-        public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
         {
-            IMediaInfo mediaInfo = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-            IMediaInfo subtitleInfo = MediaInfo.Get(subtitlePath).GetAwaiter().GetResult();
+            IMediaInfo mediaInfo = await MediaInfo.Get(inputPath);
+            IMediaInfo subtitleInfo = await MediaInfo.Get(subtitlePath);
 
             ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
                                                          .SetLanguage(language);
