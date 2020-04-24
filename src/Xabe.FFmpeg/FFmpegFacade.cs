@@ -49,7 +49,7 @@ namespace Xabe.FFmpeg
         /// <param name="ffprobeExecutableName">Name of FFprobe executable name (Case insensitive)</param>
         public static void SetExecutablesPath(string directoryWithFFmpegAndFFprobe, string ffmpegExeutableName = "ffmpeg", string ffprobeExecutableName = "ffprobe")
         {
-            ExecutablesPath = new DirectoryInfo(directoryWithFFmpegAndFFprobe).FullName;
+            ExecutablesPath = directoryWithFFmpegAndFFprobe == null ? null : new DirectoryInfo(directoryWithFFmpegAndFFprobe).FullName;
             _ffmpegExecutableName = ffmpegExeutableName;
             _ffprobeExecutableName = ffprobeExecutableName;
         }
@@ -189,7 +189,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> BurnSubtitle(string inputPath, string outputPath, string subtitlesPath)
         {
-            return await Conversion.AddSubtitle(inputPath, outputPath, subtitlesPath);
+            return await Conversion.AddSubtitles(inputPath, outputPath, subtitlesPath);
         }
 
         /// <summary>

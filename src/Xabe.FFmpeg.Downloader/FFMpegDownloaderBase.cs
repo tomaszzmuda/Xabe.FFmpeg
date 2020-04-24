@@ -69,6 +69,7 @@ namespace Xabe.FFmpeg.Downloader
 
             using (var client = new HttpClient())
             {
+                client.Timeout = TimeSpan.FromMinutes(15);
                 using (var result = await client.GetAsync(url))
                 {
                     if (!result.IsSuccessStatusCode)
