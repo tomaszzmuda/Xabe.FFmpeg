@@ -37,12 +37,13 @@ namespace Xabe.FFmpeg
 
         internal Task<bool> RunProcess(
             string args,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            ProcessPriorityClass? priority)
         {
             return Task.Factory.StartNew(() =>
             {
                 _outputLog = new List<string>();
-                var process = RunProcess(args, FFmpegPath, Priority, true, true, true);
+                var process = RunProcess(args, FFmpegPath, priority, true, true, true);
                 using (process)
                 {
                     process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);

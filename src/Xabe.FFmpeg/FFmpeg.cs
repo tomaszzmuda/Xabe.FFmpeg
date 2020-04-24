@@ -27,27 +27,22 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Name of FFmpeg executable name (Case insensitive)
         /// </summary>
-        public static string FFmpegExecutableName { get; } = FFmpegExecutablesHelper.FFmpegExecutableName;
+        public static string FFmpegExecutableName { get; set; } = "ffmpeg";
 
         /// <summary>
         ///     Name of FFprobe executable name (Case insensitive)
         /// </summary>
-        public static string FFprobeExecutableName { get; } = FFmpegExecutablesHelper.FFprobeExecutableName;
-
-        /// <summary>
-        ///     FFmpeg tool process priority
-        /// </summary>
-        public ProcessPriorityClass? Priority { get; set; }
-
-        /// <summary>
-        /// FFmpeg process id
-        /// </summary>
-        public int FFmpegProcessId { get; private set; }
+        public static string FFprobeExecutableName { get; set; } = "ffprobe";
 
         /// <summary>
         ///     Initalize new FFmpeg. Search FFmpeg and FFprobe in PATH
         /// </summary>
         protected FFmpeg()
+        {
+            FindAndValidateExecutables();
+        }
+
+        private void FindAndValidateExecutables()
         {
             if (!string.IsNullOrWhiteSpace(FFprobePath) &&
                !string.IsNullOrWhiteSpace(FFmpegPath))
@@ -168,8 +163,15 @@ namespace Xabe.FFmpeg
 
             IEnumerable<FileInfo> files = new DirectoryInfo(path).GetFiles();
 
-            FFprobePath = FFmpegExecutablesHelper.SelectFFprobePath(files);
-            FFmpegPath = FFmpegExecutablesHelper.SelectFFmpegPath(files);
+            FFprobePath = GetFullName(files, FFprobeExecutableName);
+            FFmpegPath = GetFullName(files, FFmpegExecutableName);
+        }
+
+        internal static string GetFullName(IEnumerable<FileInfo> files, string fileName)
+        {
+            return files.FirstOrDefault(x => x.Name.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)
+                   || x.Name.Equals($"{fileName}.exe", StringComparison.InvariantCultureIgnoreCase))
+                        ?.FullName;
         }
 
         /// <summary>
@@ -207,7 +209,6 @@ namespace Xabe.FFmpeg
             };
 
             process.Start();
-            FFmpegProcessId = process.Id;
 
             try
             {
@@ -225,30 +226,6 @@ namespace Xabe.FFmpeg
             }
 
             return process;
-        }
-    }
-
-    internal static class FFmpegExecutablesHelper
-    {
-        internal const string FFmpegExecutableName = "ffmpeg";
-        internal const string FFprobeExecutableName = "ffprobe";
-
-        internal static string SelectFFmpegPath(IEnumerable<FileInfo> files)
-        {
-            return files.FirstOrDefault(x => CompareFileNames(x.Name, FFmpegExecutableName))
-                        ?.FullName;
-        }
-
-        internal static string SelectFFprobePath(IEnumerable<FileInfo> files)
-        {
-            return files.FirstOrDefault(x => CompareFileNames(x.Name, FFprobeExecutableName))
-                        ?.FullName;
-        }
-
-        private static bool CompareFileNames(string fileName, string expectedName)
-        {
-            return fileName.Equals(expectedName, StringComparison.InvariantCultureIgnoreCase)
-                   || fileName.Equals($"{expectedName}.exe", StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

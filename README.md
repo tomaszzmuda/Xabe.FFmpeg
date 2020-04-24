@@ -11,14 +11,14 @@
 
 ![Xabe.FFmpeg basic workflow](https://raw.githubusercontent.com/tomaszzmuda/Xabe.FFmpeg/master/Assets/Infographic.png)
 
-[Xabe.FFmpeg Documentation](https://xabe.net/product/xabe_ffmpeg/#documentation)
+[Xabe.FFmpeg Documentation](https://ffmpeg.xabe.net/docs.html)
 
 ## Lincence ##
 
-Xabe.FFmpeg is licensed under [Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)](https://creativecommons.org/licenses/by-nc-sa/3.0/) - see [License](LICENSE.md) for details. If you want use Xabe.FFmpeg in commercial project visit our website - [Xabe.FFmpeg](https://xabe.net/product/xabe_ffmpeg/)
+Xabe.FFmpeg is licensed under [Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)](https://creativecommons.org/licenses/by-nc-sa/3.0/) - see [License](LICENSE.md) for details. If you want use Xabe.FFmpeg in commercial project visit our website - [Xabe.FFmpeg](https://ffmpeg.xabe.net/license.html)
 
 ## Contact ##
 
 Feel free to ask any questions on [Gitter](https://gitter.im/Xabe-FFmpeg/Lobby# "Gitter") or write e-mail  to **support@xabe.net**
 
-You can check our website too - [Xabe.net](https://xabe.net/)
+You can check our website too - [Xabe.net](https://ffmpeg.xabe.net/)

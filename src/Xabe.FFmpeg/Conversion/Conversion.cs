@@ -41,6 +41,8 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildInputFileName = null;
         private Func<string, string> _buildOutputFileName = null;
 
+        private int? _processId = null;
+
         /// <inheritdoc />
         public string Build()
         {
@@ -90,7 +92,7 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
-        public int? FFmpegProcessId => _ffmpeg?.FFmpegProcessId;
+        public int? FFmpegProcessId => _processId;
 
         /// <inheritdoc />
         public string OutputFilePath { get; private set; }
@@ -122,16 +124,16 @@ namespace Xabe.FFmpeg
             }
 
             _ffmpeg = new FFmpegWrapper();
-            _ffmpeg.Priority = _priority;
             _ffmpeg.OnProgress += OnProgress;
             _ffmpeg.OnDataReceived += OnDataReceived;
-            await _ffmpeg.RunProcess(parameters, cancellationToken);
+            await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
             var result = new ConversionResult
             {
                 StartTime = DateTime.Now,
                 EndTime = DateTime.Now,
                 Arguments = parameters
             };
+            _processId = null;
             return result;
         }
 

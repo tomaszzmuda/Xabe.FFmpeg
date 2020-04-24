@@ -91,7 +91,7 @@ namespace Xabe.FFmpeg
         {
             return Task.Factory.StartNew(() =>
             {
-                using (Process process = RunProcess(args, FFprobePath, Priority, standardOutput: true))
+                using (Process process = RunProcess(args, FFprobePath, null, standardOutput: true))
                 {
                     cancellationToken.Register(() =>
                     {

@@ -11,8 +11,8 @@
     <Company>Xabe Tomasz Żmuda</Company>
     <Description>Cross-platform wrapper for FFmpeg.</Description>
     <Copyright>Copyright 2017-2020 (c) Xabe Tomasz Zmuda.</Copyright>
-    <PackageLicenseUrl>https://xabe.net/product/xabe_ffmpeg/#license</PackageLicenseUrl>
-    <PackageProjectUrl>https://xabe.net/product/xabe_ffmpeg/</PackageProjectUrl>
+    <PackageLicenseUrl>https://ffmpeg.xabe.net/license.html</PackageLicenseUrl>
+    <PackageProjectUrl>https://ffmpeg.xabe.net/index.html</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
     <RepositoryType>Dependency</RepositoryType>
     <PackageTags>media converter audio ffmpeg wrapper core video encode decode</PackageTags>
