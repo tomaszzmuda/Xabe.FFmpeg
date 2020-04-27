@@ -87,9 +87,9 @@ namespace Xabe.FFmpeg
             return RunProcess(args, cancellationToken);
         }
 
-        private Task<string> RunProcess(string args, CancellationToken cancellationToken)
+        private async Task<string> RunProcess(string args, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
+            return await await Task.Factory.StartNew(async () =>
             {
                 using (Process process = RunProcess(args, FFprobePath, null, standardOutput: true))
                 {
@@ -108,17 +108,7 @@ namespace Xabe.FFmpeg
 
                         }
                     });
-                    while (!process.HasExited)
-                    {
-                        process.WaitForExit(10);
-                        int toRead = process.StandardOutput.Peek();
-                        if (toRead > 0)
-                        {
-                            break;
-                        }
-                    }
-
-                    string output = process.StandardOutput.ReadToEnd();
+                    var output = await process.StandardOutput.ReadToEndAsync();
                     process.WaitForExit();
                     return output;
                 }
