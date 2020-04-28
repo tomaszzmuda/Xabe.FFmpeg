@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="4.0.8-beta" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="4.0.9-beta" />
   </ItemGroup>
 
   <ItemGroup>

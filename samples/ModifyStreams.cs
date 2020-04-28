@@ -18,7 +18,7 @@ namespace MyVideosConverter
             await Console.Out.WriteLineAsync($"Find {filesToConvert.Count()} files to convert.");
 
             //Set directory where app should look for FFmpeg executables.
-            FFmpeg.ExecutablesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg");
+            FFmpeg.SetExecutablesPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg"));
             //Get latest version of FFmpeg. It's great idea if you don't know if you had installed FFmpe1g.
             await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
 
@@ -48,9 +48,10 @@ namespace MyVideosConverter
                     //Set codec which will be used to encode file. If not set it's set automatically according to output file extension
                     .SetCodec(VideoCodec.h264);
 
-                var conversion = Conversion.Convert(fileToConvert.FullName, outputFileName)
-                    //Set output file path
-                    .SetOutput(outputFileName)
+                var conversion = await FFmpeg.Conversions.FromSnippet.Convert(fileToConvert.FullName, outputFileName);
+
+                //Set output file path
+                conversion.SetOutput(outputFileName)
                     //SetOverwriteOutput to overwrite files. It's useful when we already run application before
                     .SetOverwriteOutput(true)
                     //Disable multithreading

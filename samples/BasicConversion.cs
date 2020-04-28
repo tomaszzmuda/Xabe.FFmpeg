@@ -16,7 +16,7 @@ namespace MyVideosConverter
             FileInfo fileToConvert = GetFilesToConvert(".").First();
 
             //Set directory where app should look for FFmpeg executables.
-            FFmpeg.SetExecutablesPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg");
+            FFmpeg.SetExecutablesPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg"));
             //Get latest version of FFmpeg. It's great idea if you don't know if you had installed FFmpe1g.
             await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
 
@@ -34,7 +34,8 @@ namespace MyVideosConverter
             //Delete file if it already exists
             File.Delete(outputFileName);
 
-            await Conversion.Convert(fileToConvert.FullName, outputFileName).Start();
+            var conversion = await FFmpeg.Conversions.FromSnippet.Convert(fileToConvert.FullName, outputFileName);
+            await conversion.Start();
 
             await Console.Out.WriteLineAsync($"Finished converion file [{fileToConvert.Name}]");
         }
