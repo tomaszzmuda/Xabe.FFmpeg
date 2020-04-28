@@ -13,9 +13,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ToMp4(string inputPath, string outputPath)
+        public static IConversion ToMp4(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.h264);
@@ -34,9 +34,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ToTs(string inputPath, string outputPath)
+        public static IConversion ToTs(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.mpeg2video);
@@ -55,9 +55,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ToOgv(string inputPath, string outputPath)
+        public static IConversion ToOgv(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.theora);
@@ -76,9 +76,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Destination file</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ToWebM(string inputPath, string outputPath)
+        public static IConversion ToWebM(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.vp8);
@@ -99,9 +99,9 @@ namespace Xabe.FFmpeg
         /// <param name="delay">Delay between repeats (in seconds)</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ToGif(string inputPath, string outputPath, int loop, int delay = 0)
+        public static IConversion ToGif(string inputPath, string outputPath, int loop, int delay = 0)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetLoop(loop, delay);

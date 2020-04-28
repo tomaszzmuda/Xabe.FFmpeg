@@ -558,6 +558,7 @@ namespace Xabe.FFmpeg
         ///     Get new instance of Conversion
         /// </summary>
         /// <returns>IConversion object</returns>
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion New()
         {
             return new Conversion();

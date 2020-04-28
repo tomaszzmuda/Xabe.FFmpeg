@@ -108,7 +108,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
 
-            IConversionResult result = await (await Conversion.ToWebM(Resources.Mp4WithAudio, output))
+            IConversionResult result = await Conversion.ToWebM(Resources.Mp4WithAudio, output)
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
@@ -130,7 +130,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
-            IConversionResult result = await (await Conversion.Convert(Resources.MkvWithAudio, output)).Start();
+            IConversionResult result = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
 
 
             IMediaInfo mediaInfo = await MediaInfo.Get(output);

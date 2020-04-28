@@ -18,9 +18,9 @@ namespace Xabe.FFmpeg
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
         /// <returns>IConversion object</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ConvertWithHardware(string inputFilePath, string outputFilePath, HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
+        public static IConversion ConvertWithHardware(string inputFilePath, string outputFilePath, HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
         {
-            var conversion = await Convert(inputFilePath, outputFilePath);
+            var conversion = Convert(inputFilePath, outputFilePath);
             return conversion.UseHardwareAcceleration(hardwareAccelerator, decoder, encoder, device);
         }
     }

@@ -18,9 +18,9 @@ namespace Xabe.FFmpeg
         /// <param name="position">Position of watermark</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
+        public static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetWatermark(inputImage, position);
@@ -38,9 +38,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output audio stream</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ExtractVideo(string inputPath, string outputPath)
+        public static IConversion ExtractVideo(string inputPath, string outputPath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
 
@@ -57,9 +57,9 @@ namespace Xabe.FFmpeg
         /// <param name="captureTime">TimeSpan of snapshot</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
+        public static IConversion Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetOutputFramesCount(1)
@@ -79,9 +79,9 @@ namespace Xabe.FFmpeg
         /// <param name="height">Expected height</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ChangeSize(string inputPath, string outputPath, int width, int height)
+        public static IConversion ChangeSize(string inputPath, string outputPath, int width, int height)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetSize(width, height);
@@ -100,9 +100,9 @@ namespace Xabe.FFmpeg
         /// <param name="size">Expected size</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> ChangeSize(string inputPath, string outputPath, VideoSize size)
+        public static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetSize(size);
@@ -122,9 +122,9 @@ namespace Xabe.FFmpeg
         /// <param name="duration">Duration of new video</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
+        public static IConversion Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
-            IMediaInfo info = await MediaInfo.Get(inputPath);
+            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
 
             var streams = new List<IStream>();
             foreach (IVideoStream stream in info.VideoStreams)
@@ -149,9 +149,9 @@ namespace Xabe.FFmpeg
         /// <param name="duration">Duration of stream</param>
         /// <returns>Conversion result</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
+        public static IConversion SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
         {
-            var mediaInfo = await MediaInfo.Get(uri.ToString());
+            var mediaInfo = MediaInfo.Get(uri.ToString()).GetAwaiter().GetResult();
             return New()
                 .AddStream(mediaInfo.Streams)
                 .SetInputTime(duration)
@@ -212,9 +212,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputFilePath">Path to file</param>
         /// <returns>IConversion object</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> Convert(string inputFilePath, string outputFilePath)
+        public static IConversion Convert(string inputFilePath, string outputFilePath)
         {
-            IMediaInfo info = await MediaInfo.Get(inputFilePath);
+            IMediaInfo info = MediaInfo.Get(inputFilePath).GetAwaiter().GetResult();
 
             var conversion = New().SetOutput(outputFilePath);
 
