@@ -160,7 +160,7 @@ namespace Xabe.FFmpeg.Test
 
         [Theory]
         [MemberData(nameof(FFmpegDownloaders))]
-        internal async Task DownloadLatestVersion_NoOperatingSystemProviderIsSpecified_UseDefaultOne(IFFMpegDownloaderBase downloader)
+        internal async Task DownloadLatestVersion_NoOperatingSystemProviderIsSpecified_UseDefaultOne(IFFmpegDownloader downloader)
         {
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 

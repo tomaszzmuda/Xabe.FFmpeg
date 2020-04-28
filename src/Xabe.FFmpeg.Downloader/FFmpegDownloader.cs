@@ -20,7 +20,7 @@ namespace Xabe.FFmpeg.Downloader
         /// </summary>
         public static async Task GetLatestVersion(FFmpegVersion version, string path)
         {
-            IFFMpegDownloaderBase downloader;
+            IFFmpegDownloader downloader;
             switch (version)
             {
                 case FFmpegVersion.Official:

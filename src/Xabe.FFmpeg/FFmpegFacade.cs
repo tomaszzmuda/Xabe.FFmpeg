@@ -43,7 +43,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        /// 
+        ///     Set path to irectory containing FFmpeg and FFprobe
         /// </summary>
         /// <param name="directoryWithFFmpegAndFFprobe"></param>
         /// <param name="ffmpegExeutableName">Name of FFmpeg executable name (Case insensitive)</param>
