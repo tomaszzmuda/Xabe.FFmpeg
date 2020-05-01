@@ -46,7 +46,7 @@ namespace Xabe.FFmpeg
         public static async Task<IMediaInfo> Get(string filePath)
         {
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
-            return await FFmpeg.GetMediaInfo(filePath, cancellationToken);
+            return await Get(filePath, cancellationToken);
         }
 
         /// <summary>

@@ -183,7 +183,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Empty(mediaInfo.SubtitleStreams);
         }
 
-        [Fact]
+        [Fact(Skip = "The RTSP stream is not valid anymore")]
         public async Task Rtsp_GotTwoStreams_SaveEverything()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);

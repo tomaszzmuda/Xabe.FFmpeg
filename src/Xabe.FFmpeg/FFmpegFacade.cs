@@ -62,7 +62,7 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         public IConversion New()
         {
-            return FFmpeg.Conversions.New();
+            return Conversion.New();
         }
 
         /// <summary>
