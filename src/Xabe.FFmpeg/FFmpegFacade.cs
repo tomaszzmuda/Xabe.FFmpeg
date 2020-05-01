@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg
         /// <param name="filePath">FullPath to file</param>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName)
         {
-            return await FFmpeg.GetMediaInfo(fileName);
+            return await MediaInfo.Get(fileName);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Xabe.FFmpeg
         /// <param name="cancellationToken">Cancellation token</param>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName, CancellationToken token)
         {
-            return await FFmpeg.GetMediaInfo(fileName, token);
+            return await MediaInfo.Get(fileName, token);
         }
 
         /// <summary>
