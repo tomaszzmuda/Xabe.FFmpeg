@@ -15,8 +15,6 @@ namespace Xabe.FFmpeg
         /// </summary>
         public static string ExecutablesPath { get; private set; }
 
-        private Conversions conversion = new Conversions();
-
         /// <summary>
         ///     Get new instance of Conversion
         /// </summary>
@@ -29,7 +27,7 @@ namespace Xabe.FFmpeg
         /// <param name="filePath">FullPath to file</param>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName)
         {
-            return await MediaInfo.Get(fileName);
+            return await FFmpeg.GetMediaInfo(fileName);
         }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace Xabe.FFmpeg
         /// <param name="cancellationToken">Cancellation token</param>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName, CancellationToken token)
         {
-            return await MediaInfo.Get(fileName, token);
+            return await FFmpeg.GetMediaInfo(fileName, token);
         }
 
         /// <summary>
@@ -64,7 +62,7 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         public IConversion New()
         {
-            return Conversion.New();
+            return FFmpeg.Conversions.New();
         }
 
         /// <summary>

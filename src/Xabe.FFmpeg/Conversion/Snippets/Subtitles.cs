@@ -18,7 +18,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.AddSubtitles(subtitlesPath);
@@ -41,8 +41,8 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
         {
-            IMediaInfo mediaInfo = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
-            IMediaInfo subtitleInfo = MediaInfo.Get(subtitlePath).GetAwaiter().GetResult();
+            IMediaInfo mediaInfo = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo subtitleInfo = FFmpeg.GetMediaInfo(subtitlePath).GetAwaiter().GetResult();
 
             ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
                                                          .SetLanguage(language);

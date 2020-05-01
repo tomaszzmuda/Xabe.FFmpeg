@@ -35,7 +35,7 @@ namespace MyVideosConverter
                 //Save file to the same location with changed extension
                 string outputFileName = Path.ChangeExtension(fileToConvert.FullName, ".mp4");
 
-                var mediaInfo = await MediaInfo.Get(fileToConvert);
+                var mediaInfo = await FFmpeg.GetMediaInfo(fileToConvert.FullName);
                 var videoStream = mediaInfo.VideoStreams.First();
                 var audioStream = mediaInfo.AudioStreams.First();
 

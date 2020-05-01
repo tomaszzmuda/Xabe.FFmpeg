@@ -20,7 +20,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetWatermark(inputImage, position);
@@ -40,7 +40,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ExtractVideo(string inputPath, string outputPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
 
@@ -59,7 +59,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetOutputFramesCount(1)
@@ -81,7 +81,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ChangeSize(string inputPath, string outputPath, int width, int height)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetSize(width, height);
@@ -102,7 +102,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetSize(size);
@@ -124,7 +124,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             var streams = new List<IStream>();
             foreach (IVideoStream stream in info.VideoStreams)
@@ -151,7 +151,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
         {
-            var mediaInfo = MediaInfo.Get(uri.ToString()).GetAwaiter().GetResult();
+            var mediaInfo = FFmpeg.GetMediaInfo(uri.ToString()).GetAwaiter().GetResult();
             return New()
                 .AddStream(mediaInfo.Streams)
                 .SetInputTime(duration)
@@ -177,7 +177,7 @@ namespace Xabe.FFmpeg
             IConversion conversion = New();
             foreach (string inputVideo in inputVideos)
             {
-                IMediaInfo mediaInfo = await MediaInfo.Get(inputVideo);
+                IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputVideo);
 
                 mediaInfos.Add(mediaInfo);
                 conversion.AddParameter($"-i \"{inputVideo}\" ");
@@ -214,7 +214,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion Convert(string inputFilePath, string outputFilePath)
         {
-            IMediaInfo info = MediaInfo.Get(inputFilePath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
 
             var conversion = New().SetOutput(outputFilePath);
 

@@ -24,7 +24,7 @@ namespace Xabe.FFmpeg.Test
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Concatenate(output, firstFile, secondFile)).Start();
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(duration), mediaInfo.Duration);
             Assert.Single(mediaInfo.VideoStreams);
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
@@ -44,7 +44,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.NotNull(videoStream);
@@ -61,7 +61,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Empty(mediaInfo.AudioStreams);
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
@@ -99,7 +99,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
@@ -123,7 +123,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Contains("overlay=", result.Arguments);
             Assert.Contains(Resources.Mp4WithAudio, result.Arguments);
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
@@ -155,7 +155,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
 
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);
@@ -176,7 +176,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MultipleStream, output)).Start();
 
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(46), mediaInfo.Duration);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Equal(2, mediaInfo.AudioStreams.Count());
@@ -187,11 +187,11 @@ namespace Xabe.FFmpeg.Test
         public async Task Rtsp_GotTwoStreams_SaveEverything()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
-            var mediaInfo = await MediaInfo.Get("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
+            var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
 
-            var conversionResult = await Conversion.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
+            var conversionResult = await FFmpeg.Conversions.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
 
-            IMediaInfo result = await MediaInfo.Get(output);
+            IMediaInfo result = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(9 * 60 + 56), mediaInfo.Duration);
             Assert.Single(result.VideoStreams);
             Assert.Single(result.AudioStreams);

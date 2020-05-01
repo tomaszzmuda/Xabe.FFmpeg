@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
 
-            var mediaInfo = await MediaInfo.Get(outputPath);
+            var mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
             Assert.NotNull(mediaInfo);
             Assert.True(result.StartTime != DateTime.MinValue);
             Assert.True(result.EndTime != DateTime.MinValue);
@@ -34,7 +34,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ConversionWithWrongInputTest2()
         {
-            await Assert.ThrowsAsync<ArgumentException>(async () => await MediaInfo.Get("Z:\\test.mp4"));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await FFmpeg.GetMediaInfo("Z:\\test.mp4"));
         }
     }
 }

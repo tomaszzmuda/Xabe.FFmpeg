@@ -15,17 +15,17 @@ namespace Xabe.FFmpeg.Test
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), extension);
 
-            IMediaInfo info = await MediaInfo.Get(Resources.SubtitleSrt);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SubtitleSrt);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault();
 
-            IConversionResult result = await Conversion.New()
+            IConversionResult result = await FFmpeg.Conversions.New()
                                           .AddStream(subtitleStream)
                                           .SetOutput(outputPath)
                                           .SetOutputFormat(format)
                                           .Start();
 
-            IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
+            IMediaInfo resultInfo = await FFmpeg.GetMediaInfo(outputPath);
             Assert.Single(resultInfo.SubtitleStreams);
             ISubtitleStream resultSteam = resultInfo.SubtitleStreams.First();
             Assert.Equal(expectedFormat, resultSteam.Codec.ToLower());
@@ -38,17 +38,17 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractSubtitles(string format, string expectedFormat, bool checkOutputLanguage)
         {
             string outputPath = Path.ChangeExtension(Path.GetTempFileName(), format);
-            IMediaInfo info = await MediaInfo.Get(Resources.MultipleStream);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MultipleStream);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x => x.Language == "spa");
             Assert.NotNull(subtitleStream);
 
-            IConversionResult result = await Conversion.New()
+            IConversionResult result = await FFmpeg.Conversions.New()
                                                        .AddStream(subtitleStream)
                                                        .SetOutput(outputPath)
                                                        .Start();
 
-            IMediaInfo resultInfo = await MediaInfo.Get(outputPath);
+            IMediaInfo resultInfo = await FFmpeg.GetMediaInfo(outputPath);
             Assert.Empty(resultInfo.VideoStreams);
             Assert.Empty(resultInfo.AudioStreams);
             Assert.Single(resultInfo.SubtitleStreams);

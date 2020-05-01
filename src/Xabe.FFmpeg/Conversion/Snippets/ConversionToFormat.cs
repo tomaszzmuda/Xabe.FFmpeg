@@ -15,7 +15,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ToMp4(string inputPath, string outputPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.h264);
@@ -36,7 +36,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ToTs(string inputPath, string outputPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.mpeg2video);
@@ -57,7 +57,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ToOgv(string inputPath, string outputPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.theora);
@@ -78,7 +78,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ToWebM(string inputPath, string outputPath)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IStream videoStream = info.VideoStreams.FirstOrDefault()
                                       ?.SetCodec(VideoCodec.vp8);
@@ -101,7 +101,7 @@ namespace Xabe.FFmpeg
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
         public static IConversion ToGif(string inputPath, string outputPath, int loop, int delay = 0)
         {
-            IMediaInfo info = MediaInfo.Get(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            ?.SetLoop(loop, delay);

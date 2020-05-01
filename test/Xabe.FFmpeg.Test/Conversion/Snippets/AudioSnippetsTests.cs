@@ -16,7 +16,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddAudio(Resources.Mp4, Resources.Mp3, output))
                                              .Start();
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.AudioStreams);
             Assert.Equal("aac", mediaInfo.AudioStreams.First()
                                          .Codec);
@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Empty(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();

@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt))
                                              .Start();
 
-            IMediaInfo outputInfo = await MediaInfo.Get(output);
+            IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
             Assert.Single(outputInfo.SubtitleStreams);
             Assert.Single(outputInfo.VideoStreams);
@@ -36,7 +36,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
 
-            IMediaInfo outputInfo = await MediaInfo.Get(output);
+            IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
             Assert.Single(outputInfo.SubtitleStreams);
             Assert.Single(outputInfo.VideoStreams);
@@ -55,7 +55,7 @@ namespace Xabe.FFmpeg.Test
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
-            IMediaInfo outputInfo = await MediaInfo.Get(output);
+            IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(13), outputInfo.Duration);
         }
 
@@ -67,7 +67,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
 
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(output);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);

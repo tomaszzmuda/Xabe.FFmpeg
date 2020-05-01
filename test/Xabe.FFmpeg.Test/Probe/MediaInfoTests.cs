@@ -12,7 +12,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task AudioPopertiesTest()
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp3);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(Resources.Mp3);
 
             Assert.True(File.Exists(mediaInfo.Path));
             Assert.Equal(FileExtensions.Mp3, Path.GetExtension(mediaInfo.Path));
@@ -33,7 +33,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetMultipleStreamsTest()
         {
-            IMediaInfo videoInfo = await MediaInfo.Get(Resources.MultipleStream);
+            IMediaInfo videoInfo = await FFmpeg.GetMediaInfo(Resources.MultipleStream);
 
             Assert.Single(videoInfo.VideoStreams);
             Assert.Equal(2, videoInfo.AudioStreams.Count());
@@ -43,7 +43,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetVideoBitrateTest()
         {
-            IMediaInfo info = await MediaInfo.Get(Resources.MkvWithAudio);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First();
 
             Assert.Equal(860233, videoStream.Bitrate);
@@ -52,13 +52,13 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task IncorrectFormatTest()
         {
-            await Assert.ThrowsAsync<ArgumentException>(async () => await MediaInfo.Get(Resources.Dll));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await FFmpeg.GetMediaInfo(Resources.Dll));
         }
 
         [Fact]
         public async Task Mp4PropertiesTest()
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.BunnyMp4);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(Resources.BunnyMp4);
 
             Assert.True(mediaInfo.Streams.Any());
         }
@@ -66,7 +66,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MkvPropertiesTest()
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.MkvWithAudio);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
 
             Assert.True(File.Exists(mediaInfo.Path));
             Assert.Equal(FileExtensions.Mkv, Path.GetExtension(mediaInfo.Path));
@@ -97,7 +97,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task PropertiesTest()
         {
-            IMediaInfo mediaInfo = await MediaInfo.Get(Resources.Mp4WithAudio);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(Resources.Mp4WithAudio);
 
             Assert.True(File.Exists(mediaInfo.Path));
             Assert.Equal(FileExtensions.Mp4, Path.GetExtension(mediaInfo.Path));
@@ -135,7 +135,7 @@ namespace Xabe.FFmpeg.Test
             var destFile = Path.Combine(dir.FullName, "temp.mp4");
             File.Copy(Resources.Mp4WithAudio, destFile, true);
 
-            IMediaInfo mediaInfo = await MediaInfo.Get(destFile);
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(destFile);
 
             Assert.NotNull(mediaInfo);
             Assert.Equal(FileExtensions.Mp4, Path.GetExtension(mediaInfo.Path));
@@ -145,7 +145,7 @@ namespace Xabe.FFmpeg.Test
         public async Task RTSP_NotExistingStream_CancelledAfter30Seconds()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
-            var exception = await Record.ExceptionAsync(async () => await MediaInfo.Get(@"rtsp://192.168.1.123:554/"));
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/"));
 
             Assert.NotNull(exception);
             Assert.IsType<ArgumentException>(exception);
@@ -156,7 +156,7 @@ namespace Xabe.FFmpeg.Test
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
             var cancellationTokenSource = new CancellationTokenSource(2000);
-            var exception = await Record.ExceptionAsync(async () => await MediaInfo.Get(@"rtsp://192.168.1.123:554/", cancellationTokenSource.Token));
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/", cancellationTokenSource.Token));
 
             Assert.NotNull(exception);
             Assert.IsType<ArgumentException>(exception);
