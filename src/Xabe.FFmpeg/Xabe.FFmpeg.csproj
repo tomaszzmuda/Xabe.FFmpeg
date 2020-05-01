@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Xabe.FFmpeg</AssemblyName>
+    <RootNamespace>Xabe.FFmpeg</RootNamespace>
+    <Authors>Xabe</Authors>
+    <Company>Xabe Tomasz Żmuda</Company>
+    <Description>Cross-platform wrapper for FFmpeg.</Description>
+    <Copyright>Copyright 2017-2020 (c) Xabe Tomasz Zmuda.</Copyright>
+    <PackageLicenseUrl>https://ffmpeg.xabe.net/license.html</PackageLicenseUrl>
+    <PackageProjectUrl>https://ffmpeg.xabe.net/index.html</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
+    <RepositoryType>Dependency</RepositoryType>
+    <PackageTags>media converter audio ffmpeg wrapper core video encode decode</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageIconUrl>https://xabe.net/assets/new_xabe_logo-100x100.png</PackageIconUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.*" />
+  </ItemGroup>
+
+</Project>
