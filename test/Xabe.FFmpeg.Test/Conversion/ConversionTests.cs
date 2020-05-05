@@ -105,7 +105,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
-            var exception = await Record.ExceptionAsync(async() => await FFmpeg.Conversions.New()
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.Conversions.New()
                                                                  .AddStream(videoStream)
                                                                  .SetOutputFormat("notExisting")
                                                                  .SetOutput(output)
@@ -242,7 +242,7 @@ namespace Xabe.FFmpeg.Test
 
 
             FileInfo fi = new FileInfo(output);
-            
+
             Assert.Equal(fileExtension, fi.Extension);
             Assert.Equal(expectedLength, fi.Length);
         }
@@ -670,7 +670,8 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
-            var exception = await Record.ExceptionAsync(async() => { 
+            var exception = await Record.ExceptionAsync(async () =>
+            {
                 await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output)).UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.h264_nvenc, VideoCodec.h264_cuvid).Start();
             });
 
@@ -765,6 +766,38 @@ namespace Xabe.FFmpeg.Test
                                                                  ;
 
             Assert.StartsWith("-re", conversionResult.Arguments);
+        }
+
+        [Theory]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.lin, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.log, FrequencyScale.lin)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.sqrt, FrequencyScale.rlog)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.cbrt, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.lin, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.log, FrequencyScale.lin)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.sqrt, FrequencyScale.rlog)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.cbrt, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.lin, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.log, FrequencyScale.lin)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.sqrt, FrequencyScale.rlog)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.cbrt, FrequencyScale.log)]
+        public async Task VisualiseAudioTest(VideoSize size, PixelFormat pixelFormat, VisualisationMode mode, AmplitudeScale amplitudeScale, FrequencyScale frequencyScale)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.aac);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(audioStream)
+                                                                 .VisualiseAudio(size, pixelFormat, mode, amplitudeScale, frequencyScale)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(resultFile.VideoStreams.First().Duration, audioStream.Duration);
+            Assert.Equal(1920, resultFile.VideoStreams.First().Width);
+            Assert.Equal(1080, resultFile.VideoStreams.First().Height);
         }
     }
 }
