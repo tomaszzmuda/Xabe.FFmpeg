@@ -215,21 +215,6 @@ namespace Xabe.FFmpeg
         IConversion SetPixelFormat(PixelFormat pixelFormat);
 
         /// <summary>
-        /// Generates a visualisation of an audio stream using the 'showfreqs' filter
-        /// </summary>
-        /// <param name="size">The Size of the outputted video stream</param>
-        /// <param name="pixelFormat">The output pixel format (default is yuv420p)</param>
-        /// <param name="mode">The visualisation mode (default is bar)</param>
-        /// <param name="amplitudeScale">The frequency scale (default is lin)</param>
-        /// <param name="frequencyScale">The amplitude scale (default is log)</param>
-        /// <returns>IConversion object</returns>
-        IConversion VisualiseAudio(VideoSize size, 
-            PixelFormat pixelFormat = PixelFormat.yuv420p, 
-            VisualisationMode mode = VisualisationMode.bar,
-            AmplitudeScale amplitudeScale = AmplitudeScale.lin, 
-            FrequencyScale frequencyScale = FrequencyScale.log);
-
-        /// <summary>
         ///     Fires when FFmpeg progress changes
         /// </summary>
         event ConversionProgressEventHandler OnProgress;

@@ -675,20 +675,5 @@ namespace Xabe.FFmpeg
                 _outputPixelFormat = $"-pix_fmt {pixelFormat} ";
             return this;
         }
-
-        /// <inheritdoc />
-        public IConversion VisualiseAudio(VideoSize size, 
-            PixelFormat pixelFormat = PixelFormat.yuv420p,
-            VisualisationMode mode = VisualisationMode.bar,
-            AmplitudeScale amplitudeScale = AmplitudeScale.lin,
-            FrequencyScale frequencyScale = FrequencyScale.log)
-        {
-            string filter = $"\"[0:a]showfreqs=mode={mode}:fscale={frequencyScale}:ascale={amplitudeScale},format={pixelFormat},scale={size.ToFFmpegFormat()} [v]\"";
-            
-            AddParameter($"-filter_complex {filter}");
-            AddParameter("-map [v]");
-
-            return this;
-        }
     }
 }

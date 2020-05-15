@@ -313,5 +313,25 @@ namespace Xabe.FFmpeg
         {
             return await Task.FromResult(Conversion.Convert(inputFilePath, outputFilePath));
         }
+
+        /// <summary>
+        /// Generates a visualisation of an audio stream using the 'showfreqs' filter
+        /// </summary>
+        /// <param name="inputPath">Path to the input file containing the audio stream to visualise</param>
+        /// <param name="outputPath">Path to output the visualised audio stream to</param>
+        /// <param name="size">The Size of the outputted video stream</param>
+        /// <param name="pixelFormat">The output pixel format (default is yuv420p)</param>
+        /// <param name="mode">The visualisation mode (default is bar)</param>
+        /// <param name="amplitudeScale">The frequency scale (default is lin)</param>
+        /// <param name="frequencyScale">The amplitude scale (default is log)</param>
+        /// <returns>IConversion object</returns>
+        public async Task<IConversion> VisualiseAudio(string inputPath, string outputPath, VideoSize size,
+            PixelFormat pixelFormat = PixelFormat.yuv420p,
+            VisualisationMode mode = VisualisationMode.bar,
+            AmplitudeScale amplitudeScale = AmplitudeScale.lin,
+            FrequencyScale frequencyScale = FrequencyScale.log)
+        {
+            return await Task.FromResult(Conversion.VisualiseAudio(inputPath, outputPath, size, pixelFormat, mode, amplitudeScale, frequencyScale));
+        }
     }
 }
