@@ -43,7 +43,7 @@ namespace Xabe.FFmpeg
             return Task.Factory.StartNew(() =>
             {
                 _outputLog = new List<string>();
-                var process = RunProcess(args, FFmpegPath, priority, true, true, true);
+                var process = RunProcess(args, FFmpegPath, priority, true, false, true);
                 using (process)
                 {
                     process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
