@@ -105,7 +105,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
-            var exception = await Record.ExceptionAsync(async() => await FFmpeg.Conversions.New()
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.Conversions.New()
                                                                  .AddStream(videoStream)
                                                                  .SetOutputFormat("notExisting")
                                                                  .SetOutput(output)
@@ -242,7 +242,7 @@ namespace Xabe.FFmpeg.Test
 
 
             FileInfo fi = new FileInfo(output);
-            
+
             Assert.Equal(fileExtension, fi.Extension);
             Assert.Equal(expectedLength, fi.Length);
         }
@@ -670,7 +670,8 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
-            var exception = await Record.ExceptionAsync(async() => { 
+            var exception = await Record.ExceptionAsync(async () =>
+            {
                 await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output)).UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.h264_nvenc, VideoCodec.h264_cuvid).Start();
             });
 
