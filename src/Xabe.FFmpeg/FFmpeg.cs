@@ -15,6 +15,7 @@ namespace Xabe.FFmpeg
     {
         private static string _ffmpegPath;
         private static string _ffprobePath;
+        private static string _lastExecutablePath = Guid.NewGuid().ToString();
 
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
@@ -32,7 +33,7 @@ namespace Xabe.FFmpeg
         private void FindAndValidateExecutables()
         {
             if (!string.IsNullOrWhiteSpace(FFprobePath) &&
-               !string.IsNullOrWhiteSpace(FFmpegPath))
+               !string.IsNullOrWhiteSpace(FFmpegPath) && _lastExecutablePath.Equals(ExecutablesPath))
             {
                 return;
             }
@@ -48,6 +49,7 @@ namespace Xabe.FFmpeg
                                                                                .Contains(_ffmpegExecutableName.ToLower()))?
                                                          .FullName;
                 ValidateExecutables();
+                _lastExecutablePath = ExecutablesPath;
                 return;
             }
 

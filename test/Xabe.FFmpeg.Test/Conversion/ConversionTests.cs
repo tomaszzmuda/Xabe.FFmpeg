@@ -770,15 +770,24 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task TryConvertMedia_NoFilesInFFmpegDirectory_ThrowFFmpegNotFoundException()
         {
-            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempDir);
-            FFmpeg.SetExecutablesPath(tempDir);
+            var path = FFmpeg.ExecutablesPath;
 
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
-            var exception = await Record.ExceptionAsync(async() => await FFmpeg.GetMediaInfo(Resources.MkvWithAudio));
+            try
+            {
+                var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                Directory.CreateDirectory(tempDir);
+                FFmpeg.SetExecutablesPath(tempDir);
 
-            Assert.NotNull(exception);
-            Assert.IsType<FFmpegNotFoundException>(exception);
+                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+                var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(Resources.MkvWithAudio));
+
+                Assert.NotNull(exception);
+                Assert.IsType<FFmpegNotFoundException>(exception);
+            }
+            finally
+            {
+                FFmpeg.SetExecutablesPath(path);
+            }
         }
     }
 }
