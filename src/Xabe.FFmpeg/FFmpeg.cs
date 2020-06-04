@@ -40,12 +40,12 @@ namespace Xabe.FFmpeg
             if (!string.IsNullOrWhiteSpace(ExecutablesPath))
             {
                 FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                          .First(x => x.Name.ToLower()
-                                                                                .Contains(_ffprobeExecutableName.ToLower()))
+                                                          .FirstOrDefault(x => x.Name.ToLower()
+                                                                                .Contains(_ffprobeExecutableName.ToLower()))?
                                                           .FullName;
                 FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                         .First(x => x.Name.ToLower()
-                                                                               .Contains(_ffmpegExecutableName.ToLower()))
+                                                         .FirstOrDefault(x => x.Name.ToLower()
+                                                                               .Contains(_ffmpegExecutableName.ToLower()))?
                                                          .FullName;
                 ValidateExecutables();
                 return;

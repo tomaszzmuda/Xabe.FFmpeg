@@ -766,6 +766,20 @@ namespace Xabe.FFmpeg.Test
 
             Assert.StartsWith("-re", conversionResult.Arguments);
         }
+
+        [Fact]
+        public async Task TryConvertMedia_NoFilesInFFmpegDirectory_ThrowFFmpegNotFoundException()
+        {
+            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+            FFmpeg.SetExecutablesPath(tempDir);
+
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            var exception = await Record.ExceptionAsync(async() => await FFmpeg.GetMediaInfo(Resources.MkvWithAudio));
+
+            Assert.NotNull(exception);
+            Assert.IsType<FFmpegNotFoundException>(exception);
+        }
     }
 }
 
