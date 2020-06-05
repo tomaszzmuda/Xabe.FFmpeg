@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Downloader;
+using System.Reflection;
 
 namespace MyVideosConverter
 {
@@ -13,11 +14,10 @@ namespace MyVideosConverter
         internal static async Task Run()
         {
             Console.Out.WriteLine("[Start] Basic Conversion");
-            FileInfo fileToConvert = GetFilesToConvert(".").First();
-
+            FileInfo fileToConvert = GetFilesToConvert(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).First();
             //Set directory where app should look for FFmpeg executables.
-            FFmpeg.SetExecutablesPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FFmpeg"));
-            //Get latest version of FFmpeg. It's great idea if you don't know if you had installed FFmpe1g.
+            FFmpeg.SetExecutablesPath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            //Get latest version of FFmpeg. It's great idea if you don't know if you had installed FFmpeg.
             await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Official);
 
             //Run conversion

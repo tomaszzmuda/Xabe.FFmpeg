@@ -15,6 +15,7 @@ namespace Xabe.FFmpeg
     {
         private static string _ffmpegPath;
         private static string _ffprobePath;
+        private static string _lastExecutablePath = Guid.NewGuid().ToString();
 
         private static readonly object _ffmpegPathLock = new object();
         private static readonly object _ffprobePathLock = new object();
@@ -32,7 +33,7 @@ namespace Xabe.FFmpeg
         private void FindAndValidateExecutables()
         {
             if (!string.IsNullOrWhiteSpace(FFprobePath) &&
-               !string.IsNullOrWhiteSpace(FFmpegPath))
+               !string.IsNullOrWhiteSpace(FFmpegPath) && _lastExecutablePath.Equals(ExecutablesPath))
             {
                 return;
             }
@@ -40,14 +41,15 @@ namespace Xabe.FFmpeg
             if (!string.IsNullOrWhiteSpace(ExecutablesPath))
             {
                 FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                          .First(x => x.Name.ToLower()
-                                                                                .Contains(_ffprobeExecutableName.ToLower()))
+                                                          .FirstOrDefault(x => x.Name.ToLower()
+                                                                                .Contains(_ffprobeExecutableName.ToLower()))?
                                                           .FullName;
                 FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                         .First(x => x.Name.ToLower()
-                                                                               .Contains(_ffmpegExecutableName.ToLower()))
+                                                         .FirstOrDefault(x => x.Name.ToLower()
+                                                                               .Contains(_ffmpegExecutableName.ToLower()))?
                                                          .FullName;
                 ValidateExecutables();
+                _lastExecutablePath = ExecutablesPath;
                 return;
             }
 
