@@ -41,5 +41,36 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(TimeSpan.FromSeconds(13), audioStream.Duration);
             Assert.Equal(320000, audioStream.Bitrate);
         }
+
+        [Theory]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.lin, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.log, FrequencyScale.lin)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.sqrt, FrequencyScale.rlog)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.bar, AmplitudeScale.cbrt, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.lin, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.log, FrequencyScale.lin)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.sqrt, FrequencyScale.rlog)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.dot, AmplitudeScale.cbrt, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.lin, FrequencyScale.log)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.log, FrequencyScale.lin)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.sqrt, FrequencyScale.rlog)]
+        [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.cbrt, FrequencyScale.log)]
+        public async Task VisualiseAudioTest(VideoSize size, PixelFormat pixelFormat, VisualisationMode mode, AmplitudeScale amplitudeScale, FrequencyScale frequencyScale)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.aac);
+
+            IConversionResult conversionResult = await (await FFmpeg.Conversions.FromSnippet.VisualiseAudio(Resources.Mp4WithAudio, output, size, pixelFormat, mode, amplitudeScale, frequencyScale))
+                .Start();
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+
+            // The resulting streams are 4 seconds longer than the original
+            Assert.Equal(resultFile.VideoStreams.First().Duration, audioStream.Duration + TimeSpan.FromSeconds(4));
+            Assert.Equal(resultFile.AudioStreams.First().Duration, audioStream.Duration + TimeSpan.FromSeconds(4));
+            Assert.Equal(1920, resultFile.VideoStreams.First().Width);
+            Assert.Equal(1080, resultFile.VideoStreams.First().Height);
+        }
     }
 }

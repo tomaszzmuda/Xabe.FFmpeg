@@ -47,5 +47,37 @@ namespace Xabe.FFmpeg
                 .AddStream(videoInfo.SubtitleStreams.ToArray())
                 .SetOutput(outputPath);
         }
+
+        /// <summary>
+        /// Generates a visualisation of an audio stream using the 'showfreqs' filter
+        /// </summary>
+        /// <param name="inputPath">Path to the input file containing the audio stream to visualise</param>
+        /// <param name="outputPath">Path to output the visualised audio stream to</param>
+        /// <param name="size">The Size of the outputted video stream</param>
+        /// <param name="pixelFormat">The output pixel format (default is yuv420p)</param>
+        /// <param name="mode">The visualisation mode (default is bar)</param>
+        /// <param name="amplitudeScale">The frequency scale (default is lin)</param>
+        /// <param name="frequencyScale">The amplitude scale (default is log)</param>
+        /// <returns>IConversion object</returns>
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static IConversion VisualiseAudio(string inputPath, string outputPath, VideoSize size,
+            PixelFormat pixelFormat = PixelFormat.yuv420p,
+            VisualisationMode mode = VisualisationMode.bar,
+            AmplitudeScale amplitudeScale = AmplitudeScale.lin,
+            FrequencyScale frequencyScale = FrequencyScale.log)
+        {
+            IMediaInfo inputInfo = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IAudioStream audioStream = inputInfo.AudioStreams.FirstOrDefault();
+            IVideoStream videoStream = inputInfo.VideoStreams.FirstOrDefault();
+
+            string filter = $"\"[0:a]showfreqs=mode={mode}:fscale={frequencyScale}:ascale={amplitudeScale},format={pixelFormat},scale={size.ToFFmpegFormat()} [v]\"";
+
+            return New()
+                .AddStream(audioStream)
+                .AddParameter($"-filter_complex {filter}")
+                .AddParameter("-map [v]")
+                .SetFrameRate(videoStream != null ? videoStream.Framerate : 30) // Pin framerate at the original rate or 30 fps to stop dropped or duplicated frames
+                .SetOutput(outputPath);
+        }
     }
 }
