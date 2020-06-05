@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Downloader;
@@ -14,7 +15,7 @@ namespace MyVideosConverter
         {
             Console.Out.WriteLine("[Start] Modify streams");
 
-            Queue<FileInfo> filesToConvert = new Queue<FileInfo>(GetFilesToConvert("."));
+            Queue<FileInfo> filesToConvert = new Queue<FileInfo>(GetFilesToConvert(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)));
             await Console.Out.WriteLineAsync($"Find {filesToConvert.Count()} files to convert.");
 
             //Set directory where app should look for FFmpeg executables.
