@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Exceptions
     {
         private static Dictionary<ExceptionCheck, Action<string, string>> Checks = new Dictionary<ExceptionCheck, Action<string, string>>();
 
-        internal FFmpegExceptionCatcher()
+        static FFmpegExceptionCatcher()
         {
             Checks.Add(new ExceptionCheck("Invalid NAL unit size"), (output, args) => throw new ConversionException(output, args));
             Checks.Add(new ExceptionCheck("Packet mismatch", true), (output, args) => throw new ConversionException(output, args));
