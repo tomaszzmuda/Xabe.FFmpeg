@@ -126,10 +126,11 @@ namespace Xabe.FFmpeg
             _ffmpeg = new FFmpegWrapper();
             _ffmpeg.OnProgress += OnProgress;
             _ffmpeg.OnDataReceived += OnDataReceived;
+            DateTime startTime = DateTime.Now;
             await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
             var result = new ConversionResult
             {
-                StartTime = DateTime.Now,
+                StartTime = startTime,
                 EndTime = DateTime.Now,
                 Arguments = parameters
             };
