@@ -790,6 +790,29 @@ namespace Xabe.FFmpeg.Test
                 FFmpeg.SetExecutablesPath(path);
             }
         }
+
+        [Fact]
+        public async Task ConvertSloMoTest()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SloMoMp4);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.h264);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetFrameRate(videoStream.Framerate)
+                                                                 .SetOutputFormat(Format.h264)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            IVideoStream resultVideoStream = resultFile.VideoStreams?.First();
+
+            Assert.Equal(".mp4", Path.GetExtension(resultFile.Path));
+            Assert.Equal(116.244, resultVideoStream.Framerate);
+            Assert.Equal(TimeSpan.FromSeconds(3), resultVideoStream.Duration);
+        }
     }
 }
 

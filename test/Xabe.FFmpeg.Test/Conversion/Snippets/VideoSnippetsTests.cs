@@ -166,6 +166,25 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", videoStream.Codec);
             Assert.Equal("aac", audioStream.Codec);
             Assert.Empty(mediaInfo.SubtitleStreams);
+            Assert.Equal(25, videoStream.Framerate);
+        }
+
+        [Fact]
+        public async Task BasicConversion_SloMo()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.SloMoMp4, output)).Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(3), mediaInfo.Duration);
+            Assert.Single(mediaInfo.VideoStreams);
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.Equal("h264", videoStream.Codec);
+            Assert.Empty(mediaInfo.SubtitleStreams);
+            Assert.Equal(116.244, videoStream.Framerate);
         }
 
         [Fact]
@@ -181,6 +200,9 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Equal(2, mediaInfo.AudioStreams.Count());
             Assert.Empty(mediaInfo.SubtitleStreams);
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.Equal(24, videoStream.Framerate);
         }
 
         [Fact(Skip = "The RTSP stream is not valid anymore")]

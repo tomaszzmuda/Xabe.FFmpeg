@@ -220,8 +220,11 @@ namespace Xabe.FFmpeg
 
             foreach (var stream in info.Streams)
             {
-                if(!typeof(ISubtitleStream).IsAssignableFrom(stream.GetType()))
-                    conversion.AddStream(stream);
+                if (stream is IVideoStream videoStream)
+                    // PR #268 We have to force the framerate here due to an FFmpeg bug with videos > 100fps from android devices
+                    conversion.AddStream(videoStream.SetFramerate(videoStream.Framerate)); 
+                else if (stream is IAudioStream audioStream)
+                    conversion.AddStream(audioStream);
             }
 
             return conversion;
