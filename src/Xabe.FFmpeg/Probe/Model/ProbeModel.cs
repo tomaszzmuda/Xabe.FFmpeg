@@ -31,6 +31,7 @@ namespace Xabe.FFmpeg
             public string pix_fmt { get; set; }
 
             public Tags tags { get; set; }
+            public string nb_frames { get; set; }
 
             public Disposition disposition { get; set; }
 
@@ -55,7 +56,6 @@ namespace Xabe.FFmpeg
             //            public int start_pts { get; set; }
             //            public string start_time { get; set; }
             //            public int duration_ts { get; set; }
-            //            public string nb_frames { get; set; }
         }
 
         internal class Tags

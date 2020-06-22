@@ -161,5 +161,15 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(exception);
             Assert.IsType<ArgumentException>(exception);
         }
+
+        [Fact]
+        public async Task GetSloMoVideoFramerateTest()
+        {
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SloMoMp4);
+            IVideoStream videoStream = info.VideoStreams.First();
+
+            Assert.Equal(116.244, videoStream.Framerate);
+            Assert.Equal(TimeSpan.FromSeconds(3), videoStream.Duration);
+        }
     }
 }
