@@ -349,6 +349,7 @@ namespace Xabe.FFmpeg
         public IConversion SetInputFrameRate(double frameRate)
         {
             AddParameter($"-framerate {frameRate}", ParameterPosition.PreInput);
+            AddParameter($"-r {frameRate}", ParameterPosition.PreInput);
             return this;
         }
 
@@ -356,6 +357,7 @@ namespace Xabe.FFmpeg
         public IConversion SetFrameRate(double frameRate)
         {
             AddParameter($"-framerate {frameRate}", ParameterPosition.PostInput);
+            AddParameter($"-r {frameRate}", ParameterPosition.PostInput);
             return this;
         }
 
