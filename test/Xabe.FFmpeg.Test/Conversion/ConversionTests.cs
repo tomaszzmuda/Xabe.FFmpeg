@@ -801,7 +801,6 @@ namespace Xabe.FFmpeg.Test
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
                                                                  .AddStream(videoStream)
                                                                  .SetFrameRate(videoStream.Framerate)
-                                                                 .SetOutputFormat(Format.h264)
                                                                  .SetOutput(output)
                                                                  .Start();
 
