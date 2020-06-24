@@ -28,7 +28,7 @@ namespace Xabe.FFmpeg.Test
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.Equal("gif", videoStream.Codec);
             Assert.Equal("16:9", videoStream.Ratio);
-            Assert.Equal(24.889, videoStream.Framerate);
+            Assert.Equal(25, videoStream.Framerate);
             Assert.Equal(1280, videoStream.Width);
             Assert.Equal(720, videoStream.Height);
         }
