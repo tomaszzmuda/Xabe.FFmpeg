@@ -287,7 +287,7 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
-            Assert.Equal(29.97, resultFile.VideoStreams.First().Framerate);
+            Assert.Equal(30, resultFile.VideoStreams.First().Framerate);
             Assert.Equal(TimeSpan.FromSeconds(3), resultFile.VideoStreams.First().Duration);
         }
 

@@ -170,7 +170,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task BasicConversion_SloMo()
+        public async Task BasicConversion_SloMoVideo_CorrectFramerate()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 

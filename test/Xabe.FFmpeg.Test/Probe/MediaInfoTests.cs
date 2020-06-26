@@ -163,7 +163,7 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task GetSloMoVideoFramerateTest()
+        public async Task CalculateFramerate_SloMoVideo_CorrectFramerateIsReturned()
         {
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SloMoMp4);
             IVideoStream videoStream = info.VideoStreams.First();
