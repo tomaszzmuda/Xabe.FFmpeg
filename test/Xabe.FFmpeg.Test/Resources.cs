@@ -15,6 +15,7 @@ namespace Xabe.FFmpeg.Test
         internal static readonly string TsWithAudio = GetResourceFilePath("sample.ts");
         internal static readonly string FlvWithAudio = GetResourceFilePath("sample.flv");
         internal static readonly string BunnyMp4 = GetResourceFilePath("bunny.mp4");
+        internal static readonly string SloMoMp4 = GetResourceFilePath("slomo.mp4");
         internal static readonly string Dll = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xabe.FFmpeg.Test.dll");
 
         internal static readonly string Images = GetResourceFilePath("Images");

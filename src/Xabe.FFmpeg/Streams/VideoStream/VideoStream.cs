@@ -135,7 +135,7 @@ namespace Xabe.FFmpeg
             {
                 videoMultiplicator = 1 + (multiplication - 1) * -2;
             }
-            return $"{string.Format(CultureInfo.GetCultureInfo("en-US"), "{0:N1}", videoMultiplicator)}*PTS ";
+            return $"{videoMultiplicator.ToFFmpegFormat()}*PTS ";
         }
 
         /// <inheritdoc />
@@ -236,7 +236,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetFramerate(double framerate)
         {
-            _framerate = $"-r {string.Format(CultureInfo.GetCultureInfo("en-US"), "{0}", framerate)} ";
+            _framerate = $"-r {framerate.ToFFmpegFormat(3)} ";
             return this;
         }
 

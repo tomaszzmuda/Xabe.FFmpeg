@@ -35,6 +35,8 @@ namespace Xabe.FFmpeg
         private string _outputFormat;
         private string _inputFormat;
         private string _outputPixelFormat;
+        private string _framerate;
+        private string _inputFramerate;
 
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
@@ -56,6 +58,7 @@ namespace Xabe.FFmpeg
                 builder.Append(_hardwareAcceleration);
                 builder.Append(_inputFormat);
                 builder.Append(_inputTime);
+                builder.Append(_inputFramerate);
                 builder.Append(BuildParameters(ParameterPosition.PreInput));
 
                 if (!_capturing)
@@ -74,6 +77,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
                 builder.Append(BuildMap());
+                builder.Append(_framerate);
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
                 builder.Append(_outputTime);
                 builder.Append(_outputPixelFormat);
@@ -348,14 +352,14 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetInputFrameRate(double frameRate)
         {
-            AddParameter($"-framerate {frameRate}", ParameterPosition.PreInput);
+            _inputFramerate = $"-framerate {frameRate} -r {frameRate} ";
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetFrameRate(double frameRate)
         {
-            AddParameter($"-framerate {frameRate}", ParameterPosition.PostInput);
+            _framerate = $"-framerate {frameRate.ToFFmpegFormat(3)} -r {frameRate.ToFFmpegFormat(3)} ";
             return this;
         }
 

@@ -28,8 +28,20 @@ namespace Xabe.FFmpeg
 
         private double GetVideoFramerate(ProbeModel.Stream vid)
         {
+            long frameCount = GetFrameCount(vid);
+            double duration = vid.duration;
             string[] fr = vid.r_frame_rate.Split('/');
-            return Math.Round(double.Parse(fr[0]) / double.Parse(fr[1]), 3);
+
+            if (frameCount > 0)
+                return Math.Round(frameCount / duration, 3);
+            else
+                return Math.Round(double.Parse(fr[0]) / double.Parse(fr[1]), 3);
+        }
+
+        private long GetFrameCount(ProbeModel.Stream vid)
+        {
+            long frameCount = 0;
+            return long.TryParse(vid.nb_frames, out frameCount) ? frameCount : 0;
         }
 
         private string GetVideoAspectRatio(int width, int height)
