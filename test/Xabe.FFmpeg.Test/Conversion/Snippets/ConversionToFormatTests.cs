@@ -11,9 +11,9 @@ namespace Xabe.FFmpeg.Test
 
     {
         [Theory]
-        [InlineData(1, 0)]
-        [InlineData(1, 1)]
-        public async Task ToGifTest(int loopCount, int delay)
+        [InlineData(1, 0, 25)]
+        [InlineData(1, 1, 24.889)]
+        public async Task ToGifTest(int loopCount, int delay, double framerate)
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
 
@@ -28,7 +28,7 @@ namespace Xabe.FFmpeg.Test
             IVideoStream videoStream = mediaInfo.VideoStreams.First();
             Assert.Equal("gif", videoStream.Codec);
             Assert.Equal("16:9", videoStream.Ratio);
-            Assert.Equal(25, videoStream.Framerate);
+            Assert.Equal(framerate, videoStream.Framerate);
             Assert.Equal(1280, videoStream.Width);
             Assert.Equal(720, videoStream.Height);
         }
