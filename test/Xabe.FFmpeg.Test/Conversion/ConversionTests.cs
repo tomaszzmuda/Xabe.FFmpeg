@@ -620,6 +620,32 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task BuildVideoFromImagesListAndAudioTest()
+        {
+            List<string> files = Directory.EnumerateFiles(Resources.Images).ToList();
+            string preparedFilesDir = string.Empty;
+            IMediaInfo audioInfo = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IAudioStream audioStream = audioInfo.AudioStreams.First();
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .SetInputFrameRate(1)
+                                                                 .BuildVideoFromImages(files)
+                                                                 .SetFrameRate(1)
+                                                                 .SetPixelFormat(PixelFormat.yuv420p)
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
+            Assert.Equal(1, resultFile.VideoStreams.First().Framerate);
+            Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
+            Assert.Single(resultFile.AudioStreams);
+        }
+
+        [Fact]
         public async Task OverwriteFilesTest()
         {
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
