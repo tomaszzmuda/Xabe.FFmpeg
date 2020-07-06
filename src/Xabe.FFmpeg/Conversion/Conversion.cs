@@ -83,7 +83,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildConversionParameters());
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
-                builder.Append(BuildMap(_hasInputBuilder));
+                builder.Append(BuildMap());
                 builder.Append(_framerate);
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
                 builder.Append(_outputTime);
@@ -499,11 +499,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Create map for included streams
+        ///     Create map for included streams, including the InputBuilder if required
         /// </summary>
-        /// <param name="hasInputBuilder">Whether the conversion has an input builder specified</param>
         /// <returns>Map argument</returns>
-        private string BuildMap(bool hasInputBuilder)
+        private string BuildMap()
         {
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
@@ -513,7 +512,7 @@ namespace Xabe.FFmpeg
 
                 foreach (var source in stream.GetSource())
                 {
-                    if (hasInputBuilder)
+                    if (_hasInputBuilder)
                     {
                         // If we have an input builder we need to add one to the input file index to account for the input created by our input builder.
                         builder.Append($"-map {_inputFileMap[source] + 1}:{stream.Index} ");
