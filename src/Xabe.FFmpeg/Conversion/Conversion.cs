@@ -29,6 +29,7 @@ namespace Xabe.FFmpeg
         private string _seek;
         private bool _useMultiThreads = true;
         private bool _capturing = false;
+        private bool _hasInputBuilder = false;
         private int? _threadsCount;
         private string _inputTime;
         private string _outputTime;
@@ -66,9 +67,15 @@ namespace Xabe.FFmpeg
                     builder.Append(BuildInputParameters());
 
                     if (_buildInputFileName == null)
-                        _buildInputFileName = (number) => { return BuildInput(); };
-
-                    builder.Append(_buildInputFileName("_%03d"));
+                    {
+                        builder.Append(BuildInput());
+                    }
+                    else
+                    {
+                        _hasInputBuilder = true;
+                        builder.Append(_buildInputFileName("_%03d"));
+                        builder.Append(BuildInput());
+                    }
                 }
 
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
@@ -76,7 +83,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildConversionParameters());
                 builder.Append(BuildStreamParameters());
                 builder.Append(BuildFilters());
-                builder.Append(BuildMap());
+                builder.Append(BuildMap(_hasInputBuilder));
                 builder.Append(_framerate);
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
                 builder.Append(_outputTime);
@@ -494,15 +501,27 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Create map for included streams
         /// </summary>
+        /// <param name="hasInputBuilder">Whether the conversion has an input builder specified</param>
         /// <returns>Map argument</returns>
-        private string BuildMap()
+        private string BuildMap(bool hasInputBuilder)
         {
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
             {
+                if(_hasInputBuilder) // If we have an input builder we always want to map the first video stream as it will be created by our input builder
+                    builder.Append($"-map 0:0 ");
+
                 foreach (var source in stream.GetSource())
                 {
-                    builder.Append($"-map {_inputFileMap[source]}:{stream.Index} ");
+                    if (hasInputBuilder)
+                    {
+                        // If we have an input builder we need to add one to the input file index to account for the input created by our input builder.
+                        builder.Append($"-map {_inputFileMap[source] + 1}:{stream.Index} ");
+                    }
+                    else
+                    {
+                        builder.Append($"-map {_inputFileMap[source]}:{stream.Index} ");
+                    }
                 }
             }
             return builder.ToString();

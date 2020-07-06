@@ -521,6 +521,39 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
         }
 
+        [Fact]
+        public async Task BuildVideoFromImagesAndAudioTest()
+        {
+            List<string> files = Directory.EnumerateFiles(Resources.Images).ToList();
+            InputBuilder builder = new InputBuilder();
+            string preparedFilesDir = string.Empty;
+            IMediaInfo audioInfo = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IAudioStream audioStream = audioInfo.AudioStreams.First();
+            Func<string, string> inputBuilder = builder.PrepareInputFiles(files, out preparedFilesDir);
+
+
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .SetInputFrameRate(1)
+                                                                 .BuildVideoFromImages(1, inputBuilder)
+                                                                 .SetFrameRate(1)
+                                                                 .SetPixelFormat(PixelFormat.yuv420p)
+                                                                 .AddStream(audioStream)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            int preparedFilesCount = Directory.EnumerateFiles(preparedFilesDir).ToList().Count;
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(builder.FileList.Count, preparedFilesCount);
+            Assert.Equal(TimeSpan.FromSeconds(12), resultFile.VideoStreams.First().Duration);
+            Assert.Equal(1, resultFile.VideoStreams.First().Framerate);
+            Assert.Equal("yuv420p", resultFile.VideoStreams.First().PixelFormat);
+            Assert.Single(resultFile.AudioStreams);
+        }
+
         [Theory]
         [InlineData(PixelFormat._0bgr, "0bgr")]
         [InlineData(PixelFormat._0rgb, "0rgb")]
