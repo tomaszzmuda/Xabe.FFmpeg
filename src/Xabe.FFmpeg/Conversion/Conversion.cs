@@ -29,6 +29,7 @@ namespace Xabe.FFmpeg
         private string _seek;
         private bool _useMultiThreads = true;
         private bool _capturing = false;
+        private bool _hasInputBuilder = false;
         private int? _threadsCount;
         private string _inputTime;
         private string _outputTime;
@@ -66,9 +67,15 @@ namespace Xabe.FFmpeg
                     builder.Append(BuildInputParameters());
 
                     if (_buildInputFileName == null)
-                        _buildInputFileName = (number) => { return BuildInput(); };
-
-                    builder.Append(_buildInputFileName("_%03d"));
+                    {
+                        builder.Append(BuildInput());
+                    }
+                    else
+                    {
+                        _hasInputBuilder = true;
+                        builder.Append(_buildInputFileName("_%03d"));
+                        builder.Append(BuildInput());
+                    }
                 }
 
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
@@ -492,7 +499,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Create map for included streams
+        ///     Create map for included streams, including the InputBuilder if required
         /// </summary>
         /// <returns>Map argument</returns>
         private string BuildMap()
@@ -500,9 +507,20 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
             {
+                if(_hasInputBuilder) // If we have an input builder we always want to map the first video stream as it will be created by our input builder
+                    builder.Append($"-map 0:0 ");
+
                 foreach (var source in stream.GetSource())
                 {
-                    builder.Append($"-map {_inputFileMap[source]}:{stream.Index} ");
+                    if (_hasInputBuilder)
+                    {
+                        // If we have an input builder we need to add one to the input file index to account for the input created by our input builder.
+                        builder.Append($"-map {_inputFileMap[source] + 1}:{stream.Index} ");
+                    }
+                    else
+                    {
+                        builder.Append($"-map {_inputFileMap[source]}:{stream.Index} ");
+                    }
                 }
             }
             return builder.ToString();
