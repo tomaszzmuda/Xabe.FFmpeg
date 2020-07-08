@@ -51,7 +51,6 @@ namespace Xabe.FFmpeg
                 .AddStream(mediaInfo.VideoStreams)
                 .AddStream(mediaInfo.AudioStreams)
                 .AddStream(subtitleStream)
-                //.AddParameter($@"-vf ""subtitles={subtitlePath}"" ")
                 .SetOutput(outputPath);
         }
     }
