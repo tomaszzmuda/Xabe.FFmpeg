@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
 {
@@ -308,10 +309,26 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputFilePath">Path to file</param>
         /// <param name="outputFilePath">Path to file</param>
+        /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
-        public async Task<IConversion> Convert(string inputFilePath, string outputFilePath)
+        public async Task<IConversion> Convert(string inputFilePath, string outputFilePath, bool keepSubtitles = false)
         {
-            return await Task.FromResult(Conversion.Convert(inputFilePath, outputFilePath));
+            return await Task.FromResult(Conversion.Convert(inputFilePath, outputFilePath, keepSubtitles));
+        }
+
+        /// <summary>
+        ///     Transcode one file to another with destination format and codecs.
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="outputFilePath">Path to file</param>
+        /// <param name="audioCodec"> The Audio Codec to Transcode the input to</param>
+        /// <param name="videoCodec"> The Video Codec to Transcode the input to</param>
+        /// <param name="videoCodec"> The Subtitle Codec to Transcode the input to</param>
+        /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
+        /// <returns>IConversion object</returns>
+        public async Task<IConversion> Transcode(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
+        {
+            return await Task.FromResult(Conversion.Transcode(inputFilePath, outputFilePath, videoCodec, audioCodec, subtitleCodec, keepSubtitles));
         }
 
         /// <summary>

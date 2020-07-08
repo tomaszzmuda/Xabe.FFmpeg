@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Streams.SubtitleStream;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -166,6 +167,122 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", videoStream.Codec);
             Assert.Equal("aac", audioStream.Codec);
             Assert.Empty(mediaInfo.SubtitleStreams);
+            Assert.Equal(25, videoStream.Framerate);
+        }
+
+        [Fact]
+        public async Task BasicConversion_InputFileWithSubtitles_SkipSubtitlesWithParameter()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, false)).Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Single(mediaInfo.VideoStreams);
+            Assert.Single(mediaInfo.AudioStreams);
+            IAudioStream audioStream = mediaInfo.AudioStreams.First();
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
+            Assert.Equal("h264", videoStream.Codec);
+            Assert.Equal("aac", audioStream.Codec);
+            Assert.Empty(mediaInfo.SubtitleStreams);
+            Assert.Equal(25, videoStream.Framerate);
+        }
+
+        [Fact]
+        public async Task BasicConversion_InputFileWithSubtitles_KeepSubtitles()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, true)).Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Single(mediaInfo.VideoStreams);
+            Assert.Single(mediaInfo.AudioStreams);
+            Assert.Equal(2, mediaInfo.SubtitleStreams.Count());
+            IAudioStream audioStream = mediaInfo.AudioStreams.First();
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
+            Assert.Equal("h264", videoStream.Codec);
+            Assert.Equal("aac", audioStream.Codec);
+            Assert.Equal(25, videoStream.Framerate);
+        }
+
+        [Theory]
+        [InlineData(VideoCodec.hevc, AudioCodec.aac, SubtitleCodec.mov_text)]
+        [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.mov_text)]
+        public async Task BasicTranscode_InputFileWithSubtitles_KeepSubtitles(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, true)).Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Single(mediaInfo.VideoStreams);
+            Assert.Single(mediaInfo.AudioStreams);
+            Assert.Equal(2, mediaInfo.SubtitleStreams.Count());
+            IAudioStream audioStream = mediaInfo.AudioStreams.First();
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
+            Assert.Equal(videoCodec.ToString(), videoStream.Codec);
+            Assert.Equal(audioCodec.ToString(), audioStream.Codec);
+            Assert.Equal(25, videoStream.Framerate);
+        }
+
+        [Theory]
+        [InlineData(VideoCodec.hevc, AudioCodec.aac, SubtitleCodec.copy)]
+        [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.copy)]
+        public async Task BasicTranscode_InputFileWithSubtitles_SkipSubtitles(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec)).Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Single(mediaInfo.VideoStreams);
+            Assert.Single(mediaInfo.AudioStreams);
+            Assert.Empty(mediaInfo.SubtitleStreams);
+            IAudioStream audioStream = mediaInfo.AudioStreams.First();
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
+            Assert.Equal(videoCodec.ToString(), videoStream.Codec);
+            Assert.Equal(audioCodec.ToString(), audioStream.Codec);
+            Assert.Equal(25, videoStream.Framerate);
+        }
+
+        [Theory]
+        [InlineData(VideoCodec.hevc, AudioCodec.aac, SubtitleCodec.copy)]
+        [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.copy)]
+        public async Task BasicTranscode_InputFileWithSubtitles_SkipSubtitlesWithParameter(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, false)).Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Single(mediaInfo.VideoStreams);
+            Assert.Single(mediaInfo.AudioStreams);
+            Assert.Empty(mediaInfo.SubtitleStreams);
+            IAudioStream audioStream = mediaInfo.AudioStreams.First();
+            IVideoStream videoStream = mediaInfo.VideoStreams.First();
+            Assert.NotNull(videoStream);
+            Assert.NotNull(audioStream);
+            Assert.Equal(videoCodec.ToString(), videoStream.Codec);
+            Assert.Equal(audioCodec.ToString(), audioStream.Codec);
             Assert.Equal(25, videoStream.Framerate);
         }
 
