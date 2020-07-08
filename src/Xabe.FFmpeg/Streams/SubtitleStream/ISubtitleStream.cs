@@ -1,4 +1,5 @@
 ﻿using System;
+using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
 {
@@ -33,5 +34,19 @@ namespace Xabe.FFmpeg
         /// <param name="language">Language</param>
         /// <returns>ISubtitleStream</returns>
         ISubtitleStream SetLanguage(string language);
+
+        /// <summary>
+        ///     Set subtitle codec
+        /// </summary>
+        /// <param name="codec">Subtitle codec</param>
+        /// <returns>ISubtitleStream</returns>
+        ISubtitleStream SetCodec(SubtitleCodec codec);
+
+        /// <summary>
+        ///     Set Subtitle codec
+        /// </summary>
+        /// <param name="codec">Subtitle codec</param>
+        /// <returns>IVideoStream</returns>
+        ISubtitleStream SetCodec(string codec);
     }
 }

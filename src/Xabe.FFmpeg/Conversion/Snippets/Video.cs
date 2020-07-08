@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
 {
@@ -210,9 +211,10 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputFilePath">Path to file</param>
         /// <param name="outputFilePath">Path to file</param>
+        /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
         [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion Convert(string inputFilePath, string outputFilePath)
+        public static IConversion Convert(string inputFilePath, string outputFilePath, bool keepSubtitles = false)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
 
@@ -222,9 +224,42 @@ namespace Xabe.FFmpeg
             {
                 if (stream is IVideoStream videoStream)
                     // PR #268 We have to force the framerate here due to an FFmpeg bug with videos > 100fps from android devices
-                    conversion.AddStream(videoStream.SetFramerate(videoStream.Framerate)); 
+                    conversion.AddStream(videoStream.SetFramerate(videoStream.Framerate));
                 else if (stream is IAudioStream audioStream)
                     conversion.AddStream(audioStream);
+                else if (stream is ISubtitleStream subtitleStream && keepSubtitles)
+                    conversion.AddStream(subtitleStream.SetCodec(SubtitleCodec.mov_text));
+            }
+
+            return conversion;
+        }
+
+        /// <summary>
+        ///     Transcode one file to another with destination format and codecs.
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="outputFilePath">Path to file</param>
+        /// <param name="audioCodec"> The Audio Codec to Transcode the input to</param>
+        /// <param name="videoCodec"> The Video Codec to Transcode the input to</param>
+        /// <param name="videoCodec"> The Subtitle Codec to Transcode the input to</param>
+        /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
+        /// <returns>IConversion object</returns>
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static IConversion Transcode(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
+        {
+            IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
+
+            var conversion = New().SetOutput(outputFilePath);
+
+            foreach (var stream in info.Streams)
+            {
+                if (stream is IVideoStream videoStream)
+                    // PR #268 We have to force the framerate here due to an FFmpeg bug with videos > 100fps from android devices
+                    conversion.AddStream(videoStream.SetCodec(videoCodec).SetFramerate(videoStream.Framerate));
+                else if (stream is IAudioStream audioStream)
+                    conversion.AddStream(audioStream.SetCodec(audioCodec));
+                else if (stream is ISubtitleStream subtitleStream && keepSubtitles)
+                    conversion.AddStream(subtitleStream.SetCodec(subtitleCodec));
             }
 
             return conversion;

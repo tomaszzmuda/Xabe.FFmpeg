@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
 {
@@ -9,6 +10,7 @@ namespace Xabe.FFmpeg
     public class SubtitleStream : ISubtitleStream
     {
         private string _language;
+        private string _codec;
 
         /// <inheritdoc />
         public string Codec { get; internal set; }
@@ -21,6 +23,7 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             builder.Append(BuildLanguage());
+            builder.Append(BuildSubtitleCodec());
             return builder.ToString();
         }
 
@@ -54,6 +57,15 @@ namespace Xabe.FFmpeg
         public StreamType StreamType => StreamType.Subtitle;
 
         /// <inheritdoc />
+        public string BuildSubtitleCodec()
+        {
+            if (_codec != null)
+                return $"-c:s {_codec.ToString()} ";
+            else
+                return string.Empty;
+        }
+
+        /// <inheritdoc />
         public ISubtitleStream SetLanguage(string lang)
         {
             if (!string.IsNullOrEmpty(lang))
@@ -77,6 +89,21 @@ namespace Xabe.FFmpeg
                 language = $"-metadata:s:s:{Index} language={language} ";
             }
             return language;
+        }
+
+        /// <inheritdoc />
+        public ISubtitleStream SetCodec(SubtitleCodec codec)
+        {
+            string input = codec.ToString();
+
+            return SetCodec($"{input}");
+        }
+
+        /// <inheritdoc />
+        public ISubtitleStream SetCodec(string codec)
+        {
+            _codec = codec;
+            return this;
         }
     }
 }
