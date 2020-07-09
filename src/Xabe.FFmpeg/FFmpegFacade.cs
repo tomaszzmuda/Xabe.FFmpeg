@@ -199,11 +199,12 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output path</param>
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="subtitleCodec">The Subtitle Codec to Use to Encode the Subtitles</param>
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
-        public async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
+        public async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, SubtitleCodec subtitleCodec, string language = null)
         {
-            return await Task.FromResult(Conversion.AddSubtitle(inputPath, outputPath, subtitlePath, language));
+            return await Task.FromResult(Conversion.AddSubtitle(inputPath, outputPath, subtitlePath, subtitleCodec, language));
         }
 
         /// <summary>
