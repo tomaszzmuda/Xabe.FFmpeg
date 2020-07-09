@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Streams.SubtitleStream;
 using Xunit;
@@ -9,11 +10,49 @@ namespace Xabe.FFmpeg.Test
 {
     public class SubtitleSnippetsTests
     {
+        [Fact]
+        public async Task AddSubtitleTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
+            string input = Resources.MkvWithAudio;
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt))
+                                             .Start();
+
+            IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+            Assert.Single(outputInfo.SubtitleStreams);
+            Assert.Single(outputInfo.VideoStreams);
+            Assert.Single(outputInfo.AudioStreams);
+        }
+
+        [Fact]
+        public async Task AddSubtitleWithLanguageTest()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
+            string input = Resources.MkvWithAudio;
+
+            var language = "pol";
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, language))
+                                             .SetPreset(ConversionPreset.UltraFast)
+                                             .Start();
+
+
+            IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+            Assert.Single(outputInfo.SubtitleStreams);
+            Assert.Single(outputInfo.VideoStreams);
+            Assert.Single(outputInfo.AudioStreams);
+            Assert.Equal(language, outputInfo.SubtitleStreams.First().Language);
+        }
+
         [Theory]
         [InlineData(SubtitleCodec.webvtt)]
         [InlineData(SubtitleCodec.subrip)]
         [InlineData(SubtitleCodec.copy)]
-        public async Task AddSubtitleTest(SubtitleCodec subtitleCodec)
+        [InlineData(SubtitleCodec.ass)]
+        [InlineData(SubtitleCodec.ssa)]
+        public async Task AddSubtitleWithCodecTest(SubtitleCodec subtitleCodec)
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             string input = Resources.MkvWithAudio;
@@ -29,6 +68,8 @@ namespace Xabe.FFmpeg.Test
 
             if (subtitleCodec.ToString() == "copy")
                 Assert.Equal("subrip", outputInfo.SubtitleStreams.First().Codec);
+            else if (subtitleCodec.ToString() == "ssa")
+                Assert.Equal("ass", outputInfo.SubtitleStreams.First().Codec);
             else
                 Assert.Equal(subtitleCodec.ToString(), outputInfo.SubtitleStreams.First().Codec);
         }
@@ -37,7 +78,9 @@ namespace Xabe.FFmpeg.Test
         [InlineData(SubtitleCodec.webvtt)]
         [InlineData(SubtitleCodec.subrip)]
         [InlineData(SubtitleCodec.copy)]
-        public async Task AddSubtitleWithLanguageTest(SubtitleCodec subtitleCodec)
+        [InlineData(SubtitleCodec.ass)]
+        [InlineData(SubtitleCodec.ssa)]
+        public async Task AddSubtitleWithLanguageAndCodecTest(SubtitleCodec subtitleCodec)
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             string input = Resources.MkvWithAudio;
@@ -55,11 +98,14 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(outputInfo.AudioStreams);
             Assert.Equal(language, outputInfo.SubtitleStreams.First().Language);
 
-            if(subtitleCodec.ToString() == "copy")
+            if (subtitleCodec.ToString() == "copy")
                 Assert.Equal("subrip", outputInfo.SubtitleStreams.First().Codec);
-            else 
+            else if (subtitleCodec.ToString() == "ssa")
+                Assert.Equal("ass", outputInfo.SubtitleStreams.First().Codec);
+            else
                 Assert.Equal(subtitleCodec.ToString(), outputInfo.SubtitleStreams.First().Codec);
         }
+
 
         [Fact]
         public async Task BurnSubtitleTest()
