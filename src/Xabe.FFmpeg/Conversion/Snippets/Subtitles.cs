@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
 {
@@ -50,7 +51,33 @@ namespace Xabe.FFmpeg
             return New()
                 .AddStream(mediaInfo.VideoStreams)
                 .AddStream(mediaInfo.AudioStreams)
-                .AddStream(subtitleStream)
+                .AddStream(subtitleStream.SetCodec(SubtitleCodec.copy))
+                .SetOutput(outputPath);
+        }
+
+        /// <summary>
+        ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
+        ///     SetSubtitles method.
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output path</param>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="subtitleCodec">The Subtitle Codec to Use to Encode the Subtitles</param>
+        /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
+        /// <returns>Conversion result</returns>
+        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
+        public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, SubtitleCodec subtitleCodec, string language = null)
+        {
+            IMediaInfo mediaInfo = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo subtitleInfo = FFmpeg.GetMediaInfo(subtitlePath).GetAwaiter().GetResult();
+
+            ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First()
+                                                         .SetLanguage(language);
+
+            return New()
+                .AddStream(mediaInfo.VideoStreams)
+                .AddStream(mediaInfo.AudioStreams)
+                .AddStream(subtitleStream.SetCodec(subtitleCodec))
                 .SetOutput(outputPath);
         }
     }

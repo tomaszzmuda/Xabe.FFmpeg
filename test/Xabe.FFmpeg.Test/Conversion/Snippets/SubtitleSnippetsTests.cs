@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Streams.SubtitleStream;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -41,9 +43,69 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(outputInfo.SubtitleStreams);
             Assert.Single(outputInfo.VideoStreams);
             Assert.Single(outputInfo.AudioStreams);
-            Assert.Equal(language, outputInfo.SubtitleStreams.First()
-                                             .Language);
+            Assert.Equal(language, outputInfo.SubtitleStreams.First().Language);
         }
+
+        [Theory]
+        [InlineData(SubtitleCodec.webvtt)]
+        [InlineData(SubtitleCodec.subrip)]
+        [InlineData(SubtitleCodec.copy)]
+        [InlineData(SubtitleCodec.ass)]
+        [InlineData(SubtitleCodec.ssa)]
+        public async Task AddSubtitleWithCodecTest(SubtitleCodec subtitleCodec)
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
+            string input = Resources.MkvWithAudio;
+
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, subtitleCodec))
+                                             .Start();
+
+            IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+            Assert.Single(outputInfo.SubtitleStreams);
+            Assert.Single(outputInfo.VideoStreams);
+            Assert.Single(outputInfo.AudioStreams);
+
+            if (subtitleCodec.ToString() == "copy")
+                Assert.Equal("subrip", outputInfo.SubtitleStreams.First().Codec);
+            else if (subtitleCodec.ToString() == "ssa")
+                Assert.Equal("ass", outputInfo.SubtitleStreams.First().Codec);
+            else
+                Assert.Equal(subtitleCodec.ToString(), outputInfo.SubtitleStreams.First().Codec);
+        }
+
+        [Theory]
+        [InlineData(SubtitleCodec.webvtt)]
+        [InlineData(SubtitleCodec.subrip)]
+        [InlineData(SubtitleCodec.copy)]
+        [InlineData(SubtitleCodec.ass)]
+        [InlineData(SubtitleCodec.ssa)]
+        public async Task AddSubtitleWithLanguageAndCodecTest(SubtitleCodec subtitleCodec)
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
+            string input = Resources.MkvWithAudio;
+
+            var language = "pol";
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, subtitleCodec, language))
+                                             .SetPreset(ConversionPreset.UltraFast)
+                                             .Start();
+
+
+            IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+            Assert.Single(outputInfo.SubtitleStreams);
+            Assert.Single(outputInfo.VideoStreams);
+            Assert.Single(outputInfo.AudioStreams);
+            Assert.Equal(language, outputInfo.SubtitleStreams.First().Language);
+
+            if (subtitleCodec.ToString() == "copy")
+                Assert.Equal("subrip", outputInfo.SubtitleStreams.First().Codec);
+            else if (subtitleCodec.ToString() == "ssa")
+                Assert.Equal("ass", outputInfo.SubtitleStreams.First().Codec);
+            else
+                Assert.Equal(subtitleCodec.ToString(), outputInfo.SubtitleStreams.First().Codec);
+        }
+
 
         [Fact]
         public async Task BurnSubtitleTest()

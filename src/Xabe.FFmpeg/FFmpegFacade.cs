@@ -206,6 +206,22 @@ namespace Xabe.FFmpeg
             return await Task.FromResult(Conversion.AddSubtitle(inputPath, outputPath, subtitlePath, language));
         }
 
+
+        /// <summary>
+        ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
+        ///     BurnSubtitle method.
+        /// </summary>
+        /// <param name="inputPath">Input path</param>
+        /// <param name="outputPath">Output path</param>
+        /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
+        /// <param name="subtitleCodec">The Subtitle Codec to Use to Encode the Subtitles</param>
+        /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
+        /// <returns>Conversion result</returns>
+        public async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, SubtitleCodec subtitleCodec, string language = null)
+        {
+            return await Task.FromResult(Conversion.AddSubtitle(inputPath, outputPath, subtitlePath, subtitleCodec, language));
+        }
+
         /// <summary>
         ///     Melt watermark into video
         /// </summary>
