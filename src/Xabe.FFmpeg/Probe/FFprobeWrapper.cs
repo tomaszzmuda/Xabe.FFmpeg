@@ -213,7 +213,8 @@ namespace Xabe.FFmpeg
                 Bitrate = Math.Abs(model.bit_rate) > 0.01 ? model.bit_rate : format.bit_Rate,
                 PixelFormat = model.pix_fmt,
                 Default = model.disposition?._default,
-                Forced = model.disposition?.forced
+                Forced = model.disposition?.forced,
+                Rotation = model.tags?.rotate
             });
         }
     }

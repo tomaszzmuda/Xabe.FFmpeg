@@ -54,6 +54,11 @@ namespace Xabe.FFmpeg
         string PixelFormat { get; }
 
         /// <summary>
+        ///     Rotation angle
+        /// </summary>
+        int? Rotation { get; }
+
+        /// <summary>
         ///     Rotate video
         /// </summary>
         /// <param name="rotateDegrees">Rotate type</param>
