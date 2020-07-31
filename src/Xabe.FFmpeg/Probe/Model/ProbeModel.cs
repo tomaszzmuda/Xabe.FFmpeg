@@ -62,6 +62,7 @@ namespace Xabe.FFmpeg
         {
             public string language { get; set; }
             public string title { get; set; }
+            public int? rotate { get; set; }
         }
 
         internal class Disposition

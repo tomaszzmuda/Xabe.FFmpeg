@@ -79,6 +79,9 @@ namespace Xabe.FFmpeg
         public string PixelFormat { get; internal set; }
 
         /// <inheritdoc />
+        public int? Rotation { get; internal set; }
+
+        /// <inheritdoc />
         public string Build()
         {
             var builder = new StringBuilder();
