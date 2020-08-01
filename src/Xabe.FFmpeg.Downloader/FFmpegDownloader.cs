@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Downloader.Android;
 
 namespace Xabe.FFmpeg.Downloader
 {
@@ -31,6 +32,9 @@ namespace Xabe.FFmpeg.Downloader
                     break;
                 case FFmpegVersion.Shared:
                     downloader = new SharedFFmpegDownloader();
+                    break;
+                case FFmpegVersion.Android:
+                    downloader = new AndroidFFmpegDownloader();
                     break;
                 default:
                     throw new NotImplementedException();

@@ -19,5 +19,10 @@
         /// The Shared Release from Zenaroe (Only Windows and macOS)
         /// </summary>
         Shared = 3,
+
+        /// <summary>
+        /// The Android Release Based on Mobile-FFmpeg
+        /// </summary>
+        Android = 4
     }
 }
