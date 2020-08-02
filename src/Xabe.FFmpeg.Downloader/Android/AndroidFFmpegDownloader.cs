@@ -9,11 +9,14 @@ namespace Xabe.FFmpeg.Downloader.Android
 {
     internal class AndroidFFmpegDownloader : FFmpegDownloaderBase
     {
-        private OperatingSystemArchitectureProvider OperatingSystemArchProvider { get; set; }
-
-        public AndroidFFmpegDownloader()
+        public AndroidFFmpegDownloader() : base()
         {
-            OperatingSystemArchProvider = new OperatingSystemArchitectureProvider();
+
+        }
+
+        public AndroidFFmpegDownloader(IOperatingSystemArchitectureProvider archProvider) : base(archProvider)
+        {
+
         }
 
         private string GenerateLink(OperatingSystemArchitecture arch)
@@ -43,7 +46,7 @@ namespace Xabe.FFmpeg.Downloader.Android
 
         public override async Task GetLatestVersion(string path)
         {
-            OperatingSystemArchitecture arch = OperatingSystemArchProvider.GetArchitecture();
+            OperatingSystemArchitecture arch = _operatingSystemArchitectureProvider.GetArchitecture();
 
             await GetLatestVersionForArchitecture(path, arch);
         }

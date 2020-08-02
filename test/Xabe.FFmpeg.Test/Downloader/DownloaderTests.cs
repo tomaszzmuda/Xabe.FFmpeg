@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NSubstitute;
 using Xabe.FFmpeg.Downloader;
+using Xabe.FFmpeg.Downloader.Android;
 using Xunit;
 using OperatingSystem = Xabe.FFmpeg.Downloader.OperatingSystem;
 
@@ -118,6 +119,38 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Theory]
+        [InlineData(OperatingSystemArchitecture.Arm)]
+        [InlineData(OperatingSystemArchitecture.Arm64)]
+        [InlineData(OperatingSystemArchitecture.X86)]
+        [InlineData(OperatingSystemArchitecture.X64)]
+        internal async Task DownloadLatestAndroidVersionTest(OperatingSystemArchitecture arch)
+        {
+            var operatingSystemArchProvider = Substitute.For<IOperatingSystemArchitectureProvider>();
+            operatingSystemArchProvider.GetArchitecture().Returns(x => arch);
+
+            var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
+
+            try
+            {
+                FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
+                FFmpeg.SetExecutablesPath("assemblies");
+                if (Directory.Exists("assemblies"))
+                {
+                    Directory.Delete("assemblies", true);
+                }
+                AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
+                await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
+
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", arch, FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", arch, FFmpeg.ExecutablesPath)));
+            }
+            finally
+            {
+                FFmpeg.SetExecutablesPath(ffmpegExecutablesPath);
+            }
+        }
+
+        [Theory]
         [InlineData(OperatingSystem.Windows64)]
         [InlineData(OperatingSystem.Windows32)]
         [InlineData(OperatingSystem.Osx64)]
@@ -155,6 +188,7 @@ namespace Xabe.FFmpeg.Test
                 yield return new object[] { new OfficialFFmpegDownloader() };
                 yield return new object[] { new FullFFmpegDownloader() };
                 yield return new object[] { new SharedFFmpegDownloader() };
+                yield return new object[] { new AndroidFFmpegDownloader() };
             }
         }
 

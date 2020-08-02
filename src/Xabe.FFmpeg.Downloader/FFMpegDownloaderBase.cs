@@ -8,24 +8,35 @@ namespace Xabe.FFmpeg.Downloader
 {
     internal abstract class FFmpegDownloaderBase : IFFmpegDownloader
     {
-        protected OperatingSystem OperatingSystem => _operatingSystemProvider.GetOperatingSystem();
         protected IOperatingSystemProvider _operatingSystemProvider;
+        protected IOperatingSystemArchitectureProvider _operatingSystemArchitectureProvider;
 
         protected FFmpegDownloaderBase(IOperatingSystemProvider operatingSystemProvider)
         {
             _operatingSystemProvider = operatingSystemProvider;
         }
 
+        protected FFmpegDownloaderBase(IOperatingSystemArchitectureProvider operatingSystemArchitectureProvider)
+        {
+            _operatingSystemArchitectureProvider = operatingSystemArchitectureProvider;
+        }
+
         protected FFmpegDownloaderBase()
         {
             _operatingSystemProvider = new OperatingSystemProvider();
+            _operatingSystemArchitectureProvider = new OperatingSystemArchitectureProvider();
         }
 
         public abstract Task GetLatestVersion(string path);
 
         protected bool CheckIfFilesExist(string path)
         {
-            return !File.Exists(ComputeFileDestinationPath("ffmpeg", OperatingSystem, path)) || !File.Exists(ComputeFileDestinationPath("ffprobe", OperatingSystem, path));
+            if (_operatingSystemProvider != null)
+                return !File.Exists(ComputeFileDestinationPath("ffmpeg", _operatingSystemProvider.GetOperatingSystem(), path)) || !File.Exists(ComputeFileDestinationPath("ffprobe", _operatingSystemProvider.GetOperatingSystem(), path));
+            else if (_operatingSystemArchitectureProvider != null)
+                return !File.Exists(ComputeFileDestinationPath("ffmpeg", _operatingSystemArchitectureProvider.GetArchitecture(), path)) || !File.Exists(ComputeFileDestinationPath("ffprobe", _operatingSystemArchitectureProvider.GetArchitecture(), path));
+            else
+                return false;
         }
 
         internal string ComputeFileDestinationPath(string filename, OperatingSystem os, string destinationPath)
@@ -36,6 +47,11 @@ namespace Xabe.FFmpeg.Downloader
                 path += ".exe";
 
             return path;
+        }
+
+        internal string ComputeFileDestinationPath(string filename, OperatingSystemArchitecture arch, string destinationPath)
+        {
+            return Path.Combine(destinationPath ?? ".", filename);
         }
 
         protected virtual void Extract(string ffMpegZipPath, string destinationDir)
