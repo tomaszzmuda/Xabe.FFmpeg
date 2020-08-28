@@ -114,7 +114,7 @@ namespace Xabe.FFmpeg.Downloader
 
         private void Progress_ProgressChanged(object sender, float e)
         {
-            Console.WriteLine($"FFmpeg Download {e}% Complete");
+            Console.WriteLine($"FFmpeg Download {e * 100}% Complete");
         }
     }
 }
