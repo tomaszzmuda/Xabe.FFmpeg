@@ -32,6 +32,18 @@ namespace Xabe.FFmpeg.Downloader
             SaveVersion(latestVersion, path);
         }
 
+        public override async Task GetLatestVersion(string path, IProgress<float> progress)
+        {
+            var latestVersion = GetLatestVersionInfo();
+
+            if (!CheckIfUpdateAvailable(latestVersion.Version, path) && !CheckIfFilesExist(path))
+
+                return;
+            await DownloadLatestVersion(latestVersion, path, progress);
+
+            SaveVersion(latestVersion, path);
+        }
+
         internal FFbinariesVersionInfo GetLatestVersionInfo()
         {
             using (var wc = new WebClient())
@@ -47,6 +59,23 @@ namespace Xabe.FFmpeg.Downloader
 
             var ffmpegZipDownloadTask = DownloadFile(links.FFmpegLink);
             var ffprobeZipDownloadTask = DownloadFile(links.FFprobeLink);
+
+            var ffmpegZip = await ffmpegZipDownloadTask;
+            var ffprobeZip = await ffprobeZipDownloadTask;
+
+            Extract(ffmpegZip, path ?? ".");
+            Extract(ffprobeZip, path ?? ".");
+
+            File.Delete(ffmpegZip);
+            File.Delete(ffprobeZip);
+        }
+
+        internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries, string path, IProgress<float> progress)
+        {
+            Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
+
+            var ffmpegZipDownloadTask = DownloadFile(links.FFmpegLink, progress);
+            var ffprobeZipDownloadTask = DownloadFile(links.FFprobeLink, progress);
 
             var ffmpegZip = await ffmpegZipDownloadTask;
             var ffprobeZip = await ffprobeZipDownloadTask;

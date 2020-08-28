@@ -45,6 +45,19 @@ namespace Xabe.FFmpeg.Downloader
             Extract(fullPackZip, path ?? ".");
         }
 
+        public override async Task GetLatestVersion(string path, IProgress<float> progress)
+        {
+            if (!CheckIfFilesExist(path))
+            {
+                return;
+            }
+
+            string link = GenerateLink();
+            var fullPackZip = await DownloadFile(link, progress);
+
+            Extract(fullPackZip, path ?? ".");
+        }
+
         protected override void Extract(string ffMpegZipPath, string destinationDir)
         {
             using (ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))

@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Extensions;
 
 namespace Xabe.FFmpeg.Downloader
 {
@@ -22,6 +24,7 @@ namespace Xabe.FFmpeg.Downloader
         }
 
         public abstract Task GetLatestVersion(string path);
+        public abstract Task GetLatestVersion(string path, IProgress<float> progress);
 
         protected bool CheckIfFilesExist(string path)
         {
@@ -69,19 +72,49 @@ namespace Xabe.FFmpeg.Downloader
 
             using (var client = new HttpClient())
             {
-                client.Timeout = TimeSpan.FromMinutes(15);
-                using (var result = await client.GetAsync(url))
+                client.Timeout = TimeSpan.FromMinutes(5);
+
+                Progress<float> progress = new Progress<float>();
+                progress.ProgressChanged += Progress_ProgressChanged;
+
+                // Create a file stream to store the downloaded data.
+                // This really can be any type of writeable stream.
+                using (var file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {   
+                    // Use the custom extension method below to download the data.
+                    // The passed progress-instance will receive the download status updates.
+                    await client.DownloadAsync(url, file, progress, CancellationToken.None);
+                }
+            }
+
+            Console.WriteLine($"FFmpeg Download Complete");
+            return tempPath;
+        }
+
+        protected async Task<string> DownloadFile(string url, IProgress<float> progress)
+        {
+            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+
+            using (var client = new HttpClient())
+            {
+                client.Timeout = TimeSpan.FromMinutes(5);
+
+                // Create a file stream to store the downloaded data.
+                // This really can be any type of writeable stream.
+                using (var file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    if (!result.IsSuccessStatusCode)
-                        return null;
-                    var readedData = await result.Content.ReadAsByteArrayAsync();
-                    if (readedData == null)
-                        return null;
-                    File.WriteAllBytes(tempPath, readedData);
+                    // Use the custom extension method below to download the data.
+                    // The passed progress-instance will receive the download status updates.
+                    await client.DownloadAsync(url, file, progress, CancellationToken.None);
                 }
             }
 
             return tempPath;
+        }
+
+        private void Progress_ProgressChanged(object sender, float e)
+        {
+            Console.WriteLine($"FFmpeg Download {e}% Complete");
         }
     }
 }
