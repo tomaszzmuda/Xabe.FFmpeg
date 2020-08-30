@@ -46,7 +46,7 @@ namespace Xabe.FFmpeg
                 var process = RunProcess(args, FFmpegPath, priority, true, false, true);
                 using (process)
                 {
-                    process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args);
+                    process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args, process.Id);
                     process.BeginErrorReadLine();
                     var ctr = cancellationToken.Register(() =>
                     {
@@ -123,7 +123,7 @@ namespace Xabe.FFmpeg
             TaskScheduler.Default);
         }
 
-        private void ProcessOutputData(DataReceivedEventArgs e, string args)
+        private void ProcessOutputData(DataReceivedEventArgs e, string args, int processId)
         {
             if (e.Data == null)
             {
@@ -139,10 +139,10 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            CalculateTime(e, args);
+            CalculateTime(e, args, processId);
         }
 
-        private void CalculateTime(DataReceivedEventArgs e, string args)
+        private void CalculateTime(DataReceivedEventArgs e, string args, int processId)
         {
             if (e.Data.Contains("Duration: N/A"))
             {
@@ -158,7 +158,7 @@ namespace Xabe.FFmpeg
                 Match match = s_timeFormatRegex.Match(e.Data);
                 if (match.Success)
                 {
-                    OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime));
+                    OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime, processId));
                 }
             }
         }
