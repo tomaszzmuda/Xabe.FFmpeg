@@ -3,7 +3,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Extensions;
 
 namespace Xabe.FFmpeg.Downloader.Android
 {
@@ -44,14 +46,14 @@ namespace Xabe.FFmpeg.Downloader.Android
             return string.Empty;
         }
 
-        public override async Task GetLatestVersion(string path)
+        public override async Task GetLatestVersion(string path, IProgress<float> progress = null)
         {
             OperatingSystemArchitecture arch = _operatingSystemArchitectureProvider.GetArchitecture();
 
-            await GetLatestVersionForArchitecture(path, arch);
+            await GetLatestVersionForArchitecture(path, arch, progress);
         }
 
-        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch)
+        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<float> progress = null)
         {
             if (!CheckIfFilesExist(path))
             {
@@ -59,30 +61,9 @@ namespace Xabe.FFmpeg.Downloader.Android
             }
 
             string link = GenerateLink(arch);
-            var fullPackZip = await DownloadFile(link, arch);
+            var fullPackZip = await DownloadFile(link, progress);
 
             Extract(fullPackZip, path ?? ".");
-        }
-
-        protected async Task<string> DownloadFile(string url, OperatingSystemArchitecture arch)
-        {
-            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-
-            using (var client = new HttpClient())
-            {
-                client.Timeout = TimeSpan.FromMinutes(15);
-                using (var result = await client.GetAsync(url))
-                {
-                    if (!result.IsSuccessStatusCode)
-                        return null;
-                    var readedData = await result.Content.ReadAsByteArrayAsync();
-                    if (readedData == null)
-                        return null;
-                    File.WriteAllBytes(tempPath, readedData);
-                }
-            }
-
-            return tempPath;
         }
     }
 }
