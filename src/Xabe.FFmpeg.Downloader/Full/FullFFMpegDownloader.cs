@@ -19,7 +19,7 @@ namespace Xabe.FFmpeg.Downloader
 
         private string GenerateLink()
         {
-            switch (OperatingSystem)
+            switch (_operatingSystemProvider.GetOperatingSystem())
             {
                 case OperatingSystem.Windows64:
                     return "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip";
@@ -28,7 +28,7 @@ namespace Xabe.FFmpeg.Downloader
                 case OperatingSystem.Osx64:
                     return "https://ffmpeg.zeranoe.com/builds/macos64/static/ffmpeg-latest-macos64-static.zip";
                 default:
-                    throw new NotSupportedException($"The automated download of the full FFmpeg package is not supported for the current Operation System: {OperatingSystem}.");
+                    throw new NotSupportedException($"The automated download of the full FFmpeg package is not supported for the current Operation System: {_operatingSystemProvider.GetOperatingSystem()}.");
             }
         }
 
