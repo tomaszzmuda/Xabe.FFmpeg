@@ -15,10 +15,11 @@ namespace Xabe.FFmpeg.Events
     public class ConversionProgressEventArgs : EventArgs
     {
         /// <inheritdoc />
-        public ConversionProgressEventArgs(TimeSpan timeSpan, TimeSpan totalTime)
+        public ConversionProgressEventArgs(TimeSpan timeSpan, TimeSpan totalTime, int processId)
         {
             Duration = timeSpan;
             TotalLength = totalTime;
+            ProcessId = processId;
         }
 
         /// <summary>
@@ -30,6 +31,11 @@ namespace Xabe.FFmpeg.Events
         ///     Input movie length
         /// </summary>
         public TimeSpan TotalLength { get; }
+
+        /// <summary>
+        ///     Process id
+        /// </summary>
+        public long ProcessId { get; }
 
         /// <summary>
         ///     Percent of conversion
