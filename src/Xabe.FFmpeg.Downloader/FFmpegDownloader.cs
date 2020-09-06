@@ -8,18 +8,21 @@ namespace Xabe.FFmpeg.Downloader
     {
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
-        /// <param id="version">Determine which version of FFmpeg should be downloaded</param>
+        /// <param name="version">Determine which version of FFmpeg should be downloaded</param>
+        /// <param name="progress">Progress of download</param>
         /// </summary>
-        public static async Task GetLatestVersion(FFmpegVersion version)
+        public static async Task GetLatestVersion(FFmpegVersion version, IProgress<float> progress = null)
         {
-            await GetLatestVersion(version, null);
+            await GetLatestVersion(version, null, progress);
         }
 
         /// <summary>
         ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
-        /// <param id="version">Determine which version of FFmpeg should be downloaded</param>
+        /// <param name="version">Determine which version of FFmpeg should be downloaded</param>
+        /// <param name="path">FFmpeg executables destination directory</param>
+        /// <param name="progress">Progress of download</param>
         /// </summary>
-        public static async Task GetLatestVersion(FFmpegVersion version, string path)
+        public static async Task GetLatestVersion(FFmpegVersion version, string path, IProgress<float> progress = null)
         {
             IFFmpegDownloader downloader;
             switch (version)
@@ -39,7 +42,7 @@ namespace Xabe.FFmpeg.Downloader
                 default:
                     throw new NotImplementedException();
             }
-            await downloader.GetLatestVersion(path);
+            await downloader.GetLatestVersion(path, progress);
         }
     }
 }
