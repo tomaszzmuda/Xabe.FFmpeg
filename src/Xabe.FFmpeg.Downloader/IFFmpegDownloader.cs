@@ -11,6 +11,6 @@ namespace Xabe.FFmpeg.Downloader
         /// </summary>
         /// <param name="path">FFmpeg executables destination directory</param>
         /// <param name="progress">Progress of download</param>
-        Task GetLatestVersion(string path, IProgress<float> progress = null);
+        Task GetLatestVersion(string path, IProgress<(long, long)> progress = null);
     }
 }

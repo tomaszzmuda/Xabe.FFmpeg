@@ -46,14 +46,14 @@ namespace Xabe.FFmpeg.Downloader.Android
             return string.Empty;
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<float> progress = null)
+        public override async Task GetLatestVersion(string path, IProgress<(long, long)> progress = null)
         {
             OperatingSystemArchitecture arch = _operatingSystemArchitectureProvider.GetArchitecture();
 
             await GetLatestVersionForArchitecture(path, arch, progress);
         }
 
-        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<float> progress = null)
+        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<(long, long)> progress = null)
         {
             if (!CheckIfFilesExist(path))
             {

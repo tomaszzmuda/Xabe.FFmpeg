@@ -29,7 +29,7 @@ namespace Xabe.FFmpeg.Downloader
             _operatingSystemArchitectureProvider = new OperatingSystemArchitectureProvider();
         }
 
-        public abstract Task GetLatestVersion(string path, IProgress<float> progress = null);
+        public abstract Task GetLatestVersion(string path, IProgress<(long, long)> progress = null);
 
         protected bool CheckIfFilesExist(string path)
         {
@@ -81,7 +81,7 @@ namespace Xabe.FFmpeg.Downloader
             File.Delete(ffMpegZipPath);
         }
 
-        protected async Task<string> DownloadFile(string url, IProgress<float> progress)
+        protected async Task<string> DownloadFile(string url, IProgress<(long, long)> progress)
         {
             var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
 
