@@ -27,10 +27,9 @@ namespace Xabe.FFmpeg.Extensions
                         return;
                     }
 
-                    // Convert absolute progress (bytes downloaded) into relative progress (0% - 100%)
                     var relativeProgress = new Progress<(long, long)>(totalBytes => progress.Report(totalBytes));
                     // Use extension method to report progress while downloading
-                    await download.CopyToAsync(destination, 81920, relativeProgress, cancellationToken);
+                    await download.CopyToAsync(destination, contentLength.Value, 81920, relativeProgress, cancellationToken);
                     progress.Report((1L, 1L));
                 }
             }
