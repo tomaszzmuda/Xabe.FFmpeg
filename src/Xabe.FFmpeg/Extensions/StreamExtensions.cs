@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace Xabe.FFmpeg.Extensions
 {
     public static class StreamExtensions
     {
-        public static async Task CopyToAsync(this Stream source, Stream destination, long contentLength, int bufferSize, IProgress<(long, long)> progress = null, CancellationToken cancellationToken = default)
+        public static async Task CopyToAsync(this Stream source, Stream destination, long contentLength, int bufferSize, IProgress<ProgressInfo> progress = null, CancellationToken cancellationToken = default)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -29,7 +30,7 @@ namespace Xabe.FFmpeg.Extensions
             {
                 await destination.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
                 totalBytesRead += bytesRead;
-                progress?.Report((totalBytesRead, contentLength));
+                progress?.Report(new ProgressInfo(totalBytesRead, contentLength));
             }
         }
     }

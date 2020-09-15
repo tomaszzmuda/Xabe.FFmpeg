@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Extensions;
 
 namespace Xabe.FFmpeg.Downloader.Android
 {
@@ -46,14 +45,14 @@ namespace Xabe.FFmpeg.Downloader.Android
             return string.Empty;
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<(long, long)> progress = null)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null)
         {
             OperatingSystemArchitecture arch = _operatingSystemArchitectureProvider.GetArchitecture();
 
             await GetLatestVersionForArchitecture(path, arch, progress);
         }
 
-        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<(long, long)> progress = null)
+        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<ProgressInfo> progress = null)
         {
             if (!CheckIfFilesExist(path))
             {

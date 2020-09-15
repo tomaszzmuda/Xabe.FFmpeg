@@ -11,7 +11,7 @@ namespace Xabe.FFmpeg.Downloader
         /// <param name="version">Determine which version of FFmpeg should be downloaded</param>
         /// <param name="progress">Progress of download</param>
         /// </summary>
-        public static async Task GetLatestVersion(FFmpegVersion version, IProgress<(long, long)> progress = null)
+        public static async Task GetLatestVersion(FFmpegVersion version, IProgress<ProgressInfo> progress = null)
         {
             await GetLatestVersion(version, null, progress);
         }
@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg.Downloader
         /// <param name="path">FFmpeg executables destination directory</param>
         /// <param name="progress">Progress of download</param>
         /// </summary>
-        public static async Task GetLatestVersion(FFmpegVersion version, string path, IProgress<(long, long)> progress = null)
+        public static async Task GetLatestVersion(FFmpegVersion version, string path, IProgress<ProgressInfo> progress = null)
         {
             IFFmpegDownloader downloader;
             switch (version)

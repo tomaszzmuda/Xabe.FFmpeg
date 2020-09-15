@@ -20,7 +20,7 @@ namespace Xabe.FFmpeg.Downloader
             _linkProvider = new LinkProvider(operatingSystemProvider);
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<(long, long)> progress = null)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null)
         {
             var latestVersion = GetLatestVersionInfo();
 
@@ -41,7 +41,7 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries, string path, IProgress<(long, long)> progress)
+        internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries, string path, IProgress<ProgressInfo> progress)
         {
             Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
 
