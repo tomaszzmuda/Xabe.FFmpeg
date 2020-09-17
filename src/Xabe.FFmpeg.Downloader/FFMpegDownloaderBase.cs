@@ -85,6 +85,7 @@ namespace Xabe.FFmpeg.Downloader
         {
             string tempPath = string.Empty;
             bool success = false;
+            int tryCount = 0;
 
             do
             {
@@ -93,6 +94,9 @@ namespace Xabe.FFmpeg.Downloader
                     tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
                     client.Timeout = TimeSpan.FromMinutes(5);
 
+                    // Add an exponential delay between subsequent retries 
+                    Thread.Sleep(TimeSpan.FromSeconds(30 * tryCount));
+
                     // Create a file stream to store the downloaded data.
                     // This really can be any type of writeable stream.
                     using (var file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -100,6 +104,7 @@ namespace Xabe.FFmpeg.Downloader
                         // Use the custom extension method below to download the data.
                         // The passed progress-instance will receive the download status updates.
                         success = await client.DownloadAsync(url, file, progress, CancellationToken.None);
+                        tryCount += 1;
                     }
                 }
             }
