@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = 0)
         {
             if (!CheckIfFilesExist(path))
             {
@@ -40,7 +40,7 @@ namespace Xabe.FFmpeg.Downloader
             }
 
             string link = GenerateLink();
-            var fullPackZip = await DownloadFile(link, progress);
+            var fullPackZip = await DownloadFile(link, progress, retries);
 
             Extract(fullPackZip, path ?? ".");
         }

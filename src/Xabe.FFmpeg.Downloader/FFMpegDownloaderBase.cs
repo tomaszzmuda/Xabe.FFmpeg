@@ -29,7 +29,7 @@ namespace Xabe.FFmpeg.Downloader
             _operatingSystemArchitectureProvider = new OperatingSystemArchitectureProvider();
         }
 
-        public abstract Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null);
+        public abstract Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = 0);
 
         protected bool CheckIfFilesExist(string path)
         {
@@ -81,23 +81,29 @@ namespace Xabe.FFmpeg.Downloader
             File.Delete(ffMpegZipPath);
         }
 
-        protected async Task<string> DownloadFile(string url, IProgress<ProgressInfo> progress)
+        protected async Task<string> DownloadFile(string url, IProgress<ProgressInfo> progress, int retries)
         {
-            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            string tempPath = string.Empty;
+            bool success = false;
 
-            using (var client = new HttpClient())
+            do
             {
-                client.Timeout = TimeSpan.FromMinutes(5);
-
-                // Create a file stream to store the downloaded data.
-                // This really can be any type of writeable stream.
-                using (var file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var client = new HttpClient())
                 {
-                    // Use the custom extension method below to download the data.
-                    // The passed progress-instance will receive the download status updates.
-                    await client.DownloadAsync(url, file, progress, CancellationToken.None);
+                    tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+                    client.Timeout = TimeSpan.FromMinutes(5);
+
+                    // Create a file stream to store the downloaded data.
+                    // This really can be any type of writeable stream.
+                    using (var file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        // Use the custom extension method below to download the data.
+                        // The passed progress-instance will receive the download status updates.
+                        success = await client.DownloadAsync(url, file, progress, CancellationToken.None);
+                    }
                 }
             }
+            while (!success && --retries > 0);
 
             return tempPath;
         }
