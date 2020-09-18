@@ -10,12 +10,15 @@ namespace Xabe.FFmpeg.Extensions
 {
     public static class HttpClientExtensions
     {
-        public static async Task DownloadAsync(this HttpClient client, string requestUri, Stream destination, IProgress<ProgressInfo> progress = null, CancellationToken cancellationToken = default)
+        public static async Task<bool> DownloadAsync(this HttpClient client, string requestUri, Stream destination, IProgress<ProgressInfo> progress = null, CancellationToken cancellationToken = default)
         {
             // Get the http headers first to examine the content length
             using (var response = await client.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead))
             {
                 var contentLength = response.Content.Headers.ContentLength;
+
+                if (!response.IsSuccessStatusCode)
+                    return false;
 
                 using (var download = await response.Content.ReadAsStreamAsync())
                 {
@@ -24,13 +27,15 @@ namespace Xabe.FFmpeg.Extensions
                     if (progress == null || !contentLength.HasValue)
                     {
                         await download.CopyToAsync(destination);
-                        return;
+                        return false;
                     }
 
                     var relativeProgress = new Progress<ProgressInfo>(totalBytes => progress.Report(totalBytes));
                     // Use extension method to report progress while downloading
                     await download.CopyToAsync(destination, contentLength.Value, 81920, relativeProgress, cancellationToken);
                     progress.Report(new ProgressInfo(1L, 1L));
+
+                    return true;
                 }
             }
         }

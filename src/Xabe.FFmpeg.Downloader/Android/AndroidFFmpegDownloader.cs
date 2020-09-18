@@ -45,14 +45,14 @@ namespace Xabe.FFmpeg.Downloader.Android
             return string.Empty;
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = 0)
         {
             OperatingSystemArchitecture arch = _operatingSystemArchitectureProvider.GetArchitecture();
 
-            await GetLatestVersionForArchitecture(path, arch, progress);
+            await GetLatestVersionForArchitecture(path, arch, progress, retries);
         }
 
-        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<ProgressInfo> progress = null)
+        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<ProgressInfo> progress = null, int retries = 0)
         {
             if (!CheckIfFilesExist(path))
             {
@@ -60,7 +60,7 @@ namespace Xabe.FFmpeg.Downloader.Android
             }
 
             string link = GenerateLink(arch);
-            var fullPackZip = await DownloadFile(link, progress);
+            var fullPackZip = await DownloadFile(link, progress, retries);
 
             Extract(fullPackZip, path ?? ".");
         }
