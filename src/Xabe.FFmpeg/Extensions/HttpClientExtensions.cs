@@ -23,6 +23,7 @@ namespace Xabe.FFmpeg.Extensions
                     if (progress == null || !contentLength.HasValue)
                     {
                         await download.CopyToAsync(destination);
+                        return;
                     }
 
                     var relativeProgress = new Progress<ProgressInfo>(totalBytes => progress.Report(totalBytes));
