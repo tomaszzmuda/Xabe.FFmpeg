@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg.Downloader
@@ -33,7 +31,7 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = 0)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries)
         {
             if (!CheckIfFilesExist(path))
             {

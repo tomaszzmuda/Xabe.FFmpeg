@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = 0)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries)
         {
             if (!CheckIfFilesExist(path))
             {
