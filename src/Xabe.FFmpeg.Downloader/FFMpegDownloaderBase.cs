@@ -10,6 +10,12 @@ namespace Xabe.FFmpeg.Downloader
 {
     internal abstract class FFmpegDownloaderBase : IFFmpegDownloader
     {
+        public const int DefaultMaxRetries = 6;
+        
+        private readonly TimeSpan InitialDelay = TimeSpan.FromSeconds(1);
+        private readonly TimeSpan MaxDelay = TimeSpan.FromMinutes(2);
+        private const double DelayMultiplier = 2.0;
+
         protected IOperatingSystemProvider _operatingSystemProvider;
         protected IOperatingSystemArchitectureProvider _operatingSystemArchitectureProvider;
 
@@ -29,7 +35,7 @@ namespace Xabe.FFmpeg.Downloader
             _operatingSystemArchitectureProvider = new OperatingSystemArchitectureProvider();
         }
 
-        public abstract Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = 0);
+        public abstract Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries);
 
         protected bool CheckIfFilesExist(string path)
         {
@@ -83,32 +89,36 @@ namespace Xabe.FFmpeg.Downloader
 
         protected async Task<string> DownloadFile(string url, IProgress<ProgressInfo> progress, int retries)
         {
-            string tempPath = string.Empty;
-            bool success = false;
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
             int tryCount = 0;
+            TimeSpan retryDelay = InitialDelay;
 
-            do
+            using (var client = new HttpClient() { Timeout = Timeout.InfiniteTimeSpan })
             {
-                using (var client = new HttpClient())
+                do
                 {
-                    tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-                    client.Timeout = TimeSpan.FromMinutes(5);
-
-                    // Add an exponential delay between subsequent retries 
-                    Thread.Sleep(TimeSpan.FromSeconds(30 * tryCount));
+                    // Add an exponential delay between subsequent retries
+                    await Task.Delay(retryDelay);
+                    retryDelay = TimeSpan.FromSeconds(Math.Min(MaxDelay.TotalSeconds, retryDelay.TotalSeconds * DelayMultiplier));
 
                     // Create a file stream to store the downloaded data.
                     // This really can be any type of writeable stream.
                     using (var file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     {
-                        // Use the custom extension method below to download the data.
-                        // The passed progress-instance will receive the download status updates.
-                        success = await client.DownloadAsync(url, file, progress, CancellationToken.None);
-                        tryCount += 1;
+                        try
+                        {
+                            // Use the custom extension method below to download the data.
+                            // The passed progress-instance will receive the download status updates.
+                            await client.DownloadAsync(url, file, progress, CancellationToken.None);
+                            break;
+                        }
+                        catch (HttpRequestException) { /* continue to next attempt */ }
+                        catch (IOException) { /* continue to next attempt */ }
                     }
+
                 }
+                while (++tryCount <= retries);
             }
-            while (!success && --retries > 0);
 
             return tempPath;
         }
