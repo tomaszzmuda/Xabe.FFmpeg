@@ -43,6 +43,11 @@
         /// <summary>
         ///     
         /// </summary>
-        libmfx
+        libmfx,
+
+        /// <summary>
+        ///     
+        /// </summary>
+        software,
     }
 }
