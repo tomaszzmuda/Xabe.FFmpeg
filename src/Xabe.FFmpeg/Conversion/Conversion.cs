@@ -100,7 +100,9 @@ namespace Xabe.FFmpeg
         public event ConversionProgressEventHandler OnProgress;
 
         /// <inheritdoc />
-        public event DataReceivedEventHandler OnDataReceived;
+        public event ConversionDataEventHandler OnDataReceived;
+
+        public event ConversionErrorEventHandler OnConversionError;
 
         /// <inheritdoc />
         public int? FFmpegProcessId => _processId;
@@ -137,6 +139,7 @@ namespace Xabe.FFmpeg
             _ffmpeg = new FFmpegWrapper();
             _ffmpeg.OnProgress += OnProgress;
             _ffmpeg.OnDataReceived += OnDataReceived;
+            _ffmpeg.OnConversionError += OnConversionError;
             DateTime startTime = DateTime.Now;
             await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
             var result = new ConversionResult
@@ -282,7 +285,12 @@ namespace Xabe.FFmpeg
             _output = $"\"{outputPath}\"";
             return this;
         }
-
+        /// <inheritdoc />
+        public IConversion SetVSync(int vsyncmode)
+        {
+            if (vsyncmode != -1) AddParameter($"-vsync {vsyncmode}");
+            return this;
+        }
         /// <inheritdoc />
         public IConversion SetVideoBitrate(long bitrate)
         {
@@ -293,17 +301,62 @@ namespace Xabe.FFmpeg
 
             if (HasH264Stream())
                 AddParameter("-x264opts nal-hrd=cbr:force-cfr=1");
+            // This may be possibly wrong as it assumes if the input stream is X264 and the output is software based x264. 
+            // What about if the output is hardware encoding X264 / X265.
+            // See Method of working out by supplying the output codec type and checking it directly.
+            return this;
+        }
+        /// <inheritdoc />
+        public IConversion SetVideoBitrate(string Minibitrate, string Maxbitrate, string Buffersize, VideoCodec Outputcodec)
+        {
+            AddParameter(string.Format("-b:v {0}", Minibitrate));
+            AddParameter(string.Format("-maxrate {0}", Maxbitrate));
+            AddParameter(string.Format("-bufsize {0}", Buffersize));
+
+            if (Outputcodec == VideoCodec.h264) AddParameter("-x264opts nal-hrd=cbr:force-cfr=1");
 
             return this;
         }
-
         /// <inheritdoc />
         public IConversion SetAudioBitrate(long bitrate)
         {
             AddParameter($"-b:a {bitrate} ");
             return this;
+        } 
+        /// <inheritdoc />
+        public IConversion SetMapChapters(string inputfile)
+        {
+            AddParameter(inputfile == "" ? " -map_chapters -1 " : " -map_chapters " + inputfile);
+            return this;
         }
-
+        /// <inheritdoc />
+        public IConversion SetAudioCodecMode(AudioEncoder AE, string bitrate = "", object extraparams = null)
+        {
+            if (AE == AudioEncoder.copy) AddParameter("-c:a copy");
+            if (AE == AudioEncoder.flac) AddParameter($"-c:a {AE}");
+            if ((AE == AudioEncoder.libmp3lame) || (AE == AudioEncoder.lib_aac)) AddParameter($"-c:a aac - q:a {bitrate}");
+            if ((AE == AudioEncoder.libvorbis) || (AE == AudioEncoder.libtwolame) || (AE == AudioEncoder.libwavpack))
+            {
+                AddParameter($"-c:a {AE} " + extraparams.TooParameter());
+            }
+            return this;
+        }
+        /// <inheritdoc />
+        public IConversion SetVideoScaling(string Width, string Height, string Modulas, double aspectratio, Scaling scaler, int x, int y, int left, int top)
+        {
+            if (Width.ToInt() > 0)
+            {
+                double AdjustedHeight = (aspectratio != -1) ? Math.Round((double)Width.ToInt() / aspectratio) : Height.ToInt();
+                if (Modulas.ToInt() != -1)
+                {
+                    int rd = Modulas.ToString().ToInt();
+                    AdjustedHeight = Math.Round(AdjustedHeight / rd) * rd;
+                }
+                string crop = ((x > 0) || (y > 0)) ? $",crop ={x}:{y}:{left}:{top}" : "";
+                AddParameter($"-filter:v scale={Width}:{AdjustedHeight}:flags=" + scaler.ToString() + crop);
+            }
+            return this;
+        }
         /// <inheritdoc />
         public IConversion UseShortest(bool useShortest)
         {

@@ -33,7 +33,12 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Fires when FFmpeg process print something
         /// </summary>
-        internal event DataReceivedEventHandler OnDataReceived;
+        internal event ConversionDataEventHandler OnDataReceived;
+
+        /// <summary>
+        ///     Fires when FFmpeg process Exits with -1 
+        /// </summary>
+        internal event ConversionErrorEventHandler OnConversionError;
 
         internal Task<bool> RunProcess(
             string args,
@@ -111,7 +116,11 @@ namespace Xabe.FFmpeg
 
                         if (process.ExitCode != 0)
                         {
-                            throw new ConversionException(output, args);
+                            if (OnConversionError != null)
+                            {
+                                OnConversionError?.Invoke(this, new ConversionErrorEventsArg(output, args, process.Id));
+                            }
+                            else throw new ConversionException(output, args);
                         }
                     }
                 }
@@ -130,7 +139,7 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            OnDataReceived?.Invoke(this, e);
+            OnDataReceived?.Invoke(this, e, processId);
 
             _outputLog.Add(e.Data);
 

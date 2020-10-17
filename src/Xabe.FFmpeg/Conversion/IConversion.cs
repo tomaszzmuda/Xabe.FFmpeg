@@ -131,12 +131,47 @@ namespace Xabe.FFmpeg
         IConversion SetVideoBitrate(long bitrate);
 
         /// <summary>
+        ///     Sets Video Scaling Resoultion  + Modulas and filter scale type for scaling
+        /// </summary>
+        /// <param name="Height">The required Height Value</param>
+        /// <param name="Width">The required Width Value</param>
+        /// <param name="Modulas">The required Modulas Value</param>
+        /// <param name="scaler">The required scaler Value</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetVideoScaling(string Width, string Height, string Modulas, double aspectratio, Scaling scaler, int x, int y, int left, int top);
+
+        /// <summary>
+        ///     Sets The bitrate of the video streams to the supplied value in bytes
+        /// </summary
+        /// <param name="Minbitrate">The required MinBitrate Value</param>
+        /// <param name="Maxbitrate">The required Maxbitrate Value</param>
+        /// <param name="Buffersize">The required Buffersize Value</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetVideoBitrate(string Minbitrate, string Maxbitrate, string Buffersize, VideoCodec Outputcodec);
+        /// 
+        /// <summary>
         ///     Sets The bitrate of the audio streams to the supplied value in bytes
         /// </summary>
         /// <param name="bitrate">The required Bitrate Value</param>
         /// <returns>IConversion object</returns>
-        IConversion SetAudioBitrate(long bitrate);
+        /// 
 
+
+        IConversion SetAudioBitrate(long bitrate);
+        /// <summary>
+        ///     Sets the map chapters file , disble sets to -1 
+        /// </summary>
+        /// <param name="inputfile">The required map chapter file</param>
+        /// <param name="disablemapchapters">disables map chapters , ie -1</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetMapChapters(string inputfile);
+        /// <summary>
+        ///     Sets the Codec Audio Mode and Bitrates
+        /// </summary>
+        /// <param name="bitrate">The required Bitrate Value</param>
+        /// <param name="AudioMode">The required AudoEncoder Value</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetAudioCodecMode(AudioEncoder AudioMode, string bitrate = "", object extraparams = null);
         /// <summary>
         ///     Defines thread count used by converter
         /// </summary>
@@ -157,7 +192,12 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output media file</param>
         /// <returns>IConversion object</returns>
         IConversion SetOutput(string outputPath);
-
+        /// <summary>
+        ///     Set overwrite output file parameter
+        /// </summary>
+        /// <param name="vsyncmode">Vsync Mode -1 for skip</param>
+        /// <returns>>IConversion object</returns>
+        IConversion SetVSync(int vsyncmode);
         /// <summary>
         ///     Set overwrite output file parameter
         /// </summary>
