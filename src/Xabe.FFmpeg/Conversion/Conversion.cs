@@ -643,7 +643,15 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion UseHardwareAcceleration(HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
         {
-            return UseHardwareAcceleration($"{hardwareAccelerator}", decoder.ToString(), encoder.ToString(), device);
+            if (hardwareAccelerator != HardwareAccelerator.software)
+            {
+                return UseHardwareAcceleration($"{hardwareAccelerator}", decoder.ToString(), encoder.ToString(), device);
+            }
+            else
+            {
+                this.UseMultiThread(true);
+                return this;
+            }
         }
 
         /// <inheritdoc />
