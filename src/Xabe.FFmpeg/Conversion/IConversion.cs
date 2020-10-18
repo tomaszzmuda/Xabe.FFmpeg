@@ -324,5 +324,12 @@ namespace Xabe.FFmpeg
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
         /// <returns>IConversion object</returns>
         IConversion UseHardwareAcceleration(string hardwareAccelerator, string decoder, string encoder, int device = 0);
+
+        /// <summary>
+        ///    Set video sync method.
+        /// </summary>
+        /// <param name="vsyncMode">Vsync Mode auto for skip</param>
+        /// <returns>>IConversion object</returns>
+        IConversion SetVideoSyncMethod(VideoSyncMethod vsyncMode);
     }
 }

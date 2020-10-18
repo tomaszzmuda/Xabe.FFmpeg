@@ -871,6 +871,40 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(116.244, resultVideoStream.Framerate);
             Assert.Equal(TimeSpan.FromSeconds(3), resultVideoStream.Duration);
         }
+
+        [Theory]
+        [InlineData(VideoSyncMethod.cfr)]
+        [InlineData(VideoSyncMethod.drop)]
+        [InlineData(VideoSyncMethod.passthrough)]
+        [InlineData(VideoSyncMethod.vfr)]
+        public async Task AddVsync_CorrectValues_VsyncMethodIsSet(VideoSyncMethod vsyncMethod)
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First().SetCodec(VideoCodec.copy))
+                                                                 .SetVideoSyncMethod(vsyncMethod)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.Contains($"-vsync {vsyncMethod}", conversionResult.Arguments);
+        }
+
+        [Fact]
+        public async Task AddVsync_AutoMethod_VsyncMethodIsSetCorrectly()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .SetVideoSyncMethod(VideoSyncMethod.auto)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            Assert.Contains($"-vsync -1", conversionResult.Arguments);
+        }
     }
 }
 
