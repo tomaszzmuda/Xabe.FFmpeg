@@ -162,7 +162,7 @@ namespace Xabe.FFmpeg
         ///     Set overwrite output file parameter
         /// </summary>
         /// <param name="overwrite">Should be output file overwritten or not. If not overwrite and file exists conversion will throw ConversionException</param>
-        /// <returns>>IConversion object</returns>
+        /// <returns>IConversion object</returns>
         IConversion SetOverwriteOutput(bool overwrite);
 
         /// <summary>
@@ -328,8 +328,8 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///    Set video sync method.
         /// </summary>
-        /// <param name="vsyncMode">Vsync Mode auto for skip</param>
-        /// <returns>>IConversion object</returns>
-        IConversion SetVideoSyncMethod(VideoSyncMethod vsyncMode);
+        /// <param name="method">Vsync Mode - auto for skip</param>
+        /// <returns>IConversion object</returns>
+        IConversion SetVideoSyncMethod(VideoSyncMethod method);
     }
 }

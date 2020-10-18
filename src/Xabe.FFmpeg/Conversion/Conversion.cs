@@ -702,15 +702,15 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetVideoSyncMethod(VideoSyncMethod v)
+        public IConversion SetVideoSyncMethod(VideoSyncMethod method)
         {
-            if (v == VideoSyncMethod.auto)
+            if (method == VideoSyncMethod.auto)
             {
                 _vsyncMode = $"-vsync -1 ";
             }
             else
             {
-                _vsyncMode = $"-vsync {v} ";
+                _vsyncMode = $"-vsync {method} ";
             }
             return this;
         }
