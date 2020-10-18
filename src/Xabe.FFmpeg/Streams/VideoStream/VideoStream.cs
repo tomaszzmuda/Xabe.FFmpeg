@@ -265,9 +265,9 @@ namespace Xabe.FFmpeg
 
         public IVideoStream SetSize(int width, int height, double aspectratio, int Modulas, Scaling Scaler, int x, int y, int left, int top)
         {
-            if (Width > 0)
+            if (width > 0)
             {
-                double AdjustedHeight = (aspectratio != -1) ? Math.Round((double)width / aspectratio) : Height;
+                double AdjustedHeight = (aspectratio != -1) ? Math.Round((double)width / aspectratio) : height;
                 if (Modulas != -1)
                 {
                     int rd = Modulas.ToString().ToInt();
