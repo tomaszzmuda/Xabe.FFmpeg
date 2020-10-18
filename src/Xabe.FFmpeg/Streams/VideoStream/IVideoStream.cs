@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Xabe.FFmpeg
 {
@@ -114,12 +115,22 @@ namespace Xabe.FFmpeg
         /// <param name="bitrate">Bitrate in bits</param>
         /// <returns>IVideoStream</returns>
         IVideoStream SetBitrate(long bitrate);
+        /// <summary>
+        ///     Set Bitrate of the video (-b:v option)
+        /// </summary>
+        /// <param name="Minbitrate">Bitrate in bits</param>
+        /// <param name="Maxbitrate">Bitrate in bits</param>
+        /// <param name="Buffersize">Buffersize in bits</param>
 
+        IVideoStream SetBitrates(long Minbitrate, long Maxbitrate, long Buffersize);
         /// <summary>
         ///     Set size of video
         /// </summary>
         /// <param name="size">VideoSize</param>
         /// <returns>IVideoStream</returns>
+        /// 
+
+
         IVideoStream SetSize(VideoSize size);
 
         /// <summary>
@@ -130,6 +141,13 @@ namespace Xabe.FFmpeg
         /// <returns>IVideoStream</returns>
         IVideoStream SetSize(int width, int height);
 
+        /// <summary>
+        ///     Set size of video
+        /// </summary>
+        /// <param name="width">Width</param>
+        /// <param name="height">Height</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetSize(int width, int height, double aspectratio, int Modulas, Scaling Scaler, int x, int y, int left, int top);
         /// <summary>
         ///     Set video codec
         /// </summary>

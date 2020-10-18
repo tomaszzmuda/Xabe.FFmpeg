@@ -66,14 +66,10 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="codec">Audio odec</param>
         /// <returns>IAudioStream</returns>
-        IAudioStream SetCodec(AudioCodec codec);
+        IAudioStream SetCodec(AudioCodec codec, object Extraparams = null);
 
-        /// <summary>
-        ///     Set audio codec and bitrate
-        /// </summary>
-        /// <param name="codec">Audio odec</param>
-        /// <returns>IAudioStream</returns>
-        IAudioStream SetCodec(string codec);
+   
+      
 
         /// <summary>
         ///     Set filter

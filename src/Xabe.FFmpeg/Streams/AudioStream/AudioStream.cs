@@ -19,6 +19,7 @@ namespace Xabe.FFmpeg
         private string _channels;
         private string _bitrate;
         private string _codec;
+        private object _ExtraParamaters;
 
         internal AudioStream()
         {
@@ -55,8 +56,16 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string BuildAudioCodec()
         {
+            string extraparams = string.Empty;
             if (_codec != null)
-                return $"-c:a {_codec.ToString()} ";
+            {
+                if ((Codec == "vorbis") || (Codec == "mp2") || (Codec == "wavpack"))
+                {
+                    extraparams = _ExtraParamaters.TooParameter() + " ";
+                }
+                return $"-c:a {_codec.ToString()} "+ extraparams;
+            }
+                
             else
                 return string.Empty;
         }
@@ -130,7 +139,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IAudioStream SetCodec(AudioCodec codec)
+        public IAudioStream SetCodec(AudioCodec codec, object Extraparams=null)
         {
             string input = codec.ToString();
             if (codec == AudioCodec._4gv)
@@ -145,13 +154,14 @@ namespace Xabe.FFmpeg
             {
                 input = "8svx_fib";
             }
-            return SetCodec($"{input}");
+            return SetCodec($"{input}", Extraparams);
         }
 
         /// <inheritdoc />
-        public IAudioStream SetCodec(string codec)
+        public IAudioStream SetCodec(string codec, object extraparms=null)
         {
             _codec = codec;
+            _ExtraParamaters = extraparms;
             return this;
         }
 

@@ -14,14 +14,14 @@ namespace Xabe.FFmpeg.Events
 
     public class ConversionErrorEventsArg : EventArgs
     {
-        public ConversionErrorEventsArg(string Output, string Args, int Processid)
+        public ConversionErrorEventsArg(string output, string args, int processid)
         {
-            this.output = Output;
-            this.args = Args;
-            this.ProcessId = ProcessId;
+            this.Output = output;
+            this.Args = args;
+            this.ProcessId = processid;
         }
-        public string output { get; }
-        public string args { get; }
+        public string Output { get; }
+        public string Args { get; }
         public long ProcessId { get; }
     }
     /// <summary>

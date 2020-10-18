@@ -26,6 +26,7 @@ namespace Xabe.FFmpeg
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
+        [Obsolete]
         public static async Task<IMediaInfo> GetMediaInfo(string fileName)
         {
             return await MediaInfo.Get(fileName);

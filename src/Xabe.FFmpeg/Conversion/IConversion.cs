@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Events;
@@ -130,33 +131,20 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         IConversion SetVideoBitrate(long bitrate);
 
-        /// <summary>
-        ///     Sets Video Scaling Resoultion  + Modulas and filter scale type for scaling
-        /// </summary>
-        /// <param name="Height">The required Height Value</param>
-        /// <param name="Width">The required Width Value</param>
-        /// <param name="Modulas">The required Modulas Value</param>
-        /// <param name="scaler">The required scaler Value</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetVideoScaling(string Width, string Height, string Modulas, double aspectratio, Scaling scaler, int x, int y, int left, int top);
 
         /// <summary>
         ///     Sets The bitrate of the video streams to the supplied value in bytes
-        /// </summary
-        /// <param name="Minbitrate">The required MinBitrate Value</param>
+        /// </summary>
+        /// <param name="Minibitrate">The required MinBitrate Value</param>
         /// <param name="Maxbitrate">The required Maxbitrate Value</param>
         /// <param name="Buffersize">The required Buffersize Value</param>
         /// <returns>IConversion object</returns>
-        IConversion SetVideoBitrate(string Minbitrate, string Maxbitrate, string Buffersize, VideoCodec Outputcodec);
-        /// 
+        IConversion SetVideoBitrate(string Minibitrate, string Maxbitrate, string Buffersize);
         /// <summary>
         ///     Sets The bitrate of the audio streams to the supplied value in bytes
         /// </summary>
         /// <param name="bitrate">The required Bitrate Value</param>
         /// <returns>IConversion object</returns>
-        /// 
-
-
         IConversion SetAudioBitrate(long bitrate);
         /// <summary>
         ///     Sets the map chapters file , disble sets to -1 
@@ -165,13 +153,7 @@ namespace Xabe.FFmpeg
         /// <param name="disablemapchapters">disables map chapters , ie -1</param>
         /// <returns>IConversion object</returns>
         IConversion SetMapChapters(string inputfile);
-        /// <summary>
-        ///     Sets the Codec Audio Mode and Bitrates
-        /// </summary>
-        /// <param name="bitrate">The required Bitrate Value</param>
-        /// <param name="AudioMode">The required AudoEncoder Value</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetAudioCodecMode(AudioEncoder AudioMode, string bitrate = "", object extraparams = null);
+   
         /// <summary>
         ///     Defines thread count used by converter
         /// </summary>
@@ -192,19 +174,20 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output media file</param>
         /// <returns>IConversion object</returns>
         IConversion SetOutput(string outputPath);
+
         /// <summary>
         ///     Set overwrite output file parameter
         /// </summary>
-        /// <param name="vsyncmode">Vsync Mode -1 for skip</param>
+        /// <param name="vsyncmode">Vsync Mode auto for skip</param>
         /// <returns>>IConversion object</returns>
-        IConversion SetVSync(int vsyncmode);
+        IConversion SetVSync(VsyncParams vsyncmode);
+
         /// <summary>
         ///     Set overwrite output file parameter
         /// </summary>
         /// <param name="overwrite">Should be output file overwritten or not. If not overwrite and file exists conversion will throw ConversionException</param>
         /// <returns>>IConversion object</returns>
         IConversion SetOverwriteOutput(bool overwrite);
-
         /// <summary>
         ///     Captures the entire display for length seconds at the specified framerate 
         /// </summary>
@@ -262,7 +245,11 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Fires when FFmpeg process print sonething
         /// </summary>
-        event DataReceivedEventHandler OnDataReceived;
+        event ConversionDataEventHandler OnDataReceived;
+        /// <summary>
+        ///     Fires when FFmpeg process exits with -1
+        /// </summary>
+        event ConversionErrorEventHandler OnConversionError;
 
         /// <summary>
         ///     Finish encoding when the shortest input stream ends. (-shortest)
@@ -331,6 +318,15 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         IConversion AddParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput);
 
+
+        /// <summary>
+        ///     Add additional parameters for the conversion (They must be well formed)
+        /// </summary>
+        /// <param name="parameter"> Parameter to set</param>
+        /// <param name="parameterPosition">Position of parameter</param>
+        /// <param name="skip">skip parameter</param>
+        /// <returns>IConversion object</returns>
+        IConversion AddSmartParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput, bool slip = true);
         /// <summary>
         ///     Add streams to output file
         /// </summary>

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Xabe.FFmpeg
-{ 
+{
     /// <inheritdoc cref="IVideoStream" />
     public class VideoStream : IVideoStream, IFilterable
     {
@@ -216,8 +216,14 @@ namespace Xabe.FFmpeg
             _bitrate = $"-b:v {bitrate} ";
             return this;
         }
-
         /// <inheritdoc />
+
+        public IVideoStream SetBitrates(long Minbitrate, long Maxbitrate, long Buffersize)
+        {
+            _bitrate = $"-b:v {Minbitrate} -maxrate {Maxbitrate} -bufsize {Buffersize} ";
+            return this;
+        }
+
         public IVideoStream SetFlags(params Flag[] flags)
         {
             return SetFlags(flags.Select(x => x.ToString()).ToArray());
@@ -227,7 +233,7 @@ namespace Xabe.FFmpeg
         public IVideoStream SetFlags(params string[] flags)
         {
             var input = string.Join("+", flags);
-            if(input[0] != '+')
+            if (input[0] != '+')
             {
                 input = "+" + input;
             }
@@ -257,11 +263,26 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        public IVideoStream SetSize(int width, int height, double aspectratio, int Modulas, Scaling Scaler, int x, int y, int left, int top)
+        {
+            if (Width > 0)
+            {
+                double AdjustedHeight = (aspectratio != -1) ? Math.Round((double)width / aspectratio) : Height;
+                if (Modulas != -1)
+                {
+                    int rd = Modulas.ToString().ToInt();
+                    AdjustedHeight = Math.Round(AdjustedHeight / rd) * rd;
+                }
+                string crop = ((x > 0) || (y > 0)) ? $",crop ={x}:{y}:{left}:{top}" : "";
+                _size = $"-filter:v scale={width}:{AdjustedHeight}:flags=" + Scaler.ToString() + crop + " ";
+            }
+            return this;
+        }
         /// <inheritdoc />
         public IVideoStream SetCodec(VideoCodec codec)
         {
             string input = codec.ToString();
-            if(codec == VideoCodec._8bps)
+            if (codec == VideoCodec._8bps)
             {
                 input = "8bps";
             }
@@ -303,7 +324,7 @@ namespace Xabe.FFmpeg
             {
                 if (seek > Duration)
                 {
-                    throw new ArgumentException("Seek can not be greater than video duration. Seek: " + seek.TotalSeconds  + " Duration: " + Duration.TotalSeconds );
+                    throw new ArgumentException("Seek can not be greater than video duration. Seek: " + seek.TotalSeconds + " Duration: " + Duration.TotalSeconds);
                 }
                 _seek = $"-ss {seek} ";
             }
