@@ -38,6 +38,7 @@ namespace Xabe.FFmpeg
         private string _outputPixelFormat;
         private string _framerate;
         private string _inputFramerate;
+        private string _vsyncMode;
 
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
@@ -86,6 +87,7 @@ namespace Xabe.FFmpeg
                 builder.Append(BuildMap());
                 builder.Append(_framerate);
                 builder.Append(BuildParameters(ParameterPosition.PostInput));
+                builder.Append(_vsyncMode);
                 builder.Append(_outputTime);
                 builder.Append(_outputPixelFormat);
                 builder.Append(_outputFormat);
@@ -323,7 +325,7 @@ namespace Xabe.FFmpeg
         {
             _buildOutputFileName = buildOutputFileName;
             AddParameter(string.Format("-vf select='not(mod(n\\,{0}))'", frameNo));
-            AddParameter("-vsync vfr", ParameterPosition.PostInput);
+            SetVideoSyncMethod(VideoSyncMethod.vfr);
 
             return this;
         }
@@ -333,7 +335,7 @@ namespace Xabe.FFmpeg
         {
             _buildOutputFileName = buildOutputFileName;
             AddParameter(string.Format("-vf select='eq(n\\,{0})'", frameNo));
-            AddParameter("-vsync 0", ParameterPosition.PostInput);
+            SetVideoSyncMethod(VideoSyncMethod.passthrough);
             return this;
         }
 
@@ -696,6 +698,20 @@ namespace Xabe.FFmpeg
         {
             if (pixelFormat != null)
                 _outputPixelFormat = $"-pix_fmt {pixelFormat} ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion SetVideoSyncMethod(VideoSyncMethod method)
+        {
+            if (method == VideoSyncMethod.auto)
+            {
+                _vsyncMode = $"-vsync -1 ";
+            }
+            else
+            {
+                _vsyncMode = $"-vsync {method} ";
+            }
             return this;
         }
     }
