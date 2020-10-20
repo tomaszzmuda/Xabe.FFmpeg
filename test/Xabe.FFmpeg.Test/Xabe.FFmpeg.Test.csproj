@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFrameworks>net472;netcoreapp3.1;netcoreapp2.2;netcoreapp2.0;netcoreapp2.1;net462;</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
     <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
