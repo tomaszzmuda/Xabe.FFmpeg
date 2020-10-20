@@ -56,6 +56,7 @@ namespace Xabe.FFmpeg.Test
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
+        [Fact]
         public async Task SetBitrate_WithMaximumBitrate()
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp3);
