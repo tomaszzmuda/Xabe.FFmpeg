@@ -56,6 +56,27 @@ namespace Xabe.FFmpeg.Test
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
 
+        public async Task SetBitrate_WithMaximumBitrate()
+        {
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp3);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+
+            var audioStream = inputFile.AudioStreams.First();
+            var bitrate = audioStream.Bitrate;
+            audioStream.SetBitrate(32000, 32000, 8000);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                    .AddStream(audioStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
+
+            Assert.Equal(32000, mediaInfo.AudioStreams.First().Bitrate);
+            Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
+        }
+
         [Fact]
         public async Task ChangeChannels()
         {

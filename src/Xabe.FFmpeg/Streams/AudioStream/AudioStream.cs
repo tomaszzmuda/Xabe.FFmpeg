@@ -106,6 +106,13 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public IAudioStream SetBitrate(long minBitrate, long maxBitrate, long bufferSize)
+        {
+            _bitrate = $"-b:v {minBitrate} -maxrate {maxBitrate} -bufsize {bufferSize} ";
+            return this;
+        }
+
+        /// <inheritdoc />
         public IAudioStream SetSampleRate(int sampleRate)
         {
             _sampleRate = $"-ar:{Index} {sampleRate} ";
