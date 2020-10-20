@@ -111,6 +111,15 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Set Bitrate of the video (-b:v option)
         /// </summary>
+        /// <param name="minBitrate">Bitrate in bits</param>
+        /// <param name="maxBitrate">Bitrate in bits</param>
+        /// <param name="buffersize">Buffersize in bits</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream SetBitrate(long minBitrate, long maxBitrate, long bufferSize);
+
+        /// <summary>
+        ///     Set Bitrate of the video (-b:v option)
+        /// </summary>
         /// <param name="bitrate">Bitrate in bits</param>
         /// <returns>IVideoStream</returns>
         IVideoStream SetBitrate(long bitrate);
