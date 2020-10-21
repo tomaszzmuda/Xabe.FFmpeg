@@ -26,8 +26,8 @@ namespace Xabe.FFmpeg.Test
                                                     .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(expectedDuration), mediaInfo.Duration);
-            Assert.Equal(TimeSpan.FromSeconds(expectedAudioDuration), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal(expectedDuration, mediaInfo.Duration.Seconds);
+            Assert.Equal(expectedAudioDuration, mediaInfo.AudioStreams.First().Duration.Seconds);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
@@ -153,8 +153,8 @@ namespace Xabe.FFmpeg.Test
                                                     .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.Duration);
-            Assert.Equal(TimeSpan.FromSeconds(27), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal(27, mediaInfo.Duration.Seconds);
+            Assert.Equal(27, mediaInfo.AudioStreams.First().Duration.Seconds);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
@@ -171,8 +171,8 @@ namespace Xabe.FFmpeg.Test
                                                     .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal(9, mediaInfo.Duration.Seconds);
+            Assert.Equal(9, mediaInfo.AudioStreams.First().Duration.Seconds);
             Assert.Equal("aac", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
@@ -205,8 +205,8 @@ namespace Xabe.FFmpeg.Test
                                                     .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal(9, mediaInfo.Duration.Seconds);
+            Assert.Equal(9, mediaInfo.AudioStreams.First().Duration.Seconds);
             Assert.Equal("aac", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
@@ -263,8 +263,8 @@ namespace Xabe.FFmpeg.Test
                                 .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
-            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.AudioStreams.First().Duration);
+            Assert.Equal(13, mediaInfo.Duration.Seconds);
+            Assert.Equal(13, mediaInfo.AudioStreams.First().Duration.Seconds);
             Assert.Equal("mp3", mediaInfo.AudioStreams.First().Codec);
             Assert.NotEmpty(mediaInfo.AudioStreams);
         }
