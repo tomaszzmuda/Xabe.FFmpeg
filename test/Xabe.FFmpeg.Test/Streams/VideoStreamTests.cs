@@ -71,7 +71,7 @@ namespace Xabe.FFmpeg.Test
 
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.InRange(mediaInfo.VideoStreams.First().Bitrate, 50000, 60000);
+            Assert.InRange(mediaInfo.VideoStreams.First().Bitrate, 560000, 580000);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
