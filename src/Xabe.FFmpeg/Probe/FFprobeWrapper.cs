@@ -65,7 +65,6 @@ namespace Xabe.FFmpeg
         {
             double duration = audio.duration;
             TimeSpan audioDuration = TimeSpan.FromSeconds(duration);
-            audioDuration = audioDuration.Subtract(TimeSpan.FromMilliseconds(audioDuration.Milliseconds));
             return audioDuration;
         }
 
@@ -73,7 +72,6 @@ namespace Xabe.FFmpeg
         {
             double duration = video.duration > 0.01 ? video.duration : format.duration;
             TimeSpan videoDuration = TimeSpan.FromSeconds(duration);
-            videoDuration = videoDuration.Subtract(TimeSpan.FromMilliseconds(videoDuration.Milliseconds));
             return videoDuration;
         }
 

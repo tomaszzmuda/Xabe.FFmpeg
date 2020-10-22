@@ -38,7 +38,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Contains("overlay", conversionResult.Arguments);
             Assert.Contains(Resources.PngSample, conversionResult.Arguments);
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(9, mediaInfo.Duration.Seconds);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
@@ -288,7 +288,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
             Assert.Equal(30, resultFile.VideoStreams.First().Framerate);
-            Assert.Equal(TimeSpan.FromSeconds(3), resultFile.VideoStreams.First().Duration);
+            Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
         }
 
         [Fact]
@@ -342,8 +342,8 @@ namespace Xabe.FFmpeg.Test
 
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(5), resultFile.AudioStreams.First().Duration);
-            Assert.Equal(TimeSpan.FromSeconds(5), resultFile.VideoStreams.First().Duration);
+            Assert.Equal(5, resultFile.AudioStreams.First().Duration.Seconds);
+            Assert.Equal(5, resultFile.VideoStreams.First().Duration.Seconds);
         }
 
         [Fact]
@@ -869,7 +869,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Equal(".mp4", Path.GetExtension(resultFile.Path));
             Assert.Equal(116.244, resultVideoStream.Framerate);
-            Assert.Equal(TimeSpan.FromSeconds(3), resultVideoStream.Duration);
+            Assert.Equal(3, resultVideoStream.Duration.Seconds);
         }
 
         [Theory]
