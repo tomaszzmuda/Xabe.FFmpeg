@@ -62,7 +62,7 @@ namespace Xabe.FFmpeg.Test
             var videoStream = inputFile.VideoStreams.First();
             var originalBitrate = videoStream.Bitrate;
             Assert.Equal(860233, originalBitrate);
-            videoStream.SetBitrate(6000);
+            videoStream.SetBitrate(860237);
 
             IConversionResult result = await FFmpeg.Conversions.New()
                                                     .AddStream(videoStream)
@@ -71,7 +71,30 @@ namespace Xabe.FFmpeg.Test
 
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.True(mediaInfo.VideoStreams.First().Bitrate < 10000);
+            Assert.InRange(mediaInfo.VideoStreams.First().Bitrate, 560000, 580000);
+            Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
+        [Fact]
+        public async Task SetBitrate_WithMaxBitrateAndBuffer()
+        {
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            var videoStream = inputFile.VideoStreams.First();
+            var originalBitrate = videoStream.Bitrate;
+            Assert.Equal(860233, originalBitrate);
+            videoStream.SetBitrate(6000, 6000, 6000);
+
+            IConversionResult result = await FFmpeg.Conversions.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
+            Assert.InRange(mediaInfo.VideoStreams.First().Bitrate, 7000, 8000);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
         }

@@ -90,6 +90,15 @@ namespace Xabe.FFmpeg
         IAudioStream SetBitrate(long bitRate);
 
         /// <summary>
+        ///     Set Bitrate of the AudioStream
+        /// </summary>
+        /// <param name="minBitrate">Bitrate in bits</param>
+        /// <param name="maxBitrate">Bitrate in bits</param>
+        /// <param name="buffersize">Buffersize in bits</param>
+        /// <returns>IAudioStream</returns>
+        IAudioStream SetBitrate(long minBitrate, long maxBitrate, long bufferSize);
+
+        /// <summary>
         ///     Sets the SampleRate of the AudioStream (-ar option)
         /// </summary>
         /// <param name="sampleRate">SampleRate in HZ for the Audio Stream</param>
