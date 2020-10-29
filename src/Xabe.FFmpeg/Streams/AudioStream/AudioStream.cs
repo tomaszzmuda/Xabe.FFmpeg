@@ -71,8 +71,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream CopyStream()
         {
-            _audioFilters["-c:v copy"] = string.Empty;
-            return this;
+            return this.SetCodec(AudioCodec.copy);
         }
 
         /// <inheritdoc />

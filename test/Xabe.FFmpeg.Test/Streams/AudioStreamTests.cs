@@ -286,6 +286,26 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(exception);
             Assert.IsType<ConversionException>(exception);
         }
+
+        [Fact]
+        public async Task CopyStream_CorrectFFmpegArguments()
+        {
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp4WithAudio);
+            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+
+            var audioStream = inputFile.AudioStreams.First();
+            audioStream.SetCodec(AudioCodec.comfortnoise);
+            audioStream.CopyStream();
+
+            var result = await FFmpeg.Conversions.New()
+                                .AddStream(audioStream)
+                                .SetOutput(outputPath)
+                                .Start();
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
+
+            Assert.Contains($"-c:a copy", result.Arguments);
+            Assert.Equal(inputFile.AudioStreams.First().Codec, mediaInfo.AudioStreams.First().Codec);
+        }
     }
 }
 
