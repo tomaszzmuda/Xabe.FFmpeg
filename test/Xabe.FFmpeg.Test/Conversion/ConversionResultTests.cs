@@ -27,7 +27,7 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(mediaInfo);
             Assert.True(result.StartTime != DateTime.MinValue);
             Assert.True(result.EndTime != DateTime.MinValue);
-            Assert.Equal(TimeSpan.FromSeconds(5), mediaInfo.Duration);
+            Assert.Equal(5, mediaInfo.Duration.Seconds);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
         }
 

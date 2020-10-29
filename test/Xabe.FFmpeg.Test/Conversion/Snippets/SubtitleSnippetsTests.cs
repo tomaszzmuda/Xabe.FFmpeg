@@ -20,7 +20,8 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+            Assert.Equal(51, outputInfo.Duration.Minutes);
+            Assert.Equal(11, outputInfo.Duration.Seconds);
             Assert.Single(outputInfo.SubtitleStreams);
             Assert.Single(outputInfo.VideoStreams);
             Assert.Single(outputInfo.AudioStreams);
@@ -39,7 +40,7 @@ namespace Xabe.FFmpeg.Test
 
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+                        Assert.Equal(51, outputInfo.Duration.Minutes);
             Assert.Single(outputInfo.SubtitleStreams);
             Assert.Single(outputInfo.VideoStreams);
             Assert.Single(outputInfo.AudioStreams);
@@ -61,7 +62,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+                        Assert.Equal(51, outputInfo.Duration.Minutes);
             Assert.Single(outputInfo.SubtitleStreams);
             Assert.Single(outputInfo.VideoStreams);
             Assert.Single(outputInfo.AudioStreams);
@@ -92,7 +93,7 @@ namespace Xabe.FFmpeg.Test
 
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(3071), outputInfo.Duration);
+                        Assert.Equal(51, outputInfo.Duration.Minutes);
             Assert.Single(outputInfo.SubtitleStreams);
             Assert.Single(outputInfo.VideoStreams);
             Assert.Single(outputInfo.AudioStreams);
@@ -118,7 +119,7 @@ namespace Xabe.FFmpeg.Test
                                              .Start();
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(13), outputInfo.Duration);
+            Assert.Equal(13, outputInfo.Duration.Seconds);
         }
 
         [Fact]
@@ -130,7 +131,7 @@ namespace Xabe.FFmpeg.Test
 
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(9), mediaInfo.Duration);
+            Assert.Equal(9, mediaInfo.Duration.Seconds);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();

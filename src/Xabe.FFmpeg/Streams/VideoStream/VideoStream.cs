@@ -217,6 +217,12 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        public IVideoStream SetBitrate(long minBitrate, long maxBitrate, long bufferSize)
+        {
+            _bitrate = $"-b:v {minBitrate} -maxrate {maxBitrate} -bufsize {bufferSize} ";
+            return this;
+        }
+
         /// <inheritdoc />
         public IVideoStream SetFlags(params Flag[] flags)
         {

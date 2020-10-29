@@ -21,7 +21,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("aac", mediaInfo.AudioStreams.First()
                                          .Codec);
             Assert.Single(mediaInfo.VideoStreams);
-            Assert.Equal(TimeSpan.FromSeconds(13), mediaInfo.Duration);
+            Assert.Equal(13, mediaInfo.Duration.Seconds);
         }
 
         [Fact]
@@ -38,7 +38,7 @@ namespace Xabe.FFmpeg.Test
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
             Assert.NotNull(audioStream);
             Assert.Equal("mp3", audioStream.Codec);
-            Assert.Equal(TimeSpan.FromSeconds(13), audioStream.Duration);
+            Assert.Equal(13, audioStream.Duration.Seconds);
             Assert.Equal(320000, audioStream.Bitrate);
         }
 
@@ -67,8 +67,8 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
 
             // The resulting streams are 4 seconds longer than the original
-            Assert.Equal(resultFile.VideoStreams.First().Duration, audioStream.Duration + TimeSpan.FromSeconds(4));
-            Assert.Equal(resultFile.AudioStreams.First().Duration, audioStream.Duration + TimeSpan.FromSeconds(4));
+            Assert.Equal((audioStream.Duration + TimeSpan.FromSeconds(4)).Seconds, resultFile.VideoStreams.First().Duration.Seconds);
+            Assert.Equal((audioStream.Duration + TimeSpan.FromSeconds(4)).Seconds, resultFile.AudioStreams.First().Duration.Seconds);
             Assert.Equal(1920, resultFile.VideoStreams.First().Width);
             Assert.Equal(1080, resultFile.VideoStreams.First().Height);
         }
