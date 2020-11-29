@@ -714,5 +714,10 @@ namespace Xabe.FFmpeg
             }
             return this;
         }
+
+        public async Task Stop()
+        {
+            await _ffmpeg.Stop();
+        }
     }
 }

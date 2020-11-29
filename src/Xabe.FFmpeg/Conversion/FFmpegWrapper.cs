@@ -24,6 +24,7 @@ namespace Xabe.FFmpeg
         private List<string> _outputLog;
         private TimeSpan _totalTime;
         private bool _wasKilled = false;
+        private Process _process;
 
         /// <summary>
         ///     Fires when FFmpeg progress changes
@@ -43,18 +44,18 @@ namespace Xabe.FFmpeg
             return Task.Factory.StartNew(() =>
             {
                 _outputLog = new List<string>();
-                var process = RunProcess(args, FFmpegPath, priority, true, false, true);
-                using (process)
+                _process = RunProcess(args, FFmpegPath, priority, true, false, true);
+                using (_process)
                 {
-                    process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args, process.Id);
-                    process.BeginErrorReadLine();
+                    _process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args, _process.Id);
+                    _process.BeginErrorReadLine();
                     var ctr = cancellationToken.Register(() =>
                     {
                         if (Environment.OSVersion.Platform != PlatformID.Win32NT)
                         {
                             try
                             {
-                                process.StandardInput.Write("q");
+                                _process.StandardInput.Write("q");
                                 Task.Delay(1000 * 5).GetAwaiter().GetResult();
                             }
                             catch (InvalidOperationException)
@@ -62,11 +63,12 @@ namespace Xabe.FFmpeg
                             }
                             finally
                             {
-                                if (!process.HasExited)
+                                if (!_process.HasExited)
                                 {
-                                    process.CloseMainWindow();
-                                    process.Kill();
+                                    _process.CloseMainWindow();
+                                    _process.Kill();
                                     _wasKilled = true;
+                                    _process = null;
                                 }
                             }
                         }
@@ -76,21 +78,22 @@ namespace Xabe.FFmpeg
                     {
                         using (var processEnded = new ManualResetEvent(false))
                         {
-                            processEnded.SetSafeWaitHandle(new SafeWaitHandle(process.Handle, false));
+                            processEnded.SetSafeWaitHandle(new SafeWaitHandle(_process.Handle, false));
                             int index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
 
                             // If the signal came from the caller cancellation token close the window
                             if (index == 1
-                                && !process.HasExited)
+                                && !_process.HasExited)
                             {
-                                process.CloseMainWindow();
-                                process.Kill();
+                                _process.CloseMainWindow();
+                                _process.Kill();
                                 _wasKilled = true;
+                                _process = null;
                             }
-                            else if (index == 0 && !process.HasExited)
+                            else if (index == 0 && !_process.HasExited)
                             {
                                 // Workaround for linux: https://github.com/dotnet/corefx/issues/35544
-                                process.WaitForExit();
+                                _process.WaitForExit();
                             }
                         }
 
@@ -109,7 +112,7 @@ namespace Xabe.FFmpeg
                         var exceptionsCatcher = new FFmpegExceptionCatcher();
                         exceptionsCatcher.CatchFFmpegErrors(output, args);
 
-                        if (process.ExitCode != 0)
+                        if (_process.ExitCode != 0)
                         {
                             throw new ConversionException(output, args);
                         }
@@ -192,6 +195,11 @@ namespace Xabe.FFmpeg
                 return words[index + 1];
             }
             return string.Empty;
+        }
+
+        public async Task Stop()
+        {
+            _process?.StandardInput.Close();
         }
     }
 }

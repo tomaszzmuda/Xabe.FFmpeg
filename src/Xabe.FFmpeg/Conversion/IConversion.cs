@@ -220,7 +220,7 @@ namespace Xabe.FFmpeg
         event ConversionProgressEventHandler OnProgress;
 
         /// <summary>
-        ///     Fires when FFmpeg process print sonething
+        ///     Fires when FFmpeg process print something
         /// </summary>
         event DataReceivedEventHandler OnDataReceived;
 
@@ -331,5 +331,10 @@ namespace Xabe.FFmpeg
         /// <param name="method">Vsync Mode - auto for skip</param>
         /// <returns>IConversion object</returns>
         IConversion SetVideoSyncMethod(VideoSyncMethod method);
+
+        /// <summary>
+        ///     Send Ctrl+C to FFmpeg
+        /// </summary>
+        Task Stop();
     }
 }
