@@ -1,19 +1,27 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Test.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class SubtitleTests
+    public class SubtitleTests : IClassFixture<StorageFixture>
     {
+        private readonly StorageFixture _storageFixture;
+
+        public SubtitleTests(StorageFixture storageFixture)
+        {
+            _storageFixture = storageFixture;
+        }
+
         [Theory]
-        [InlineData(Format.ass, "ass", "ass")]
-        [InlineData(Format.webvtt, "vtt", "webvtt")]
-        [InlineData(Format.srt, "srt", "subrip")]
+        [InlineData(Format.ass, ".ass", "ass")]
+        [InlineData(Format.webvtt, ".vtt", "webvtt")]
+        [InlineData(Format.srt, ".srt", "subrip")]
         public async Task ConvertTest(Format format, string extension, string expectedFormat)
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), extension);
+            string outputPath = _storageFixture.GetTempFileName(extension);
 
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SubtitleSrt);
 
@@ -32,12 +40,12 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Theory]
-        [InlineData("ass", "ass", false)]
-        [InlineData("vtt", "webvtt", false)]
-        [InlineData("srt", "subrip", false)]
-        public async Task ExtractSubtitles(string format, string expectedFormat, bool checkOutputLanguage)
+        [InlineData(".ass", "ass", false)]
+        [InlineData(".vtt", "webvtt", false)]
+        [InlineData(".srt", "subrip", false)]
+        public async Task ExtractSubtitles(string extension, string expectedFormat, bool checkOutputLanguage)
         {
-            string outputPath = Path.ChangeExtension(Path.GetTempFileName(), format);
+            string outputPath = _storageFixture.GetTempFileName(extension);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MultipleStream);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x => x.Language == "spa");
