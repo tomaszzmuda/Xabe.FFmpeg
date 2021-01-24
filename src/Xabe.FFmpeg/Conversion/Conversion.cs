@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -206,7 +207,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion SetHashFormat(Hash hashFormat)
+        public IConversion SetHashFormat(Hash hashFormat = Hash.SHA256)
         {
             var format = hashFormat.ToString();
             if (hashFormat == Hash.SHA512_256)
@@ -218,6 +219,7 @@ namespace Xabe.FFmpeg
                 format = "SHA512/224";
             }
 
+            SetOutputFormat(Format.hash);
             return SetHashFormat(format);
         }
 

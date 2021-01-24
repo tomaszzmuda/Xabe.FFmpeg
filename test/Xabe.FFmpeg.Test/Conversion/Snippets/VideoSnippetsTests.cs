@@ -4,12 +4,20 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Streams.SubtitleStream;
+using Xabe.FFmpeg.Test.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class VideoSnippetsTests
+    public class VideoSnippetsTests : IClassFixture<StorageFixture>
     {
+        private readonly StorageFixture _storageFixture;
+
+        public VideoSnippetsTests(StorageFixture storageFixture)
+        {
+            _storageFixture = storageFixture;
+        }
+
         public static IEnumerable<object[]> JoinFiles => new[]
         {
             new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720, "16:9"},
@@ -151,7 +159,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithSubtitles_SkipSubtitles()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
 
@@ -173,7 +181,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithSubtitles_SkipSubtitlesWithParameter()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, false)).Start();
 
@@ -195,7 +203,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithSubtitles_KeepSubtitles()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, true)).Start();
 
@@ -219,7 +227,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.mov_text)]
         public async Task BasicTranscode_InputFileWithSubtitles_KeepSubtitles(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, true)).Start();
 
@@ -243,7 +251,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.copy)]
         public async Task BasicTranscode_InputFileWithSubtitles_SkipSubtitles(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec)).Start();
 
@@ -267,7 +275,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.copy)]
         public async Task BasicTranscode_InputFileWithSubtitles_SkipSubtitlesWithParameter(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, false)).Start();
 
@@ -289,7 +297,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_SloMoVideo_CorrectFramerate()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.SloMoMp4, output)).Start();
 
@@ -307,7 +315,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithMultipleStreams_CorrectResult()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MultipleStream, output)).Start();
 
@@ -325,7 +333,7 @@ namespace Xabe.FFmpeg.Test
         [Fact(Skip = "The RTSP stream is not valid anymore")]
         public async Task Rtsp_GotTwoStreams_SaveEverything()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
 
             var conversionResult = await FFmpeg.Conversions.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();

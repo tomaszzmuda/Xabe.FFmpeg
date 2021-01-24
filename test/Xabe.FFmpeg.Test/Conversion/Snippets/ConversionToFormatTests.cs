@@ -3,13 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Test.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class ConversionToFormatTests
-
+    public class ConversionToFormatTests : IClassFixture<StorageFixture>
     {
+        private readonly StorageFixture _storageFixture;
+
+        public ConversionToFormatTests(StorageFixture storageFixture)
+        {
+            _storageFixture = storageFixture;
+        }
+
         [Theory]
         [InlineData(1, 0, 25)]
         [InlineData(1, 1, 24.889)]
@@ -43,7 +50,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ToMp4Test()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToMp4(Resources.MkvWithAudio, output))
                                           .Start();
@@ -128,7 +135,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ConversionWithoutSpecificFormat()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult result = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
 
