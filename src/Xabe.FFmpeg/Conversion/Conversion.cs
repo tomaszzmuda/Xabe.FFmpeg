@@ -46,6 +46,9 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildOutputFileName = null;
 
         private int? _processId = null;
+        private string _inputXOffset;
+        private string _inputYOffset;
+        private string _inputVideoSize;
 
         /// <inheritdoc />
         public string Build()
@@ -373,17 +376,30 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion GetScreenCapture(double frameRate)
+        public IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, VideoSize? videoSize = null) => 
+            GetScreenCapture(frameRate, xOffset, yOffset, videoSize?.ToFFmpegFormat());
+
+        /// <inheritdoc />
+        public IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, string videoSize = null)
         {
+            SetFrameRate(frameRate);
+            AddParameter($"-offset_x {xOffset} ", ParameterPosition.PreInput);
+            AddParameter($"-offset_y {yOffset} ", ParameterPosition.PreInput);
+            AddParameter("-preset ultrafast");
+            SetPixelFormat(PixelFormat.yuv420p);
+
+            if (videoSize != null)
+            {
+                AddParameter($"-video_size {videoSize} ", ParameterPosition.PreInput);
+            }
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 _capturing = true;
 
                 SetInputFormat(Format.gdigrab);
-                SetFrameRate(frameRate);
                 AddParameter("-i desktop ", ParameterPosition.PreInput);
-                SetPixelFormat(PixelFormat.yuv420p);
-                AddParameter("-preset ultrafast");
+
                 return this;
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -391,10 +407,7 @@ namespace Xabe.FFmpeg
                 _capturing = true;
 
                 SetInputFormat(Format.avfoundation);
-                SetFrameRate(frameRate);
                 AddParameter("-i 1:1 ", ParameterPosition.PreInput);
-                SetPixelFormat(PixelFormat.yuv420p);
-                AddParameter("-preset ultrafast");
                 return this;
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -402,10 +415,7 @@ namespace Xabe.FFmpeg
                 _capturing = true;
 
                 SetInputFormat(Format.x11grab);
-                SetFrameRate(frameRate);
                 AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
-                SetPixelFormat(PixelFormat.yuv420p);
-                AddParameter("-preset ultrafast");
                 return this;
             }
 

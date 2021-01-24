@@ -279,7 +279,7 @@ namespace Xabe.FFmpeg.Test
             string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
 
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                                                                 .GetScreenCapture(30)
+                                                                 .GetScreenCapture(30, 10, 10, VideoSize.Qcif)
                                                                  .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -289,6 +289,28 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
             Assert.Equal(30, resultFile.VideoStreams.First().Framerate);
             Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
+            Assert.Equal(176, resultFile.VideoStreams.First().Width);
+            Assert.Equal(144, resultFile.VideoStreams.First().Height);
+        }
+
+        [RunnableInDebugOnly]
+        public async Task GetScreenCaptureTest2()
+        {
+            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .GetScreenCapture(30, 10, 10, "176x144")
+                                                                 .SetInputTime(TimeSpan.FromSeconds(3))
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
+            Assert.Equal(30, resultFile.VideoStreams.First().Framerate);
+            Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
+            Assert.Equal(176, resultFile.VideoStreams.First().Width);
+            Assert.Equal(144, resultFile.VideoStreams.First().Height);
         }
 
         [Fact]
