@@ -81,7 +81,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SnapshotInvalidArgumentTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Png);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Png);
             await Assert.ThrowsAsync<ArgumentException>(async () => await (await FFmpeg.Conversions.FromSnippet.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(999)))
                                                                                     .Start());
         }
@@ -91,7 +91,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(FileExtensions.Jpg, 84461)]
         public async Task SnapshotTest(string extension, long expectedLength)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + extension);
+            string output = _storageFixture.GetTempFileName(extension);
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0)))
                                              .Start();
 

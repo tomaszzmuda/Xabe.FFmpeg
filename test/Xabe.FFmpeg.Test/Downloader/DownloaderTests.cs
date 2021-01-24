@@ -6,13 +6,22 @@ using Newtonsoft.Json;
 using NSubstitute;
 using Xabe.FFmpeg.Downloader;
 using Xabe.FFmpeg.Downloader.Android;
+using Xabe.FFmpeg.Test.Fixtures;
 using Xunit;
 using OperatingSystem = Xabe.FFmpeg.Downloader.OperatingSystem;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class DownloaderTests
+    public class DownloaderTests : IClassFixture<StorageFixture>
     {
+        private readonly StorageFixture _storageFixture;
+
+        public DownloaderTests(StorageFixture storageFixture)
+        {
+            _storageFixture = storageFixture;
+        }
+
+
         [Fact]
         internal async Task FullProcessPassed()
         {
@@ -25,8 +34,8 @@ namespace Xabe.FFmpeg.Test
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
             try
-            { 
-                FFmpeg.SetExecutablesPath(Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N")));
+            {
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
                 string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
                 string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
@@ -95,7 +104,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath(Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N")));
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
                 string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
                 string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
@@ -164,7 +173,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath(Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N")));
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
                 string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
                 string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
@@ -238,7 +247,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath(Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString("N")));
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
                 string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
                 string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
@@ -318,11 +327,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath);
 
@@ -354,11 +359,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath, null, 3);
 
@@ -390,11 +391,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath, progress, 0);
@@ -427,11 +424,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath, progress, 3);
@@ -460,11 +453,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
@@ -492,11 +481,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, null, 3);
 
@@ -524,11 +509,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress);
@@ -557,11 +538,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress, 3);
@@ -588,11 +565,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
 
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
@@ -619,11 +592,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
 
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, null, 3);
@@ -650,11 +619,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress);
@@ -681,11 +646,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress, 3);
@@ -719,11 +680,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
             }
             finally
@@ -740,11 +697,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, null, 3);
             }
             finally
@@ -761,12 +714,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
-
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress);
             }
@@ -784,12 +732,7 @@ namespace Xabe.FFmpeg.Test
 
             try
             {
-                FFmpeg.SetExecutablesPath("assemblies");
-                if (Directory.Exists("assemblies"))
-                {
-                    Directory.Delete("assemblies", true);
-                }
-
+                FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress, 3);
             }

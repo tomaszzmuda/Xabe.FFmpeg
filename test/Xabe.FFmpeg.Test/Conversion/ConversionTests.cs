@@ -53,7 +53,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SetOutputFormatTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -76,7 +76,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(Format.matroska, "matroska")]
         public async Task SetOutputFormat_ValuesFromEnum_CorrectParams(Format format, string expectedFormat)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -92,7 +92,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SetOutputFormat_ValueAsString_CorrectParams()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -108,7 +108,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SetOutputFormat_NotExistingFormat_ThrowConversionException()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -129,7 +129,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(Format.matroska, "matroska")]
         public async Task SetFormat_ValuesFromEnum_CorrectParams(Format format, string expectedFormat)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -145,7 +145,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SetFormat_ValueAsString_CorrectParams()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -161,7 +161,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SetFormat_NotExistingFormat_ThrowConversionException()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -177,7 +177,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SetInputAndOutputFormatTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Avi);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Avi);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
@@ -234,7 +234,8 @@ namespace Xabe.FFmpeg.Test
             if (hashFormat == Hash.SHA256)
                 fileExtension = FileExtensions.Sha256;
 
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
+            //string output = _storageFixture.GetTempFileName(fileExtension);
+            string output = _storageFixture.GetTempFileName(fileExtension);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.copy);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.copy);
@@ -258,7 +259,7 @@ namespace Xabe.FFmpeg.Test
         {
             string fileExtension = FileExtensions.Txt;
 
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + fileExtension);
+            string output = _storageFixture.GetTempFileName(fileExtension);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.copy);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.copy);
@@ -480,8 +481,8 @@ namespace Xabe.FFmpeg.Test
         [InlineData(FileExtensions.Jpg)]
         public async Task ExtractEveryNthFrameTest(string extension)
         {
-            Guid fileGuid = Guid.NewGuid();
-            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
+            var tempPath = _storageFixture.GetTempDirectory();
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(tempPath, number + extension); };
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First().SetCodec(VideoCodec.png);
 
@@ -492,8 +493,7 @@ namespace Xabe.FFmpeg.Test
 
 
 
-            int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
-                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == extension).Count();
+            int outputFilesCount = Directory.EnumerateFiles(tempPath).Count();
 
             Assert.Equal(26, outputFilesCount);
         }
@@ -504,8 +504,8 @@ namespace Xabe.FFmpeg.Test
         [InlineData(FileExtensions.Jpg)]
         public async Task ExtractNthFrameTest(string extension)
         {
-            Guid fileGuid = Guid.NewGuid();
-            Func<string, string> outputBuilder = (number) => { return Path.Combine(Path.GetTempPath(), fileGuid + number + extension); };
+            var tempPath = _storageFixture.GetTempDirectory();
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(tempPath, number + extension); };
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First().SetCodec(VideoCodec.png);
 
@@ -516,8 +516,7 @@ namespace Xabe.FFmpeg.Test
 
 
 
-            int outputFilesCount = Directory.EnumerateFiles(Path.GetTempPath())
-                .Where(x => x.Contains(fileGuid.ToString()) && Path.GetExtension(x) == extension).Count();
+            int outputFilesCount = Directory.EnumerateFiles(tempPath).Count();
 
             Assert.Equal(1, outputFilesCount);
         }
@@ -770,7 +769,8 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task Conversion_CancellationOccurs_ExeptionWasThrown()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            string output = _storageFixture.GetTempFileName(FileExtensions.WebM);
+
             var cancellationTokenSource = new CancellationTokenSource();
             var conversion = Conversion.ToWebM(Resources.Mp4WithAudio, output);
             var task = conversion
@@ -864,7 +864,7 @@ namespace Xabe.FFmpeg.Test
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.TempDirPath);
 
-                string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+                string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
                 var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(Resources.MkvWithAudio));
 
                 Assert.NotNull(exception);
