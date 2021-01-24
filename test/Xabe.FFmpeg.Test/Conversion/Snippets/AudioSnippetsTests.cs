@@ -2,12 +2,20 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Test.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class AudioSnippetsTests
+    public class AudioSnippetsTests : IClassFixture<StorageFixture>
     {
+        private readonly StorageFixture _storageFixture;
+
+        public AudioSnippetsTests(StorageFixture storageFixture)
+        {
+            _storageFixture = storageFixture;
+        }
+
         [Fact]
         public async Task AddAudio()
         {
@@ -57,7 +65,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.cbrt, FrequencyScale.log)]
         public async Task VisualiseAudioTest(VideoSize size, PixelFormat pixelFormat, VisualisationMode mode, AmplitudeScale amplitudeScale, FrequencyScale frequencyScale)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.aac);
 
