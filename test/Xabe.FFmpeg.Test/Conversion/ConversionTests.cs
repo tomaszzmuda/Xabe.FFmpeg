@@ -302,7 +302,7 @@ namespace Xabe.FFmpeg.Test
         [RunnableInDebugOnly]
         public async Task GetScreenCaptureTest2()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Mp4);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
                                                                  .GetScreenCapture(30, 10, 10, "176x144")
