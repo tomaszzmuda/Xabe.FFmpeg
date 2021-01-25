@@ -32,14 +32,17 @@ namespace Xabe.FFmpeg.Test.Fixtures
 
         public void Dispose()
         {
-            try
+            for (int i=0; i<10; i++)
             {
-                new DirectoryInfo(TempDirPath).Delete(true);
-            }
-            catch
-            {
-                Thread.Sleep(1000);
-                new DirectoryInfo(TempDirPath).Delete(true);
+                try
+                {
+                    new DirectoryInfo(TempDirPath).Delete(true);
+                    break;
+                }
+                catch
+                {
+                    Thread.Sleep(500 * i*i);
+                }
             }
         }
     }
