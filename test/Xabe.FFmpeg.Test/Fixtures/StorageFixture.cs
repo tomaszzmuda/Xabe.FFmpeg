@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 
 namespace Xabe.FFmpeg.Test.Fixtures
 {
@@ -22,9 +23,27 @@ namespace Xabe.FFmpeg.Test.Fixtures
             return Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
         }
 
+        public string GetTempDirectory()
+        {
+            var path = Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
+            Directory.CreateDirectory(path);
+            return path;
+        }
+
         public void Dispose()
         {
-            new DirectoryInfo(TempDirPath).Delete(true);
+            for (int i=0; i<10; i++)
+            {
+                try
+                {
+                    new DirectoryInfo(TempDirPath).Delete(true);
+                    break;
+                }
+                catch
+                {
+                    Thread.Sleep(500 * i*i);
+                }
+            }
         }
     }
 }

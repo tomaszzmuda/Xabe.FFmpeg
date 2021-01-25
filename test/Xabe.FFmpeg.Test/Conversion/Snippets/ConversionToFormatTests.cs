@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(1, 1, 24.889)]
         public async Task ToGifTest(int loopCount, int delay, double framerate)
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Gif);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Gif);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToGif(Resources.Mp4, output, loopCount, delay))
                                              .SetPreset(ConversionPreset.UltraFast)
@@ -71,7 +71,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ToOgvTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ogv);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ogv);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToOgv(Resources.MkvWithAudio, output))
                                              .Start();
@@ -92,7 +92,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ToTsTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.Ts);
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToTs(Resources.Mp4WithAudio, output))
                                              .Start();
@@ -113,9 +113,9 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ToWebMTest()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            string output = _storageFixture.GetTempFileName(FileExtensions.WebM);
 
-            IConversionResult result = await Conversion.ToWebM(Resources.Mp4WithAudio, output)
+            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToWebM(Resources.Mp4WithAudio, output))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 

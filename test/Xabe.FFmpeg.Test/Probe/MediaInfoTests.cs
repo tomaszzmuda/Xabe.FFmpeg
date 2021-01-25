@@ -3,12 +3,20 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Xabe.FFmpeg.Test.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class MediaInfoTests
+    public class MediaInfoTests : IClassFixture<StorageFixture>
     {
+        private readonly StorageFixture _storageFixture;
+
+        public MediaInfoTests(StorageFixture storageFixture)
+        {
+            _storageFixture = storageFixture;
+        }
+
         [Fact]
         public async Task AudioPopertiesTest()
         {
@@ -131,11 +139,11 @@ namespace Xabe.FFmpeg.Test
         [InlineData("アセチルサリチル酸")]
         public async Task GetMediaInfo_NonUTF8CharactersInPath(string path)
         {
-            var dir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), path));
-            var destFile = Path.Combine(dir.FullName, "temp.mp4");
-            File.Copy(Resources.Mp4WithAudio, destFile, true);
+            string output = _storageFixture.GetTempFileName($"{path}{FileExtensions.Mp4}");
+            File.Copy(Resources.Mp4WithAudio, output, true);
 
-            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(destFile);
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
 
             Assert.NotNull(mediaInfo);
             Assert.Equal(FileExtensions.Mp4, Path.GetExtension(mediaInfo.Path));
@@ -144,7 +152,8 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task RTSP_NotExistingStream_CancelledAfter30Seconds()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            string output = _storageFixture.GetTempFileName(FileExtensions.WebM);
+
             var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/"));
 
             Assert.NotNull(exception);
@@ -154,7 +163,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task RTSP_NotExistingStream_CancelledAfter2Seconds()
         {
-            string output = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + FileExtensions.WebM);
+            string output = _storageFixture.GetTempFileName(FileExtensions.WebM);
             var cancellationTokenSource = new CancellationTokenSource(2000);
             var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/", cancellationTokenSource.Token));
 
