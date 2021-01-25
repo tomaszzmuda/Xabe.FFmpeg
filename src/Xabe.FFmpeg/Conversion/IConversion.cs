@@ -168,9 +168,22 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Captures the entire display for length seconds at the specified framerate 
         /// </summary>
-        /// <param name="frameRate">The framrate at which to capture the display</param>
+        /// <param name="frameRate">The framerate at which to capture the display</param>
+        /// <param name="xOffset">X offset</param>
+        /// <param name="yOffset">Y offset</param>
+        /// <param name="videoSize">Input video size</param>
         /// <returns>IConversion object</returns>
-        IConversion GetScreenCapture(double frameRate);
+        IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, string videoSize = null);
+
+        /// <summary>
+        ///     Captures the entire display for length seconds at the specified framerate 
+        /// </summary>
+        /// <param name="frameRate">The framerate at which to capture the display</param>
+        /// <param name="xOffset">X offset</param>
+        /// <param name="yOffset">Y offset</param>
+        /// <param name="videoSize">Input video size</param>
+        /// <returns>IConversion object</returns>
+        IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, VideoSize? videoSize = null);
 
         /// <summary>
         /// Sets the format for the input file using the -f option before the input file name

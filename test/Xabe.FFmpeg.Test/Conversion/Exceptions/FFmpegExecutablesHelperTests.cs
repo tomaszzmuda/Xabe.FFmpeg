@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Xabe.FFmpeg.Test.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class FFmpegExecutablesHelperTests
+    public class FFmpegExecutablesHelperTests : IClassFixture<StorageFixture>
     {
+        private readonly StorageFixture _storageFixture;
+
+        public FFmpegExecutablesHelperTests(StorageFixture storageFixture)
+        {
+            _storageFixture = storageFixture;
+        }
+
         [Fact]
         public void TestSelectFFmpegPathForWindows()
         {
@@ -57,24 +65,22 @@ namespace Xabe.FFmpeg.Test
 
         private IEnumerable<FileInfo> GetWindowsPathMocks()
         {
-            var tmpDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n"));
-            var dir = new DirectoryInfo(tmpDir);
-            dir.Create();
+            var tmpDir = _storageFixture.GetTempDirectory();
+
             File.Create(Path.Combine(tmpDir, "ffmpeg.exe"));
             File.Create(Path.Combine(tmpDir, "FFmpeg.AutoGen.dll"));
             File.Create(Path.Combine(tmpDir, "ffprobe.exe"));
-            return dir.EnumerateFiles();
+            return new DirectoryInfo(tmpDir).EnumerateFiles();
         }
 
         private IEnumerable<FileInfo> GetLinuxPathMocks()
         {
-            var tmpDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("n"));
-            var dir = new DirectoryInfo(tmpDir);
-            dir.Create();
+            var tmpDir = _storageFixture.GetTempDirectory();
+
             File.Create(Path.Combine(tmpDir, "ffmpeg"));
             File.Create(Path.Combine(tmpDir, "FFmpeg.AutoGen.dll"));
             File.Create(Path.Combine(tmpDir, "ffprobe"));
-            return dir.EnumerateFiles();
+            return new DirectoryInfo(tmpDir).EnumerateFiles();
         }
     }
 }
