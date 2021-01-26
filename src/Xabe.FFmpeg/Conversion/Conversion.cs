@@ -50,6 +50,8 @@ namespace Xabe.FFmpeg
         private string _inputXOffset;
         private string _inputYOffset;
         private string _inputVideoSize;
+        private string _re;
+        private string _streamLoop;
 
         /// <inheritdoc />
         public string Build()
@@ -61,10 +63,15 @@ namespace Xabe.FFmpeg
                 if (_buildOutputFileName == null)
                     _buildOutputFileName = (number) => { return _output; };
 
+                builder.Append(_re);
+                builder.Append(_streamLoop);
                 builder.Append(_hardwareAcceleration);
                 builder.Append(_inputFormat);
                 builder.Append(_inputTime);
                 builder.Append(_inputFramerate);
+                builder.Append(_inputXOffset);
+                builder.Append(_inputYOffset);
+                builder.Append(_inputVideoSize);
                 builder.Append(BuildParameters(ParameterPosition.PreInput));
 
                 if (!_capturing)
@@ -385,14 +392,15 @@ namespace Xabe.FFmpeg
         public IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, string videoSize = null)
         {
             SetFrameRate(frameRate);
-            AddParameter($"-offset_x {xOffset} ", ParameterPosition.PreInput);
+            _inputXOffset = $"-offset_x {xOffset} ";
+            _inputYOffset = $"-offset_y {yOffset} ";
             AddParameter($"-offset_y {yOffset} ", ParameterPosition.PreInput);
-            AddParameter("-preset ultrafast");
+            SetPreset(ConversionPreset.UltraFast);
             SetPixelFormat(PixelFormat.yuv420p);
 
             if (videoSize != null)
             {
-                AddParameter($"-video_size {videoSize} ", ParameterPosition.PreInput);
+                _inputVideoSize = $"-video_size {videoSize} ";
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -724,6 +732,26 @@ namespace Xabe.FFmpeg
             {
                 _vsyncMode = $"-vsync {method} ";
             }
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion UseNativeInputRead(bool readInputAtNativeFrameRate)
+        {
+            if (readInputAtNativeFrameRate)
+            {
+                _re = "-re ";
+            }
+            else
+            {
+                _re = null;
+            }
+            return this;
+        }
+
+        public IConversion SetStreamLoop(int loopCount)
+        {
+            _streamLoop = $"-stream_loop {loopCount} ";
             return this;
         }
     }
