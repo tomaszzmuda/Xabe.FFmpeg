@@ -26,6 +26,7 @@ namespace Xabe.FFmpeg
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
+        /// <exception cref="ArgumentException">File does not exist</exception>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName)
         {
             return await MediaInfo.Get(fileName);
@@ -36,6 +37,8 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
         /// <param name="cancellationToken">Cancellation token</param>
+        /// <exception cref="ArgumentException">File does not exist</exception>
+        /// <exception cref="TaskCanceledException">Operation takes too long</exception>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName, CancellationToken token)
         {
             return await MediaInfo.Get(fileName, token);

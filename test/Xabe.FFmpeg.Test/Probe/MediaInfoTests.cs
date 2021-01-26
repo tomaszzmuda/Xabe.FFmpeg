@@ -199,5 +199,23 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(360, result.VideoStreams.First().Height);
             Assert.Equal("aac", result.AudioStreams.First().Codec);
         }
+
+        [Fact]
+        public async Task GetMediaInfo_StreamDoesNotExist_ThrowException()
+        {
+            var exception = await Record.ExceptionAsync(async() => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting"));
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
+        }
+
+        [Fact]
+        public async Task GetMediaInfo_NotExistingRtspServer_ThrowException()
+        {
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://xabe.net/notExisting"));
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
+        }
     }
 }
