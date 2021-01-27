@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,6 +57,15 @@ namespace Xabe.FFmpeg
             ExecutablesPath = directoryWithFFmpegAndFFprobe == null ? null : new DirectoryInfo(directoryWithFFmpegAndFFprobe).FullName;
             _ffmpegExecutableName = ffmpegExeutableName;
             _ffprobeExecutableName = ffprobeExecutableName;
+        }
+
+        /// <summary>
+        ///     Get available audio and video devices (like cams or mics)
+        /// </summary>
+        /// <returns>List of available devices</returns>
+        public static async Task<IEnumerable<Device>> GetAvailableDevices()
+        {
+            return await Conversion.GetAvailableDevices();
         }
     }
 

@@ -949,6 +949,17 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await FFmpeg.GetMediaInfo(output);
             Assert.Single(info.Streams);
         }
+
+        [RunnableInDebugOnly]
+        public async Task GetAvailableDevices_SomeDevicesAreConnected_ReturnAllDevices()
+        {
+            // Arrange
+            var devices = await FFmpeg.GetAvailableDevices();
+
+            // Assert
+            Assert.Equal(2, devices.Count());
+            Assert.Single(devices.Where(x => x.Name == "Logitech HD Webcam C270"));
+        }
     }
 }
 
