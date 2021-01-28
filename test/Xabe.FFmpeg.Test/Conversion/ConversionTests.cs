@@ -288,7 +288,7 @@ namespace Xabe.FFmpeg.Test
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                                                                 .GetScreenCapture(30, 10, 10, VideoSize.Qcif)
+                                                                 .GetScreenCapture(30, VideoSize.Qcif, 10, 10)
                                                                  .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -959,6 +959,44 @@ namespace Xabe.FFmpeg.Test
             // Assert
             Assert.Equal(2, devices.Count());
             Assert.Single(devices.Where(x => x.Name == "Logitech HD Webcam C270"));
+        }
+
+        [Fact]
+        public async Task SendDesktopToRtspServer_MinimumConfiguration_DesktopIsBeingStreamed()
+        {
+            // Arrange
+            string output = "rtsp://127.0.0.1:8554/desktop";
+
+            // Act
+            (await FFmpeg.Conversions.FromSnippet.SendDesktopToRtspServer(new Uri(output))).Start();
+            //Give it some time to warm up
+            await Task.Delay(2000000);
+
+            // Assert
+            IMediaInfo info = await FFmpeg.GetMediaInfo(output);
+            Assert.Single(info.Streams);
+        }
+
+        [RunnableInDebugOnly]
+        public async Task GetScreenCaptureTest3()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+
+            var desktopStream = new VideoStream() { Path = "desktop", Index = 0 }.SetSize(VideoSize.Vga).SetInputFormat(Format.gdigrab);
+            //Get desktop stream with "draw_mouse, x and y offsets, video_size and framerate"
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(desktopStream)
+                                                                 .SetInputTime(TimeSpan.FromSeconds(3))
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
+            Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
+            Assert.Equal(640, resultFile.VideoStreams.First().Width);
+            Assert.Equal(480, resultFile.VideoStreams.First().Height);
         }
     }
 }

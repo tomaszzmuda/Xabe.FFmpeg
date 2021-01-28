@@ -11,7 +11,7 @@ namespace Xabe.FFmpeg
     public partial class Conversion
     {
         /// <summary>
-        ///     Loop file infinitely to rtsp streams with some default parameters like: -re, -preset ultrafast
+        ///     Loop file infinitely to rtsp server with some default parameters like: -re, -preset ultrafast
         /// </summary>
         /// <param name="inputFilePath">Path to file</param>
         /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
@@ -45,6 +45,23 @@ namespace Xabe.FFmpeg
             conversion.SetPreset(ConversionPreset.UltraFast);
             conversion.SetOutputFormat(Format.rtsp);
             conversion.SetOutput(rtspServerUri.OriginalString);
+
+            return conversion;
+        }
+
+        /// <summary>
+        ///     Send your dekstop to rtsp server with some default parameters like: -re, -preset ultrafast
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
+        /// <returns>IConversion object</returns>
+        internal static IConversion SendDesktopToRtspServer(Uri rtspServerUri)
+        {
+            var conversion = FFmpeg.Conversions.New()
+                                               .GetScreenCapture(30, 0, 0, "800x600")
+                                               .AddParameter("-tune zerolatency")
+                                               .SetOutputFormat(Format.rtsp)
+                                               .SetOutput(rtspServerUri.OriginalString);
 
             return conversion;
         }

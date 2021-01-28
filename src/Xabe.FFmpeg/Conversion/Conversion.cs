@@ -122,6 +122,9 @@ namespace Xabe.FFmpeg
         public string OutputFilePath { get; private set; }
 
         /// <inheritdoc />
+        public IEnumerable<IStream> Streams => _streams;
+
+        /// <inheritdoc />
         public Task<IConversionResult> Start()
         {
             return Start(Build());
@@ -385,8 +388,8 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, VideoSize? videoSize = null) => 
-            GetScreenCapture(frameRate, xOffset, yOffset, videoSize?.ToFFmpegFormat());
+        public IConversion GetScreenCapture(double frameRate, VideoSize videoSize, int xOffset = 0, int yOffset = 0) => 
+            GetScreenCapture(frameRate, xOffset, yOffset, videoSize.ToFFmpegFormat());
 
         /// <inheritdoc />
         public IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, string videoSize = null)
@@ -394,7 +397,6 @@ namespace Xabe.FFmpeg
             SetFrameRate(frameRate);
             _inputXOffset = $"-offset_x {xOffset} ";
             _inputYOffset = $"-offset_y {yOffset} ";
-            AddParameter($"-offset_y {yOffset} ", ParameterPosition.PreInput);
             SetPreset(ConversionPreset.UltraFast);
             SetPixelFormat(PixelFormat.yuv420p);
 

@@ -183,7 +183,7 @@ namespace Xabe.FFmpeg
         /// <param name="yOffset">Y offset</param>
         /// <param name="videoSize">Input video size</param>
         /// <returns>IConversion object</returns>
-        IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, VideoSize? videoSize = null);
+        IConversion GetScreenCapture(double frameRate, VideoSize videoSize, int xOffset = 0, int yOffset = 0);
 
         /// <summary>
         /// Sets the format for the input file using the -f option before the input file name
@@ -358,5 +358,10 @@ namespace Xabe.FFmpeg
         /// <param name="loopCount">Loop 0 means no loop, loop -1 means infinite loop.</param>
         /// <returns>IConversion object</returns>
         IConversion SetStreamLoop(int loopCount);
+
+        /// <summary>
+        ///     List of all streams
+        /// </summary>
+        IEnumerable<IStream> Streams { get; }
     }
 }

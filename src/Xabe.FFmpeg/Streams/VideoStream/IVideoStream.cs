@@ -230,5 +230,19 @@ namespace Xabe.FFmpeg
         /// <param name="filter">Filter</param>
         /// <returns>IVideoStream</returns>
         IVideoStream SetBitstreamFilter(string filter);
+
+        /// <summary>
+        /// Sets the format for the input file using the -f option before the input file name
+        /// </summary>
+        /// <param name="inputFormat">The input format to set</param>
+        /// <returns>IConversion object</returns>
+        IVideoStream SetInputFormat(string inputFormat);
+
+        /// <summary>
+        /// Sets the format for the input file using the -f option before the input file name
+        /// </summary>
+        /// <param name="inputFormat">The input format to set</param>
+        /// <returns>IConversion object</returns>
+        IVideoStream SetInputFormat(Format inputFormat);
     }
 }

@@ -25,6 +25,7 @@ namespace Xabe.FFmpeg
         private string _split;
         private string _flags;
         private string _codec;
+        private string _inputFormat;
 
         internal VideoStream()
         {
@@ -103,7 +104,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string BuildInputArguments()
         {
-            return _seek;
+            return $"{_seek} {_inputFormat} ";
         }
 
         /// <inheritdoc />
@@ -375,6 +376,36 @@ namespace Xabe.FFmpeg
             if (!string.IsNullOrWhiteSpace(_watermarkSource))
                 return new[] { Path, _watermarkSource };
             return new[] { Path };
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetInputFormat(Format inputFormat)
+        {
+            var format = inputFormat.ToString();
+            switch (inputFormat)
+            {
+                case Format._3dostr:
+                    format = "3dostr";
+                    break;
+                case Format._3g2:
+                    format = "3g2";
+                    break;
+                case Format._3gp:
+                    format = "3gp";
+                    break;
+                case Format._4xm:
+                    format = "4xm";
+                    break;
+            }
+            return SetInputFormat(format);
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetInputFormat(string format)
+        {
+            if (format != null)
+                _inputFormat = $"-f {format} ";
+            return this;
         }
     }
 }

@@ -391,5 +391,16 @@ namespace Xabe.FFmpeg
         {
             return await Task.FromResult(Conversion.SendToRtspServer(inputFilePath, rtspServerUri));
         }
+
+        /// <summary>
+        ///     Loop file infinitely to rtsp streams with some default parameters like: -re, -preset ultrafast
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
+        /// <returns>IConversion object</returns>
+        public async Task<IConversion> SendDesktopToRtspServer(Uri rtspServerUri)
+        {
+            return await Task.FromResult(Conversion.SendDesktopToRtspServer(rtspServerUri));
+        }
     }
 }
