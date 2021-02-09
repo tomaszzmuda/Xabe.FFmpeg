@@ -19,6 +19,7 @@ namespace Xabe.FFmpeg
         private string _channels;
         private string _bitrate;
         private string _codec;
+        private string _inputFormat;
 
         internal AudioStream()
         {
@@ -49,7 +50,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string BuildInputArguments()
         {
-            return _seek;
+            return $"{_seek} {_inputFormat}";
         }
 
         /// <inheritdoc />
@@ -219,6 +220,19 @@ namespace Xabe.FFmpeg
                     Filters = _audioFilters
                 };
             }
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetInputFormat(string inputFormat)
+        {
+            _inputFormat = $"-f {inputFormat} ";
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetInputFormat(Format inputFormat)
+        {
+            return this.SetInputFormat(inputFormat.ToString());
         }
     }
 }

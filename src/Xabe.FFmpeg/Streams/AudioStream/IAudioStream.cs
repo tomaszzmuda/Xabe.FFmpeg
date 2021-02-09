@@ -134,5 +134,19 @@ namespace Xabe.FFmpeg
         /// <param name="filter">Filter</param>
         /// <returns>IAudioStream</returns>
         IAudioStream SetBitstreamFilter(string filter);
+
+        /// <summary>
+        /// Sets the format for the input file using the -f option before the input file name
+        /// </summary>
+        /// <param name="inputFormat">The input format to set</param>
+        /// <returns>IConversion object</returns>
+        IAudioStream SetInputFormat(string inputFormat);
+
+        /// <summary>
+        /// Sets the format for the input file using the -f option before the input file name
+        /// </summary>
+        /// <param name="inputFormat">The input format to set</param>
+        /// <returns>IConversion object</returns>
+        IAudioStream SetInputFormat(Format inputFormat);
     }
 }
