@@ -36,7 +36,7 @@ namespace Xabe.FFmpeg
 
             }
 
-            var conversion = New().AddParameter($"ffmpeg -list_devices true -f {format} -i dummy");
+            var conversion = New().AddParameter($"-list_devices true -f {format} -i dummy");
             StringBuilder text = new StringBuilder();
             conversion.OnDataReceived += (sender, e) => text.AppendLine(e.Data);
             await conversion.Start();

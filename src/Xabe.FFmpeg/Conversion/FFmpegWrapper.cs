@@ -109,7 +109,7 @@ namespace Xabe.FFmpeg
                         var exceptionsCatcher = new FFmpegExceptionCatcher();
                         exceptionsCatcher.CatchFFmpegErrors(output, args);
 
-                        if (process.ExitCode != 0 && _outputLog.Last().Contains("dummy"))
+                        if (process.ExitCode != 0 && !_outputLog.Last().Contains("dummy"))
                         {
                             throw new ConversionException(output, args);
                         }

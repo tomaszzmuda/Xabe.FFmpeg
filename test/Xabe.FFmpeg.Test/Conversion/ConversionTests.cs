@@ -283,12 +283,12 @@ namespace Xabe.FFmpeg.Test
         }
 
         [RunnableInDebugOnly]
-        public async Task GetScreenCaptureTest()
+        public async Task GetScreenCaptureTest_UseVideoSize_EverythingIsCorrect()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                                                                 .GetScreenCapture(30, VideoSize.Qcif, 10, 10)
+                                                                 .AddDesktopStream(VideoSize.Qcif, 29.833, 10, 10)
                                                                  .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -296,19 +296,19 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
-            Assert.Equal(30, resultFile.VideoStreams.First().Framerate);
+            Assert.Equal(29.833, resultFile.VideoStreams.First().Framerate);
             Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
             Assert.Equal(176, resultFile.VideoStreams.First().Width);
             Assert.Equal(144, resultFile.VideoStreams.First().Height);
         }
 
         [RunnableInDebugOnly]
-        public async Task GetScreenCaptureTest2()
+        public async Task GetScreenCaptureTest_UseVideoSizeAsString_EverythingIsCorrect()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                                                                 .GetScreenCapture(30, 10, 10, "176x144")
+                                                                 .AddDesktopStream("176x144", 30, 10, 10)
                                                                  .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -970,7 +970,7 @@ namespace Xabe.FFmpeg.Test
             // Act
             (await FFmpeg.Conversions.FromSnippet.SendDesktopToRtspServer(new Uri(output))).Start();
             //Give it some time to warm up
-            await Task.Delay(2000000);
+            await Task.Delay(2000);
 
             // Assert
             IMediaInfo info = await FFmpeg.GetMediaInfo(output);
@@ -978,15 +978,12 @@ namespace Xabe.FFmpeg.Test
         }
 
         [RunnableInDebugOnly]
-        public async Task GetScreenCaptureTest3()
+        public async Task GetScreenCaptureTest_UseNewAddDesktopStream_EverythingIsCorrect()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
-            var desktopStream = new VideoStream() { Path = "desktop", Index = 0 }.SetSize(VideoSize.Vga).SetInputFormat(Format.gdigrab);
-            //Get desktop stream with "draw_mouse, x and y offsets, video_size and framerate"
-
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                                                                 .AddStream(desktopStream)
+                                                                 .AddDesktopStream(VideoSize.Cga, 29.833, 0, 0)
                                                                  .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -995,8 +992,9 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
             Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
-            Assert.Equal(640, resultFile.VideoStreams.First().Width);
-            Assert.Equal(480, resultFile.VideoStreams.First().Height);
+            Assert.Equal(320, resultFile.VideoStreams.First().Width);
+            Assert.Equal(200, resultFile.VideoStreams.First().Height);
+            Assert.Equal(29.833, resultFile.VideoStreams.First().Framerate);
         }
     }
 }

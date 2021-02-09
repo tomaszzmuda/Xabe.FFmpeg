@@ -10,7 +10,7 @@ namespace Xabe.FFmpeg
     /// <inheritdoc cref="IVideoStream" />
     public class VideoStream : IVideoStream, IFilterable
     {
-        private readonly List<string> _parameters = new List<string>();
+        private readonly List<ConversionParameter> _parameters = new List<ConversionParameter>();
         private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
         private string _watermarkSource;
         private string _bitrate;
@@ -86,7 +86,6 @@ namespace Xabe.FFmpeg
         public string Build()
         {
             var builder = new StringBuilder();
-            builder.Append(string.Join(" ", _parameters));
             builder.Append(BuildVideoCodec());
             builder.Append(_bitsreamFilter);
             builder.Append(_bitrate);
@@ -101,10 +100,23 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        /// <inheritdoc />
-        public string BuildInputArguments()
+        /// <summary>
+        ///     Create parameters string
+        /// </summary>
+        /// <param name="forPosition">Position for parameters</param>
+        /// <returns>Parameters</returns>
+        public string BuildParameters(ParameterPosition forPosition)
         {
-            return $"{_seek} {_inputFormat} ";
+            IEnumerable<ConversionParameter> parameters = _parameters?.Where(x => x.Position == forPosition);
+            if (parameters != null &&
+                parameters.Any())
+            {
+                return string.Join(string.Empty, parameters.Select(x => x.Parameter));
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <inheritdoc />
@@ -312,7 +324,7 @@ namespace Xabe.FFmpeg
                 {
                     throw new ArgumentException("Seek can not be greater than video duration. Seek: " + seek.TotalSeconds  + " Duration: " + Duration.TotalSeconds );
                 }
-                _seek = $"-ss {seek} ";
+                _parameters.Add(new ConversionParameter($"-ss {seek.ToFFmpeg()}", ParameterPosition.PreInput));
             }
             return this;
         }
@@ -404,7 +416,14 @@ namespace Xabe.FFmpeg
         public IVideoStream SetInputFormat(string format)
         {
             if (format != null)
-                _inputFormat = $"-f {format} ";
+                _parameters.Add(new ConversionParameter($"-f {format}", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream AddParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput)
+        {
+            _parameters.Add(new ConversionParameter(parameter, parameterPosition));
             return this;
         }
     }

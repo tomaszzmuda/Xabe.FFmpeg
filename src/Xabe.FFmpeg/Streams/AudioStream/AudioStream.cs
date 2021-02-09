@@ -48,7 +48,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public string BuildInputArguments()
+        public string BuildParameters(ParameterPosition forPosition)
         {
             return $"{_seek} {_inputFormat}";
         }

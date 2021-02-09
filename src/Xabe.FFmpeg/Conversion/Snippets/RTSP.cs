@@ -58,7 +58,7 @@ namespace Xabe.FFmpeg
         internal static IConversion SendDesktopToRtspServer(Uri rtspServerUri)
         {
             var conversion = FFmpeg.Conversions.New()
-                                               .GetScreenCapture(30, 0, 0, "800x600")
+                                               .AddDesktopStream("800x600", 30, 0, 0)
                                                .AddParameter("-tune zerolatency")
                                                .SetOutputFormat(Format.rtsp)
                                                .SetOutput(rtspServerUri.OriginalString);
