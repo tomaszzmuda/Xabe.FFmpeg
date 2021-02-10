@@ -9,13 +9,15 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class VideoSnippetsTests : IClassFixture<StorageFixture>
+    public class VideoSnippetsTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
         private readonly StorageFixture _storageFixture;
+        private readonly RtspServerFixture _rtspServer;
 
-        public VideoSnippetsTests(StorageFixture storageFixture)
+        public VideoSnippetsTests(StorageFixture storageFixture, RtspServerFixture rtspServer)
         {
             _storageFixture = storageFixture;
+            _rtspServer = rtspServer;
         }
 
         public static IEnumerable<object[]> JoinFiles => new[]
@@ -330,20 +332,25 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(24, videoStream.Framerate);
         }
 
-        [Fact(Skip = "The RTSP stream is not valid anymore")]
+        [Fact]
         public async Task Rtsp_GotTwoStreams_SaveEverything()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-            var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
+            await _rtspServer.Publish(Resources.BunnyMp4, "bunny");
 
-            var conversionResult = await FFmpeg.Conversions.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
+            var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny");
+
+            await FFmpeg.Conversions.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
 
             IMediaInfo result = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(9 * 60 + 56), mediaInfo.Duration);
+            Assert.True(result.Duration > TimeSpan.FromSeconds(0));
             Assert.Single(result.VideoStreams);
             Assert.Single(result.AudioStreams);
             Assert.Empty(result.SubtitleStreams);
             Assert.Equal("h264", result.VideoStreams.First().Codec);
+            Assert.Equal(23.976, result.VideoStreams.First().Framerate);
+            Assert.Equal(640, result.VideoStreams.First().Width);
+            Assert.Equal(360, result.VideoStreams.First().Height);
             Assert.Equal("aac", result.AudioStreams.First().Codec);
         }
     }

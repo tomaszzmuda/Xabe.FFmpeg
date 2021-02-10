@@ -155,7 +155,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(currentProgress > TimeSpan.Zero);
             Assert.True(currentProgress <= videoLength);
-            Assert.True(videoLength == TimeSpan.FromSeconds(7));
+            Assert.Equal(7, videoLength.TotalSeconds);
         }
 
         [Fact]
@@ -334,6 +334,26 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Contains($"-c:a copy", result.Arguments);
             Assert.Equal(inputFile.AudioStreams.First().Codec, mediaInfo.AudioStreams.First().Codec);
+        }
+
+        [Fact]
+        public async Task SetInputFormat_ChangeIfFormatIsApplied()
+        {
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp3);
+            string outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp3);
+
+            var audioStream = inputFile.AudioStreams.First();
+            audioStream.SetInputFormat(Format.mp3);
+
+            IConversionResult result = await FFmpeg.Conversions.New()
+                                                    .AddStream(audioStream)
+                                                    .SetOutput(outputPath)
+                                                    .Start();
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
+
+            Assert.Contains($"-f mp3 -i", result.Arguments);
+            Assert.NotEmpty(mediaInfo.AudioStreams);
         }
     }
 }

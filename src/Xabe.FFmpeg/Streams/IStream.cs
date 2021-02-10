@@ -33,7 +33,7 @@ namespace Xabe.FFmpeg
         ///     Build FFmpeg arguments for input
         /// </summary>
         /// <returns>Arguments</returns>
-        string BuildInputArguments();
+        string BuildParameters(ParameterPosition forPosition);
 
         /// <summary>
         ///     Get stream input

@@ -29,7 +29,6 @@ namespace Xabe.FFmpeg
         private string _shortestInput;
         private string _seek;
         private bool _useMultiThreads = true;
-        private bool _capturing = false;
         private bool _hasInputBuilder = false;
         private int? _threadsCount;
         private string _inputTime;
@@ -47,9 +46,6 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildOutputFileName = null;
 
         private int? _processId = null;
-        private string _inputXOffset;
-        private string _inputYOffset;
-        private string _inputVideoSize;
 
         /// <inheritdoc />
         public string Build()
@@ -67,20 +63,17 @@ namespace Xabe.FFmpeg
                 builder.Append(_inputFramerate);
                 builder.Append(BuildParameters(ParameterPosition.PreInput));
 
-                if (!_capturing)
-                {
-                    builder.Append(BuildInputParameters());
+                builder.Append(BuildInputParameters());
 
-                    if (_buildInputFileName == null)
-                    {
-                        builder.Append(BuildInput());
-                    }
-                    else
-                    {
-                        _hasInputBuilder = true;
-                        builder.Append(_buildInputFileName("_%03d"));
-                        builder.Append(BuildInput());
-                    }
+                if (_buildInputFileName == null)
+                {
+                    builder.Append(BuildInput());
+                }
+                else
+                {
+                    _hasInputBuilder = true;
+                    builder.Append(_buildInputFileName("_%03d"));
+                    builder.Append(BuildInput());
                 }
 
                 builder.Append(BuildOverwriteOutputParameter(_overwriteOutput));
@@ -113,6 +106,9 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public string OutputFilePath { get; private set; }
+
+        /// <inheritdoc />
+        public IEnumerable<IStream> Streams => _streams;
 
         /// <inheritdoc />
         public Task<IConversionResult> Start()
@@ -175,11 +171,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion AddParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput)
         {
-            _parameters.Add(new ConversionParameter
-            {
-                Parameter = $"{parameter.Trim()} ",
-                Position = parameterPosition
-            });
+            _parameters.Add(new ConversionParameter(parameter, parameterPosition));
             return this;
         }
 
@@ -377,54 +369,6 @@ namespace Xabe.FFmpeg
             return this;
         }
 
-        /// <inheritdoc />
-        public IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, VideoSize? videoSize = null) => 
-            GetScreenCapture(frameRate, xOffset, yOffset, videoSize?.ToFFmpegFormat());
-
-        /// <inheritdoc />
-        public IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, string videoSize = null)
-        {
-            SetFrameRate(frameRate);
-            AddParameter($"-offset_x {xOffset} ", ParameterPosition.PreInput);
-            AddParameter($"-offset_y {yOffset} ", ParameterPosition.PreInput);
-            AddParameter("-preset ultrafast");
-            SetPixelFormat(PixelFormat.yuv420p);
-
-            if (videoSize != null)
-            {
-                AddParameter($"-video_size {videoSize} ", ParameterPosition.PreInput);
-            }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                _capturing = true;
-
-                SetInputFormat(Format.gdigrab);
-                AddParameter("-i desktop ", ParameterPosition.PreInput);
-
-                return this;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                _capturing = true;
-
-                SetInputFormat(Format.avfoundation);
-                AddParameter("-i 1:1 ", ParameterPosition.PreInput);
-                return this;
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                _capturing = true;
-
-                SetInputFormat(Format.x11grab);
-                AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
-                return this;
-            }
-
-            _capturing = false;
-            return this;
-        }
-
         private string BuildConversionParameters()
         {
             var builder = new StringBuilder();
@@ -449,7 +393,7 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
             {
-                builder.Append(stream.BuildInputArguments());
+                builder.Append(stream.BuildParameters(ParameterPosition.PreInput));
             }
             return builder.ToString();
         }
@@ -725,6 +669,45 @@ namespace Xabe.FFmpeg
                 _vsyncMode = $"-vsync {method} ";
             }
             return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddDesktopStream(string videoSize = null, double framerate = 30, int xOffset = 0, int yOffset = 0)
+        {
+            var stream = new VideoStream() { Index = 0 };
+            stream.AddParameter($"-framerate {framerate.ToFFmpegFormat(4)}", ParameterPosition.PreInput);
+            stream.AddParameter($"-offset_x {xOffset}", ParameterPosition.PreInput);
+            stream.AddParameter($"-offset_y {yOffset}", ParameterPosition.PreInput);
+
+            if (videoSize != null)
+            {
+                stream.AddParameter($"-video_size {videoSize}", ParameterPosition.PreInput);
+            }
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                stream.SetInputFormat(Format.gdigrab);
+                stream.Path = "desktop";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                stream.SetInputFormat(Format.avfoundation);
+                stream.Path = "1:1";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                stream.SetInputFormat(Format.x11grab);
+                stream.Path = ":0.0+0,0";
+            }
+
+            _streams.Add(stream);
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion AddDesktopStream(VideoSize videoSize, double framerate = 30, int xOffset = 0, int yOffset = 0)
+        {
+            return AddDesktopStream(videoSize.ToFFmpegFormat(), framerate, xOffset, yOffset);
         }
     }
 }

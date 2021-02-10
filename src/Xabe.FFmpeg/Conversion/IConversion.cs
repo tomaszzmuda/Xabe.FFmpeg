@@ -166,26 +166,6 @@ namespace Xabe.FFmpeg
         IConversion SetOverwriteOutput(bool overwrite);
 
         /// <summary>
-        ///     Captures the entire display for length seconds at the specified framerate 
-        /// </summary>
-        /// <param name="frameRate">The framerate at which to capture the display</param>
-        /// <param name="xOffset">X offset</param>
-        /// <param name="yOffset">Y offset</param>
-        /// <param name="videoSize">Input video size</param>
-        /// <returns>IConversion object</returns>
-        IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, string videoSize = null);
-
-        /// <summary>
-        ///     Captures the entire display for length seconds at the specified framerate 
-        /// </summary>
-        /// <param name="frameRate">The framerate at which to capture the display</param>
-        /// <param name="xOffset">X offset</param>
-        /// <param name="yOffset">Y offset</param>
-        /// <param name="videoSize">Input video size</param>
-        /// <returns>IConversion object</returns>
-        IConversion GetScreenCapture(double frameRate, int xOffset = 0, int yOffset = 0, VideoSize? videoSize = null);
-
-        /// <summary>
         /// Sets the format for the input file using the -f option before the input file name
         /// </summary>
         /// <param name="inputFormat">The input format to set</param>
@@ -344,5 +324,32 @@ namespace Xabe.FFmpeg
         /// <param name="method">Vsync Mode - auto for skip</param>
         /// <returns>IConversion object</returns>
         IConversion SetVideoSyncMethod(VideoSyncMethod method);
+
+        /// <summary>
+        ///     List of all streams
+        /// </summary>
+        IEnumerable<IStream> Streams { get; }
+
+        /// <summary>
+        ///     Capture desktop to output file
+        /// </summary>
+        /// <param name="xOffset">X Offset</param>
+        /// <param name="yOffset">Y Offset</param>
+        /// <param name="videoSize">Input video size</param>
+        /// <param name="framerate">The desired framerate of the output</param>
+        /// <returns>IConversion object</returns>
+        //Get desktop stream with "draw_mouse, x and y offsets, video_size and framerate"
+        IConversion AddDesktopStream(string videoSize = null, double framerate = 30, int xOffset = 0, int yOffset = 0);
+
+        /// <summary>
+        ///     Capture desktop to output file
+        /// </summary>
+        /// <param name="xOffset">X Offset</param>
+        /// <param name="yOffset">Y Offset</param>
+        /// <param name="videoSize">Input video size</param>
+        /// <param name="framerate">The desired framerate of the output</param>
+        /// <returns>IConversion object</returns>
+        //Get desktop stream with "draw_mouse, x and y offsets, video_size and framerate"
+        IConversion AddDesktopStream(VideoSize videoSize, double framerate = 30, int xOffset = 0, int yOffset = 0);
     }
 }

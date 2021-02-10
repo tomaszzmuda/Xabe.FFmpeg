@@ -10,6 +10,7 @@ namespace Xabe.FFmpeg
     /// <inheritdoc cref="IAudioStream" />
     public class AudioStream : IAudioStream, IFilterable
     {
+        private readonly List<ConversionParameter> _parameters = new List<ConversionParameter>();
         private readonly Dictionary<string, string> _audioFilters = new Dictionary<string, string>();
         private string _bitsreamFilter;
         private string _reverse;
@@ -47,9 +48,18 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public string BuildInputArguments()
+        public string BuildParameters(ParameterPosition forPosition)
         {
-            return _seek;
+            IEnumerable<ConversionParameter> parameters = _parameters?.Where(x => x.Position == forPosition);
+            if (parameters != null &&
+                parameters.Any())
+            {
+                return string.Join(string.Empty, parameters.Select(x => x.Parameter));
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <inheritdoc />
@@ -200,10 +210,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetSeek(TimeSpan? seek)
         {
-            if (seek.HasValue)
-            {
-                _seek = $"-ss {seek.Value.ToFFmpeg()} ";
-            }
+            _parameters.Add(new ConversionParameter($"-ss {seek.Value.ToFFmpeg()}", ParameterPosition.PreInput));
             return this;
         }
 
@@ -219,6 +226,33 @@ namespace Xabe.FFmpeg
                     Filters = _audioFilters
                 };
             }
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetInputFormat(string inputFormat)
+        {
+            _parameters.Add(new ConversionParameter($"-f {inputFormat}", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetInputFormat(Format inputFormat)
+        {
+            return this.SetInputFormat(inputFormat.ToString());
+        }
+
+        /// <inheritdoc />
+        public IAudioStream UseNativeInputRead(bool readInputAtNativeFrameRate)
+        {
+            _parameters.Add(new ConversionParameter($"-re", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetStreamLoop(int loopCount)
+        {
+            _parameters.Add(new ConversionParameter($"-stream_loop {loopCount}", ParameterPosition.PreInput));
+            return this;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Xabe.FFmpeg.Streams.SubtitleStream;
 
@@ -9,6 +10,7 @@ namespace Xabe.FFmpeg
     /// <inheritdoc />
     public class SubtitleStream : ISubtitleStream
     {
+        private readonly List<ConversionParameter> _parameters = new List<ConversionParameter>();
         private string _language;
         private string _codec;
 
@@ -33,9 +35,18 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public string BuildInputArguments()
+        public string BuildParameters(ParameterPosition forPosition)
         {
-            return null;
+            IEnumerable<ConversionParameter> parameters = _parameters?.Where(x => x.Position == forPosition);
+            if (parameters != null &&
+                parameters.Any())
+            {
+                return string.Join(string.Empty, parameters.Select(x => x.Parameter));
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <inheritdoc />
@@ -103,6 +114,20 @@ namespace Xabe.FFmpeg
         public ISubtitleStream SetCodec(string codec)
         {
             _codec = codec;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public ISubtitleStream UseNativeInputRead(bool readInputAtNativeFrameRate)
+        {
+            _parameters.Add(new ConversionParameter($"-re", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public ISubtitleStream SetStreamLoop(int loopCount)
+        {
+            _parameters.Add(new ConversionParameter($"-stream_loop {loopCount}", ParameterPosition.PreInput));
             return this;
         }
     }

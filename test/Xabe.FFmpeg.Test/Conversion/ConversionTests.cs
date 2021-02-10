@@ -10,13 +10,15 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class ConversionTests : IClassFixture<StorageFixture>
+    public class ConversionTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
         private readonly StorageFixture _storageFixture;
+        private readonly RtspServerFixture _rtspServer;
 
-        public ConversionTests(StorageFixture storageFixture)
+        public ConversionTests(StorageFixture storageFixture, RtspServerFixture rtspServer)
         {
             _storageFixture = storageFixture;
+            _rtspServer = rtspServer;
         }
 
         [Theory]
@@ -281,12 +283,12 @@ namespace Xabe.FFmpeg.Test
         }
 
         [RunnableInDebugOnly]
-        public async Task GetScreenCaptureTest()
+        public async Task GetScreenCaptureTest_UseVideoSize_EverythingIsCorrect()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                                                                 .GetScreenCapture(30, 10, 10, VideoSize.Qcif)
+                                                                 .AddDesktopStream(VideoSize.Qcif, 29.833, 10, 10)
                                                                  .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -294,19 +296,19 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
-            Assert.Equal(30, resultFile.VideoStreams.First().Framerate);
+            Assert.Equal(29.833, resultFile.VideoStreams.First().Framerate);
             Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
             Assert.Equal(176, resultFile.VideoStreams.First().Width);
             Assert.Equal(144, resultFile.VideoStreams.First().Height);
         }
 
         [RunnableInDebugOnly]
-        public async Task GetScreenCaptureTest2()
+        public async Task GetScreenCaptureTest_UseVideoSizeAsString_EverythingIsCorrect()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
 
             IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                                                                 .GetScreenCapture(30, 10, 10, "176x144")
+                                                                 .AddDesktopStream("176x144", 30, 10, 10)
                                                                  .SetInputTime(TimeSpan.FromSeconds(3))
                                                                  .SetOutput(output)
                                                                  .Start();
@@ -930,6 +932,69 @@ namespace Xabe.FFmpeg.Test
                                                                  .Start();
 
             Assert.Contains($"-vsync -1", conversionResult.Arguments);
+        }
+
+        [Fact]
+        public async Task SendToRtspServer_MinimumConfiguration_FileIsBeingStreamed()
+        {
+            // Arrange
+            string output = "rtsp://127.0.0.1:8554/newFile";
+
+            // Act
+            (await FFmpeg.Conversions.FromSnippet.SendToRtspServer(Resources.Mp4, new Uri(output))).Start();
+            //Give it some time to warm up
+            await Task.Delay(2000);
+
+            // Assert
+            IMediaInfo info = await FFmpeg.GetMediaInfo(output);
+            Assert.Single(info.Streams);
+        }
+
+        [RunnableInDebugOnly]
+        public async Task GetAvailableDevices_SomeDevicesAreConnected_ReturnAllDevices()
+        {
+            // Arrange
+            var devices = await FFmpeg.GetAvailableDevices();
+
+            // Assert
+            Assert.Equal(2, devices.Count());
+            Assert.Single(devices.Where(x => x.Name == "Logitech HD Webcam C270"));
+        }
+
+        [Fact]
+        public async Task SendDesktopToRtspServer_MinimumConfiguration_DesktopIsBeingStreamed()
+        {
+            // Arrange
+            string output = "rtsp://127.0.0.1:8554/desktop";
+
+            // Act
+            (await FFmpeg.Conversions.FromSnippet.SendDesktopToRtspServer(new Uri(output))).Start();
+            //Give it some time to warm up
+            await Task.Delay(2000);
+
+            // Assert
+            IMediaInfo info = await FFmpeg.GetMediaInfo(output);
+            Assert.Single(info.Streams);
+        }
+
+        [RunnableInDebugOnly]
+        public async Task GetScreenCaptureTest_UseNewAddDesktopStream_EverythingIsCorrect()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddDesktopStream(VideoSize.Cga, 29.833, 0, 0)
+                                                                 .SetInputTime(TimeSpan.FromSeconds(3))
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
+            Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
+            Assert.Equal(320, resultFile.VideoStreams.First().Width);
+            Assert.Equal(200, resultFile.VideoStreams.First().Height);
+            Assert.Equal(29.833, resultFile.VideoStreams.First().Framerate);
         }
     }
 }
