@@ -46,8 +46,6 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildOutputFileName = null;
 
         private int? _processId = null;
-        private string _re;
-        private string _streamLoop;
 
         /// <inheritdoc />
         public string Build()
@@ -59,8 +57,6 @@ namespace Xabe.FFmpeg
                 if (_buildOutputFileName == null)
                     _buildOutputFileName = (number) => { return _output; };
 
-                builder.Append(_re);
-                builder.Append(_streamLoop);
                 builder.Append(_hardwareAcceleration);
                 builder.Append(_inputFormat);
                 builder.Append(_inputTime);
@@ -676,27 +672,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion UseNativeInputRead(bool readInputAtNativeFrameRate)
-        {
-            if (readInputAtNativeFrameRate)
-            {
-                _re = "-re ";
-            }
-            else
-            {
-                _re = null;
-            }
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion SetStreamLoop(int loopCount)
-        {
-            _streamLoop = $"-stream_loop {loopCount} ";
-            return this;
-        }
-
-        /// <inheritdoc />
         public IConversion AddDesktopStream(string videoSize = null, double framerate = 30, int xOffset = 0, int yOffset = 0)
         {
             var stream = new VideoStream() { Index = 0 };
@@ -712,19 +687,16 @@ namespace Xabe.FFmpeg
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 stream.SetInputFormat(Format.gdigrab);
-                //AddParameter("-i desktop ", ParameterPosition.PreInput);
                 stream.Path = "desktop";
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 stream.SetInputFormat(Format.avfoundation);
-                //AddParameter("-i 1:1 ", ParameterPosition.PreInput);
                 stream.Path = "1:1";
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 stream.SetInputFormat(Format.x11grab);
-                //AddParameter("-i :0.0+0,0 ", ParameterPosition.PreInput);
                 stream.Path = ":0.0+0,0";
             }
 

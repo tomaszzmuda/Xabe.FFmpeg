@@ -155,7 +155,7 @@ namespace Xabe.FFmpeg.Test
 
             Assert.True(currentProgress > TimeSpan.Zero);
             Assert.True(currentProgress <= videoLength);
-            Assert.True(videoLength == TimeSpan.FromSeconds(7));
+            Assert.Equal(7, videoLength.TotalSeconds);
         }
 
         [Fact]

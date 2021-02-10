@@ -23,6 +23,8 @@ namespace Xabe.FFmpeg
             var streams = new List<IStream>();
             foreach (var stream in info.VideoStreams)
             {
+                stream.SetStreamLoop(-1);
+                stream.UseNativeInputRead(true);
                 stream.SetCodec(VideoCodec.libx264);
                 stream.SetFramerate(23.976);
                 stream.SetBitrate(1024000, 1024000, 1024000);
@@ -31,6 +33,8 @@ namespace Xabe.FFmpeg
 
             foreach (var stream in info.AudioStreams)
             {
+                stream.SetStreamLoop(-1);
+                stream.UseNativeInputRead(true);
                 stream.SetCodec(AudioCodec.aac);
                 stream.SetBitrate(192000);
                 stream.SetBitrate(1024000, 1024000, 1024000);
@@ -40,8 +44,6 @@ namespace Xabe.FFmpeg
             var conversion = New();
             conversion.AddStream(streams);
             conversion.SetPixelFormat(PixelFormat.yuv420p);
-            conversion.SetStreamLoop(-1);
-            conversion.UseNativeInputRead(true);
             conversion.SetPreset(ConversionPreset.UltraFast);
             conversion.SetOutputFormat(Format.rtsp);
             conversion.SetOutput(rtspServerUri.OriginalString);

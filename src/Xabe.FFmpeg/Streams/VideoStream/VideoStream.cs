@@ -20,12 +20,10 @@ namespace Xabe.FFmpeg
         private string _loop;
         private string _reverse;
         private string _rotate;
-        private string _seek;
         private string _size;
         private string _split;
         private string _flags;
         private string _codec;
-        private string _inputFormat;
 
         internal VideoStream()
         {
@@ -424,6 +422,20 @@ namespace Xabe.FFmpeg
         public IVideoStream AddParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput)
         {
             _parameters.Add(new ConversionParameter(parameter, parameterPosition));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream UseNativeInputRead(bool readInputAtNativeFrameRate)
+        {
+            _parameters.Add(new ConversionParameter("-re", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IVideoStream SetStreamLoop(int loopCount)
+        {
+            _parameters.Add(new ConversionParameter($"-stream_loop {loopCount}", ParameterPosition.PreInput));
             return this;
         }
     }

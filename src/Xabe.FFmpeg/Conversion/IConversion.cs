@@ -326,20 +326,6 @@ namespace Xabe.FFmpeg
         IConversion SetVideoSyncMethod(VideoSyncMethod method);
 
         /// <summary>
-        ///     "-re" parameter.  Read input at native frame rate. Mainly used to simulate a grab device, or live input stream (e.g. when reading from a file). Should not be used with actual grab devices or live input streams (where it can cause packet loss). By default ffmpeg attempts to read the input(s) as fast as possible. This option will slow down the reading of the input(s) to the native frame rate of the input(s). It is useful for real-time output (e.g. live streaming).
-        /// </summary>
-        /// <param name="readInputAtNativeFrameRate">Read input at native frame rate. False set parameter to default value.</param>
-        /// <returns>IConversion object</returns>
-        IConversion UseNativeInputRead(bool readInputAtNativeFrameRate);
-
-        /// <summary>
-        ///     "-stream_loop" parameter. Set number of times input stream shall be looped. 
-        /// </summary>
-        /// <param name="loopCount">Loop 0 means no loop, loop -1 means infinite loop.</param>
-        /// <returns>IConversion object</returns>
-        IConversion SetStreamLoop(int loopCount);
-
-        /// <summary>
         ///     List of all streams
         /// </summary>
         IEnumerable<IStream> Streams { get; }
