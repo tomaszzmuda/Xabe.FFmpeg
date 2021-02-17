@@ -145,17 +145,40 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", videoStream.Codec);
         }
 
-        [Theory]
-        [InlineData("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", true)]
-        [InlineData("http://www.bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", false)]
-        public async Task SaveM3U8Stream(string input, bool success)
+        [Fact]
+        public async Task SaveM3U8Stream_Https_EverythingWorks()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var uri = new Uri("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
 
-            var exception = await Record.ExceptionAsync(async() => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1)))
+            var exception = await Record.ExceptionAsync(async() => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
                                                                     .Start());
 
-            Assert.Equal(success, exception == null);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task SaveM3U8Stream_Http_EverythingWorks()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var uri = new Uri("http://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
+
+            var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
+                                                                    .Start());
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task SaveM3U8Stream_NotExisting_ExceptionIsThrown()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var uri = new Uri("http://www.bitdash-a.akamaihd.net/notexisting.m3u8");
+            
+            var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
+                                                                    .Start());
+
+            Assert.NotNull(exception);
         }
 
         [Fact]
@@ -348,7 +371,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(result.AudioStreams);
             Assert.Empty(result.SubtitleStreams);
             Assert.Equal("h264", result.VideoStreams.First().Codec);
-            Assert.Equal(23.976, result.VideoStreams.First().Framerate);
+            Assert.Equal(23, (int) result.VideoStreams.First().Framerate);
             Assert.Equal(640, result.VideoStreams.First().Width);
             Assert.Equal(360, result.VideoStreams.First().Height);
             Assert.Equal("aac", result.AudioStreams.First().Codec);

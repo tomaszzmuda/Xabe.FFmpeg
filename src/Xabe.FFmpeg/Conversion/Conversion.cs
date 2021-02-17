@@ -383,7 +383,7 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
             {
-                builder.Append(stream.Build());
+                builder.Append(stream.BuildParameters(ParameterPosition.PostInput));
             }
             return builder.ToString();
         }

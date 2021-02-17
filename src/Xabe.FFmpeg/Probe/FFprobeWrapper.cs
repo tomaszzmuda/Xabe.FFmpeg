@@ -16,13 +16,12 @@ namespace Xabe.FFmpeg
     {
         private async Task<ProbeModel.Stream[]> GetStreams(string videoPath, CancellationToken cancellationToken)
         {
-            ProbeModel probe = null;
-            string stringResult = await Start($"-v panic -print_format json -show_streams \"{videoPath}\"", cancellationToken);
+            string stringResult = await Start($"-v panic -print_format json=c=1 -show_streams \"{videoPath}\"", cancellationToken);
             if (string.IsNullOrEmpty(stringResult))
             {
                 return new ProbeModel.Stream[0];
             }
-            probe = JsonConvert.DeserializeObject<ProbeModel>(stringResult);
+            ProbeModel probe = JsonConvert.DeserializeObject<ProbeModel>(stringResult);
             return probe.streams ?? new ProbeModel.Stream[0];
         }
 
@@ -56,7 +55,7 @@ namespace Xabe.FFmpeg
 
         private async Task<FormatModel.Format> GetFormat(string videoPath, CancellationToken cancellationToken)
         {
-            string stringResult = await Start($"-v panic -print_format json -show_entries format=size,duration,bit_rate \"{videoPath}\"", cancellationToken);
+            string stringResult = await Start($"-v panic -print_format json=c=1 -show_entries format=size,duration,bit_rate \"{videoPath}\"", cancellationToken);
             var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult);
             return root.format;
         }
@@ -118,6 +117,8 @@ namespace Xabe.FFmpeg
 
                         }
                     });
+                    var text = new List<string>();
+                    process.ErrorDataReceived += (obj, e) => { text.Add(e.Data); };
                     var output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
                     return output;

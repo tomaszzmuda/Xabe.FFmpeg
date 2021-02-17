@@ -627,5 +627,24 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(exception);
             Assert.IsType<ConversionException>(exception);
         }
+
+        [Fact]
+        public async Task SetSize_ParameterIsOverrided_NewValueIsSet()
+        {
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            string outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(inputFile.VideoStreams.First()
+                                                                                                  .SetSize(1920, 1080)
+                                                                                                  .SetSize(640, 480))
+                                                                 .SetOutput(outputPath)
+                                                                 .Start();
+
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
+            Assert.Equal(640, mediaInfo.VideoStreams.First().Width);
+            Assert.Equal(480, mediaInfo.VideoStreams.First().Height);
+        }
     }
 }

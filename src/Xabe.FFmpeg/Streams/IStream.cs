@@ -24,12 +24,6 @@ namespace Xabe.FFmpeg
         string Codec { get; }
 
         /// <summary>
-        ///     Build FFmpeg arguments
-        /// </summary>
-        /// <returns>Arguments</returns>
-        string Build();
-
-        /// <summary>
         ///     Build FFmpeg arguments for input
         /// </summary>
         /// <returns>Arguments</returns>

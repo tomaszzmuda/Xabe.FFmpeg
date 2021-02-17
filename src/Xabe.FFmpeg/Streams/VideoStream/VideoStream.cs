@@ -4,26 +4,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 { 
     /// <inheritdoc cref="IVideoStream" />
     public class VideoStream : IVideoStream, IFilterable
     {
-        private readonly List<ConversionParameter> _parameters = new List<ConversionParameter>();
+        private readonly ParametersList<ConversionParameter> _parameters = new ParametersList<ConversionParameter>();
         private readonly Dictionary<string, string> _videoFilters = new Dictionary<string, string>();
         private string _watermarkSource;
-        private string _bitrate;
-        private string _bitsreamFilter;
-        private string _frameCount;
-        private string _framerate;
-        private string _loop;
-        private string _reverse;
-        private string _rotate;
-        private string _size;
-        private string _split;
-        private string _flags;
-        private string _codec;
 
         internal VideoStream()
         {
@@ -80,24 +70,6 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public int? Rotation { get; internal set; }
 
-        /// <inheritdoc />
-        public string Build()
-        {
-            var builder = new StringBuilder();
-            builder.Append(BuildVideoCodec());
-            builder.Append(_bitsreamFilter);
-            builder.Append(_bitrate);
-            builder.Append(_framerate);
-            builder.Append(_frameCount);
-            builder.Append(_loop);
-            builder.Append(_split);
-            builder.Append(_reverse);
-            builder.Append(_rotate);
-            builder.Append(_size);
-            builder.Append(_flags);
-            return builder.ToString();
-        }
-
         /// <summary>
         ///     Create parameters string
         /// </summary>
@@ -118,15 +90,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public string BuildVideoCodec()
-        {
-            if (_codec != null)
-                return $"-c:v {_codec.ToString()} ";
-            else
-                return string.Empty;
-        }
-
-        /// <inheritdoc />
         public IVideoStream ChangeSpeed(double multiplication)
         {
             _videoFilters["setpts"] = GetVideoSpeedFilter(multiplication);
@@ -140,7 +103,7 @@ namespace Xabe.FFmpeg
                 throw new ArgumentOutOfRangeException(nameof(multiplication), "Value has to be greater than 0.5 and less than 2.0.");
             }
 
-            double videoMultiplicator = 1;
+            double videoMultiplicator;
             if (multiplication >= 1)
             {
                 videoMultiplicator = 1 - (multiplication - 1) / 2;
@@ -155,7 +118,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream Rotate(RotateDegrees rotateDegrees)
         {
-            _rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int)rotateDegrees}\" ";
+            var rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int)rotateDegrees}\" ";
+            _parameters.Add(new ConversionParameter($"{rotate}"));
             return this;
         }
 
@@ -174,10 +138,10 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetLoop(int count, int delay)
         {
-            _loop = $"-loop {count} ";
+            _parameters.Add(new ConversionParameter($"-loop {count}"));
             if (delay > 0)
             {
-                _loop += $"-final_delay {delay / 100} ";
+                _parameters.Add(new ConversionParameter($"-final_delay {delay / 100}"));
             }
             return this;
         }
@@ -217,20 +181,22 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream Reverse()
         {
-            _reverse = "-vf reverse ";
+            _parameters.Add(new ConversionParameter($"-vf reverse"));
             return this;
         }
 
         /// <inheritdoc />
         public IVideoStream SetBitrate(long bitrate)
         {
-            _bitrate = $"-b:v {bitrate} ";
+            _parameters.Add(new ConversionParameter($"-b:v {bitrate}"));
             return this;
         }
 
         public IVideoStream SetBitrate(long minBitrate, long maxBitrate, long bufferSize)
         {
-            _bitrate = $"-b:v {minBitrate} -maxrate {maxBitrate} -bufsize {bufferSize} ";
+            _parameters.Add(new ConversionParameter($"-b:v {minBitrate}"));
+            _parameters.Add(new ConversionParameter($"-maxrate {maxBitrate}"));
+            _parameters.Add(new ConversionParameter($"-bufsize {bufferSize}"));
             return this;
         }
 
@@ -248,7 +214,7 @@ namespace Xabe.FFmpeg
             {
                 input = "+" + input;
             }
-            _flags = $"-flags {input} ";
+            _parameters.Add(new ConversionParameter($"-flags {input}"));
             return this;
         }
 
@@ -256,21 +222,21 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetFramerate(double framerate)
         {
-            _framerate = $"-r {framerate.ToFFmpegFormat(3)} ";
+            _parameters.Add(new ConversionParameter($"-r {framerate.ToFFmpegFormat(3)}"));
             return this;
         }
 
         /// <inheritdoc />
         public IVideoStream SetSize(VideoSize size)
         {
-            _size = $"-s {size.ToFFmpegFormat()} ";
+            _parameters.Add(new ConversionParameter($"-s {size.ToFFmpegFormat()}"));
             return this;
         }
 
         /// <inheritdoc />
         public IVideoStream SetSize(int width, int height)
         {
-            _size = $"-s {width}x{height} ";
+            _parameters.Add(new ConversionParameter($"-s {width}x{height}"));
             return this;
         }
 
@@ -296,7 +262,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetCodec(string codec)
         {
-            _codec = codec;
+            _parameters.Add(new ConversionParameter($"-c:v {codec}"));
             return this;
         }
 
@@ -309,7 +275,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetBitstreamFilter(string filter)
         {
-            _bitsreamFilter = $"-bsf:v {filter} ";
+            _parameters.Add(new ConversionParameter($"-bsf:v {filter}"));
             return this;
         }
 
@@ -330,7 +296,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetOutputFramesCount(int number)
         {
-            _frameCount = $"-frames:v {number} ";
+            _parameters.Add(new ConversionParameter($"-frames:v {number}"));
             return this;
         }
 
@@ -376,7 +342,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream Split(TimeSpan startTime, TimeSpan duration)
         {
-            _split = $"-ss {startTime.ToFFmpeg()} -t {duration.ToFFmpeg()} ";
+            _parameters.Add(new ConversionParameter($"-ss {startTime.ToFFmpeg()}"));
+            _parameters.Add(new ConversionParameter($"-t {duration.ToFFmpeg()}"));
             return this;
         }
 
