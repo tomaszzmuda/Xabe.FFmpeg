@@ -21,9 +21,7 @@ namespace Xabe.FFmpeg
         private readonly ParametersList<ConversionParameter> _parameters = new ParametersList<ConversionParameter>();
         private readonly List<IStream> _streams = new List<IStream>();
 
-        private IEnumerable<FieldInfo> _fields;
         private string _output;
-        private bool _useMultiThreads = true;
         private bool _hasInputBuilder = false;
         private int? _threadsCount;
 
@@ -44,26 +42,24 @@ namespace Xabe.FFmpeg
                 if (_buildOutputFileName == null)
                     _buildOutputFileName = (number) => { return _output; };
 
-                builder.Append(BuildParameters(ParameterPosition.PreInput));
-
-                builder.Append(BuildInputParameters());
+                builder.Append(GetParameters(ParameterPosition.PreInput));
+                builder.Append(GetStreamsPreInputs());
 
                 if (_buildInputFileName == null)
                 {
-                    builder.Append(BuildInput());
+                    builder.Append(GetInputs());
                 }
                 else
                 {
                     _hasInputBuilder = true;
                     builder.Append(_buildInputFileName("_%03d"));
-                    builder.Append(BuildInput());
+                    builder.Append(GetInputs());
                 }
 
-                builder.Append(BuildThreadsArgument(_useMultiThreads));
-                builder.Append(BuildStreamParameters());
-                builder.Append(BuildFilters());
-                builder.Append(BuildMap());
-                builder.Append(BuildParameters(ParameterPosition.PostInput));
+                builder.Append(GetStreamsPostInputs());
+                builder.Append(GetFilters());
+                builder.Append(GetMap());
+                builder.Append(GetParameters(ParameterPosition.PostInput));
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -124,23 +120,6 @@ namespace Xabe.FFmpeg
             };
             _processId = null;
             return result;
-        }
-
-        /// <inheritdoc />
-        public void Clear()
-        {
-            _parameters.Clear();
-            if (_fields == null)
-            {
-                _fields = GetType()
-                    .GetFields(BindingFlags.NonPublic |
-                               BindingFlags.Instance)
-                    .Where(x => x.FieldType == typeof(string));
-            }
-            foreach (FieldInfo fieldinfo in _fields)
-            {
-                fieldinfo.SetValue(this, null);
-            }
         }
 
         /// <inheritdoc />
@@ -237,7 +216,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion UseMultiThread(bool multiThread)
         {
-            _useMultiThreads = multiThread;
+            var threads = multiThread ? Environment.ProcessorCount : 1;
+            _parameters.Add(new ConversionParameter($"-threads {threads}"));
             return this;
         }
 
@@ -353,7 +333,7 @@ namespace Xabe.FFmpeg
             return this;
         }
 
-        private string BuildStreamParameters()
+        private string GetStreamsPostInputs()
         {
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
@@ -363,7 +343,7 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        private string BuildInputParameters()
+        private string GetStreamsPreInputs()
         {
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
@@ -373,7 +353,7 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        private string BuildFilters()
+        private string GetFilters()
         {
             var builder = new StringBuilder();
             var configurations = new List<IFilterConfiguration>();
@@ -430,7 +410,7 @@ namespace Xabe.FFmpeg
         ///     Create map for included streams, including the InputBuilder if required
         /// </summary>
         /// <returns>Map argument</returns>
-        private string BuildMap()
+        private string GetMap()
         {
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
@@ -459,7 +439,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="forPosition">Position for parameters</param>
         /// <returns>Parameters</returns>
-        private string BuildParameters(ParameterPosition forPosition)
+        private string GetParameters(ParameterPosition forPosition)
         {
             IEnumerable<ConversionParameter> parameters = _parameters?.Where(x => x.Position == forPosition);
             if (parameters != null &&
@@ -477,7 +457,7 @@ namespace Xabe.FFmpeg
         ///     Create input string for all streams
         /// </summary>
         /// <returns>Input argument</returns>
-        private string BuildInput()
+        private string GetInputs()
         {
             var builder = new StringBuilder();
             var index = 0;

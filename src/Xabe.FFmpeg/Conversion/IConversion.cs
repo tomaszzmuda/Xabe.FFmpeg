@@ -24,11 +24,6 @@ namespace Xabe.FFmpeg
         int? FFmpegProcessId { get; }
 
         /// <summary>
-        ///     Clear saved parameters
-        /// </summary>
-        void Clear();
-
-        /// <summary>
         /// Set priority of ffmpeg process
         /// </summary>
         /// <param name="priority">FFmpeg process priority</param>
