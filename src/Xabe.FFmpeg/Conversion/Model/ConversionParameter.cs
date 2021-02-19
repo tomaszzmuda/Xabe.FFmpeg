@@ -19,12 +19,17 @@ namespace Xabe.FFmpeg
         public override bool Equals(object obj)
         {
             return obj is ConversionParameter parameter &&
-                   Key == parameter.Key;
+                   Key == parameter.Key &&
+                   Position == parameter.Position &&
+                   Key != "-i";
         }
 
         public override int GetHashCode()
         {
-            return 990326508 + EqualityComparer<string>.Default.GetHashCode(Key);
+            int hashCode = 495346454;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
+            hashCode = hashCode * -1521134295 + Position.GetHashCode();
+            return hashCode;
         }
     }
 }

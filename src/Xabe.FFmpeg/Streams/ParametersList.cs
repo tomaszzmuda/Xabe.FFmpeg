@@ -21,5 +21,15 @@ namespace Xabe.FFmpeg.Streams
             _items[item] = item;
         }
 
+        internal void Remove(T item)
+        {
+            if (_items.ContainsKey(item))
+                _items.Remove(item);
+        }
+
+        internal void Clear()
+        {
+            _items.Clear();
+        }
     }
 }
