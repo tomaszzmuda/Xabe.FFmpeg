@@ -63,7 +63,7 @@ namespace Xabe.FFmpeg
         ///     Get available audio and video devices (like cams or mics)
         /// </summary>
         /// <returns>List of available devices</returns>
-        public static async Task<IEnumerable<Device>> GetAvailableDevices()
+        public static async Task<Device[]> GetAvailableDevices()
         {
             return await Conversion.GetAvailableDevices();
         }

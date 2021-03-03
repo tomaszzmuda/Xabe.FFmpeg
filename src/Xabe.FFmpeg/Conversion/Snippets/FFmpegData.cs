@@ -23,7 +23,7 @@ namespace Xabe.FFmpeg
         /// <param name="encoder">Codec using to encode output video (e.g. h264_nvenc)</param>
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
         /// <returns>IConversion object</returns>
-        internal async static Task<IEnumerable<Device>> GetAvailableDevices()
+        internal async static Task<Device[]> GetAvailableDevices()
         {
             Format format = Format.dshow;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -54,13 +54,7 @@ namespace Xabe.FFmpeg
                 });
             }
 
-            return devices;
+            return devices.ToArray();
         }
-    }
-
-    public class Device
-    {
-        public string Name { get; internal set; }
-        public string AlternativeName { get; internal set; }
     }
 }
