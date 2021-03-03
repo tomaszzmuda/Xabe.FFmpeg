@@ -18,8 +18,7 @@ namespace Xabe.FFmpeg
         /// <param name="inputImage">Watermark</param>
         /// <param name="position">Position of watermark</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
+        internal static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -38,8 +37,7 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output audio stream</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion ExtractVideo(string inputPath, string outputPath)
+        internal static IConversion ExtractVideo(string inputPath, string outputPath)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -57,8 +55,7 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output file</param>
         /// <param name="captureTime">TimeSpan of snapshot</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
+        internal static IConversion Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -79,8 +76,7 @@ namespace Xabe.FFmpeg
         /// <param name="width">Expected width</param>
         /// <param name="height">Expected height</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion ChangeSize(string inputPath, string outputPath, int width, int height)
+        internal static IConversion ChangeSize(string inputPath, string outputPath, int width, int height)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -100,8 +96,7 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output path</param>
         /// <param name="size">Expected size</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
+        internal static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -122,8 +117,7 @@ namespace Xabe.FFmpeg
         /// <param name="startTime">Start point</param>
         /// <param name="duration">Duration of new video</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
+        internal static IConversion Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -149,8 +143,7 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output path</param>
         /// <param name="duration">Duration of stream</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
+        internal static IConversion SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
         {
             var mediaInfo = FFmpeg.GetMediaInfo(uri.ToString()).GetAwaiter().GetResult();
             return New()
@@ -165,8 +158,7 @@ namespace Xabe.FFmpeg
         /// <param name="output">Concatenated inputVideos</param>
         /// <param name="inputVideos">Videos to add</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static async Task<IConversion> Concatenate(string output, params string[] inputVideos)
+        internal static async Task<IConversion> Concatenate(string output, params string[] inputVideos)
         {
             if (inputVideos.Length <= 1)
             {
@@ -213,8 +205,7 @@ namespace Xabe.FFmpeg
         /// <param name="outputFilePath">Path to file</param>
         /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion Convert(string inputFilePath, string outputFilePath, bool keepSubtitles = false)
+        internal static IConversion Convert(string inputFilePath, string outputFilePath, bool keepSubtitles = false)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
 
@@ -244,8 +235,7 @@ namespace Xabe.FFmpeg
         /// <param name="videoCodec"> The Subtitle Codec to Transcode the input to</param>
         /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion Transcode(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
+        internal static IConversion Transcode(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
 

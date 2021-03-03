@@ -42,8 +42,7 @@ namespace Xabe.FFmpeg
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.GetMediaInfo instead of that.")]
-        public static async Task<IMediaInfo> Get(string filePath)
+        internal static async Task<IMediaInfo> Get(string filePath)
         {
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
             return await Get(filePath, cancellationToken);
@@ -54,8 +53,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
         /// <param name="cancellationToken">Cancellation token</param>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.GetMediaInfo instead of that.")]
-        public static async Task<IMediaInfo> Get(string filePath, CancellationToken cancellationToken)
+        internal static async Task<IMediaInfo> Get(string filePath, CancellationToken cancellationToken)
         {
             var mediaInfo = new MediaInfo(filePath);
             var wrapper = new FFprobeWrapper();
@@ -67,8 +65,7 @@ namespace Xabe.FFmpeg
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="fileInfo">FileInfo</param>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.GetMediaInfo instead of that.")]
-        public static async Task<IMediaInfo> Get(FileInfo fileInfo)
+        internal static async Task<IMediaInfo> Get(FileInfo fileInfo)
         {
             if (!File.Exists(fileInfo.FullName))
             {

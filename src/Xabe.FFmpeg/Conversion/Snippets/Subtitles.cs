@@ -16,8 +16,7 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output file</param>
         /// <param name="subtitlesPath">Subtitles</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
+        internal static IConversion AddSubtitles(string inputPath, string outputPath, string subtitlesPath)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -39,8 +38,7 @@ namespace Xabe.FFmpeg
         /// <param name="subtitlePath">Path to subtitle file in .srt format</param>
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
+        internal static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
         {
             IMediaInfo mediaInfo = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
             IMediaInfo subtitleInfo = FFmpeg.GetMediaInfo(subtitlePath).GetAwaiter().GetResult();
@@ -65,8 +63,7 @@ namespace Xabe.FFmpeg
         /// <param name="subtitleCodec">The Subtitle Codec to Use to Encode the Subtitles</param>
         /// <param name="language">Language code in ISO 639. Example: "eng", "pol", "pl", "de", "ger"</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, SubtitleCodec subtitleCodec, string language = null)
+        internal static IConversion AddSubtitle(string inputPath, string outputPath, string subtitlePath, SubtitleCodec subtitleCodec, string language = null)
         {
             IMediaInfo mediaInfo = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
             IMediaInfo subtitleInfo = FFmpeg.GetMediaInfo(subtitlePath).GetAwaiter().GetResult();

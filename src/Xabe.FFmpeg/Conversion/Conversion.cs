@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -485,12 +483,8 @@ namespace Xabe.FFmpeg
             }
             return false;
         }
-        /// <summary>
-        ///     Get new instance of Conversion
-        /// </summary>
-        /// <returns>IConversion object</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.New() instead of that.")]
-        public static IConversion New()
+
+        internal static IConversion New()
         {
             var conversion = new Conversion();
             return conversion
