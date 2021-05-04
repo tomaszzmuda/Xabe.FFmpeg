@@ -13,7 +13,7 @@ namespace Xabe.FFmpeg.Downloader
         /// </summary>
         public static async Task GetLatestVersion(FFmpegVersion version, IProgress<ProgressInfo> progress = null)
         {
-            await GetLatestVersion(version, FFmpeg.ExecutablesPath, progress);
+            await GetLatestVersion(version, null, progress);
         }
 
         /// <summary>
