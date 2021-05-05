@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -144,6 +145,7 @@ namespace Xabe.FFmpeg
             _ffmpeg.OnProgress += OnProgress;
             _ffmpeg.OnDataReceived += OnDataReceived;
             DateTime startTime = DateTime.Now;
+            CreateOutputDirectoryIfNotExists();
             await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
             var result = new ConversionResult
             {
@@ -153,6 +155,14 @@ namespace Xabe.FFmpeg
             };
             _processId = null;
             return result;
+        }
+
+        private void CreateOutputDirectoryIfNotExists()
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(OutputFilePath.Unescape())))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(OutputFilePath.Unescape()));
+            }
         }
 
         /// <inheritdoc />
@@ -329,6 +339,7 @@ namespace Xabe.FFmpeg
         public IConversion ExtractEveryNthFrame(int frameNo, Func<string, string> buildOutputFileName)
         {
             _buildOutputFileName = buildOutputFileName;
+            OutputFilePath = buildOutputFileName("");
             AddParameter(string.Format("-vf select='not(mod(n\\,{0}))'", frameNo));
             SetVideoSyncMethod(VideoSyncMethod.vfr);
 
@@ -339,6 +350,7 @@ namespace Xabe.FFmpeg
         public IConversion ExtractNthFrame(int frameNo, Func<string, string> buildOutputFileName)
         {
             _buildOutputFileName = buildOutputFileName;
+            OutputFilePath = buildOutputFileName("");
             AddParameter(string.Format("-vf select='eq(n\\,{0})'", frameNo));
             SetVideoSyncMethod(VideoSyncMethod.passthrough);
             return this;
