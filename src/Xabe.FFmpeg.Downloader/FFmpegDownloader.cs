@@ -7,7 +7,7 @@ namespace Xabe.FFmpeg.Downloader
     public abstract class FFmpegDownloader
     {
         /// <summary>
-        ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
+        ///     Download latest FFmpeg version for current operating system to "." directory.
         /// <param name="version">Determine which version of FFmpeg should be downloaded</param>
         /// <param name="progress">Progress of download</param>
         /// </summary>
@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg.Downloader
         }
 
         /// <summary>
-        ///     Download latest FFmpeg version for current operating system to FFmpeg.ExecutablePath. If it is not set download to ".".
+        ///     Download latest FFmpeg version for current operating system to "." directory. Works best with FFmpeg.ExecutablesPath as path
         /// <param name="version">Determine which version of FFmpeg should be downloaded</param>
         /// <param name="path">FFmpeg executables destination directory</param>
         /// <param name="progress">Progress of download</param>

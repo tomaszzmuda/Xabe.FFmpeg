@@ -1,7 +1,7 @@
 ﻿namespace Xabe.FFmpeg.Downloader
 {
     /// <summary>
-    /// Enum to describe the versions of FFmpeg that can be automatically downloaded
+    ///     Enum to describe the versions of FFmpeg that can be automatically downloaded. Official is best option for most cases
     /// </summary>
     public enum FFmpegVersion
     {
