@@ -33,6 +33,16 @@ namespace Xabe.FFmpeg.Test.Fixtures
                     await _dockerClient.Containers.StopContainerAsync(container.ID, new ContainerStopParameters());
                 }
             }
+
+            await _dockerClient.Images.CreateImageAsync(
+                    new ImagesCreateParameters
+                    {
+                        FromImage = "aler9/rtsp-simple-server:latest"
+                    },
+                    null,
+                    new Progress<JSONMessage>((m) => { }),
+                    default);
+
             var response = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters()
             {
                 Image = "aler9/rtsp-simple-server",
