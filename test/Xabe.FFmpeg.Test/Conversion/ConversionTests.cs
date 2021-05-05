@@ -935,6 +935,28 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task Conversion_MilisecondsInTimeSpan_WorksCorrectly()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IAudioStream audioStream = info.AudioStreams.First();
+            IVideoStream videoStream = info.VideoStreams.First();
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(videoStream)
+                                                                 .AddStream(audioStream)
+                                                                 .SetInputTime(TimeSpan.FromMilliseconds(1500))
+                                                                 .SetOutputTime(TimeSpan.FromMilliseconds(1500))
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(1500, resultFile.AudioStreams.First().Duration.TotalMilliseconds);
+            Assert.Equal(1500, resultFile.AudioStreams.First().Duration.TotalMilliseconds);
+        }
+
+        [Fact]
         public async Task Conversion_SpacesInOutputPath_WorksCorrectly()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
