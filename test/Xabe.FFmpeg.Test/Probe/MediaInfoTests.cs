@@ -177,8 +177,65 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SloMoMp4);
             IVideoStream videoStream = info.VideoStreams.First();
 
-            Assert.Equal(116.244, videoStream.Framerate);
+            // It does not has to be the same
+            Assert.Equal(116, (int) videoStream.Framerate);
             Assert.Equal(3, videoStream.Duration.Seconds);
+        }
+
+        [Fact]
+        public async Task MediaInfo_SpecialCharactersInName_WorksCorrectly()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var nameWithSpaces = new FileInfo(output).Name;
+            output = output.Replace(nameWithSpaces, "Crime d'Amour" + ".mp4");
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+            Assert.Contains("Crime d'Amour", conversionResult.Arguments);
+        }
+
+
+        [Fact]
+        public async Task MediaInfo_NameWithSpaces_WorksCorrectly()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
+            output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+        }
+
+        [Fact]
+        public async Task MediaInfo_EscapedString_WorksCorrectly()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
+            output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo($"\"{output}\"");
+            Assert.NotNull(outputMediaInfo.Streams);
         }
     }
 }

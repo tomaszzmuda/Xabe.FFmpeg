@@ -286,7 +286,7 @@ namespace Xabe.FFmpeg
         public IConversion SetOutput(string outputPath)
         {
             OutputFilePath = outputPath;
-            _output = $"\"{outputPath}\"";
+            _output = outputPath.Escape();
             return this;
         }
 
@@ -491,7 +491,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Create argument for ffmpeg with thread configuration
+        ///     Create argument for ffmpeg with thread configuration. 
         /// </summary>
         /// <param name="multiThread">Use multi thread</param>
         /// <returns>Build parameter argument</returns>
@@ -501,7 +501,7 @@ namespace Xabe.FFmpeg
             if (_threadsCount == null)
             {
                 threadCount = multiThread
-                    ? Environment.ProcessorCount.ToString()
+                    ? Math.Min(Environment.ProcessorCount, 16).ToString()
                     : "1";
             }
             else
@@ -570,7 +570,7 @@ namespace Xabe.FFmpeg
             foreach (var source in _streams.SelectMany(x => x.GetSource()).Distinct())
             {
                 _inputFileMap[source] = index++;
-                builder.Append($"-i \"{source}\" ");
+                builder.Append($"-i {source.Escape()} ");
             }
             return builder.ToString();
         }
