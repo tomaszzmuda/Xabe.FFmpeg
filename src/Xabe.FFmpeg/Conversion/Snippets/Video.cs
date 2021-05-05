@@ -181,7 +181,7 @@ namespace Xabe.FFmpeg
                 IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputVideo);
 
                 mediaInfos.Add(mediaInfo);
-                conversion.AddParameter($"-i \"{inputVideo}\" ");
+                conversion.AddParameter($"-i {inputVideo.Escape()} ");
             }
             conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
             conversion.AddParameter($"-filter_complex \"");

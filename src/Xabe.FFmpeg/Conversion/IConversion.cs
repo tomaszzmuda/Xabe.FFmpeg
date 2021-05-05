@@ -145,7 +145,7 @@ namespace Xabe.FFmpeg
         IConversion UseMultiThread(int threadCount);
 
         /// <summary>
-        ///     Defines if converter should use all CPU cores
+        ///     Defines if converter should use all CPU cores. If set to true FFmpeg use max 16 cores due to compatibility reason
         /// </summary>
         /// <param name="multiThread">Use multiThreads</param>
         /// <returns>IConversion object</returns>

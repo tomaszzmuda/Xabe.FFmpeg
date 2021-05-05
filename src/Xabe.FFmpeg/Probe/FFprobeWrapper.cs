@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg
         private async Task<ProbeModel.Stream[]> GetStreams(string videoPath, CancellationToken cancellationToken)
         {
             ProbeModel probe = null;
-            string stringResult = await Start($"-v panic -print_format json -show_streams \"{videoPath}\"", cancellationToken);
+            string stringResult = await Start($"-v panic -print_format json -show_streams {videoPath}", cancellationToken);
             if (string.IsNullOrEmpty(stringResult))
             {
                 return new ProbeModel.Stream[0];
@@ -56,7 +56,7 @@ namespace Xabe.FFmpeg
 
         private async Task<FormatModel.Format> GetFormat(string videoPath, CancellationToken cancellationToken)
         {
-            string stringResult = await Start($"-v panic -print_format json -show_entries format=size,duration,bit_rate \"{videoPath}\"", cancellationToken);
+            string stringResult = await Start($"-v panic -print_format json -show_entries format=size,duration,bit_rate {videoPath}", cancellationToken);
             var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult);
             return root.format;
         }
@@ -136,7 +136,7 @@ namespace Xabe.FFmpeg
         /// <returns>Properties</returns>
         public async Task<MediaInfo> SetProperties(MediaInfo mediaInfo, CancellationToken cancellationToken)
         {
-            var path = mediaInfo.Path;
+            var path = mediaInfo.Path.Escape();
             ProbeModel.Stream[] streams = await GetStreams(path, cancellationToken);
             if (!streams.Any())
             {

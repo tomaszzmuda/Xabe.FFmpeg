@@ -817,7 +817,7 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
-            Assert.Contains($"-threads {Environment.ProcessorCount}", conversionResult.Arguments);
+            Assert.Contains($"-threads {Math.Min(Environment.ProcessorCount, 16)}", conversionResult.Arguments);
         }
 
         [Fact]
@@ -894,7 +894,9 @@ namespace Xabe.FFmpeg.Test
             IVideoStream resultVideoStream = resultFile.VideoStreams?.First();
 
             Assert.Equal(".mp4", Path.GetExtension(resultFile.Path));
-            Assert.Equal(116.244, resultVideoStream.Framerate);
+
+            // It does not has to be the same
+            Assert.Equal(116, (int) resultVideoStream.Framerate);
             Assert.Equal(3, resultVideoStream.Duration.Seconds);
         }
 
@@ -952,6 +954,64 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(1500, resultFile.AudioStreams.First().Duration.TotalMilliseconds);
             Assert.Equal(1500, resultFile.AudioStreams.First().Duration.TotalMilliseconds);
+        }
+
+        [Fact]
+        public async Task Conversion_SpacesInOutputPath_WorksCorrectly()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
+            output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+        }
+
+        [Theory]
+        [InlineData("'")]
+        [InlineData("\"")]
+        public async Task Conversion_OutputPathEscaped_WorksCorrectly(string escapeCharacter)
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
+            output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput($"{escapeCharacter}{output}{escapeCharacter}")
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+        }
+
+        [Theory]
+        [InlineData("Crime d'Amour.mp4")]
+        public async Task Conversion_SpecialCharactersInName_WorksCorrectly(string outputFileName)
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var name = new FileInfo(output).Name;
+            output = output.Replace(name, outputFileName);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+            Assert.Contains("Crime d'Amour", conversionResult.Arguments);
         }
     }
 }
