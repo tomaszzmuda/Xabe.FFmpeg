@@ -48,9 +48,6 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildOutputFileName = null;
 
         private int? _processId = null;
-        private string _inputXOffset;
-        private string _inputYOffset;
-        private string _inputVideoSize;
 
         /// <inheritdoc />
         public string Build()
@@ -159,9 +156,20 @@ namespace Xabe.FFmpeg
 
         private void CreateOutputDirectoryIfNotExists()
         {
-            if (!Directory.Exists(Path.GetDirectoryName(OutputFilePath.Unescape())))
+            if (OutputFilePath == null)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(OutputFilePath.Unescape()));
+                return;
+            }
+
+            try
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(OutputFilePath.Unescape())))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(OutputFilePath.Unescape()));
+                }
+            }
+            catch (System.IO.IOException e)
+            {
             }
         }
 
