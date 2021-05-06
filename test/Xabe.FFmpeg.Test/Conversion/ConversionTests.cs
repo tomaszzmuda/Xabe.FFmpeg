@@ -296,7 +296,7 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
-            Assert.Equal(29.833, resultFile.VideoStreams.First().Framerate);
+            Assert.Equal(29, (int) resultFile.VideoStreams.First().Framerate);
             Assert.Equal(3, resultFile.VideoStreams.First().Duration.Seconds);
             Assert.Equal(176, resultFile.VideoStreams.First().Width);
             Assert.Equal(144, resultFile.VideoStreams.First().Height);
@@ -819,7 +819,7 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
-            Assert.Contains($"-threads {Environment.ProcessorCount}", conversionResult.Arguments);
+            Assert.Contains($"-threads {Math.Min(Environment.ProcessorCount, 16)}", conversionResult.Arguments);
         }
 
         [Fact]
@@ -896,7 +896,9 @@ namespace Xabe.FFmpeg.Test
             IVideoStream resultVideoStream = resultFile.VideoStreams?.First();
 
             Assert.Equal(".mp4", Path.GetExtension(resultFile.Path));
-            Assert.Equal(116.244, resultVideoStream.Framerate);
+
+            // It does not has to be the same
+            Assert.Equal(116, (int) resultVideoStream.Framerate);
             Assert.Equal(3, resultVideoStream.Duration.Seconds);
         }
 
@@ -1017,6 +1019,122 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(1500, resultFile.AudioStreams.First().Duration.TotalMilliseconds);
             Assert.Equal(1500, resultFile.AudioStreams.First().Duration.TotalMilliseconds);
+        }
+
+        [Fact]
+        public async Task Conversion_SpacesInOutputPath_WorksCorrectly()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
+            output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+        }
+
+        [Theory]
+        [InlineData("'")]
+        [InlineData("\"")]
+        public async Task Conversion_OutputPathEscaped_WorksCorrectly(string escapeCharacter)
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
+            output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput($"{escapeCharacter}{output}{escapeCharacter}")
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+        }
+
+        [Theory]
+        [InlineData("Crime d'Amour.mp4")]
+        public async Task Conversion_SpecialCharactersInName_WorksCorrectly(string outputFileName)
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var name = new FileInfo(output).Name;
+            output = output.Replace(name, outputFileName);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(info.VideoStreams.First())
+                                                                 .AddParameter("-re", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.NotNull(outputMediaInfo.Streams);
+            Assert.Contains("Crime d'Amour", conversionResult.Arguments);
+        }
+
+        [Fact]
+        public async Task ExtractEveryNthFrame_OutputDirectoryNotExists_OutputDirectoryIsCreated()
+        {
+            var tempPath = Path.Combine(_storageFixture.GetTempDirectory(), Guid.NewGuid().ToString());
+            Func<string, string> outputBuilder = (number) => { return Path.Combine(tempPath, number + FileExtensions.Png); };
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First().SetCodec(VideoCodec.png);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(videoStream)
+                                                                 .ExtractEveryNthFrame(10, outputBuilder)
+                                                                 .Start();
+
+
+
+            int outputFilesCount = Directory.EnumerateFiles(tempPath).Count();
+
+            Assert.Equal(26, outputFilesCount);
+        }
+
+        [Fact]
+        public async Task Conversion_OutputDirectoryNotExists_OutputDirectoryIsCreated()
+        {
+            var tempPath = _storageFixture.GetTempDirectory();
+            var output = Path.Combine(tempPath, Guid.NewGuid().ToString(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.Mp4);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.h264);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetFrameRate(videoStream.Framerate)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.NotEmpty(resultFile.Streams);
+        }
+
+        [Fact]
+        public async Task Conversion_DoubleNestedNotExistingDirectory_OutputDirectoryIsCreated()
+        {
+            var tempPath = _storageFixture.GetTempDirectory();
+            var output = Path.Combine(tempPath, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid() + FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.Mp4);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.h264);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddStream(videoStream)
+                                                                 .SetFrameRate(videoStream.Framerate)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.NotEmpty(resultFile.Streams);
         }
     }
 }

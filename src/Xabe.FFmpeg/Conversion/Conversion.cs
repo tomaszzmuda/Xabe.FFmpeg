@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -21,7 +22,6 @@ namespace Xabe.FFmpeg
 
         private string _output;
         private bool _hasInputBuilder = false;
-        private int? _threadsCount;
 
         private ProcessPriorityClass? _priority = null;
         private FFmpegWrapper _ffmpeg;
@@ -109,6 +109,7 @@ namespace Xabe.FFmpeg
             _ffmpeg.OnProgress += OnProgress;
             _ffmpeg.OnDataReceived += OnDataReceived;
             DateTime startTime = DateTime.Now;
+            CreateOutputDirectoryIfNotExists();
             await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
             var result = new ConversionResult
             {
@@ -118,6 +119,25 @@ namespace Xabe.FFmpeg
             };
             _processId = null;
             return result;
+        }
+
+        private void CreateOutputDirectoryIfNotExists()
+        {
+            if (OutputFilePath == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(OutputFilePath.Unescape())))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(OutputFilePath.Unescape()));
+                }
+            }
+            catch (System.IO.IOException e)
+            {
+            }
         }
 
         /// <inheritdoc />
@@ -215,15 +235,14 @@ namespace Xabe.FFmpeg
         public IConversion UseMultiThread(bool multiThread)
         {
             var threads = multiThread ? Environment.ProcessorCount : 1;
-            _parameters.Add(new ConversionParameter($"-threads {threads}"));
+            _parameters.Add(new ConversionParameter($"-threads {Math.Min(threads, 16)}"));
             return this;
         }
 
         /// <inheritdoc />
         public IConversion UseMultiThread(int threadsCount)
         {
-            UseMultiThread(true);
-            _threadsCount = threadsCount;
+            _parameters.Add(new ConversionParameter($"-threads {threadsCount}"));
             return this;
         }
 
@@ -231,7 +250,7 @@ namespace Xabe.FFmpeg
         public IConversion SetOutput(string outputPath)
         {
             OutputFilePath = outputPath;
-            _output = $"\"{outputPath}\"";
+            _output = outputPath.Escape();
             return this;
         }
 
@@ -281,6 +300,7 @@ namespace Xabe.FFmpeg
         public IConversion ExtractEveryNthFrame(int frameNo, Func<string, string> buildOutputFileName)
         {
             _buildOutputFileName = buildOutputFileName;
+            OutputFilePath = buildOutputFileName("");
             _parameters.Add(new ConversionParameter($"-vf select='not(mod(n\\,{frameNo}))'", ParameterPosition.PostInput));
             SetVideoSyncMethod(VideoSyncMethod.vfr);
 
@@ -291,7 +311,8 @@ namespace Xabe.FFmpeg
         public IConversion ExtractNthFrame(int frameNo, Func<string, string> buildOutputFileName)
         {
             _buildOutputFileName = buildOutputFileName;
-            _parameters.Add(new ConversionParameter($"-vf select='eq(n\\,{0})'", ParameterPosition.PostInput));
+            _parameters.Add(new ConversionParameter($"-vf select='eq(n\\,{frameNo})'", ParameterPosition.PostInput));
+            OutputFilePath = buildOutputFileName("");
             SetVideoSyncMethod(VideoSyncMethod.passthrough);
             return this;
         }
@@ -383,28 +404,6 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Create argument for ffmpeg with thread configuration
-        /// </summary>
-        /// <param name="multiThread">Use multi thread</param>
-        /// <returns>Build parameter argument</returns>
-        private string BuildThreadsArgument(bool multiThread)
-        {
-            string threadCount = "";
-            if (_threadsCount == null)
-            {
-                threadCount = multiThread
-                    ? Environment.ProcessorCount.ToString()
-                    : "1";
-            }
-            else
-            {
-                threadCount = _threadsCount.ToString();
-            }
-
-            return $"-threads {threadCount} ";
-        }
-
-        /// <summary>
         ///     Create map for included streams, including the InputBuilder if required
         /// </summary>
         /// <returns>Map argument</returns>
@@ -462,7 +461,7 @@ namespace Xabe.FFmpeg
             foreach (var source in _streams.SelectMany(x => x.GetSource()).Distinct())
             {
                 _inputFileMap[source] = index++;
-                builder.Append($"-i \"{source}\" ");
+                builder.Append($"-i {source.Escape()} ");
             }
             return builder.ToString();
         }
