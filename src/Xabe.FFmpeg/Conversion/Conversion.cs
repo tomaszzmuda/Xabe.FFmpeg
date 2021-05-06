@@ -48,9 +48,6 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildOutputFileName = null;
 
         private int? _processId = null;
-        private string _inputXOffset;
-        private string _inputYOffset;
-        private string _inputVideoSize;
 
         /// <inheritdoc />
         public string Build()
