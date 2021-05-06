@@ -28,8 +28,6 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildInputFileName = null;
         private Func<string, string> _buildOutputFileName = null;
 
-        private int? _processId = null;
-
         /// <inheritdoc />
         public string Build()
         {
@@ -71,9 +69,6 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
-        public int? FFmpegProcessId => _processId;
-
-        /// <inheritdoc />
         public string OutputFilePath { get; private set; }
 
         /// <inheritdoc />
@@ -105,20 +100,29 @@ namespace Xabe.FFmpeg
                 throw new InvalidOperationException("Conversion has already been started. ");
             }
 
-            _ffmpeg = new FFmpegWrapper();
-            _ffmpeg.OnProgress += OnProgress;
-            _ffmpeg.OnDataReceived += OnDataReceived;
             DateTime startTime = DateTime.Now;
-            CreateOutputDirectoryIfNotExists();
-            await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
-            var result = new ConversionResult
+
+            _ffmpeg = new FFmpegWrapper();
+            try
+            {
+                _ffmpeg.OnProgress += OnProgress;
+                _ffmpeg.OnDataReceived += OnDataReceived;
+                CreateOutputDirectoryIfNotExists();
+                await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
+            }
+            finally
+            {
+                _ffmpeg.OnProgress -= OnProgress;
+                _ffmpeg.OnDataReceived -= OnDataReceived;
+                _ffmpeg = null;
+            }
+
+            return new ConversionResult
             {
                 StartTime = startTime,
                 EndTime = DateTime.Now,
                 Arguments = parameters
             };
-            _processId = null;
-            return result;
         }
 
         private void CreateOutputDirectoryIfNotExists()

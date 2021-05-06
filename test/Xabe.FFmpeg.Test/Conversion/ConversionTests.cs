@@ -1136,6 +1136,25 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
             Assert.NotEmpty(resultFile.Streams);
         }
+
+        [Fact]
+        public async Task Conversion_RunItSecondTime_ItWorks()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.ac3);
+
+            var conversion = FFmpeg.Conversions.New()
+                                                .AddStream(audioStream)
+                                                .SetOutput(output);
+            await conversion.Start();
+
+            string secondOutput = _storageFixture.GetTempFileName(FileExtensions.Mkv);
+            var exception = await Record.ExceptionAsync(async() => await conversion.SetOutput(secondOutput).Start());
+
+            Assert.Null(exception);
+        }
+
     }
 }
 

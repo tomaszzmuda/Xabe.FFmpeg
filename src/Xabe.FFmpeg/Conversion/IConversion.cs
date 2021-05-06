@@ -19,11 +19,6 @@ namespace Xabe.FFmpeg
         string OutputFilePath { get; }
 
         /// <summary>
-        /// FFmpeg process id
-        /// </summary>
-        int? FFmpegProcessId { get; }
-
-        /// <summary>
         /// Set priority of ffmpeg process
         /// </summary>
         /// <param name="priority">FFmpeg process priority</param>
