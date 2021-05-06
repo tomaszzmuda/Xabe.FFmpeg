@@ -119,7 +119,7 @@ namespace Xabe.FFmpeg
         public IVideoStream Rotate(RotateDegrees rotateDegrees)
         {
             var rotate = rotateDegrees == RotateDegrees.Invert ? "-vf \"transpose=2,transpose=2\" " : $"-vf \"transpose={(int)rotateDegrees}\" ";
-            _parameters.Add(new ConversionParameter($"{rotate}"));
+            _parameters.Add(new ConversionParameter(rotate));
             return this;
         }
 

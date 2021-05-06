@@ -118,7 +118,6 @@ namespace Xabe.FFmpeg
                         }
                     });
                     var text = new List<string>();
-                    process.ErrorDataReceived += (obj, e) => { text.Add(e.Data); };
                     var output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
                     return output;
