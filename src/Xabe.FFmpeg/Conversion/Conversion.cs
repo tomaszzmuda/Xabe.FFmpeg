@@ -159,9 +159,20 @@ namespace Xabe.FFmpeg
 
         private void CreateOutputDirectoryIfNotExists()
         {
-            if (!Directory.Exists(Path.GetDirectoryName(OutputFilePath.Unescape())))
+            if (OutputFilePath == null)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(OutputFilePath.Unescape()));
+                return;
+            }
+
+            try
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(OutputFilePath.Unescape())))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(OutputFilePath.Unescape()));
+                }
+            }
+            catch (System.IO.IOException e)
+            {
             }
         }
 
