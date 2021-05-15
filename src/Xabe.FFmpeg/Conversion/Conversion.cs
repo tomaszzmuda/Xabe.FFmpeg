@@ -635,7 +635,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion AddDesktopStream(string videoSize = null, double framerate = 30, int xOffset = 0, int yOffset = 0)
         {
-            var stream = new VideoStream() { Index = 0 };
+            var stream = new VideoStream() { Index = _streams.Any() ? _streams.Max(x => x.Index) + 1 : 0 };
             stream.AddParameter($"-framerate {framerate.ToFFmpegFormat(4)}", ParameterPosition.PreInput);
             stream.AddParameter($"-offset_x {xOffset}", ParameterPosition.PreInput);
             stream.AddParameter($"-offset_y {yOffset}", ParameterPosition.PreInput);
