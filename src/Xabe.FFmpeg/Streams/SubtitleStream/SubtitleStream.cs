@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Xabe.FFmpeg.Streams;
 using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
@@ -9,8 +11,7 @@ namespace Xabe.FFmpeg
     /// <inheritdoc />
     public class SubtitleStream : ISubtitleStream
     {
-        private string _language;
-        private string _codec;
+        private readonly ParametersList<ConversionParameter> _parameters = new ParametersList<ConversionParameter>();
 
         /// <inheritdoc />
         public string Codec { get; internal set; }
@@ -18,24 +19,24 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public string Path { get; internal set; }
 
-        /// <inheritdoc />
-        public string Build()
-        {
-            var builder = new StringBuilder();
-            builder.Append(BuildLanguage());
-            builder.Append(BuildSubtitleCodec());
-            return builder.ToString();
-        }
-
         internal SubtitleStream()
         {
 
         }
 
         /// <inheritdoc />
-        public string BuildInputArguments()
+        public string BuildParameters(ParameterPosition forPosition)
         {
-            return null;
+            IEnumerable<ConversionParameter> parameters = _parameters?.Where(x => x.Position == forPosition);
+            if (parameters != null &&
+                parameters.Any())
+            {
+                return string.Join(string.Empty, parameters.Select(x => x.Parameter));
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <inheritdoc />
@@ -57,21 +58,15 @@ namespace Xabe.FFmpeg
         public StreamType StreamType => StreamType.Subtitle;
 
         /// <inheritdoc />
-        public string BuildSubtitleCodec()
-        {
-            if (_codec != null)
-                return $"-c:s {_codec.ToString()} ";
-            else
-                return string.Empty;
-        }
-
-        /// <inheritdoc />
         public ISubtitleStream SetLanguage(string lang)
         {
-            if (!string.IsNullOrEmpty(lang))
+            string language = !string.IsNullOrEmpty(lang) ? lang : Language;
+            if (!string.IsNullOrEmpty(language))
             {
-                _language = lang;
+                language = $"-metadata:s:s:{Index} language={language}";
+               _parameters.Add(new ConversionParameter(language));
             }
+
             return this;
         }
 
@@ -81,28 +76,30 @@ namespace Xabe.FFmpeg
             return new[] { Path };
         }
 
-        private string BuildLanguage()
-        {
-            string language = !string.IsNullOrEmpty(_language) ? _language : Language;
-            if (!string.IsNullOrEmpty(language))
-            {
-                language = $"-metadata:s:s:{Index} language={language} ";
-            }
-            return language;
-        }
-
         /// <inheritdoc />
         public ISubtitleStream SetCodec(SubtitleCodec codec)
         {
-            string input = codec.ToString();
-
-            return SetCodec($"{input}");
+            return SetCodec(codec.ToString());
         }
 
         /// <inheritdoc />
         public ISubtitleStream SetCodec(string codec)
         {
-            _codec = codec;
+            _parameters.Add(new ConversionParameter($"-c:s {codec.ToString()}"));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public ISubtitleStream UseNativeInputRead(bool readInputAtNativeFrameRate)
+        {
+            _parameters.Add(new ConversionParameter($"-re", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public ISubtitleStream SetStreamLoop(int loopCount)
+        {
+            _parameters.Add(new ConversionParameter($"-stream_loop {loopCount}", ParameterPosition.PreInput));
             return this;
         }
     }

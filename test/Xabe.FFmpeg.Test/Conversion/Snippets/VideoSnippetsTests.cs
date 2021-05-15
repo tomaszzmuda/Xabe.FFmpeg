@@ -9,13 +9,15 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class VideoSnippetsTests : IClassFixture<StorageFixture>
+    public class VideoSnippetsTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
         private readonly StorageFixture _storageFixture;
+        private readonly RtspServerFixture _rtspServer;
 
-        public VideoSnippetsTests(StorageFixture storageFixture)
+        public VideoSnippetsTests(StorageFixture storageFixture, RtspServerFixture rtspServer)
         {
             _storageFixture = storageFixture;
+            _rtspServer = rtspServer;
         }
 
         public static IEnumerable<object[]> JoinFiles => new[]
@@ -144,17 +146,40 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", videoStream.Codec);
         }
 
-        [Theory]
-        [InlineData("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", true)]
-        [InlineData("http://www.bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", false)]
-        public async Task SaveM3U8Stream(string input, bool success)
+        [Fact]
+        public async Task SaveM3U8Stream_Https_EverythingWorks()
         {
             string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var uri = new Uri("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
 
-            var exception = await Record.ExceptionAsync(async() => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(new Uri(input), output, TimeSpan.FromSeconds(1)))
+            var exception = await Record.ExceptionAsync(async() => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
                                                                     .Start());
 
-            Assert.Equal(success, exception == null);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task SaveM3U8Stream_Http_EverythingWorks()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var uri = new Uri("http://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
+
+            var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
+                                                                    .Start());
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task SaveM3U8Stream_NotExisting_ExceptionIsThrown()
+        {
+            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var uri = new Uri("http://www.bitdash-a.akamaihd.net/notexisting.m3u8");
+            
+            var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
+                                                                    .Start());
+
+            Assert.NotNull(exception);
         }
 
         [Fact]
@@ -332,20 +357,25 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(24, videoStream.Framerate);
         }
 
-        [Fact(Skip = "The RTSP stream is not valid anymore")]
+        [Fact]
         public async Task Rtsp_GotTwoStreams_SaveEverything()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-            var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov");
+            await _rtspServer.Publish(Resources.BunnyMp4, "bunny");
 
-            var conversionResult = await FFmpeg.Conversions.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
+            var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny");
+
+            await FFmpeg.Conversions.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
 
             IMediaInfo result = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(9 * 60 + 56), mediaInfo.Duration);
+            Assert.True(result.Duration > TimeSpan.FromSeconds(0));
             Assert.Single(result.VideoStreams);
             Assert.Single(result.AudioStreams);
             Assert.Empty(result.SubtitleStreams);
             Assert.Equal("h264", result.VideoStreams.First().Codec);
+            Assert.Equal(23, (int) result.VideoStreams.First().Framerate);
+            Assert.Equal(640, result.VideoStreams.First().Width);
+            Assert.Equal(360, result.VideoStreams.First().Height);
             Assert.Equal("aac", result.AudioStreams.First().Codec);
         }
     }

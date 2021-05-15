@@ -4,21 +4,15 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
 {
     /// <inheritdoc cref="IAudioStream" />
     public class AudioStream : IAudioStream, IFilterable
     {
+        private readonly ParametersList<ConversionParameter> _parameters = new ParametersList<ConversionParameter>();
         private readonly Dictionary<string, string> _audioFilters = new Dictionary<string, string>();
-        private string _bitsreamFilter;
-        private string _reverse;
-        private string _seek;
-        private string _split;
-        private string _sampleRate;
-        private string _channels;
-        private string _bitrate;
-        private string _codec;
 
         internal AudioStream()
         {
@@ -28,43 +22,30 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream Reverse()
         {
-            _reverse = "-af areverse ";
+            _parameters.Add(new ConversionParameter("-af areverse"));
             return this;
         }
 
         /// <inheritdoc />
-        public string Build()
+        public string BuildParameters(ParameterPosition forPosition)
         {
-            var builder = new StringBuilder();
-            builder.Append(BuildAudioCodec());
-            builder.Append(_bitsreamFilter);
-            builder.Append(_sampleRate);
-            builder.Append(_channels);
-            builder.Append(_bitrate);
-            builder.Append(_reverse);
-            builder.Append(_split);
-            return builder.ToString();
-        }
-
-        /// <inheritdoc />
-        public string BuildInputArguments()
-        {
-            return _seek;
-        }
-
-        /// <inheritdoc />
-        public string BuildAudioCodec()
-        {
-            if (_codec != null)
-                return $"-c:a {_codec.ToString()} ";
+            IEnumerable<ConversionParameter> parameters = _parameters?.Where(x => x.Position == forPosition);
+            if (parameters != null &&
+                parameters.Any())
+            {
+                return string.Join(string.Empty, parameters.Select(x => x.Parameter));
+            }
             else
+            {
                 return string.Empty;
+            }
         }
 
         /// <inheritdoc />
         public IAudioStream Split(TimeSpan startTime, TimeSpan duration)
         {
-            _split = $"-ss {startTime.ToFFmpeg()} -t {duration.ToFFmpeg()} ";
+            _parameters.Add(new ConversionParameter($"-ss {startTime.ToFFmpeg()}"));
+            _parameters.Add(new ConversionParameter($"-t {duration.ToFFmpeg()}"));
             return this;
         }
 
@@ -80,7 +61,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetChannels(int channels)
         {
-            _channels = $"-ac:{Index} {channels} ";
+            _parameters.Add(new ConversionParameter($"-ac:{Index} {channels}"));
             return this;
         }
 
@@ -93,28 +74,30 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetBitstreamFilter(string filter)
         {
-            _bitsreamFilter = $"-bsf:a {filter} ";
+            _parameters.Add(new ConversionParameter($"-bsf:a {filter}"));
             return this;
         }
 
         /// <inheritdoc />
         public IAudioStream SetBitrate(long bitRate)
         {
-            _bitrate = $"-b:a:{Index} {bitRate} ";
+            _parameters.Add(new ConversionParameter($"-b:a:{Index} {bitRate}"));
             return this;
         }
 
         /// <inheritdoc />
         public IAudioStream SetBitrate(long minBitrate, long maxBitrate, long bufferSize)
         {
-            _bitrate = $"-b:a:{Index} {minBitrate} -maxrate {maxBitrate} -bufsize {bufferSize} ";
+            _parameters.Add(new ConversionParameter($"-b:a:{Index} {minBitrate}"));
+            _parameters.Add(new ConversionParameter($"-maxrate {maxBitrate}"));
+            _parameters.Add(new ConversionParameter($"-bufsize {bufferSize}"));
             return this;
         }
 
         /// <inheritdoc />
         public IAudioStream SetSampleRate(int sampleRate)
         {
-            _sampleRate = $"-ar:{Index} {sampleRate} ";
+            _parameters.Add(new ConversionParameter($"-ar:{Index} {sampleRate}"));
             return this;
         }
 
@@ -157,7 +140,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetCodec(string codec)
         {
-            _codec = codec;
+            _parameters.Add(new ConversionParameter($"-c:a {codec.ToString()} "));
             return this;
         }
 
@@ -200,10 +183,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetSeek(TimeSpan? seek)
         {
-            if (seek.HasValue)
-            {
-                _seek = $"-ss {seek.Value.ToFFmpeg()} ";
-            }
+            _parameters.Add(new ConversionParameter($"-ss {seek.Value.ToFFmpeg()}", ParameterPosition.PreInput));
             return this;
         }
 
@@ -219,6 +199,33 @@ namespace Xabe.FFmpeg
                     Filters = _audioFilters
                 };
             }
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetInputFormat(string inputFormat)
+        {
+            _parameters.Add(new ConversionParameter($"-f {inputFormat}", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetInputFormat(Format inputFormat)
+        {
+            return this.SetInputFormat(inputFormat.ToString());
+        }
+
+        /// <inheritdoc />
+        public IAudioStream UseNativeInputRead(bool readInputAtNativeFrameRate)
+        {
+            _parameters.Add(new ConversionParameter($"-re", ParameterPosition.PreInput));
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IAudioStream SetStreamLoop(int loopCount)
+        {
+            _parameters.Add(new ConversionParameter($"-stream_loop {loopCount}", ParameterPosition.PreInput));
+            return this;
         }
     }
 }

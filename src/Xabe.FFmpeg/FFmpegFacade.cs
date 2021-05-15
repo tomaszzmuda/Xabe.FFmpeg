@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +28,7 @@ namespace Xabe.FFmpeg
         ///     Get MediaInfo from file
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
+        /// <exception cref="ArgumentException">File does not exist</exception>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName)
         {
             return await MediaInfo.Get(fileName);
@@ -36,6 +39,8 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="filePath">FullPath to file</param>
         /// <param name="cancellationToken">Cancellation token</param>
+        /// <exception cref="ArgumentException">File does not exist</exception>
+        /// <exception cref="TaskCanceledException">Operation takes too long</exception>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName, CancellationToken token)
         {
             return await MediaInfo.Get(fileName, token);
@@ -52,6 +57,15 @@ namespace Xabe.FFmpeg
             ExecutablesPath = directoryWithFFmpegAndFFprobe == null ? null : new DirectoryInfo(directoryWithFFmpegAndFFprobe).FullName;
             _ffmpegExecutableName = ffmpegExeutableName;
             _ffprobeExecutableName = ffprobeExecutableName;
+        }
+
+        /// <summary>
+        ///     Get available audio and video devices (like cams or mics)
+        /// </summary>
+        /// <returns>List of available devices</returns>
+        internal static async Task<Device[]> GetAvailableDevices()
+        {
+            return await Conversion.GetAvailableDevices();
         }
     }
 
@@ -365,6 +379,28 @@ namespace Xabe.FFmpeg
             FrequencyScale frequencyScale = FrequencyScale.log)
         {
             return await Task.FromResult(Conversion.VisualiseAudio(inputPath, outputPath, size, pixelFormat, mode, amplitudeScale, frequencyScale));
+        }
+
+        /// <summary>
+        ///     Loop file infinitely to rtsp streams with some default parameters like: -re, -preset ultrafast
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
+        /// <returns>IConversion object</returns>
+        public async Task<IConversion> SendToRtspServer(string inputFilePath, Uri rtspServerUri)
+        {
+            return await Task.FromResult(Conversion.SendToRtspServer(inputFilePath, rtspServerUri));
+        }
+
+        /// <summary>
+        ///     Loop file infinitely to rtsp streams with some default parameters like: -re, -preset ultrafast
+        /// </summary>
+        /// <param name="inputFilePath">Path to file</param>
+        /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
+        /// <returns>IConversion object</returns>
+        public async Task<IConversion> SendDesktopToRtspServer(Uri rtspServerUri)
+        {
+            return await Task.FromResult(Conversion.SendDesktopToRtspServer(rtspServerUri));
         }
     }
 }

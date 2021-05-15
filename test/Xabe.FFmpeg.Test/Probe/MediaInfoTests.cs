@@ -8,13 +8,15 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class MediaInfoTests : IClassFixture<StorageFixture>
+    public class MediaInfoTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
         private readonly StorageFixture _storageFixture;
+        private readonly RtspServerFixture _rtspServer;
 
-        public MediaInfoTests(StorageFixture storageFixture)
+        public MediaInfoTests(StorageFixture storageFixture, RtspServerFixture rtspServer)
         {
             _storageFixture = storageFixture;
+            _rtspServer = rtspServer;
         }
 
         [Fact]
@@ -236,6 +238,41 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo($"\"{output}\"");
             Assert.NotNull(outputMediaInfo.Streams);
+        }
+
+        [Fact]
+        public async Task GetMediaInfo_RTSP_CorrectDataIsShown()
+        {
+            await _rtspServer.Publish(Resources.BunnyMp4, "bunny2");
+
+            var result = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny2");
+
+            Assert.Single(result.VideoStreams);
+            Assert.Single(result.AudioStreams);
+            Assert.Empty(result.SubtitleStreams);
+            Assert.Equal("h264", result.VideoStreams.First().Codec);
+            Assert.Equal(23.976, result.VideoStreams.First().Framerate);
+            Assert.Equal(640, result.VideoStreams.First().Width);
+            Assert.Equal(360, result.VideoStreams.First().Height);
+            Assert.Equal("aac", result.AudioStreams.First().Codec);
+        }
+
+        [Fact]
+        public async Task GetMediaInfo_StreamDoesNotExist_ThrowException()
+        {
+            var exception = await Record.ExceptionAsync(async() => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting"));
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
+        }
+
+        [Fact]
+        public async Task GetMediaInfo_NotExistingRtspServer_ThrowException()
+        {
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://xabe.net/notExisting"));
+
+            Assert.NotNull(exception);
+            Assert.IsType<ArgumentException>(exception);
         }
     }
 }

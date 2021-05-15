@@ -14,8 +14,7 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output video stream</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion ExtractAudio(string inputPath, string outputPath)
+        internal static IConversion ExtractAudio(string inputPath, string outputPath)
         {
             IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
 
@@ -34,8 +33,7 @@ namespace Xabe.FFmpeg
         /// <param name="audioPath">Audio</param>
         /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion AddAudio(string videoPath, string audioPath, string outputPath)
+        internal static IConversion AddAudio(string videoPath, string audioPath, string outputPath)
         {
             IMediaInfo videoInfo = FFmpeg.GetMediaInfo(videoPath).GetAwaiter().GetResult();
 
@@ -59,8 +57,7 @@ namespace Xabe.FFmpeg
         /// <param name="amplitudeScale">The frequency scale (default is lin)</param>
         /// <param name="frequencyScale">The amplitude scale (default is log)</param>
         /// <returns>IConversion object</returns>
-        [Obsolete("This will be deleted in next major version. Please use FFmpeg.Conversions.FromSnippet instead of that.")]
-        public static IConversion VisualiseAudio(string inputPath, string outputPath, VideoSize size,
+        internal static IConversion VisualiseAudio(string inputPath, string outputPath, VideoSize size,
             PixelFormat pixelFormat = PixelFormat.yuv420p,
             VisualisationMode mode = VisualisationMode.bar,
             AmplitudeScale amplitudeScale = AmplitudeScale.lin,

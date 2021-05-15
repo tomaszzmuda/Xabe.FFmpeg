@@ -1753,6 +1753,11 @@
         ///<summary>
         ///         avfoundation
         ///</summary>
-        avfoundation
+        avfoundation,
+
+        ///<summary>
+        ///         video4linux2
+        ///</summary>
+        v4l2
     }
 }

@@ -665,10 +665,16 @@ namespace Xabe.FFmpeg.Test
         {
             get
             {
-                yield return new object[] { new OfficialFFmpegDownloader() };
-                yield return new object[] { new FullFFmpegDownloader() };
-                yield return new object[] { new SharedFFmpegDownloader() };
-                yield return new object[] { new AndroidFFmpegDownloader() };
+                var operatingSystemProviderMock = Substitute.For<IOperatingSystemProvider>();
+                operatingSystemProviderMock.GetOperatingSystem().Returns(x => OperatingSystem.Windows64);
+
+                var operatingSystemArchitectureProviderMock = Substitute.For<IOperatingSystemArchitectureProvider>();
+                operatingSystemArchitectureProviderMock.GetArchitecture().Returns(x => OperatingSystemArchitecture.X86);
+
+                yield return new object[] { new OfficialFFmpegDownloader(operatingSystemProviderMock) };
+                yield return new object[] { new FullFFmpegDownloader(operatingSystemProviderMock) };
+                yield return new object[] { new SharedFFmpegDownloader(operatingSystemProviderMock) };
+                yield return new object[] { new AndroidFFmpegDownloader(operatingSystemArchitectureProviderMock) };
             }
         }
 
