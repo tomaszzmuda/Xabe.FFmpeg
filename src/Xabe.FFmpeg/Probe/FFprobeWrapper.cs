@@ -102,11 +102,12 @@ namespace Xabe.FFmpeg
             {
                 using (Process process = RunProcess(args, FFprobePath, null, standardOutput: true))
                 {
+                    var processExited = false;
                     cancellationToken.Register(() =>
                     {
                         try
                         {
-                            if (!process.HasExited)
+                            if (!processExited && !process.HasExited)
                             {
                                 process.CloseMainWindow();
                                 process.Kill();
@@ -120,6 +121,7 @@ namespace Xabe.FFmpeg
                     var text = new List<string>();
                     var output = process.StandardOutput.ReadToEnd();
                     process.WaitForExit();
+                    processExited = true;
                     return output;
                 }
             },
