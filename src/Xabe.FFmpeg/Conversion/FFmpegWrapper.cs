@@ -173,6 +173,10 @@ namespace Xabe.FFmpeg
             }
 
             Match match = regex.Match(e.Data);
+            if (!match.Success)
+            {
+                return;
+            }
             _totalTime = TimeSpan.Parse(match.Value);
 
             string ss = GetArgumentValue("-ss", args);
