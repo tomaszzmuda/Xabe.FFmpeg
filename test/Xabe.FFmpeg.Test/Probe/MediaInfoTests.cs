@@ -274,5 +274,33 @@ namespace Xabe.FFmpeg.Test
             Assert.NotNull(exception);
             Assert.IsType<ArgumentException>(exception);
         }
+
+        [Fact]
+        public async Task MediaInfo_EscapedString_BasePathDidNotChanged()
+        {
+            string tempDir = _storageFixture.GetTempDirectory();
+            var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021.mp4");
+            File.Copy(Resources.BunnyMp4, input);
+
+            IMediaInfo info = await FFmpeg.GetMediaInfo(input);
+
+            var exception = Record.Exception(() => new FileInfo(info.Path));
+
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public async Task MediaInfo_EscapedString_BasePathInStreamsDidNotChanged()
+        {
+            string tempDir = _storageFixture.GetTempDirectory();
+            var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021.mp4");
+            File.Copy(Resources.BunnyMp4, input);
+
+            IMediaInfo info = await FFmpeg.GetMediaInfo(input);
+
+            var exception = Record.Exception(() => new FileInfo(info.VideoStreams.First().Path));
+
+            Assert.Null(exception);
+        }
     }
 }
