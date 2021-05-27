@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -1155,6 +1156,41 @@ namespace Xabe.FFmpeg.Test
             Assert.Null(exception);
         }
 
+
+        [Fact]
+        public async Task Conversion_EverythingIsPassedAsAdditionalParameter_EverythingWorks()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddParameter($"-ss 00:00:01 -t 00:00:03 -i {Resources.Mp4} -ss 00:00:05 -t 00:00:03 -i {Resources.Mp4}", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            var mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(2, conversionResult.Arguments.Split(" ").Where(x => x == "-ss").Count());
+            Assert.Equal(2, conversionResult.Arguments.Split(" ").Where(x => x == "-t").Count());
+        }
+
+        [Fact]
+        public async Task Conversion_EverythingIsPassedAsAdditionalParameters_EverythingWorks()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+
+            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+                                                                 .AddParameter($"-ss 00:00:01", ParameterPosition.PreInput)
+                                                                 .AddParameter($"-t 00:00:03", ParameterPosition.PreInput)
+                                                                 .AddParameter($"-i {Resources.Mp4}", ParameterPosition.PreInput)
+                                                                 .AddParameter($"-ss 00:00:05", ParameterPosition.PreInput)
+                                                                 .AddParameter($"-t 00:00:03", ParameterPosition.PreInput)
+                                                                 .AddParameter($"-i {Resources.Mp4}", ParameterPosition.PreInput)
+                                                                 .SetOutput(output)
+                                                                 .Start();
+
+            var mediaInfo = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(2, conversionResult.Arguments.Split(" ").Where(x => x == "-ss").Count());
+            Assert.Equal(2, conversionResult.Arguments.Split(" ").Where(x => x == "-t").Count());
+        }
     }
 }
 
