@@ -44,9 +44,10 @@ namespace Xabe.FFmpeg
             {
                 _outputLog = new List<string>();
                 var process = RunProcess(args, FFmpegPath, priority, true, false, true);
+                var processId = process.Id;
                 using (process)
                 {
-                    process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args, process.Id);
+                    process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args, processId);
                     process.BeginErrorReadLine();
                     var ctr = cancellationToken.Register(() =>
                     {
@@ -56,18 +57,16 @@ namespace Xabe.FFmpeg
                             {
                                 process.StandardInput.Write("q");
                                 Task.Delay(1000 * 5).GetAwaiter().GetResult();
-                            }
-                            catch (InvalidOperationException)
-                            {
-                            }
-                            finally
-                            {
+
                                 if (!process.HasExited)
                                 {
                                     process.CloseMainWindow();
                                     process.Kill();
                                     _wasKilled = true;
                                 }
+                            }
+                            catch (InvalidOperationException)
+                            {
                             }
                         }
                     });
@@ -109,7 +108,7 @@ namespace Xabe.FFmpeg
                         var exceptionsCatcher = new FFmpegExceptionCatcher();
                         exceptionsCatcher.CatchFFmpegErrors(output, args);
 
-                        if (process.ExitCode != 0 && !_outputLog.Last().Contains("dummy"))
+                        if (process.ExitCode != 0 && _outputLog.Any() && !_outputLog.Last().Contains("dummy"))
                         {
                             throw new ConversionException(output, args);
                         }
