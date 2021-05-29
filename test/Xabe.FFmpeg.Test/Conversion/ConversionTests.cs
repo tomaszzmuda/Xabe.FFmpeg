@@ -54,6 +54,29 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task PipedOutputTest()
+        {
+            string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
+
+            IConversion conversion = FFmpeg.Conversions.New()
+                                                    .AddStream(videoStream)
+                                                    .SetOutputFormat(Format.mpegts)
+                                                    .PipeOutput();
+            using FileStream fs = new FileStream(output, FileMode.OpenOrCreate);
+            conversion.OnVideoDataReceived += (sender, args) =>
+            {
+                fs.Write(args.Data, 0, args.Data.Length);
+            };
+
+            await conversion.Start();
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal(".ts", Path.GetExtension(resultFile.Path));
+        }
+
+        [Fact]
         public async Task SetOutputFormatTest()
         {
             string output = _storageFixture.GetTempFileName(FileExtensions.Ts);
