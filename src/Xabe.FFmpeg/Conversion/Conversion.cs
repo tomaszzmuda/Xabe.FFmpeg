@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -81,6 +81,9 @@ namespace Xabe.FFmpeg
         public string OutputFilePath { get; private set; }
 
         /// <inheritdoc />
+        public PipeDescriptor? OutputPipeDescriptor { get; private set; }
+
+        /// <inheritdoc />
         public IEnumerable<IStream> Streams => _streams;
 
         /// <inheritdoc />
@@ -136,7 +139,7 @@ namespace Xabe.FFmpeg
 
         private void CreateOutputDirectoryIfNotExists()
         {
-            if (OutputFilePath == null)
+            if (OutputFilePath == null || OutputPipeDescriptor != null)
             {
                 return;
             }
@@ -264,6 +267,21 @@ namespace Xabe.FFmpeg
         {
             OutputFilePath = outputPath;
             _output = outputPath.Escape();
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion PipeOutput(PipeDescriptor descriptor)
+        {
+            SetOutput($"pipe:{descriptor}");
+            OutputPipeDescriptor = descriptor;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion PipeOutput()
+        {
+            PipeOutput(PipeDescriptor.stdout);
             return this;
         }
 

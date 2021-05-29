@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -17,6 +17,11 @@ namespace Xabe.FFmpeg
         ///     Output file path
         /// </summary>
         string OutputFilePath { get; }
+
+        /// <summary>
+        ///     Output pipe descriptor
+        /// </summary>
+        PipeDescriptor? OutputPipeDescriptor { get;  }
 
         /// <summary>
         /// Set priority of ffmpeg process
@@ -147,6 +152,19 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output media file</param>
         /// <returns>IConversion object</returns>
         IConversion SetOutput(string outputPath);
+
+        /// <summary>
+        ///     Set piped output file descriptor
+        /// </summary>
+        /// <param name="descriptor">Pipe file descriptor for FFmpeg process to use</param>
+        /// <returns>IConversion object</returns>
+        IConversion PipeOutput(PipeDescriptor descriptor);
+
+        /// <summary>
+        ///     Set piped output to stdout
+        /// </summary>
+        /// <returns>IConversion object</returns>
+        IConversion PipeOutput();
 
         /// <summary>
         ///     Set overwrite output file parameter
