@@ -78,6 +78,9 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
+        public event VideoDataEventHandler OnVideoDataReceived;
+
+        /// <inheritdoc />
         public string OutputFilePath { get; private set; }
 
         /// <inheritdoc />
@@ -119,6 +122,7 @@ namespace Xabe.FFmpeg
             {
                 _ffmpeg.OnProgress += OnProgress;
                 _ffmpeg.OnDataReceived += OnDataReceived;
+                _ffmpeg.OnVideoDataReceived += OnVideoDataReceived;
                 CreateOutputDirectoryIfNotExists();
                 await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
             }
@@ -126,6 +130,7 @@ namespace Xabe.FFmpeg
             {
                 _ffmpeg.OnProgress -= OnProgress;
                 _ffmpeg.OnDataReceived -= OnDataReceived;
+                _ffmpeg.OnVideoDataReceived -= OnVideoDataReceived;
                 _ffmpeg = null;
             }
 

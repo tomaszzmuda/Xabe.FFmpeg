@@ -226,6 +226,11 @@ namespace Xabe.FFmpeg
         event DataReceivedEventHandler OnDataReceived;
 
         /// <summary>
+        ///     Fires when FFmpeg process writes video data to stdout
+        /// </summary>
+        event VideoDataEventHandler OnVideoDataReceived;
+
+        /// <summary>
         ///     Finish encoding when the shortest input stream ends. (-shortest)
         /// </summary>
         /// <param name="useShortest"></param>

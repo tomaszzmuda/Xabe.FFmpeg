@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -34,6 +34,11 @@ namespace Xabe.FFmpeg
         ///     Fires when FFmpeg process print something
         /// </summary>
         internal event DataReceivedEventHandler OnDataReceived;
+
+        /// <summary>
+        ///     Fires when FFmpeg process writes video data to stdout
+        /// </summary>
+        internal event VideoDataEventHandler OnVideoDataReceived;
 
         internal Task<bool> RunProcess(
             string args,
