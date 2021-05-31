@@ -276,17 +276,10 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
-        public IConversion PipeOutput(PipeDescriptor descriptor)
+        public IConversion PipeOutput(PipeDescriptor descriptor = PipeDescriptor.stdout)
         {
             SetOutput($"pipe:{descriptor}");
             OutputPipeDescriptor = descriptor;
-            return this;
-        }
-
-        /// <inheritdoc />
-        public IConversion PipeOutput()
-        {
-            PipeOutput(PipeDescriptor.stdout);
             return this;
         }
 

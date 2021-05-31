@@ -161,12 +161,6 @@ namespace Xabe.FFmpeg
         IConversion PipeOutput(PipeDescriptor descriptor);
 
         /// <summary>
-        ///     Set piped output to stdout
-        /// </summary>
-        /// <returns>IConversion object</returns>
-        IConversion PipeOutput();
-
-        /// <summary>
         ///     Set overwrite output file parameter
         /// </summary>
         /// <param name="overwrite">Should be output file overwritten or not. If not overwrite and file exists conversion will throw ConversionException</param>
