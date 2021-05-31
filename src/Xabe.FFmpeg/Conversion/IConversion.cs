@@ -220,7 +220,7 @@ namespace Xabe.FFmpeg
         event DataReceivedEventHandler OnDataReceived;
 
         /// <summary>
-        ///     Fires when FFmpeg process writes video data to stdout
+        ///     Fires when FFmpeg process writes video data to stdout. It requires .PipeOutput()
         /// </summary>
         event VideoDataEventHandler OnVideoDataReceived;
 
