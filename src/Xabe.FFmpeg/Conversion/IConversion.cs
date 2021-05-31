@@ -158,7 +158,7 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="descriptor">Pipe file descriptor for FFmpeg process to use</param>
         /// <returns>IConversion object</returns>
-        IConversion PipeOutput(PipeDescriptor descriptor);
+        IConversion PipeOutput(PipeDescriptor descriptor = PipeDescriptor.stdout);
 
         /// <summary>
         ///     Set overwrite output file parameter
