@@ -58,7 +58,7 @@ namespace Xabe.FFmpeg
                     process.BeginErrorReadLine();
                     if (pipedOutput)
                     {
-                        Task.Run(() => ProcessVideoData(process));
+                        Task.Run(() => ProcessVideoData(process, cancellationToken), cancellationToken);
                     }
                     var ctr = cancellationToken.Register(() =>
                     {
@@ -152,7 +152,7 @@ namespace Xabe.FFmpeg
             CalculateTime(e, args, processId);
         }
 
-        private void ProcessVideoData(Process process)
+        private void ProcessVideoData(Process process, CancellationToken cancellationToken)
         {
             BinaryReader br = new BinaryReader(process.StandardOutput.BaseStream);
             byte[] buffer;
@@ -161,6 +161,8 @@ namespace Xabe.FFmpeg
             {
                 VideoDataEventArgs args = new VideoDataEventArgs(buffer);
                 OnVideoDataReceived?.Invoke(this, args);
+
+                cancellationToken.ThrowIfCancellationRequested();
             }
         }
 
