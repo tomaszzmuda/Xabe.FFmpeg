@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.2 - 2021-05-28
+- [Fix bug with unhandled InvalidOperationException](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/362/)
+- [Fix bug when user cannot pass duplicated parameters in AddParameter method](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/363)
+
 ## 5.0.1 - 2021-05-22
 - [Fix bug when conversion duration cannot be found](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/359)
 
