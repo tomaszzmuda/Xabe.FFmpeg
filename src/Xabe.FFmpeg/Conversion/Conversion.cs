@@ -18,6 +18,7 @@ namespace Xabe.FFmpeg
         private readonly object _builderLock = new object();
         private readonly Dictionary<string, int> _inputFileMap = new Dictionary<string, int>();
         private readonly ParametersList<ConversionParameter> _parameters = new ParametersList<ConversionParameter>();
+        private readonly IDictionary<ParameterPosition, List<string>> _userDefinedParameters = new Dictionary<ParameterPosition, List<string>>();
         private readonly List<IStream> _streams = new List<IStream>();
 
         private string _output;
@@ -27,6 +28,12 @@ namespace Xabe.FFmpeg
         private FFmpegWrapper _ffmpeg;
         private Func<string, string> _buildInputFileName = null;
         private Func<string, string> _buildOutputFileName = null;
+
+        public Conversion()
+        {
+            _userDefinedParameters[ParameterPosition.PostInput] = new List<string>();
+            _userDefinedParameters[ParameterPosition.PreInput] = new List<string>();
+        }
 
         /// <inheritdoc />
         public string Build()
@@ -38,6 +45,7 @@ namespace Xabe.FFmpeg
                 if (_buildOutputFileName == null)
                     _buildOutputFileName = (number) => { return _output; };
 
+                builder.Append(string.Join(" ", _userDefinedParameters[ParameterPosition.PreInput].Select(x => x.Trim())) + " ");
                 builder.Append(GetParameters(ParameterPosition.PreInput));
                 builder.Append(GetStreamsPreInputs());
 
@@ -56,6 +64,7 @@ namespace Xabe.FFmpeg
                 builder.Append(GetFilters());
                 builder.Append(GetMap());
                 builder.Append(GetParameters(ParameterPosition.PostInput));
+                builder.Append(string.Join(" ", _userDefinedParameters[ParameterPosition.PostInput].Select(x => x.Trim())) + " ");
                 builder.Append(_buildOutputFileName("_%03d"));
 
                 return builder.ToString();
@@ -147,7 +156,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion AddParameter(string parameter, ParameterPosition parameterPosition = ParameterPosition.PostInput)
         {
-            _parameters.Add(new ConversionParameter(parameter, parameterPosition));
+            _userDefinedParameters[parameterPosition].Add(parameter);
             return this;
         }
 
