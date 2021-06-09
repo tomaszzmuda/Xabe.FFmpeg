@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -17,6 +17,11 @@ namespace Xabe.FFmpeg
         ///     Output file path
         /// </summary>
         string OutputFilePath { get; }
+
+        /// <summary>
+        ///     Output pipe descriptor
+        /// </summary>
+        PipeDescriptor? OutputPipeDescriptor { get;  }
 
         /// <summary>
         /// Set priority of ffmpeg process
@@ -149,6 +154,13 @@ namespace Xabe.FFmpeg
         IConversion SetOutput(string outputPath);
 
         /// <summary>
+        ///     Set piped output file descriptor
+        /// </summary>
+        /// <param name="descriptor">Pipe file descriptor for FFmpeg process to use</param>
+        /// <returns>IConversion object</returns>
+        IConversion PipeOutput(PipeDescriptor descriptor = PipeDescriptor.stdout);
+
+        /// <summary>
         ///     Set overwrite output file parameter
         /// </summary>
         /// <param name="overwrite">Should be output file overwritten or not. If not overwrite and file exists conversion will throw ConversionException</param>
@@ -206,6 +218,11 @@ namespace Xabe.FFmpeg
         ///     Fires when FFmpeg process print sonething
         /// </summary>
         event DataReceivedEventHandler OnDataReceived;
+
+        /// <summary>
+        ///     Fires when FFmpeg process writes video data to stdout. It requires .PipeOutput()
+        /// </summary>
+        event VideoDataEventHandler OnVideoDataReceived;
 
         /// <summary>
         ///     Finish encoding when the shortest input stream ends. (-shortest)

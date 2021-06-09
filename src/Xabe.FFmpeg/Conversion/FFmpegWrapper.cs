@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -35,6 +36,11 @@ namespace Xabe.FFmpeg
         /// </summary>
         internal event DataReceivedEventHandler OnDataReceived;
 
+        /// <summary>
+        ///     Fires when FFmpeg process writes video data to stdout
+        /// </summary>
+        internal event VideoDataEventHandler OnVideoDataReceived;
+
         internal Task<bool> RunProcess(
             string args,
             CancellationToken cancellationToken,
@@ -43,12 +49,17 @@ namespace Xabe.FFmpeg
             return Task.Factory.StartNew(() =>
             {
                 _outputLog = new List<string>();
-                var process = RunProcess(args, FFmpegPath, priority, true, false, true);
+                bool pipedOutput = OnVideoDataReceived != null;
+                var process = RunProcess(args, FFmpegPath, priority, true, pipedOutput, true);
                 var processId = process.Id;
                 using (process)
                 {
                     process.ErrorDataReceived += (sender, e) => ProcessOutputData(e, args, processId);
                     process.BeginErrorReadLine();
+                    if (pipedOutput)
+                    {
+                        Task.Run(() => ProcessVideoData(process, cancellationToken), cancellationToken);
+                    }
                     var ctr = cancellationToken.Register(() =>
                     {
                         if (Environment.OSVersion.Platform != PlatformID.Win32NT)
@@ -139,6 +150,20 @@ namespace Xabe.FFmpeg
             }
 
             CalculateTime(e, args, processId);
+        }
+
+        private void ProcessVideoData(Process process, CancellationToken cancellationToken)
+        {
+            BinaryReader br = new BinaryReader(process.StandardOutput.BaseStream);
+            byte[] buffer;
+
+            while ((buffer = br.ReadBytes(4096)).Length > 0)
+            {
+                VideoDataEventArgs args = new VideoDataEventArgs(buffer);
+                OnVideoDataReceived?.Invoke(this, args);
+
+                cancellationToken.ThrowIfCancellationRequested();
+            }
         }
 
         private void CalculateTime(DataReceivedEventArgs e, string args, int processId)

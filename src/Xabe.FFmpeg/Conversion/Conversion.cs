@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -78,7 +78,13 @@ namespace Xabe.FFmpeg
         public event DataReceivedEventHandler OnDataReceived;
 
         /// <inheritdoc />
+        public event VideoDataEventHandler OnVideoDataReceived;
+
+        /// <inheritdoc />
         public string OutputFilePath { get; private set; }
+
+        /// <inheritdoc />
+        public PipeDescriptor? OutputPipeDescriptor { get; private set; }
 
         /// <inheritdoc />
         public IEnumerable<IStream> Streams => _streams;
@@ -116,6 +122,7 @@ namespace Xabe.FFmpeg
             {
                 _ffmpeg.OnProgress += OnProgress;
                 _ffmpeg.OnDataReceived += OnDataReceived;
+                _ffmpeg.OnVideoDataReceived += OnVideoDataReceived;
                 CreateOutputDirectoryIfNotExists();
                 await _ffmpeg.RunProcess(parameters, cancellationToken, _priority);
             }
@@ -123,6 +130,7 @@ namespace Xabe.FFmpeg
             {
                 _ffmpeg.OnProgress -= OnProgress;
                 _ffmpeg.OnDataReceived -= OnDataReceived;
+                _ffmpeg.OnVideoDataReceived -= OnVideoDataReceived;
                 _ffmpeg = null;
             }
 
@@ -136,7 +144,7 @@ namespace Xabe.FFmpeg
 
         private void CreateOutputDirectoryIfNotExists()
         {
-            if (OutputFilePath == null)
+            if (OutputFilePath == null || OutputPipeDescriptor != null)
             {
                 return;
             }
@@ -264,6 +272,14 @@ namespace Xabe.FFmpeg
         {
             OutputFilePath = outputPath;
             _output = outputPath.Escape();
+            return this;
+        }
+
+        /// <inheritdoc />
+        public IConversion PipeOutput(PipeDescriptor descriptor = PipeDescriptor.stdout)
+        {
+            SetOutput($"pipe:{descriptor}");
+            OutputPipeDescriptor = descriptor;
             return this;
         }
 
