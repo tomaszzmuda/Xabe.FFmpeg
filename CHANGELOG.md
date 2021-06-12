@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.0 - Unreleased
+- [Support for piping video output from FFmpeg](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/365)
+- [Correctly dispose cancellation token source in MediaInfo](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/367)
+- [Adjust SendDesktopToRtspServer method comment](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/367)
+- [Make tests more stable](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/367)
+
 ## 5.0.2 - 2021-05-28
 - [Fix bug with unhandled InvalidOperationException](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/362/)
 - [Fix bug when user cannot pass duplicated parameters in AddParameter method](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/363)

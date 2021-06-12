@@ -25,7 +25,7 @@ namespace Xabe.FFmpeg.Test
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ConvertWithHardware(Resources.MkvWithAudio, output, HardwareAccelerator.cuvid, VideoCodec.h264_cuvid, VideoCodec.h264_nvenc)).Start();
 
             var mediaInfo = await FFmpeg.GetMediaInfo(output);
-            Assert.Equal(TimeSpan.FromSeconds(10), mediaInfo.Duration);
+            Assert.InRange(mediaInfo.Duration, TimeSpan.FromSeconds(9), TimeSpan.FromSeconds(11));
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);
             IAudioStream audioStream = mediaInfo.AudioStreams.First();
