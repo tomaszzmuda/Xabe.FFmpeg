@@ -44,8 +44,11 @@ namespace Xabe.FFmpeg
         /// <param name="filePath">FullPath to file</param>
         internal static async Task<IMediaInfo> Get(string filePath)
         {
-            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
-            return await Get(filePath, cancellationToken);
+            using (var source = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
+            {
+                var cancellationToken = source.Token;
+                return await Get(filePath, cancellationToken);
+            }
         }
 
         /// <summary>
