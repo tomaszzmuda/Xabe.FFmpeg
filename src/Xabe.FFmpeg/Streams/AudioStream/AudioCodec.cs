@@ -903,6 +903,11 @@
         ///<summary>
         ///     copy
         ///</summary>
-        copy
+        copy,
+
+        ///<summary>
+        ///     Opus (Opus Interactive Audio Codec) (decoders: opus libopus ) (encoders: opus libopus )
+        ///</summary>
+        libopus
     }
 }
