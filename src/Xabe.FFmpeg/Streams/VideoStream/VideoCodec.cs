@@ -1233,6 +1233,11 @@
         ///<summary>
         ///      libx264
         ///</summary>
-        libx264
+        libx264,
+
+        ///<summary>
+        ///      hevc_qsv (intel quicksync)
+        ///</summary>
+        hevc_qsv
     }
 }
