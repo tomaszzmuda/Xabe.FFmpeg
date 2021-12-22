@@ -166,6 +166,9 @@ namespace Xabe.FFmpeg
         public string Language { get; internal set; }
 
         /// <inheritdoc />
+        public string Title { get; internal set; }
+
+        /// <inheritdoc />
         public int? Default { get; internal set; }
 
         /// <inheritdoc />
