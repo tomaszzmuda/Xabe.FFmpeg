@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,6 +79,12 @@ namespace Xabe.FFmpeg.Downloader
                     {
                         Directory.CreateDirectory(destinationPath);
                         continue;
+                    }
+
+                    var directoryPath = Path.GetDirectoryName(destinationPath);
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
                     }
 
                     zipEntry.ExtractToFile(destinationPath, overwrite: true);

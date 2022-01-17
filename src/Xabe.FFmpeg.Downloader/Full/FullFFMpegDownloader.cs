@@ -63,6 +63,12 @@ namespace Xabe.FFmpeg.Downloader
                         continue;
                     }
 
+                    var directoryPath = Path.GetDirectoryName(destinationPath);
+                    if (!Directory.Exists(directoryPath))
+                    {
+                        Directory.CreateDirectory(directoryPath);
+                    }
+
                     zipEntry.ExtractToFile(destinationPath, overwrite: true);
                 }
             }
