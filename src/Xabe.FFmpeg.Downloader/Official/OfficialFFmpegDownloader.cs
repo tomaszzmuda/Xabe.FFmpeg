@@ -50,7 +50,7 @@ namespace Xabe.FFmpeg.Downloader
 
             var ffmpegZip = await ffmpegZipDownloadTask;
             var ffprobeZip = await ffprobeZipDownloadTask;
-
+                
             Extract(ffmpegZip, path ?? ".");
             Extract(ffprobeZip, path ?? ".");
 

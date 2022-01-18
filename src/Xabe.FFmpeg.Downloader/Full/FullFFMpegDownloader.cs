@@ -46,28 +46,6 @@ namespace Xabe.FFmpeg.Downloader
         }
 
         protected override void Extract(string ffMpegZipPath, string destinationDir)
-        {
-            using (ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))
-            {
-                if (!Directory.Exists(destinationDir))
-                    Directory.CreateDirectory(destinationDir);
-
-                foreach (ZipArchiveEntry zipEntry in zipArchive.Entries.Where(item => item.FullName.Contains("bin")))
-                {
-                    string destinationPath = Path.Combine(destinationDir, zipEntry.Name);
-
-                    // Archived empty directories have empty Names
-                    if (zipEntry.Name == string.Empty)
-                    {
-                        Directory.CreateDirectory(destinationPath);
-                        continue;
-                    }
-
-                    zipEntry.ExtractToFile(destinationPath, overwrite: true);
-                }
-            }
-
-            File.Delete(ffMpegZipPath);
-        }
+            => Extract(ffMpegZipPath, destinationDir, filter: item => item.FullName.Contains("bin"), item => item.Name);
     }
 }

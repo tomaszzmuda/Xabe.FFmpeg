@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,25 +63,44 @@ namespace Xabe.FFmpeg.Downloader
             return Path.Combine(destinationPath ?? ".", filename);
         }
 
-        protected virtual void Extract(string ffMpegZipPath, string destinationDir)
-        {
+        protected virtual void Extract(string ffMpegZipPath, string destinationDir) => Extract(ffMpegZipPath, destinationDir, _ => true, zipEntry => zipEntry.FullName);
+
+        internal void Extract(string ffMpegZipPath, string destinationDir, Func<ZipArchiveEntry, bool> filter, Func<ZipArchiveEntry, string> getName)
+        { 
+            destinationDir = Path.GetFullPath(destinationDir);
+
             using (ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))
             {
                 if (!Directory.Exists(destinationDir))
                     Directory.CreateDirectory(destinationDir);
 
-                foreach (ZipArchiveEntry zipEntry in zipArchive.Entries)
+                foreach (ZipArchiveEntry zipEntry in zipArchive.Entries.Where(filter))
                 {
-                    string destinationPath = Path.Combine(destinationDir, zipEntry.FullName);
+                    // As recomended by the docs(https://docs.microsoft.com/en-us/dotnet/api/system.io.compression.ziparchiveentry.fullname?view=net-6.0)
+                    // We need to check that the target path is contained within the destination path, otherwise a malicious zip file
+                    // could overwrite other files in the system. We start by getting the full path to ensure that any relative segments are removed.
 
-                    // Archived empty directories have empty Names
-                    if (zipEntry.Name == string.Empty)
+                    string destinationPath = Path.GetFullPath(Path.Combine(destinationDir, getName(zipEntry)));
+
+                    // Ordinal match is safest, as case-sensitive volumes can be mounted within volumes that are case-insensitive.
+                    if (destinationPath.StartsWith(destinationDir, StringComparison.Ordinal))
                     {
-                        Directory.CreateDirectory(destinationPath);
-                        continue;
-                    }
+                        // Archived empty directories have empty Names
+                        if (string.IsNullOrEmpty(zipEntry.Name))
+                        {
+                            Directory.CreateDirectory(destinationPath);
+                            continue;
+                        }
 
-                    zipEntry.ExtractToFile(destinationPath, overwrite: true);
+                        var directoryPath = Path.GetDirectoryName(destinationPath);
+
+                        if (!Directory.Exists(directoryPath))
+                        {
+                            Directory.CreateDirectory(directoryPath);
+                        }
+
+                        zipEntry.ExtractToFile(destinationPath, overwrite: true);
+                    }
                 }
             }
 
