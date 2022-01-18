@@ -63,9 +63,9 @@ namespace Xabe.FFmpeg.Downloader
             return Path.Combine(destinationPath ?? ".", filename);
         }
 
-        protected virtual void Extract(string ffMpegZipPath, string destinationDir) => Extract(ffMpegZipPath, destinationDir, _ => true);
+        protected virtual void Extract(string ffMpegZipPath, string destinationDir) => Extract(ffMpegZipPath, destinationDir, _ => true, zipEntry => zipEntry.FullName);
 
-        internal void Extract(string ffMpegZipPath, string destinationDir, Func<ZipArchiveEntry, bool> filter)
+        internal void Extract(string ffMpegZipPath, string destinationDir, Func<ZipArchiveEntry, bool> filter, Func<ZipArchiveEntry, string> getName)
         { 
             destinationDir = Path.GetFullPath(destinationDir);
 
@@ -80,7 +80,7 @@ namespace Xabe.FFmpeg.Downloader
                     // We need to check that the target path is contained within the destination path, otherwise a malicious zip file
                     // could overwrite other files in the system. We start by getting the full path to ensure that any relative segments are removed.
 
-                    string destinationPath = Path.GetFullPath(Path.Combine(destinationDir, zipEntry.FullName));
+                    string destinationPath = Path.GetFullPath(Path.Combine(destinationDir, getName(zipEntry)));
 
                     // Ordinal match is safest, as case-sensitive volumes can be mounted within volumes that are case-insensitive.
                     if (destinationPath.StartsWith(destinationDir, StringComparison.Ordinal))

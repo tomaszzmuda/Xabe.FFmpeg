@@ -45,7 +45,7 @@ namespace Xabe.FFmpeg.Downloader
             Extract(fullPackZip, path ?? ".");
         }
 
-        protected override void Extract(string ffMpegZipPath, string destinationDir) 
-            =>  Extract(ffMpegZipPath, destinationDir, filter: item => item.FullName.Contains("bin"));
+        protected override void Extract(string ffMpegZipPath, string destinationDir)
+            => Extract(ffMpegZipPath, destinationDir, filter: item => item.FullName.Contains("bin"), item => item.Name);
     }
 }
