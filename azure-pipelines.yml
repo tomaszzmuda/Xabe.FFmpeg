@@ -12,7 +12,7 @@ pool:
 
 parameters:
   - name: Tag
-    default: ''
+    default: '1.0.0'
 
 variables:  
   BuildConfiguration: 'Release'
