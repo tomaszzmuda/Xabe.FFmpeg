@@ -69,9 +69,9 @@ stages:
                 dotnet build /p:GenerateDocumentationFile=true
                 dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols
               }
-              failOnStderr: true
-              workingDirectory: src/Xabe.FFmpeg
-              displayName: 'Dotnet pack'
+            failOnStderr: true
+            workingDirectory: src/Xabe.FFmpeg
+            displayName: 'Dotnet pack'
           - powershell: |
               dotnet clean -c Release
               if (${{ parameters.Tag }}) {
@@ -81,9 +81,9 @@ stages:
                 dotnet build /p:GenerateDocumentationFile=true
                 dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols
               }
-              failOnStderr: true
-              workingDirectory: src/Xabe.FFmpeg.Downloader
-              displayName: 'Dotnet pack'
+            failOnStderr: true
+            workingDirectory: src/Xabe.FFmpeg.Downloader
+            displayName: 'Dotnet pack downloader'
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact'
             inputs:
