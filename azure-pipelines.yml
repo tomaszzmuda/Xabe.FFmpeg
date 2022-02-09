@@ -36,6 +36,7 @@ stages:
               command: test
               projects: '**/Xabe.FFmpeg.Test.csproj'
               arguments: '-c ${{ variables.BuildConfiguration }} /p:GenerateDocumentationFile=true -v=normal'
+              publishTestResults: true
       - job: run_downloader_tests
         displayName: Run downloader tests
         steps:
@@ -51,6 +52,7 @@ stages:
               command: test
               projects: '**/Xabe.FFmpeg.Downloader.Test.csproj'
               arguments: '-c ${{ variables.BuildConfiguration }} /p:GenerateDocumentationFile=true -v=normal'
+              publishTestResults: true
       - job: build_artifacts
         displayName: Build artifacts
         steps:
