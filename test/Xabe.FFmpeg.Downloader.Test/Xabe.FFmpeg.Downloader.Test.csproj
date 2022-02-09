@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
-    <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
+    <AssemblyName>Xabe.FFmpeg.Downloader.Test</AssemblyName>
+    <RootNamespace>Xabe.FFmpeg.Downloader.Test</RootNamespace>
     <DebugType>Full</DebugType>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
+    <ProjectReference Include="..\..\src\Xabe.FFmpeg.Downloader\Xabe.FFmpeg.Downloader.csproj" />
     <ProjectReference Include="..\Xabe.FFmpeg.Test.Common\Xabe.FFmpeg.Test.Common.csproj" />
   </ItemGroup>
 

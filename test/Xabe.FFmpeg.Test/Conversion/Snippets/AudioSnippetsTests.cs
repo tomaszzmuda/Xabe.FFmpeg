@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Test.Fixtures;
+using Xabe.FFmpeg.Test.Common.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -19,7 +19,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task AddAudio()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddAudio(Resources.Mp4, Resources.Mp3, output))
                                              .Start();
@@ -35,10 +35,9 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ExtractAudio()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
+            var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ExtractAudio(Resources.Mp4WithAudio, output))
                                              .Start();
-
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Empty(mediaInfo.VideoStreams);
@@ -65,7 +64,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoSize.Hd1080, PixelFormat.yuv420p, VisualisationMode.line, AmplitudeScale.cbrt, FrequencyScale.log)]
         public async Task VisualiseAudioTest(VideoSize size, PixelFormat pixelFormat, VisualisationMode mode, AmplitudeScale amplitudeScale, FrequencyScale frequencyScale)
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.aac);
 

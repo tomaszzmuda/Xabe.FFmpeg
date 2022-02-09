@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Xabe.FFmpeg
+﻿namespace Xabe.FFmpeg
 {
     public partial class Conversion
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Xabe.FFmpeg
 {
@@ -67,7 +63,7 @@ namespace Xabe.FFmpeg
             IAudioStream audioStream = inputInfo.AudioStreams.FirstOrDefault();
             IVideoStream videoStream = inputInfo.VideoStreams.FirstOrDefault();
 
-            string filter = $"\"[0:a]showfreqs=mode={mode}:fscale={frequencyScale}:ascale={amplitudeScale},format={pixelFormat},scale={size.ToFFmpegFormat()} [v]\"";
+            var filter = $"\"[0:a]showfreqs=mode={mode}:fscale={frequencyScale}:ascale={amplitudeScale},format={pixelFormat},scale={size.ToFFmpegFormat()} [v]\"";
 
             return New()
                 .AddStream(audioStream)

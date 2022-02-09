@@ -1,7 +1,7 @@
-﻿// ReSharper disable InconsistentNaming
-
+﻿
+#pragma warning disable IDE1006 // Naming Styles
 namespace Xabe.FFmpeg
-{ 
+{
     internal class FormatModel
     {
         private FormatModel()
@@ -23,3 +23,4 @@ namespace Xabe.FFmpeg
         }
     }
 }
+#pragma warning restore IDE1006 // Naming Styles

@@ -1,12 +1,12 @@
-﻿using Docker.DotNet;
-using Docker.DotNet.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Docker.DotNet;
+using Docker.DotNet.Models;
 using Xunit;
 
-namespace Xabe.FFmpeg.Test.Fixtures
+namespace Xabe.FFmpeg.Test.Common.Fixtures
 {
     public class RtspServerFixture : IAsyncLifetime
     {
@@ -46,7 +46,7 @@ namespace Xabe.FFmpeg.Test.Fixtures
             var response = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters()
             {
                 Image = "aler9/rtsp-simple-server",
-                ExposedPorts = new Dictionary<string, EmptyStruct>() { { "8554", default(EmptyStruct) } },
+                ExposedPorts = new Dictionary<string, EmptyStruct>() { { "8554", default } },
                 Env = new List<string>() { "RTSP_PROTOCOLS=tcp" },
                 HostConfig = new HostConfig()
                 {

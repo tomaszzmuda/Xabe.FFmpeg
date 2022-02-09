@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -32,14 +32,14 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DEFAULT_MAX_RETRIES)
         {
             if (!CheckIfFilesExist(path))
             {
                 return;
             }
 
-            string link = GenerateLink();
+            var link = GenerateLink();
             var fullPackZip = await DownloadFile(link, progress, retries);
 
             Extract(fullPackZip, path ?? ".");
@@ -50,11 +50,13 @@ namespace Xabe.FFmpeg.Downloader
             using (ZipArchive zipArchive = ZipFile.OpenRead(ffMpegZipPath))
             {
                 if (!Directory.Exists(destinationDir))
+                {
                     Directory.CreateDirectory(destinationDir);
+                }
 
                 foreach (ZipArchiveEntry zipEntry in zipArchive.Entries.Where(item => item.FullName.Contains("bin")))
                 {
-                    string destinationPath = Path.Combine(destinationDir, zipEntry.Name);
+                    var destinationPath = Path.Combine(destinationDir, zipEntry.Name);
 
                     // Archived empty directories have empty Names
                     if (zipEntry.Name == string.Empty)

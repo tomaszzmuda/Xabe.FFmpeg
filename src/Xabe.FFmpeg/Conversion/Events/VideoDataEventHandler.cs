@@ -23,6 +23,6 @@ namespace Xabe.FFmpeg.Events
         /// <summary>
         ///     Binary video data
         /// </summary>
-        public byte[] Data;
+        public byte[] Data { get; }
     }
 }

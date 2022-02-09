@@ -20,13 +20,15 @@ namespace Xabe.FFmpeg.Downloader
             _linkProvider = new LinkProvider(operatingSystemProvider);
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DEFAULT_MAX_RETRIES)
         {
             var latestVersion = GetLatestVersionInfo();
 
             if (!CheckIfUpdateAvailable(latestVersion.Version, path) && !CheckIfFilesExist(path))
-
+            {
                 return;
+            }
+
             await DownloadLatestVersion(latestVersion, path, progress, retries);
 
             SaveVersion(latestVersion, path);
@@ -41,7 +43,7 @@ namespace Xabe.FFmpeg.Downloader
             }
         }
 
-        internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries, string path, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries)
+        internal async Task DownloadLatestVersion(FFbinariesVersionInfo latestFFmpegBinaries, string path, IProgress<ProgressInfo> progress = null, int retries = DEFAULT_MAX_RETRIES)
         {
             Links links = _linkProvider.GetLinks(latestFFmpegBinaries);
 
@@ -50,7 +52,7 @@ namespace Xabe.FFmpeg.Downloader
 
             var ffmpegZip = await ffmpegZipDownloadTask;
             var ffprobeZip = await ffprobeZipDownloadTask;
-                
+
             Extract(ffmpegZip, path ?? ".");
             Extract(ffprobeZip, path ?? ".");
 
@@ -62,13 +64,17 @@ namespace Xabe.FFmpeg.Downloader
         {
             var versionPath = Path.Combine(path ?? ".", "version.json");
             if (!File.Exists(versionPath))
+            {
                 return true;
+            }
 
             FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(versionPath));
             if (currentVersion != null)
             {
                 if (new Version(latestVersion) > new Version(currentVersion.Version))
+                {
                     return true;
+                }
             }
 
             return false;

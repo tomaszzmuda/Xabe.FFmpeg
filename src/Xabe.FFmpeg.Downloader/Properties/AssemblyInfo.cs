@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleToAttribute("Xabe.FFmpeg.Test")]
+[assembly: InternalsVisibleTo("Xabe.FFmpeg.Test")]
+[assembly: InternalsVisibleTo("Xabe.FFmpeg.Downloader.Test")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

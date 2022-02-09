@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using Xabe.FFmpeg.Test.Fixtures;
+using Xabe.FFmpeg.Test.Common.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -22,7 +21,7 @@ namespace Xabe.FFmpeg.Test
 
             IEnumerable<FileInfo> files = GetWindowsPathMocks();
 
-            string path = FFmpeg.GetFullName(files, "ffmpeg");
+            var path = FFmpeg.GetFullName(files, "ffmpeg");
 
             Assert.EndsWith(expected, path);
         }
@@ -34,7 +33,7 @@ namespace Xabe.FFmpeg.Test
 
             IEnumerable<FileInfo> files = GetWindowsPathMocks();
 
-            string path = FFmpeg.GetFullName(files, "ffprobe");
+            var path = FFmpeg.GetFullName(files, "ffprobe");
 
             Assert.EndsWith(expected, path);
         }
@@ -46,7 +45,7 @@ namespace Xabe.FFmpeg.Test
 
             IEnumerable<FileInfo> files = GetLinuxPathMocks();
 
-            string path = FFmpeg.GetFullName(files, "ffmpeg");
+            var path = FFmpeg.GetFullName(files, "ffmpeg");
 
             Assert.EndsWith(expected, path);
         }
@@ -58,7 +57,7 @@ namespace Xabe.FFmpeg.Test
 
             IEnumerable<FileInfo> files = GetLinuxPathMocks();
 
-            string path = FFmpeg.GetFullName(files, "ffprobe");
+            var path = FFmpeg.GetFullName(files, "ffprobe");
 
             Assert.EndsWith(expected, path);
         }

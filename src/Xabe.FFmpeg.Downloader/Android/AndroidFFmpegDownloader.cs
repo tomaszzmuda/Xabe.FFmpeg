@@ -17,7 +17,7 @@ namespace Xabe.FFmpeg.Downloader.Android
 
         private string GenerateLink(OperatingSystemArchitecture arch)
         {
-            if(arch == OperatingSystemArchitecture.Arm64)
+            if (arch == OperatingSystemArchitecture.Arm64)
             {
                 return "https://xabe.net/ffmpeg/versions/ffmpeg-android-arm64.zip";
             }
@@ -40,21 +40,21 @@ namespace Xabe.FFmpeg.Downloader.Android
             return string.Empty;
         }
 
-        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries)
+        public override async Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = DEFAULT_MAX_RETRIES)
         {
             OperatingSystemArchitecture arch = _operatingSystemArchitectureProvider.GetArchitecture();
 
             await GetLatestVersionForArchitecture(path, arch, progress, retries);
         }
 
-        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<ProgressInfo> progress = null, int retries = DefaultMaxRetries)
+        protected async Task GetLatestVersionForArchitecture(string path, OperatingSystemArchitecture arch, IProgress<ProgressInfo> progress = null, int retries = DEFAULT_MAX_RETRIES)
         {
             if (!CheckIfFilesExist(path))
             {
                 return;
             }
 
-            string link = GenerateLink(arch);
+            var link = GenerateLink(arch);
             var fullPackZip = await DownloadFile(link, progress, retries);
 
             Extract(fullPackZip, path ?? ".");

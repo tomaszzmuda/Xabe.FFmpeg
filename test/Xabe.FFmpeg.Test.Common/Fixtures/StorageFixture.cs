@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading;
 
-namespace Xabe.FFmpeg.Test.Fixtures
+namespace Xabe.FFmpeg.Test.Common.Fixtures
 {
     public class StorageFixture : IDisposable
     {
@@ -32,7 +32,7 @@ namespace Xabe.FFmpeg.Test.Fixtures
 
         public void Dispose()
         {
-            for (int i=0; i<10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 try
                 {
@@ -41,7 +41,7 @@ namespace Xabe.FFmpeg.Test.Fixtures
                 }
                 catch
                 {
-                    Thread.Sleep(500 * i*i);
+                    Thread.Sleep(500 * i * i);
                 }
             }
         }

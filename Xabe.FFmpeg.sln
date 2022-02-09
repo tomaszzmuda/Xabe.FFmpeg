@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29926.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32127.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{986DB5E3-B71F-4AC6-A530-2F527D78CB9F}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,6 +18,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabe.FFmpeg.Downloader", "src\Xabe.FFmpeg.Downloader\Xabe.FFmpeg.Downloader.csproj", "{9B0EABEC-EAB6-4BCA-9DEF-5512F7FA4C4B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabe.FFmpeg.Test", "test\Xabe.FFmpeg.Test\Xabe.FFmpeg.Test.csproj", "{F95D3F87-2537-43DC-8B06-D7899F5B4BCF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xabe.FFmpeg.Downloader.Test", "test\Xabe.FFmpeg.Downloader.Test\Xabe.FFmpeg.Downloader.Test.csproj", "{065AFF3A-A7D8-44E4-9B7D-638AC32BD55D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E016EDB9-607A-4397-923F-7165C099D05D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xabe.FFmpeg.Test.Common", "test\Xabe.FFmpeg.Test.Common\Xabe.FFmpeg.Test.Common.csproj", "{0D7AA7C6-9EAD-4C85-AA1C-0156AADC02E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,9 +43,22 @@ Global
 		{F95D3F87-2537-43DC-8B06-D7899F5B4BCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F95D3F87-2537-43DC-8B06-D7899F5B4BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F95D3F87-2537-43DC-8B06-D7899F5B4BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{065AFF3A-A7D8-44E4-9B7D-638AC32BD55D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{065AFF3A-A7D8-44E4-9B7D-638AC32BD55D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{065AFF3A-A7D8-44E4-9B7D-638AC32BD55D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{065AFF3A-A7D8-44E4-9B7D-638AC32BD55D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D7AA7C6-9EAD-4C85-AA1C-0156AADC02E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D7AA7C6-9EAD-4C85-AA1C-0156AADC02E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D7AA7C6-9EAD-4C85-AA1C-0156AADC02E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D7AA7C6-9EAD-4C85-AA1C-0156AADC02E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F95D3F87-2537-43DC-8B06-D7899F5B4BCF} = {E016EDB9-607A-4397-923F-7165C099D05D}
+		{065AFF3A-A7D8-44E4-9B7D-638AC32BD55D} = {E016EDB9-607A-4397-923F-7165C099D05D}
+		{0D7AA7C6-9EAD-4C85-AA1C-0156AADC02E3} = {E016EDB9-607A-4397-923F-7165C099D05D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {985B19C9-4F0D-4A74-9418-AE97F0C5CC91}

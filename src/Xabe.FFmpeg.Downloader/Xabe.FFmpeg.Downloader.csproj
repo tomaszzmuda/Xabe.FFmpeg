@@ -27,4 +27,9 @@
     <ProjectReference Include="..\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+  </PropertyGroup>
+  
 </Project>

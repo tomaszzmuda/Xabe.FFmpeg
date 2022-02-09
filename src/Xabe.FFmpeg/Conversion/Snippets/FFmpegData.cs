@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
 {
@@ -23,7 +19,7 @@ namespace Xabe.FFmpeg
         /// <param name="encoder">Codec using to encode output video (e.g. h264_nvenc)</param>
         /// <param name="device">Number of device (0 = default video card) if more than one video card.</param>
         /// <returns>IConversion object</returns>
-        internal async static Task<Device[]> GetAvailableDevices()
+        internal static async Task<Device[]> GetAvailableDevices()
         {
             Format format = Format.dshow;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -37,7 +33,7 @@ namespace Xabe.FFmpeg
             }
 
             var conversion = New().AddParameter($"-list_devices true -f {format} -i dummy");
-            StringBuilder text = new StringBuilder();
+            var text = new StringBuilder();
             conversion.OnDataReceived += (sender, e) => text.AppendLine(e.Data);
             await conversion.Start();
 
@@ -45,12 +41,12 @@ namespace Xabe.FFmpeg
 
             var devices = new List<Device>();
             var matches = Regex.Matches(result, "\"([^\"]*)\"");
-            for (int i = 0; i < matches.Count; i += 2)
+            for (var i = 0; i < matches.Count; i += 2)
             {
                 devices.Add(new Device()
                 {
-                    Name = matches[i].Value.Substring(1, matches[i].Value.Length-2),
-                    AlternativeName = matches[i+1].Value.Substring(1, matches[i+1].Value.Length - 2)
+                    Name = matches[i].Value.Substring(1, matches[i].Value.Length - 2),
+                    AlternativeName = matches[i + 1].Value.Substring(1, matches[i + 1].Value.Length - 2)
                 });
             }
 

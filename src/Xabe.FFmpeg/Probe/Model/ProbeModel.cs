@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Xabe.FFmpeg
 {
     internal class ProbeModel
@@ -68,7 +70,7 @@ namespace Xabe.FFmpeg
         internal class Disposition
         {
             [JsonProperty("default")]
-            public int _default { get; set; }
+            public int @default { get; set; }
             public int forced { get; set; }
 
             //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
@@ -85,3 +87,5 @@ namespace Xabe.FFmpeg
         }
     }
 }
+
+#pragma warning restore IDE1006 // Naming Styles
