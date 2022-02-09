@@ -190,7 +190,7 @@ namespace Xabe.FFmpeg
         private void GetDuration(DataReceivedEventArgs e, Regex regex, string args)
         {
             string t = GetArgumentValue("-t", args);
-            if (!string.IsNullOrWhiteSpace(t))
+            if (!string.IsNullOrWhiteSpace(t) && t != "1")
             {
                 _totalTime = TimeSpan.Parse(t);
                 return;
@@ -201,7 +201,7 @@ namespace Xabe.FFmpeg
             {
                 return;
             }
-            _totalTime = TimeSpan.Parse(match.Value);
+            _totalTime = _totalTime.Add(TimeSpan.Parse(match.Value));
 
             string ss = GetArgumentValue("-ss", args);
             if (!string.IsNullOrWhiteSpace(ss))
