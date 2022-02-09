@@ -919,7 +919,7 @@ namespace Xabe.FFmpeg.Test
             var output = "rtsp://127.0.0.1:8554/newFile";
 
             // Act
-            (await FFmpeg.Conversions.FromSnippet.SendToRtspServer(Resources.Mp4, new Uri(output))).Start();
+            _ = (await FFmpeg.Conversions.FromSnippet.SendToRtspServer(Resources.Mp4, new Uri(output))).Start();
             //Give it some time to warm up
             await Task.Delay(2000);
 
@@ -946,7 +946,7 @@ namespace Xabe.FFmpeg.Test
             var output = "rtsp://127.0.0.1:8554/desktop";
 
             // Act
-            (await FFmpeg.Conversions.FromSnippet.SendDesktopToRtspServer(new Uri(output))).Start();
+            _ = (await FFmpeg.Conversions.FromSnippet.SendDesktopToRtspServer(new Uri(output))).Start();
             //Give it some time to warm up
             await Task.Delay(2000);
 
