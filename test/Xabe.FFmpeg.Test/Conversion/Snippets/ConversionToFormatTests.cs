@@ -21,8 +21,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ToGifTest(int loopCount, int delay, double framerate)
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Gif);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToGif(Resources.Mp4, output, loopCount, delay))
+            _ = await (await FFmpeg.Conversions.FromSnippet.ToGif(Resources.Mp4, output, loopCount, delay))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
@@ -49,10 +48,8 @@ namespace Xabe.FFmpeg.Test
         public async Task ToMp4Test()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToMp4(Resources.MkvWithAudio, output))
+            _ = await (await FFmpeg.Conversions.FromSnippet.ToMp4(Resources.MkvWithAudio, output))
                                           .Start();
-
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
@@ -70,8 +67,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ToOgvTest()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Ogv);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToOgv(Resources.MkvWithAudio, output))
+            _ = await (await FFmpeg.Conversions.FromSnippet.ToOgv(Resources.MkvWithAudio, output))
                                              .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
@@ -90,8 +86,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ToTsTest()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Ts);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToTs(Resources.Mp4WithAudio, output))
+            _ = await (await FFmpeg.Conversions.FromSnippet.ToTs(Resources.Mp4WithAudio, output))
                                              .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
@@ -110,8 +105,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ToWebMTest()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.WebM);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ToWebM(Resources.Mp4WithAudio, output))
+            _ = await (await FFmpeg.Conversions.FromSnippet.ToWebM(Resources.Mp4WithAudio, output))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
@@ -131,8 +125,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ConversionWithoutSpecificFormat()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
+            _ = await Conversion.Convert(Resources.MkvWithAudio, output).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);

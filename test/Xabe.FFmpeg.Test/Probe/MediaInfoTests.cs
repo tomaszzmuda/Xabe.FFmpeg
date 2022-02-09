@@ -202,7 +202,6 @@ namespace Xabe.FFmpeg.Test
             Assert.Contains("Crime d'Amour", conversionResult.Arguments);
         }
 
-
         [Fact]
         public async Task MediaInfo_NameWithSpaces_WorksCorrectly()
         {
@@ -210,8 +209,7 @@ namespace Xabe.FFmpeg.Test
             var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
             output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .AddParameter("-re", ParameterPosition.PreInput)
                                                                  .SetOutput(output)
@@ -228,8 +226,7 @@ namespace Xabe.FFmpeg.Test
             var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
             output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .AddParameter("-re", ParameterPosition.PreInput)
                                                                  .SetOutput(output)

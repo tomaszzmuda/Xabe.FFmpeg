@@ -20,8 +20,7 @@ namespace Xabe.FFmpeg.Test
         public async Task AddAudio()
         {
             var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddAudio(Resources.Mp4, Resources.Mp3, output))
+            _ = await (await FFmpeg.Conversions.FromSnippet.AddAudio(Resources.Mp4, Resources.Mp3, output))
                                              .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
@@ -36,7 +35,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ExtractAudio()
         {
             var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp3);
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ExtractAudio(Resources.Mp4WithAudio, output))
+            _ = await (await FFmpeg.Conversions.FromSnippet.ExtractAudio(Resources.Mp4WithAudio, output))
                                              .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
@@ -67,8 +66,7 @@ namespace Xabe.FFmpeg.Test
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IAudioStream audioStream = info.AudioStreams.First()?.SetCodec(AudioCodec.aac);
-
-            IConversionResult conversionResult = await (await FFmpeg.Conversions.FromSnippet.VisualiseAudio(Resources.Mp4WithAudio, output, size, pixelFormat, mode, amplitudeScale, frequencyScale))
+            _ = await (await FFmpeg.Conversions.FromSnippet.VisualiseAudio(Resources.Mp4WithAudio, output, size, pixelFormat, mode, amplitudeScale, frequencyScale))
                 .Start();
 
             IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);

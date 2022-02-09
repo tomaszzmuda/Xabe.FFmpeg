@@ -19,8 +19,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ConversionWithHardware()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ConvertWithHardware(Resources.MkvWithAudio, output, HardwareAccelerator.cuvid, VideoCodec.h264_cuvid, VideoCodec.h264_nvenc)).Start();
+            _ = await (await FFmpeg.Conversions.FromSnippet.ConvertWithHardware(Resources.MkvWithAudio, output, HardwareAccelerator.cuvid, VideoCodec.h264_cuvid, VideoCodec.h264_nvenc)).Start();
 
             var mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.InRange(mediaInfo.Duration, TimeSpan.FromSeconds(9), TimeSpan.FromSeconds(11));

@@ -21,8 +21,7 @@ namespace Xabe.FFmpeg.Test
         {
             var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             var input = Resources.MkvWithAudio;
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt))
+            _ = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt))
                                              .Start();
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
@@ -40,7 +39,7 @@ namespace Xabe.FFmpeg.Test
             var input = Resources.MkvWithAudio;
 
             var language = "pol";
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, language))
+            _ = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, language))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
@@ -62,8 +61,7 @@ namespace Xabe.FFmpeg.Test
         {
             var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
             var input = Resources.MkvWithAudio;
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, subtitleCodec))
+            _ = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, subtitleCodec))
                                              .Start();
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
@@ -98,10 +96,9 @@ namespace Xabe.FFmpeg.Test
             var input = Resources.MkvWithAudio;
 
             var language = "pol";
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, subtitleCodec, language))
+            _ = await (await FFmpeg.Conversions.FromSnippet.AddSubtitle(input, output, Resources.SubtitleSrt, subtitleCodec, language))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
-
 
             IMediaInfo outputInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(51, outputInfo.Duration.Minutes);
@@ -129,8 +126,7 @@ namespace Xabe.FFmpeg.Test
         {
             var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             var input = Resources.Mp4;
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.BurnSubtitle(input, output, Resources.SubtitleSrt))
+            _ = await (await FFmpeg.Conversions.FromSnippet.BurnSubtitle(input, output, Resources.SubtitleSrt))
                                              .SetPreset(ConversionPreset.UltraFast)
                                              .Start();
 
@@ -142,8 +138,7 @@ namespace Xabe.FFmpeg.Test
         public async Task BasicConversion_InputFileWithSubtitles_SkipSubtitles()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
+            _ = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);

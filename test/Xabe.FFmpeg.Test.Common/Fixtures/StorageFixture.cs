@@ -20,6 +20,7 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
             {
                 return Path.Combine(TempDirPath, $"{Guid.NewGuid()}{extension}");
             }
+
             return Path.Combine(TempDirPath, $"{Guid.NewGuid()}");
         }
 

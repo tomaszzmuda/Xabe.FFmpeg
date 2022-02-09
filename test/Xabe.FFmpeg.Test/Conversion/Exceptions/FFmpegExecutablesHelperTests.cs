@@ -17,49 +17,49 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public void TestSelectFFmpegPathForWindows()
         {
-            const string expected = "ffmpeg.exe";
+            const string EXPECTED = "ffmpeg.exe";
 
             IEnumerable<FileInfo> files = GetWindowsPathMocks();
 
             var path = FFmpeg.GetFullName(files, "ffmpeg");
 
-            Assert.EndsWith(expected, path);
+            Assert.EndsWith(EXPECTED, path);
         }
 
         [Fact]
         public void TestSelectFFprobePathForWindows()
         {
-            const string expected = "ffprobe.exe";
+            const string EXPECTED = "ffprobe.exe";
 
             IEnumerable<FileInfo> files = GetWindowsPathMocks();
 
             var path = FFmpeg.GetFullName(files, "ffprobe");
 
-            Assert.EndsWith(expected, path);
+            Assert.EndsWith(EXPECTED, path);
         }
 
         [Fact]
         public void TestSelectFFmpegPathForLinux()
         {
-            const string expected = "ffmpeg";
+            const string EXPECTED = "ffmpeg";
 
             IEnumerable<FileInfo> files = GetLinuxPathMocks();
 
             var path = FFmpeg.GetFullName(files, "ffmpeg");
 
-            Assert.EndsWith(expected, path);
+            Assert.EndsWith(EXPECTED, path);
         }
 
         [Fact]
         public void TestSelectFFprobePathForLinux()
         {
-            const string expected = "ffprobe";
+            const string EXPECTED = "ffprobe";
 
             IEnumerable<FileInfo> files = GetLinuxPathMocks();
 
             var path = FFmpeg.GetFullName(files, "ffprobe");
 
-            Assert.EndsWith(expected, path);
+            Assert.EndsWith(EXPECTED, path);
         }
 
         private IEnumerable<FileInfo> GetWindowsPathMocks()

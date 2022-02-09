@@ -25,8 +25,7 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp3);
             var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp3);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(inputFile.AudioStreams.First().ChangeSpeed(speed))
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -47,10 +46,8 @@ namespace Xabe.FFmpeg.Test
             var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp3);
 
             var audioStream = inputFile.AudioStreams.First();
-            var bitrate = audioStream.Bitrate;
             audioStream.SetBitrate(expectedBitrate);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(audioStream)
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -69,10 +66,8 @@ namespace Xabe.FFmpeg.Test
             var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp3);
 
             var audioStream = inputFile.AudioStreams.First();
-            var bitrate = audioStream.Bitrate;
             audioStream.SetBitrate(32000, 32000, 8000);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(audioStream)
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -94,8 +89,7 @@ namespace Xabe.FFmpeg.Test
             var channels = audioStream.Channels;
             Assert.Equal(2, channels);
             audioStream.SetChannels(1);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(audioStream)
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -117,8 +111,7 @@ namespace Xabe.FFmpeg.Test
             var sampleRate = audioStream.SampleRate;
             Assert.Equal(48000, sampleRate);
             audioStream.SetSampleRate(44100);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(audioStream)
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -173,8 +166,7 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp3);
             var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp3);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(inputFile.AudioStreams.First().ChangeSpeed(0.5))
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -191,8 +183,7 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(inputFile.AudioStreams.First().SetBitstreamFilter(BitstreamFilter.aac_adtstoasc))
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -225,8 +216,7 @@ namespace Xabe.FFmpeg.Test
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                     .AddStream(inputFile.AudioStreams.First().SetBitstreamFilter("aac_adtstoasc"))
                                                     .SetOutput(outputPath)
                                                     .Start();
@@ -247,7 +237,7 @@ namespace Xabe.FFmpeg.Test
             var exception = await Record.ExceptionAsync(async () => await FFmpeg.Conversions.New()
                                                     .AddStream(inputFile.AudioStreams.First().SetBitstreamFilter("h264_mp4toannexb"))
                                                     .SetOutput(outputPath)
-                                                    .Start()); ;
+                                                    .Start());
 
             Assert.NotNull(exception);
             Assert.IsType<ConversionException>(exception);
@@ -283,8 +273,7 @@ namespace Xabe.FFmpeg.Test
 
             var audioStream = inputFile.AudioStreams.First();
             audioStream.SetCodec("mp3");
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                 .AddStream(audioStream)
                                 .SetOutput(outputPath)
                                 .Start();
@@ -355,5 +344,4 @@ namespace Xabe.FFmpeg.Test
         }
     }
 }
-
 
