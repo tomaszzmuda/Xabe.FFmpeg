@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class ConversionTests : IClassFixture<StorageFixture>
+    public class ConversionTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
         private readonly StorageFixture _storageFixture;
 
@@ -920,11 +920,11 @@ namespace Xabe.FFmpeg.Test
 
             // Act
             _ = (await FFmpeg.Conversions.FromSnippet.SendToRtspServer(Resources.Mp4, new Uri(output))).Start();
-            //Give it some time to warm up
-            await Task.Delay(5000);
+            await Task.Delay(2000);
 
             // Assert
-            IMediaInfo info = await FFmpeg.GetMediaInfo(output);
+            var info = await MediaInfo.Get(output);
+
             Assert.Single(info.Streams);
         }
 
