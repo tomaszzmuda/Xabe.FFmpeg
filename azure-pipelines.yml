@@ -16,6 +16,8 @@ parameters:
 
 variables:  
   BuildConfiguration: 'Release'
+  ArtifactStagingDirectory: '/output'
+  ArtifactName: 'drop'
  
 stages:
   - stage: build
@@ -66,7 +68,7 @@ stages:
               dotnet clean -c Release
               if (${{ parameters.Tag }}) {
                 dotnet build -c Release -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-                dotnet pack --no-build -c Release -o $(build.artifactstagingdirectory) /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
+                dotnet pack --no-build -c Release -o '${{ variables.ArtifactStagingDirectory }}' /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet build /p:GenerateDocumentationFile=true
                 dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols
@@ -78,7 +80,7 @@ stages:
               dotnet clean -c Release
               if (${{ parameters.Tag }}) {
                 dotnet build -c Release -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-                dotnet pack --no-build -c Release -o $(build.artifactstagingdirectory) /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
+                dotnet pack --no-build -c Release -o '${{ variables.ArtifactStagingDirectory }}' /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet build /p:GenerateDocumentationFile=true
                 dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols
@@ -86,10 +88,8 @@ stages:
             failOnStderr: true
             workingDirectory: src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet pack downloader'
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish Artifact'
-            inputs:
-              PathtoPublish: '$(build.artifactstagingdirectory)'
+          - publish: '${{ variables.ArtifactStagingDirectory }}'
+            artifact: '${{ variables.ArtifactName }}'
                 
 
 
@@ -99,6 +99,8 @@ stages:
     jobs:
       - job:
         steps:
+          - download: current
+            artifact: '${{ variables.ArtifactName }}'
           - task: NuGetToolInstaller@1
             displayName: 'Use NuGet '
           - task: NuGetCommand@2

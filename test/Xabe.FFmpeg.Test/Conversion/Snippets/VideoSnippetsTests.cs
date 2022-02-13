@@ -339,6 +339,7 @@ namespace Xabe.FFmpeg.Test
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             await _rtspServer.Publish(Resources.BunnyMp4, "bunny");
+            await Task.Delay(2000);
 
             var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny");
 
