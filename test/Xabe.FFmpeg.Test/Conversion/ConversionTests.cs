@@ -921,7 +921,7 @@ namespace Xabe.FFmpeg.Test
             // Act
             _ = (await FFmpeg.Conversions.FromSnippet.SendToRtspServer(Resources.Mp4, new Uri(output))).Start();
             //Give it some time to warm up
-            await Task.Delay(2000);
+            await Task.Delay(5000);
 
             // Assert
             IMediaInfo info = await FFmpeg.GetMediaInfo(output);
