@@ -16,7 +16,7 @@ parameters:
 
 variables:  
   BuildConfiguration: 'Release'
-  ArtifactStagingDirectory: '/output'
+  ArtifactStagingDirectory: '$(Build.ArtifactStagingDirectory)'
   ArtifactName: 'drop'
  
 stages:
@@ -37,7 +37,7 @@ stages:
             inputs:
               command: test
               projects: '**/Xabe.FFmpeg.Test.csproj'
-              arguments: '-c ${{ variables.BuildConfiguration }} /p:GenerateDocumentationFile=true -v=normal'
+              arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
               publishTestResults: true
       - job: run_downloader_tests
         displayName: Run downloader tests
@@ -53,7 +53,7 @@ stages:
             inputs:
               command: test
               projects: '**/Xabe.FFmpeg.Downloader.Test.csproj'
-              arguments: '-c ${{ variables.BuildConfiguration }} /p:GenerateDocumentationFile=true -v=normal'
+              arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
               publishTestResults: true
       - job: build_artifacts
         displayName: Build artifacts
@@ -88,7 +88,7 @@ stages:
             failOnStderr: true
             workingDirectory: src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet pack downloader'
-          - publish: '${{ variables.ArtifactStagingDirectory }}'
+          - publish: ${{ variables.ArtifactStagingDirectory }}
             artifact: '${{ variables.ArtifactName }}'
                 
 
