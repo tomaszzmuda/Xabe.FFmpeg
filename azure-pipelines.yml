@@ -65,25 +65,25 @@ stages:
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
-              dotnet clean -c Release
+              dotnet clean -c ${{ variables.BuildConfiguration }}
               if (${{ parameters.Tag }}) {
-                dotnet build -c Release -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-                dotnet pack --no-build -c Release -o '${{ variables.ArtifactStagingDirectory }}' /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
+                dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
+                dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o '${{ variables.ArtifactStagingDirectory }}' /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet build /p:GenerateDocumentationFile=true
-                dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols
+                dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols -o '${{ variables.ArtifactStagingDirectory }}'
               }
             failOnStderr: true
             workingDirectory: src/Xabe.FFmpeg
             displayName: 'Dotnet pack'
           - powershell: |
-              dotnet clean -c Release
+              dotnet clean -c ${{ variables.BuildConfiguration }}
               if (${{ parameters.Tag }}) {
-                dotnet build -c Release -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-                dotnet pack --no-build -c Release -o '${{ variables.ArtifactStagingDirectory }}' /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
+                dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
+                dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o '${{ variables.ArtifactStagingDirectory }}' /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet build /p:GenerateDocumentationFile=true
-                dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols
+                dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols -o '${{ variables.ArtifactStagingDirectory }}'
               }
             failOnStderr: true
             workingDirectory: src/Xabe.FFmpeg.Downloader
