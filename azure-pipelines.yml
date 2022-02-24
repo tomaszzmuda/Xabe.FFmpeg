@@ -75,7 +75,7 @@ stages:
             workingDirectory: ./src/Xabe.FFmpeg
             displayName: 'Dotnet build'
           - powershell: |
-              dotnet clean -c ${{ variables.BuildConfiguration }}
+              ls
               if (${{ parameters.Tag }}) {
                 dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
