@@ -79,7 +79,7 @@ stages:
               if (${{ parameters.Tag }}) {
                 dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
-                dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols -o '${{ variables.ArtifactStagingDirectory }}' Xabe.FFmpeg.csproj
+                dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols
               }
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg
