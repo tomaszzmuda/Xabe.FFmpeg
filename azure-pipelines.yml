@@ -74,7 +74,7 @@ stages:
                 dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols -o '${{ variables.ArtifactStagingDirectory }}'
               }
             failOnStderr: true
-            workingDirectory: src/Xabe.FFmpeg
+            workingDirectory: ./src/Xabe.FFmpeg
             displayName: 'Dotnet pack'
           - powershell: |
               dotnet clean -c ${{ variables.BuildConfiguration }}
@@ -86,7 +86,7 @@ stages:
                 dotnet pack --no-build -o nuget /p:GenerateDocumentationFile=true --include-symbols -o '${{ variables.ArtifactStagingDirectory }}'
               }
             failOnStderr: true
-            workingDirectory: src/Xabe.FFmpeg.Downloader
+            workingDirectory: ./src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet pack downloader'
           - publish: ${{ variables.ArtifactStagingDirectory }}
             artifact: '${{ variables.ArtifactName }}'
