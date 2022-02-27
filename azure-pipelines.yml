@@ -118,7 +118,7 @@ stages:
             displayName: 'Use NuGet '
           - powershell: |
               ls
-            workingDirectory: $(System.DefaultWorkingDirectory)
+            workingDirectory: $(Pipeline.Workspace)
           - task: NuGetCommand@2
             displayName: 'NuGet Test'
             inputs:
