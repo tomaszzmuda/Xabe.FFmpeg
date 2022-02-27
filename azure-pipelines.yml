@@ -119,6 +119,8 @@ stages:
               downloadPath: ${{ variables.ArtifactName }}
           - task: NuGetToolInstaller@1
             displayName: 'Use NuGet '
+          - powershell: |
+              ls
           - task: NuGetCommand@2
             displayName: 'NuGet Test'
             inputs:
