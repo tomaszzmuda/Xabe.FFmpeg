@@ -118,12 +118,12 @@ stages:
             displayName: 'Use NuGet '
           - powershell: |
               ls
-            workingDirectory: $(Pipeline.Workspace)
+            workingDirectory: $(Pipeline.Workspace)/${{ variables.ArtifactName }}
           - task: NuGetCommand@2
             displayName: 'NuGet Test'
             inputs:
               command: push
-              packagesToPush: '**/Xabe.FFmpeg.*.nupkg'
+              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/Xabe.FFmpeg.*.nupkg'
               publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
             
   # - ${{ if ne(parameters.Tag, '') }}:
