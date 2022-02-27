@@ -115,6 +115,7 @@ stages:
         steps:
           - task: DownloadBuildArtifacts@0
             inputs:
+              artifactName: '${{ variables.ArtifactName }}'
               downloadPath: ${{ variables.ArtifactName }}
           - task: NuGetToolInstaller@1
             displayName: 'Use NuGet '
