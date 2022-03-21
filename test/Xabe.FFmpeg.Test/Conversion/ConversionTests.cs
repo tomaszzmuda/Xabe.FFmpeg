@@ -739,12 +739,15 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
             IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.mpeg4);
 
+            IConversionResult result = null;
             var exception = await Record.ExceptionAsync(async () =>
             {
-                await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output)).UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.h264_nvenc, VideoCodec.h264_cuvid).Start();
+                var snippet = await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output);
+                var conversion = snippet.UseHardwareAcceleration(HardwareAccelerator.auto, VideoCodec.h264_nvenc, VideoCodec.h264_cuvid);
+                result = await conversion.Start();
             });
 
-            Assert.NotNull(exception);
+            Assert.True(exception != null, result.Arguments);
             Assert.IsType<ConversionException>(exception);
             Assert.IsType<UnknownDecoderException>(exception.InnerException);
         }
