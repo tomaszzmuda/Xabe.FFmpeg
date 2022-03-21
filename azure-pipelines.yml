@@ -120,25 +120,32 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: NuGetToolInstaller@1
-            displayName: 'Use NuGet '
-          - powershell: |
-              ls
-            workingDirectory: $(Pipeline.Workspace)/${{ variables.ArtifactName }}
-          - powershell: |
-              apt update
-              apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common
-              apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-              apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main'
-              apt install mono-complete 
-            displayName: 'Install Mono'
-          - task: NuGetCommand@2
-            displayName: 'NuGet Test'
+          # - task: NuGetToolInstaller@1
+          #   displayName: 'Use NuGet '
+          # - powershell: |
+          #     ls
+          #   workingDirectory: $(Pipeline.Workspace)/${{ variables.ArtifactName }}
+          # - powershell: |
+          #     apt update
+          #     apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+          #     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          #     apt-add-repository 'deb https://download.mono-project.com/repo/ubuntu stable-focal main'
+          #     apt install mono-complete 
+          #   displayName: 'Install Mono'
+          # - task: NuGetCommand@2
+          #   displayName: 'NuGet Test'
+          #   inputs:
+          #     command: push
+          #     packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/Xabe.FFmpeg.*.nupkg'
+          #     publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push'
             inputs:
               command: push
               packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/Xabe.FFmpeg.*.nupkg'
               publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
             
+
   # - ${{ if ne(parameters.Tag, '') }}:
   #   - stage: prod_release
   #     displayName: "Deploy to NuGet"
