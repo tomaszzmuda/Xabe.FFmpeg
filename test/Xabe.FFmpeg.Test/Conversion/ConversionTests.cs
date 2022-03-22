@@ -747,7 +747,8 @@ namespace Xabe.FFmpeg.Test
                 result = await conversion.Start();
             });
 
-            Assert.True(exception != null, result.Arguments);
+            Assert.True(result == null, "Result cannot be instantiated. Code should fail.");
+            Assert.True(exception != null, "No exception thrown.");
             Assert.IsType<ConversionException>(exception);
             Assert.IsType<UnknownDecoderException>(exception.InnerException);
         }
