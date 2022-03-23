@@ -126,31 +126,32 @@ stages:
               command: push
               packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/Xabe.FFmpeg.*.nupkg'
               publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
+              arguments: --skip-duplicate
             
-
-  # - ${{ if ne(parameters.Tag, '') }}:
-  #   - stage: prod_release
-  #     displayName: "Deploy to NuGet"
-  #     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-  #     jobs:
-  #       - job: release_to_nuget
-  #         displayName: 'Deploy to NuGet'
-  #         steps:
-  #         - task: ManualValidation@0
-  #           timeoutInMinutes: 1440 # task times out in 1 day
-  #           inputs:
-  #               notifyUsers: |
-  #                 tomasz.a.zmuda@gmail.com
-  #               instructions: 'Please validate the build configuration and resume'
-  #               onTimeout: reject
-  #         - task: NuGetToolInstaller@1
-  #           displayName: 'Use NuGet '
-  #         - task: NuGetCommand@2
-  #           displayName: 'Publish all nupkg'
-  #           inputs:
-  #             command: push
-  #             packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
-  #             nuGetFeedType: external
-  #             publishFeedCredentials: 'Xabe.FFmpeg prod'
-      
-                        
+  - stage: prod_release
+    displayName: "Deploy to NuGet"
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job:
+        steps:
+          - download: current
+          - task: UseDotNet@2
+            displayName: 'Set .NET Core to 3.1'
+            inputs:
+              packageType: sdk
+              version: 3.1.x
+              installationPath: $(Agent.ToolsDirectory)/dotnet
+          - task: ManualValidation@0
+            timeoutInMinutes: 1440 # task times out in 1 day
+            inputs:
+                notifyUsers: |
+                  tomasz.a.zmuda@gmail.com
+                instructions: 'Please validate the build configuration and resume'
+                onTimeout: reject
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push'
+            inputs:
+              command: push
+              packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
+              nuGetFeedType: external
+              publishFeedCredentials: 'Xabe.FFmpeg prod'
