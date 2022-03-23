@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Test.Fixtures;
+using Xabe.FFmpeg.Test.Common.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -141,9 +141,8 @@ namespace Xabe.FFmpeg.Test
         [InlineData("アセチルサリチル酸")]
         public async Task GetMediaInfo_NonUTF8CharactersInPath(string path)
         {
-            string output = _storageFixture.GetTempFileName($"{path}{FileExtensions.Mp4}");
+            var output = _storageFixture.GetTempFileName($"{path}{FileExtensions.Mp4}");
             File.Copy(Resources.Mp4WithAudio, output, true);
-
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
 
@@ -154,7 +153,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task RTSP_NotExistingStream_CancelledAfter30Seconds()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.WebM);
+            var output = _storageFixture.GetTempFileName(FileExtensions.WebM);
 
             var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/"));
 
@@ -165,7 +164,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task RTSP_NotExistingStream_CancelledAfter2Seconds()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.WebM);
+            var output = _storageFixture.GetTempFileName(FileExtensions.WebM);
             var cancellationTokenSource = new CancellationTokenSource(2000);
             var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/", cancellationTokenSource.Token));
 
@@ -180,14 +179,14 @@ namespace Xabe.FFmpeg.Test
             IVideoStream videoStream = info.VideoStreams.First();
 
             // It does not has to be the same
-            Assert.Equal(116, (int) videoStream.Framerate);
+            Assert.Equal(116, (int)videoStream.Framerate);
             Assert.Equal(3, videoStream.Duration.Seconds);
         }
 
         [Fact]
         public async Task MediaInfo_SpecialCharactersInName_WorksCorrectly()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             var nameWithSpaces = new FileInfo(output).Name;
             output = output.Replace(nameWithSpaces, "Crime d'Amour" + ".mp4");
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
@@ -203,16 +202,14 @@ namespace Xabe.FFmpeg.Test
             Assert.Contains("Crime d'Amour", conversionResult.Arguments);
         }
 
-
         [Fact]
         public async Task MediaInfo_NameWithSpaces_WorksCorrectly()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
             output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .AddParameter("-re", ParameterPosition.PreInput)
                                                                  .SetOutput(output)
@@ -225,12 +222,11 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_EscapedString_WorksCorrectly()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
             output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                                                  .AddStream(info.VideoStreams.First())
                                                                  .AddParameter("-re", ParameterPosition.PreInput)
                                                                  .SetOutput(output)
@@ -260,7 +256,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetMediaInfo_StreamDoesNotExist_ThrowException()
         {
-            var exception = await Record.ExceptionAsync(async() => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting"));
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting"));
 
             Assert.NotNull(exception);
             Assert.IsType<ArgumentException>(exception);
@@ -278,7 +274,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_EscapedString_BasePathDidNotChanged()
         {
-            string tempDir = _storageFixture.GetTempDirectory();
+            var tempDir = _storageFixture.GetTempDirectory();
             var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021.mp4");
             File.Copy(Resources.BunnyMp4, input);
 
@@ -292,7 +288,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_EscapedString_BasePathInStreamsDidNotChanged()
         {
-            string tempDir = _storageFixture.GetTempDirectory();
+            var tempDir = _storageFixture.GetTempDirectory();
             var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021.mp4");
             File.Copy(Resources.BunnyMp4, input);
 

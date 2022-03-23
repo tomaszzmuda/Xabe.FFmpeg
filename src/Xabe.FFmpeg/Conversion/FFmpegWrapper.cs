@@ -20,8 +20,8 @@ namespace Xabe.FFmpeg
     /// </summary>
     internal class FFmpegWrapper : FFmpeg
     {
-        private const string TimeFormatPattern = @"\w\w:\w\w:\w\w";
-        private static readonly Regex s_timeFormatRegex = new Regex(TimeFormatPattern, RegexOptions.Compiled);
+        private const string TIME_FORMAT_PATTERN = @"\w\w:\w\w:\w\w";
+        private static readonly Regex _timeFormatRegex = new Regex(TIME_FORMAT_PATTERN, RegexOptions.Compiled);
         private List<string> _outputLog;
         private TimeSpan _totalTime;
         private bool _wasKilled = false;
@@ -49,7 +49,7 @@ namespace Xabe.FFmpeg
             return Task.Factory.StartNew(() =>
             {
                 _outputLog = new List<string>();
-                bool pipedOutput = OnVideoDataReceived != null;
+                var pipedOutput = OnVideoDataReceived != null;
                 var process = RunProcess(args, FFmpegPath, priority, true, pipedOutput, true);
                 var processId = process.Id;
                 using (process)
@@ -60,6 +60,7 @@ namespace Xabe.FFmpeg
                     {
                         Task.Run(() => ProcessVideoData(process, cancellationToken), cancellationToken);
                     }
+
                     var ctr = cancellationToken.Register(() =>
                     {
                         if (Environment.OSVersion.Platform != PlatformID.Win32NT)
@@ -87,7 +88,7 @@ namespace Xabe.FFmpeg
                         using (var processEnded = new ManualResetEvent(false))
                         {
                             processEnded.SetSafeWaitHandle(new SafeWaitHandle(process.Handle, false));
-                            int index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
+                            var index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
 
                             // If the signal came from the caller cancellation token close the window
                             if (index == 1
@@ -115,7 +116,7 @@ namespace Xabe.FFmpeg
                             return false;
                         }
 
-                        string output = string.Join(Environment.NewLine, _outputLog.ToArray());
+                        var output = string.Join(Environment.NewLine, _outputLog.ToArray());
                         var exceptionsCatcher = new FFmpegExceptionCatcher();
                         exceptionsCatcher.CatchFFmpegErrors(output, args);
 
@@ -154,12 +155,12 @@ namespace Xabe.FFmpeg
 
         private void ProcessVideoData(Process process, CancellationToken cancellationToken)
         {
-            BinaryReader br = new BinaryReader(process.StandardOutput.BaseStream);
+            var br = new BinaryReader(process.StandardOutput.BaseStream);
             byte[] buffer;
 
             while ((buffer = br.ReadBytes(4096)).Length > 0)
             {
-                VideoDataEventArgs args = new VideoDataEventArgs(buffer);
+                var args = new VideoDataEventArgs(buffer);
                 OnVideoDataReceived?.Invoke(this, args);
 
                 cancellationToken.ThrowIfCancellationRequested();
@@ -175,11 +176,11 @@ namespace Xabe.FFmpeg
 
             if (e.Data.Contains("Duration"))
             {
-                GetDuration(e, s_timeFormatRegex, args);
+                GetDuration(e, _timeFormatRegex, args);
             }
             else if (e.Data.Contains("size"))
             {
-                Match match = s_timeFormatRegex.Match(e.Data);
+                Match match = _timeFormatRegex.Match(e.Data);
                 if (match.Success)
                 {
                     OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime, processId));
@@ -189,7 +190,7 @@ namespace Xabe.FFmpeg
 
         private void GetDuration(DataReceivedEventArgs e, Regex regex, string args)
         {
-            string t = GetArgumentValue("-t", args);
+            var t = GetArgumentValue("-t", args);
             if (!string.IsNullOrWhiteSpace(t) && t != "1")
             {
                 _totalTime = TimeSpan.Parse(t);
@@ -201,9 +202,10 @@ namespace Xabe.FFmpeg
             {
                 return;
             }
+
             _totalTime = _totalTime.Add(TimeSpan.Parse(match.Value));
 
-            string ss = GetArgumentValue("-ss", args);
+            var ss = GetArgumentValue("-ss", args);
             if (!string.IsNullOrWhiteSpace(ss))
             {
                 _totalTime -= TimeSpan.Parse(ss);
@@ -212,13 +214,14 @@ namespace Xabe.FFmpeg
 
         private string GetArgumentValue(string option, string args)
         {
-            List<string> words = args.Split(' ')
+            var words = args.Split(' ')
                                      .ToList();
-            int index = words.IndexOf(option);
+            var index = words.IndexOf(option);
             if (index >= 0)
             {
                 return words[index + 1];
             }
+
             return string.Empty;
         }
     }

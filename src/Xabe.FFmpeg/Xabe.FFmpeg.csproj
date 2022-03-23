@@ -27,4 +27,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="9.0.*" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
 </Project>

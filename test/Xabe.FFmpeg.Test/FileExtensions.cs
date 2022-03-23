@@ -69,11 +69,11 @@
         ///     .jpg
         /// </summary>
         public const string Jpg = ".jpg";
-        
+
         /// <summary>
         ///     .webp
         /// </summary>
         public const string WebP = ".webp";
-        
+
     }
 }

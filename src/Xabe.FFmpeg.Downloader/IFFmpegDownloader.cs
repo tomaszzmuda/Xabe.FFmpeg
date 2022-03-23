@@ -12,6 +12,6 @@ namespace Xabe.FFmpeg.Downloader
         /// <param name="path">FFmpeg executables destination directory</param>
         /// <param name="progress">Progress of download</param>
         /// <param name="retries">Amount of times to retry downloading in the event of a failure</param>
-        Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = FFmpegDownloaderBase.DefaultMaxRetries);
+        Task GetLatestVersion(string path, IProgress<ProgressInfo> progress = null, int retries = FFmpegDownloaderBase.DEFAULT_MAX_RETRIES);
     }
 }

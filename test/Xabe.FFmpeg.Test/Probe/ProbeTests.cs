@@ -10,7 +10,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task StartWithCsvResultTest()
         {
-            string result = await Probe.New()
+            var result = await Probe.New()
                  .Start($"-loglevel error -skip_frame nokey -select_streams v:0 -show_entries frame=pkt_pts_time -of csv=print_section=0 {Resources.Mp4}");
 
             IEnumerable<string> values = result.Split('\n')
@@ -22,7 +22,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task StartWithStdOutputTest()
         {
-            string result = await Probe.New()
+            var result = await Probe.New()
                                        .Start($"-loglevel error -skip_frame nokey -select_streams v:0 -show_entries frame=pkt_pts_time {Resources.Mp4}");
 
             Assert.True(!string.IsNullOrEmpty(result));

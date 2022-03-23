@@ -34,6 +34,8 @@ namespace Xabe.FFmpeg.Downloader
                         return OperatingSystem.LinuxArmhf;
                     case Architecture.Arm64:
                         return OperatingSystem.LinuxArm64;
+                    default:
+                        break;
                 }
 
                 // TODO : How to distinct Tizen / Raspberry architecture

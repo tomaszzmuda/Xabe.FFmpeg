@@ -1,7 +1,6 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Xabe.FFmpeg.Test.Fixtures;
+using Xabe.FFmpeg.Test.Common.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -21,13 +20,12 @@ namespace Xabe.FFmpeg.Test
         [InlineData(Format.srt, ".srt", "subrip")]
         public async Task ConvertTest(Format format, string extension, string expectedFormat)
         {
-            string outputPath = _storageFixture.GetTempFileName(extension);
+            var outputPath = _storageFixture.GetTempFileName(extension);
 
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SubtitleSrt);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault();
-
-            IConversionResult result = await FFmpeg.Conversions.New()
+            _ = await FFmpeg.Conversions.New()
                                           .AddStream(subtitleStream)
                                           .SetOutput(outputPath)
                                           .SetOutputFormat(format)
@@ -45,7 +43,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(".srt", "subrip", false)]
         public async Task ExtractSubtitles(string extension, string expectedFormat, bool checkOutputLanguage)
         {
-            string outputPath = _storageFixture.GetTempFileName(extension);
+            var outputPath = _storageFixture.GetTempFileName(extension);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MultipleStream);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x => x.Language == "spa");
@@ -65,6 +63,7 @@ namespace Xabe.FFmpeg.Test
             {
                 Assert.Equal("spa", resultInfo.SubtitleStreams.First().Language);
             }
+
             Assert.Equal(0, resultInfo.SubtitleStreams.First().Default.Value);
             Assert.Equal(0, resultInfo.SubtitleStreams.First().Forced.Value);
         }

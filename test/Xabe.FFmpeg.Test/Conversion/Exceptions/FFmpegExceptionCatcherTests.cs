@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xabe.FFmpeg.Exceptions;
+﻿using Xabe.FFmpeg.Exceptions;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -21,7 +18,7 @@ namespace Xabe.FFmpeg.Test
             //Arrange
             var args = "args";
             var output = "Unrecognized hwaccel: a16f0cb5c0354b6197e9f3bc3108c017. Supported hwaccels: cuda dxva2 qsv d3d11va qsv cuvid";
-            
+
             //Act
             var exception = Record.Exception(() => _sut.CatchFFmpegErrors(output, args));
 

@@ -3,20 +3,19 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
-    <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
+    <AssemblyName>Xabe.FFmpeg.Downloader.Test</AssemblyName>
+    <RootNamespace>Xabe.FFmpeg.Downloader.Test</RootNamespace>
     <DebugType>Full</DebugType>
   </PropertyGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.*" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
+    <ProjectReference Include="..\..\src\Xabe.FFmpeg.Downloader\Xabe.FFmpeg.Downloader.csproj" />
     <ProjectReference Include="..\Xabe.FFmpeg.Test.Common\Xabe.FFmpeg.Test.Common.csproj" />
   </ItemGroup>
 

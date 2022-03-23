@@ -2,7 +2,7 @@
 {
     internal class LinkProvider
     {
-        private IOperatingSystemProvider _operatingSystemProvider;
+        private readonly IOperatingSystemProvider _operatingSystemProvider;
 
         internal LinkProvider()
         {

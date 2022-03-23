@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Xabe.FFmpeg.Exceptions
+﻿namespace Xabe.FFmpeg.Exceptions
 {
     /// <inheritdoc />
     /// <summary>

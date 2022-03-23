@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Xabe.FFmpeg
+﻿namespace Xabe.FFmpeg
 {
     public enum AmplitudeScale
     {

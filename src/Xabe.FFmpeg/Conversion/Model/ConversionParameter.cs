@@ -26,9 +26,9 @@ namespace Xabe.FFmpeg
 
         public override int GetHashCode()
         {
-            int hashCode = 495346454;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Key);
-            hashCode = hashCode * -1521134295 + Position.GetHashCode();
+            var hashCode = 495346454;
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Key);
+            hashCode = (hashCode * -1521134295) + Position.GetHashCode();
             return hashCode;
         }
     }

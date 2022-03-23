@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -84,7 +82,7 @@ namespace Xabe.FFmpeg
         ///     Get new instance of Conversion
         /// </summary>
         /// <returns>IConversion object</returns>
-        public Snippets FromSnippet = new Snippets();
+        public readonly Snippets FromSnippet = new Snippets();
 
         internal Conversions()
         {
@@ -220,7 +218,6 @@ namespace Xabe.FFmpeg
             return await Task.FromResult(Conversion.AddSubtitle(inputPath, outputPath, subtitlePath, language));
         }
 
-
         /// <summary>
         ///     Add subtitle to file. It will be added as new stream so if you want to burn subtitles into video you should use
         ///     BurnSubtitle method.
@@ -332,7 +329,6 @@ namespace Xabe.FFmpeg
         {
             return await Conversion.Concatenate(output, inputVideos);
         }
-
 
         /// <summary>
         ///     Convert one file to another with destination format.

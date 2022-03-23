@@ -1,16 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NSubstitute;
-using Xabe.FFmpeg.Downloader;
 using Xabe.FFmpeg.Downloader.Android;
-using Xabe.FFmpeg.Test.Fixtures;
+using Xabe.FFmpeg.Test.Common;
+using Xabe.FFmpeg.Test.Common.Fixtures;
 using Xunit;
-using OperatingSystem = Xabe.FFmpeg.Downloader.OperatingSystem;
 
-namespace Xabe.FFmpeg.Test
+namespace Xabe.FFmpeg.Downloader.Test
 {
     public class DownloaderTests : IClassFixture<StorageFixture>
     {
@@ -21,15 +20,14 @@ namespace Xabe.FFmpeg.Test
             _storageFixture = storageFixture;
         }
 
-
         [Fact]
         internal async Task FullProcessPassed()
         {
-            const OperatingSystem os = OperatingSystem.Linux64;
+            const OperatingSystem OS = OperatingSystem.Linux64;
 
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
-            operatingSystemProvider.GetOperatingSystem().Returns(x => os);
-            OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+            operatingSystemProvider.GetOperatingSystem().Returns(x => OS);
+            var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
 
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
@@ -37,8 +35,8 @@ namespace Xabe.FFmpeg.Test
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
-                string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
-                string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
+                var ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", OS, FFmpeg.ExecutablesPath);
+                var ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", OS, FFmpeg.ExecutablesPath);
 
                 // 1- First download
 
@@ -94,11 +92,11 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         internal async Task FullProcessPassedWithRetries()
         {
-            const OperatingSystem os = OperatingSystem.Linux64;
+            const OperatingSystem OS = OperatingSystem.Linux64;
 
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
-            operatingSystemProvider.GetOperatingSystem().Returns(x => os);
-            OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+            operatingSystemProvider.GetOperatingSystem().Returns(x => OS);
+            var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
 
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
@@ -106,8 +104,8 @@ namespace Xabe.FFmpeg.Test
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
-                string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
-                string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
+                var ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", OS, FFmpeg.ExecutablesPath);
+                var ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", OS, FFmpeg.ExecutablesPath);
 
                 // 1- First download
 
@@ -163,11 +161,11 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         internal async Task FullProcessPassedWithProgress()
         {
-            const OperatingSystem os = OperatingSystem.Linux64;
+            const OperatingSystem OS = OperatingSystem.Linux64;
 
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
-            operatingSystemProvider.GetOperatingSystem().Returns(x => os);
-            OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+            operatingSystemProvider.GetOperatingSystem().Returns(x => OS);
+            var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
 
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
@@ -175,8 +173,8 @@ namespace Xabe.FFmpeg.Test
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
-                string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
-                string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
+                var ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", OS, FFmpeg.ExecutablesPath);
+                var ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", OS, FFmpeg.ExecutablesPath);
                 IProgress<ProgressInfo> progress;
 
                 // 1- First download
@@ -237,11 +235,11 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         internal async Task FullProcessPassedWithProgressAndRetries()
         {
-            const OperatingSystem os = OperatingSystem.Linux64;
+            const OperatingSystem OS = OperatingSystem.Linux64;
 
             var operatingSystemProvider = Substitute.For<IOperatingSystemProvider>();
-            operatingSystemProvider.GetOperatingSystem().Returns(x => os);
-            OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+            operatingSystemProvider.GetOperatingSystem().Returns(x => OS);
+            var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
 
             var ffmpegExecutablesPath = FFmpeg.ExecutablesPath;
 
@@ -249,8 +247,8 @@ namespace Xabe.FFmpeg.Test
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
 
-                string ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath);
-                string ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", os, FFmpeg.ExecutablesPath);
+                var ffmpegPath = downloader.ComputeFileDestinationPath("ffmpeg", OS, FFmpeg.ExecutablesPath);
+                var ffprobePath = downloader.ComputeFileDestinationPath("ffprobe", OS, FFmpeg.ExecutablesPath);
                 IProgress<ProgressInfo> progress;
 
                 // 1- First download
@@ -328,7 +326,7 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+                var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath)));
@@ -360,7 +358,7 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+                var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath, null, 3);
 
                 Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", os, FFmpeg.ExecutablesPath)));
@@ -392,7 +390,7 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+                var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath, progress, 0);
 
@@ -425,7 +423,7 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                OfficialFFmpegDownloader downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
+                var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath, progress, 3);
 
@@ -454,11 +452,11 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
+                var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", arch, FFmpeg.ExecutablesPath)));
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", arch, FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", FFmpeg.ExecutablesPath)));
             }
             finally
             {
@@ -482,11 +480,11 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
+                var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, null, 3);
 
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", arch, FFmpeg.ExecutablesPath)));
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", arch, FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", FFmpeg.ExecutablesPath)));
             }
             finally
             {
@@ -510,12 +508,12 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
+                var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress);
 
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", arch, FFmpeg.ExecutablesPath)));
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", arch, FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", FFmpeg.ExecutablesPath)));
             }
             finally
             {
@@ -539,12 +537,12 @@ namespace Xabe.FFmpeg.Test
             {
                 FFbinariesVersionInfo currentVersion = JsonConvert.DeserializeObject<FFbinariesVersionInfo>(File.ReadAllText(Resources.FFbinariesInfo));
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                AndroidFFmpegDownloader downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
+                var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress, 3);
 
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", arch, FFmpeg.ExecutablesPath)));
-                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", arch, FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffmpeg", FFmpeg.ExecutablesPath)));
+                Assert.True(File.Exists(downloader.ComputeFileDestinationPath("ffprobe", FFmpeg.ExecutablesPath)));
             }
             finally
             {
@@ -566,7 +564,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
+                var downloader = new FullFFmpegDownloader(operatingSystemProvider);
 
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
 
@@ -593,7 +591,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
+                var downloader = new FullFFmpegDownloader(operatingSystemProvider);
 
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, null, 3);
 
@@ -620,7 +618,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
+                var downloader = new FullFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress);
 
@@ -647,7 +645,7 @@ namespace Xabe.FFmpeg.Test
             try
             {
                 FFmpeg.SetExecutablesPath(_storageFixture.GetTempDirectory());
-                FullFFmpegDownloader downloader = new FullFFmpegDownloader(operatingSystemProvider);
+                var downloader = new FullFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, progress, 3);
 
@@ -659,7 +657,6 @@ namespace Xabe.FFmpeg.Test
                 FFmpeg.SetExecutablesPath(ffmpegExecutablesPath);
             }
         }
-
 
         public static IEnumerable<object[]> FFmpegDownloaders
         {
