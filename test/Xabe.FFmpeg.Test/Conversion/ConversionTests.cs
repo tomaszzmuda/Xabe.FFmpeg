@@ -732,7 +732,7 @@ namespace Xabe.FFmpeg.Test
             Assert.IsType<HardwareAcceleratorNotFoundException>(exception.InnerException);
         }
 
-        [Fact]
+        [RunnableInDebugOnly]
         public async Task UnknownDecoderException()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
