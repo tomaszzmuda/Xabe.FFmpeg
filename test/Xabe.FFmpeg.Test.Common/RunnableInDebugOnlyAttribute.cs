@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Xabe.FFmpeg.Test
+namespace Xabe.FFmpeg.Test.Common
 {
     public class RunnableInDebugOnlyAttribute : FactAttribute
     {

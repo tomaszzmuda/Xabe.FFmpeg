@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -43,7 +43,9 @@ namespace Xabe.FFmpeg
                 var builder = new StringBuilder();
 
                 if (_buildOutputFileName == null)
+                {
                     _buildOutputFileName = (number) => { return _output; };
+                }
 
                 builder.Append(string.Join(" ", _userDefinedParameters[ParameterPosition.PreInput].Select(x => x.Trim())) + " ");
                 builder.Append(GetParameters(ParameterPosition.PreInput));
@@ -156,7 +158,7 @@ namespace Xabe.FFmpeg
                     Directory.CreateDirectory(Path.GetDirectoryName(OutputFilePath.Unescape()));
                 }
             }
-            catch (System.IO.IOException e)
+            catch (IOException)
             {
             }
         }
@@ -178,6 +180,7 @@ namespace Xabe.FFmpeg
                     _streams.Add(stream);
                 }
             }
+
             return this;
         }
 
@@ -188,6 +191,7 @@ namespace Xabe.FFmpeg
             {
                 AddStream(stream);
             }
+
             return this;
         }
 
@@ -229,6 +233,7 @@ namespace Xabe.FFmpeg
             {
                 _parameters.Add(new ConversionParameter($"-ss {seek.Value.ToFFmpeg()}", ParameterPosition.PostInput));
             }
+
             return this;
         }
 
@@ -239,6 +244,7 @@ namespace Xabe.FFmpeg
             {
                 _parameters.Add(new ConversionParameter($"-t {time.Value.ToFFmpeg()}", ParameterPosition.PreInput));
             }
+
             return this;
         }
 
@@ -249,6 +255,7 @@ namespace Xabe.FFmpeg
             {
                 _parameters.Add(new ConversionParameter($"-t {time.Value.ToFFmpeg()}", ParameterPosition.PostInput));
             }
+
             return this;
         }
 
@@ -292,7 +299,9 @@ namespace Xabe.FFmpeg
             _parameters.Add(new ConversionParameter($"-bufsize {bitrate}", ParameterPosition.PostInput));
 
             if (HasH264Stream())
+            {
                 _parameters.Add(new ConversionParameter($"-x264opts nal-hrd=cbr:force-cfr=1", ParameterPosition.PostInput));
+            }
 
             return this;
         }
@@ -315,6 +324,7 @@ namespace Xabe.FFmpeg
             {
                 _parameters.Remove(new ConversionParameter($"-shortest", ParameterPosition.PostInput));
             }
+
             return this;
         }
 
@@ -357,10 +367,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion BuildVideoFromImages(IEnumerable<string> imageFiles)
         {
-            InputBuilder builder = new InputBuilder();
-            string directory = string.Empty;
-
-            _buildInputFileName = builder.PrepareInputFiles(imageFiles.ToList(), out directory);
+            var builder = new InputBuilder();
+            _buildInputFileName = builder.PrepareInputFiles(imageFiles.ToList(), out _);
 
             return this;
         }
@@ -388,6 +396,7 @@ namespace Xabe.FFmpeg
             {
                 builder.Append(stream.BuildParameters(ParameterPosition.PostInput));
             }
+
             return builder.ToString();
         }
 
@@ -398,6 +407,7 @@ namespace Xabe.FFmpeg
             {
                 builder.Append(stream.BuildParameters(ParameterPosition.PreInput));
             }
+
             return builder.ToString();
         }
 
@@ -412,6 +422,7 @@ namespace Xabe.FFmpeg
                     configurations.AddRange(filterable.GetFilters());
                 }
             }
+
             IEnumerable<IGrouping<string, IFilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
             foreach (IGrouping<string, IFilterConfiguration> filterGroup in filterGroups)
             {
@@ -421,14 +432,17 @@ namespace Xabe.FFmpeg
                     var values = new List<string>();
                     foreach (KeyValuePair<string, string> filter in configuration.Filters)
                     {
-                        string map = $"[{configuration.StreamNumber}]";
-                        string value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
+                        var map = $"[{configuration.StreamNumber}]";
+                        var value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
                         values.Add($"{map} {value} ");
                     }
+
                     builder.Append(string.Join(";", values));
                 }
+
                 builder.Append("\" ");
             }
+
             return builder.ToString();
         }
 
@@ -441,8 +455,10 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             foreach (IStream stream in _streams)
             {
-                if(_hasInputBuilder) // If we have an input builder we always want to map the first video stream as it will be created by our input builder
+                if (_hasInputBuilder) // If we have an input builder we always want to map the first video stream as it will be created by our input builder
+                {
                     builder.Append($"-map 0:0 ");
+                }
 
                 foreach (var source in stream.GetSource())
                 {
@@ -457,6 +473,7 @@ namespace Xabe.FFmpeg
                     }
                 }
             }
+
             return builder.ToString();
         }
 
@@ -492,6 +509,7 @@ namespace Xabe.FFmpeg
                 _inputFileMap[source] = index++;
                 builder.Append($"-i {source.Escape()} ");
             }
+
             return builder.ToString();
         }
 
@@ -499,9 +517,8 @@ namespace Xabe.FFmpeg
         {
             foreach (IStream stream in _streams)
             {
-                if (stream is IVideoStream)
+                if (stream is IVideoStream s)
                 {
-                    IVideoStream s = (IVideoStream)stream;
                     if (s.Codec == "libx264" ||
                         s.Codec == VideoCodec.h264.ToString())
                     {
@@ -509,6 +526,7 @@ namespace Xabe.FFmpeg
                     }
                 }
             }
+
             return false;
         }
 
@@ -537,10 +555,10 @@ namespace Xabe.FFmpeg
             {
                 _parameters.Add(new ConversionParameter($"-hwaccel_device {device}", ParameterPosition.PreInput));
             }
+
             UseMultiThread(false);
             return this;
         }
-
 
         /// <inheritdoc />
         public IConversion SetOverwriteOutput(bool overwrite)
@@ -555,6 +573,7 @@ namespace Xabe.FFmpeg
                 _parameters.Remove(new ConversionParameter($"-y", ParameterPosition.PostInput));
                 _parameters.Add(new ConversionParameter($"-n", ParameterPosition.PostInput));
             }
+
             return this;
         }
 
@@ -576,7 +595,10 @@ namespace Xabe.FFmpeg
                 case Format._4xm:
                     format = "4xm";
                     break;
+                default:
+                    break;
             }
+
             return SetInputFormat(format);
         }
 
@@ -584,7 +606,9 @@ namespace Xabe.FFmpeg
         public IConversion SetInputFormat(string format)
         {
             if (format != null)
+            {
                 _parameters.Add(new ConversionParameter($"-f {format}", ParameterPosition.PreInput));
+            }
 
             return this;
         }
@@ -593,7 +617,7 @@ namespace Xabe.FFmpeg
         public IConversion SetOutputFormat(Format outputFormat)
         {
             var format = outputFormat.ToString();
-            switch(outputFormat)
+            switch (outputFormat)
             {
                 case Format._3dostr:
                     format = "3dostr";
@@ -607,7 +631,10 @@ namespace Xabe.FFmpeg
                 case Format._4xm:
                     format = "4xm";
                     break;
+                default:
+                    break;
             }
+
             return SetOutputFormat(format);
         }
 
@@ -615,15 +642,18 @@ namespace Xabe.FFmpeg
         public IConversion SetOutputFormat(string format)
         {
             if (format != null)
+            {
                 _parameters.Add(new ConversionParameter($"-f {format}", ParameterPosition.PostInput));
+            }
+
             return this;
         }
 
         /// <inheritdoc />
         public IConversion SetPixelFormat(PixelFormat pixelFormat)
         {
-            string format = pixelFormat.ToString();
-            switch(pixelFormat)
+            var format = pixelFormat.ToString();
+            switch (pixelFormat)
             {
                 case PixelFormat._0bgr:
                     format = "0bgr";
@@ -631,7 +661,10 @@ namespace Xabe.FFmpeg
                 case PixelFormat._0rgb:
                     format = "0rgb";
                     break;
+                default:
+                    break;
             }
+
             return SetPixelFormat(format);
         }
 
@@ -639,7 +672,10 @@ namespace Xabe.FFmpeg
         public IConversion SetPixelFormat(string pixelFormat)
         {
             if (pixelFormat != null)
+            {
                 _parameters.Add(new ConversionParameter($"-pix_fmt {pixelFormat}", ParameterPosition.PostInput));
+            }
+
             return this;
         }
 
@@ -654,6 +690,7 @@ namespace Xabe.FFmpeg
             {
                 _parameters.Add(new ConversionParameter($"-vsync {method}", ParameterPosition.PostInput));
             }
+
             return this;
         }
 

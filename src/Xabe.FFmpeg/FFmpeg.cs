@@ -53,11 +53,11 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            Assembly entryAssembly = Assembly.GetEntryAssembly();
+            var entryAssembly = Assembly.GetEntryAssembly();
 
             if (entryAssembly != null)
             {
-                string workingDirectory = Path.GetDirectoryName(entryAssembly.Location);
+                var workingDirectory = Path.GetDirectoryName(entryAssembly.Location);
 
                 FindProgramsFromPath(workingDirectory);
 
@@ -68,10 +68,10 @@ namespace Xabe.FFmpeg
                 }
             }
 
-            string[] paths = Environment.GetEnvironmentVariable("PATH")
+            var paths = Environment.GetEnvironmentVariable("PATH")
                                         .Split(Path.PathSeparator);
 
-            foreach (string path in paths)
+            foreach (var path in paths)
             {
                 FindProgramsFromPath(path);
 
@@ -137,8 +137,8 @@ namespace Xabe.FFmpeg
                 return;
             }
 
-            string ffmpegDir = string.IsNullOrWhiteSpace(ExecutablesPath) ? string.Empty : string.Format(ExecutablesPath + " or ");
-            string exceptionMessage =
+            var ffmpegDir = string.IsNullOrWhiteSpace(ExecutablesPath) ? string.Empty : string.Format(ExecutablesPath + " or ");
+            var exceptionMessage =
                 $"Cannot find FFmpeg in {ffmpegDir}PATH. This package needs installed FFmpeg. Please add it to your PATH variable or specify path to DIRECTORY with FFmpeg executables in {nameof(FFmpeg)}.{nameof(ExecutablesPath)}";
             throw new FFmpegNotFoundException(exceptionMessage);
         }
@@ -201,14 +201,7 @@ namespace Xabe.FFmpeg
 
             try
             {
-                if (priority.HasValue)
-                {
-                    process.PriorityClass = priority.Value;
-                }
-                else
-                {
-                    process.PriorityClass = Process.GetCurrentProcess().PriorityClass;
-                }
+                process.PriorityClass = priority ?? Process.GetCurrentProcess().PriorityClass;
             }
             catch (Exception)
             {

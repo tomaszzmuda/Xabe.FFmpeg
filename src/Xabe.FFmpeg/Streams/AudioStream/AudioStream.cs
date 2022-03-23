@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
@@ -52,7 +49,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream CopyStream()
         {
-            return this.SetCodec(AudioCodec.copy);
+            return SetCodec(AudioCodec.copy);
         }
 
         /// <inheritdoc />
@@ -121,7 +118,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetCodec(AudioCodec codec)
         {
-            string input = codec.ToString();
+            var input = codec.ToString();
             if (codec == AudioCodec._4gv)
             {
                 input = "4gv";
@@ -134,13 +131,14 @@ namespace Xabe.FFmpeg
             {
                 input = "8svx_fib";
             }
+
             return SetCodec($"{input}");
         }
 
         /// <inheritdoc />
         public IAudioStream SetCodec(string codec)
         {
-            _parameters.Add(new ConversionParameter($"-c:a {codec.ToString()} "));
+            _parameters.Add(new ConversionParameter($"-c:a {codec} "));
             return this;
         }
 
@@ -211,7 +209,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IAudioStream SetInputFormat(Format inputFormat)
         {
-            return this.SetInputFormat(inputFormat.ToString());
+            return SetInputFormat(inputFormat.ToString());
         }
 
         /// <inheritdoc />

@@ -21,7 +21,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Output pipe descriptor
         /// </summary>
-        PipeDescriptor? OutputPipeDescriptor { get;  }
+        PipeDescriptor? OutputPipeDescriptor { get; }
 
         /// <summary>
         /// Set priority of ffmpeg process

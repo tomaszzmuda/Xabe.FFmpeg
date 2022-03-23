@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Xabe.FFmpeg.Streams.SubtitleStream
+﻿namespace Xabe.FFmpeg.Streams.SubtitleStream
 {
     ///<summary>
     ///      Subtitle codec ("ffmpeg -codecs")

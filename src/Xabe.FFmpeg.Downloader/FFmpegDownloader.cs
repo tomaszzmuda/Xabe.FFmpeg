@@ -42,6 +42,7 @@ namespace Xabe.FFmpeg.Downloader
                 default:
                     throw new NotImplementedException();
             }
+
             await downloader.GetLatestVersion(path, progress);
         }
     }

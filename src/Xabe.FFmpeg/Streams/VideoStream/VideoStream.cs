@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using Xabe.FFmpeg.Streams;
 
 namespace Xabe.FFmpeg
-{ 
+{
     /// <inheritdoc cref="IVideoStream" />
     public class VideoStream : IVideoStream, IFilterable
     {
@@ -103,15 +100,7 @@ namespace Xabe.FFmpeg
                 throw new ArgumentOutOfRangeException(nameof(multiplication), "Value has to be greater than 0.5 and less than 2.0.");
             }
 
-            double videoMultiplicator;
-            if (multiplication >= 1)
-            {
-                videoMultiplicator = 1 - (multiplication - 1) / 2;
-            }
-            else
-            {
-                videoMultiplicator = 1 + (multiplication - 1) * -2;
-            }
+            var videoMultiplicator = multiplication >= 1 ? 1 - ((multiplication - 1) / 2) : 1 + ((multiplication - 1) * -2);
             return $"{videoMultiplicator.ToFFmpegFormat()}*PTS ";
         }
 
@@ -143,6 +132,7 @@ namespace Xabe.FFmpeg
             {
                 _parameters.Add(new ConversionParameter($"-final_delay {delay / 100}"));
             }
+
             return this;
         }
 
@@ -160,20 +150,23 @@ namespace Xabe.FFmpeg
 
         private IVideoStream BuildSubtitleFilter(string subtitlePath, VideoSize? originalSize, string encode, string style)
         {
-            string filter = $"'{subtitlePath}'".Replace("\\", "\\\\")
+            var filter = $"'{subtitlePath}'".Replace("\\", "\\\\")
                                                .Replace(":", "\\:");
             if (!string.IsNullOrEmpty(encode))
             {
                 filter += $":charenc={encode}";
             }
+
             if (!string.IsNullOrEmpty(style))
             {
                 filter += $":force_style=\'{style}\'";
             }
+
             if (originalSize != null)
             {
                 filter += $":original_size={originalSize.Value.ToFFmpegFormat()}";
             }
+
             _videoFilters.Add("subtitles", filter);
             return this;
         }
@@ -210,14 +203,14 @@ namespace Xabe.FFmpeg
         public IVideoStream SetFlags(params string[] flags)
         {
             var input = string.Join("+", flags);
-            if(input[0] != '+')
+            if (input[0] != '+')
             {
                 input = "+" + input;
             }
+
             _parameters.Add(new ConversionParameter($"-flags {input}"));
             return this;
         }
-
 
         /// <inheritdoc />
         public IVideoStream SetFramerate(double framerate)
@@ -243,8 +236,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IVideoStream SetCodec(VideoCodec codec)
         {
-            string input = codec.ToString();
-            if(codec == VideoCodec._8bps)
+            var input = codec.ToString();
+            if (codec == VideoCodec._8bps)
             {
                 input = "8bps";
             }
@@ -256,6 +249,7 @@ namespace Xabe.FFmpeg
             {
                 input = "012v";
             }
+
             return SetCodec($"{input}");
         }
 
@@ -286,10 +280,12 @@ namespace Xabe.FFmpeg
             {
                 if (seek > Duration)
                 {
-                    throw new ArgumentException("Seek can not be greater than video duration. Seek: " + seek.TotalSeconds  + " Duration: " + Duration.TotalSeconds );
+                    throw new ArgumentException("Seek can not be greater than video duration. Seek: " + seek.TotalSeconds + " Duration: " + Duration.TotalSeconds);
                 }
+
                 _parameters.Add(new ConversionParameter($"-ss {seek.ToFFmpeg()}", ParameterPosition.PreInput));
             }
+
             return this;
         }
 
@@ -304,7 +300,7 @@ namespace Xabe.FFmpeg
         public IVideoStream SetWatermark(string imagePath, Position position)
         {
             _watermarkSource = imagePath;
-            string argument = string.Empty;
+            var argument = string.Empty;
             switch (position)
             {
                 case Position.Bottom:
@@ -335,6 +331,7 @@ namespace Xabe.FFmpeg
                     argument += "(main_w-overlay_w)/2:5";
                     break;
             }
+
             _videoFilters["overlay"] = argument;
             return this;
         }
@@ -351,7 +348,10 @@ namespace Xabe.FFmpeg
         public IEnumerable<string> GetSource()
         {
             if (!string.IsNullOrWhiteSpace(_watermarkSource))
+            {
                 return new[] { Path, _watermarkSource };
+            }
+
             return new[] { Path };
         }
 
@@ -374,6 +374,7 @@ namespace Xabe.FFmpeg
                     format = "4xm";
                     break;
             }
+
             return SetInputFormat(format);
         }
 
@@ -381,7 +382,10 @@ namespace Xabe.FFmpeg
         public IVideoStream SetInputFormat(string format)
         {
             if (format != null)
+            {
                 _parameters.Add(new ConversionParameter($"-f {format}", ParameterPosition.PreInput));
+            }
+
             return this;
         }
 

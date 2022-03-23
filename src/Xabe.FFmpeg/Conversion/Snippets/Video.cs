@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Streams.SubtitleStream;
@@ -126,6 +125,7 @@ namespace Xabe.FFmpeg
             {
                 streams.Add(stream.Split(startTime, duration));
             }
+
             foreach (IAudioStream stream in info.AudioStreams)
             {
                 streams.Add(stream.Split(startTime, duration));
@@ -168,13 +168,14 @@ namespace Xabe.FFmpeg
             var mediaInfos = new List<IMediaInfo>();
 
             IConversion conversion = New();
-            foreach (string inputVideo in inputVideos)
+            foreach (var inputVideo in inputVideos)
             {
                 IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputVideo);
 
                 mediaInfos.Add(mediaInfo);
                 conversion.AddParameter($"-i {inputVideo.Escape()} ");
             }
+
             conversion.AddParameter($"-t 1 -f lavfi -i anullsrc=r=48000:cl=stereo");
             conversion.AddParameter($"-filter_complex \"");
 
@@ -187,6 +188,7 @@ namespace Xabe.FFmpeg
                 conversion.AddParameter(
                     $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
             }
+
             for (var i = 0; i < mediaInfos.Count; i++)
             {
                 conversion.AddParameter(!mediaInfos[i].AudioStreams.Any() ? $"[v{i}]" : $"[v{i}][{i}:a]");
@@ -196,7 +198,6 @@ namespace Xabe.FFmpeg
             conversion.AddParameter($"-aspect {maxResolutionMedia.Ratio}");
             return conversion.SetOutput(output);
         }
-
 
         /// <summary>
         ///     Convert one file to another with destination format.
@@ -214,12 +215,18 @@ namespace Xabe.FFmpeg
             foreach (var stream in info.Streams)
             {
                 if (stream is IVideoStream videoStream)
+                {
                     // PR #268 We have to force the framerate here due to an FFmpeg bug with videos > 100fps from android devices
                     conversion.AddStream(videoStream.SetFramerate(videoStream.Framerate));
+                }
                 else if (stream is IAudioStream audioStream)
+                {
                     conversion.AddStream(audioStream);
+                }
                 else if (stream is ISubtitleStream subtitleStream && keepSubtitles)
+                {
                     conversion.AddStream(subtitleStream.SetCodec(SubtitleCodec.mov_text));
+                }
             }
 
             return conversion;
@@ -244,12 +251,18 @@ namespace Xabe.FFmpeg
             foreach (var stream in info.Streams)
             {
                 if (stream is IVideoStream videoStream)
+                {
                     // PR #268 We have to force the framerate here due to an FFmpeg bug with videos > 100fps from android devices
                     conversion.AddStream(videoStream.SetCodec(videoCodec).SetFramerate(videoStream.Framerate));
+                }
                 else if (stream is IAudioStream audioStream)
+                {
                     conversion.AddStream(audioStream.SetCodec(audioCodec));
+                }
                 else if (stream is ISubtitleStream subtitleStream && keepSubtitles)
+                {
                     conversion.AddStream(subtitleStream.SetCodec(subtitleCodec));
+                }
             }
 
             return conversion;

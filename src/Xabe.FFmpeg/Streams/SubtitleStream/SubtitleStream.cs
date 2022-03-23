@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xabe.FFmpeg.Streams;
 using Xabe.FFmpeg.Streams.SubtitleStream;
 
@@ -60,11 +57,11 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public ISubtitleStream SetLanguage(string lang)
         {
-            string language = !string.IsNullOrEmpty(lang) ? lang : Language;
+            var language = !string.IsNullOrEmpty(lang) ? lang : Language;
             if (!string.IsNullOrEmpty(language))
             {
                 language = $"-metadata:s:s:{Index} language={language}";
-               _parameters.Add(new ConversionParameter(language));
+                _parameters.Add(new ConversionParameter(language));
             }
 
             return this;
@@ -85,7 +82,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public ISubtitleStream SetCodec(string codec)
         {
-            _parameters.Add(new ConversionParameter($"-c:s {codec.ToString()}"));
+            _parameters.Add(new ConversionParameter($"-c:s {codec}"));
             return this;
         }
 

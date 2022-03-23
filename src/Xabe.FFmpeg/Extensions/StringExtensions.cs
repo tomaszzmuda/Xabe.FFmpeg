@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 namespace System
 {
@@ -30,6 +26,7 @@ namespace System
             {
                 return output;
             }
+
             if ((output.Last() == '\"' && output.First() == '\"') || (output.Last() == '\'' && output.First() == '\''))
             {
                 return output.Substring(1, output.Length - 2);

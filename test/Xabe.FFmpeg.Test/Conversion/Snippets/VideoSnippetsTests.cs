@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Streams.SubtitleStream;
-using Xabe.FFmpeg.Test.Fixtures;
+using Xabe.FFmpeg.Test.Common.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
@@ -31,7 +31,7 @@ namespace Xabe.FFmpeg.Test
         [MemberData(nameof(JoinFiles))]
         public async Task Concatenate_Test(string firstFile, string secondFile, int duration, int width, int height, string ratio)
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
 
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Concatenate(output, firstFile, secondFile)).Start();
 
@@ -48,12 +48,10 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ChangeSizeTest()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
-            string input = Resources.MkvWithAudio;
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ChangeSize(input, output, 640, 360))
+            var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mkv);
+            var input = Resources.MkvWithAudio;
+            _ = await (await FFmpeg.Conversions.FromSnippet.ChangeSize(input, output, 640, 360))
                                              .Start();
-
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
@@ -66,11 +64,9 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task ExtractVideo()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(Resources.Mp4WithAudio));
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.ExtractVideo(Resources.Mp4WithAudio, output))
+            var output = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(Resources.Mp4WithAudio));
+            _ = await (await FFmpeg.Conversions.FromSnippet.ExtractVideo(Resources.Mp4WithAudio, output))
                                              .Start();
-
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
@@ -83,7 +79,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SnapshotInvalidArgumentTest()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Png);
+            var output = _storageFixture.GetTempFileName(FileExtensions.Png);
             await Assert.ThrowsAsync<ArgumentException>(async () => await (await FFmpeg.Conversions.FromSnippet.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(999)))
                                                                                     .Start());
         }
@@ -93,10 +89,9 @@ namespace Xabe.FFmpeg.Test
         [InlineData(FileExtensions.Jpg, 84461)]
         public async Task SnapshotTest(string extension, long expectedLength)
         {
-            string output = _storageFixture.GetTempFileName(extension);
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0)))
+            var output = _storageFixture.GetTempFileName(extension);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Snapshot(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(0)))
                                              .Start();
-
 
             Assert.True(File.Exists(output));
             // It does not has to be the same
@@ -106,10 +101,9 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SplitVideoTest()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8)))
+            var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Split(Resources.Mp4WithAudio, output, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(8)))
                                              .Start();
-
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
@@ -128,10 +122,9 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task WatermarkTest()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
+            var output = Path.ChangeExtension(Path.GetTempFileName(), FileExtensions.Mp4);
             IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.SetWatermark(Resources.Mp4WithAudio, output, Resources.PngSample, Position.Center))
                                              .Start();
-
 
             Assert.Contains("overlay=", result.Arguments);
             Assert.Contains(Resources.Mp4WithAudio, result.Arguments);
@@ -149,10 +142,10 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SaveM3U8Stream_Https_EverythingWorks()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
             var uri = new Uri("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
 
-            var exception = await Record.ExceptionAsync(async() => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
+            var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
                                                                     .Start());
 
             Assert.Null(exception);
@@ -161,7 +154,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SaveM3U8Stream_Http_EverythingWorks()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
             var uri = new Uri("http://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
 
             var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
@@ -173,9 +166,9 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task SaveM3U8Stream_NotExisting_ExceptionIsThrown()
         {
-            string output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+            var output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
             var uri = new Uri("http://www.bitdash-a.akamaihd.net/notexisting.m3u8");
-            
+
             var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
                                                                     .Start());
 
@@ -185,10 +178,8 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithSubtitles_SkipSubtitles()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
@@ -207,10 +198,8 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithSubtitles_SkipSubtitlesWithParameter()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, false)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, false)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
@@ -229,10 +218,8 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithSubtitles_KeepSubtitles()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, true)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output, true)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
@@ -253,10 +240,8 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.mov_text)]
         public async Task BasicTranscode_InputFileWithSubtitles_KeepSubtitles(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, true)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, true)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
@@ -277,10 +262,8 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.copy)]
         public async Task BasicTranscode_InputFileWithSubtitles_SkipSubtitles(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
@@ -301,10 +284,8 @@ namespace Xabe.FFmpeg.Test
         [InlineData(VideoCodec.h264, AudioCodec.aac, SubtitleCodec.copy)]
         public async Task BasicTranscode_InputFileWithSubtitles_SkipSubtitlesWithParameter(VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec)
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, false)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Transcode(Resources.MkvWithSubtitles, output, videoCodec, audioCodec, subtitleCodec, false)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
@@ -323,10 +304,8 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_SloMoVideo_CorrectFramerate()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.SloMoMp4, output)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.SloMoMp4, output)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(3, mediaInfo.Duration.Seconds);
@@ -336,16 +315,14 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", videoStream.Codec);
             Assert.Empty(mediaInfo.SubtitleStreams);
             // It does not has to be the same
-            Assert.Equal(116, (int) videoStream.Framerate);
+            Assert.Equal(116, (int)videoStream.Framerate);
         }
 
         [Fact]
         public async Task BasicConversion_InputFileWithMultipleStreams_CorrectResult()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-
-            IConversionResult result = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MultipleStream, output)).Start();
-
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            _ = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MultipleStream, output)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(46, mediaInfo.Duration.Seconds);
@@ -360,8 +337,9 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task Rtsp_GotTwoStreams_SaveEverything()
         {
-            string output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
             await _rtspServer.Publish(Resources.BunnyMp4, "bunny");
+            await Task.Delay(2000);
 
             var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny");
 
@@ -373,7 +351,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(result.AudioStreams);
             Assert.Empty(result.SubtitleStreams);
             Assert.Equal("h264", result.VideoStreams.First().Codec);
-            Assert.Equal(23, (int) result.VideoStreams.First().Framerate);
+            Assert.Equal(23, (int)result.VideoStreams.First().Framerate);
             Assert.Equal(640, result.VideoStreams.First().Width);
             Assert.Equal(360, result.VideoStreams.First().Height);
             Assert.Equal("aac", result.AudioStreams.First().Codec);

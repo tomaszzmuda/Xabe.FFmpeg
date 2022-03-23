@@ -1,5 +1,4 @@
-﻿using System;
-using Xabe.FFmpeg.Streams.SubtitleStream;
+﻿using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace Xabe.FFmpeg
 {
