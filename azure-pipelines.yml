@@ -116,6 +116,7 @@ stages:
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
       - job:
+        displayName: Realease to test feed
         steps:
           - download: current
           - task: UseDotNet@2
