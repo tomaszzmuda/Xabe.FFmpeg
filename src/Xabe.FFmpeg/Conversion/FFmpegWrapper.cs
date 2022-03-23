@@ -181,9 +181,10 @@ namespace Xabe.FFmpeg
             else if (e.Data.Contains("size"))
             {
                 Match match = _timeFormatRegex.Match(e.Data);
-                if (match.Success)
+                var ts = GetTimeSpanValue(match);
+                if (ts.TotalMilliseconds > 0)
                 {
-                    OnProgress(this, new ConversionProgressEventArgs(TimeSpan.Parse(match.Value), _totalTime, processId));
+                    OnProgress(this, new ConversionProgressEventArgs(ts, _totalTime, processId));
                 }
             }
         }
@@ -223,6 +224,26 @@ namespace Xabe.FFmpeg
             }
 
             return string.Empty;
+        }
+
+        private TimeSpan GetTimeSpanValue(Match match)
+        {
+            if (match.Success)
+            {
+                var ists = TimeSpan.TryParse(match.Value, out var outts);
+                if (ists)
+                {
+                    return outts;
+                }
+                else
+                {
+                    return GetTimeSpanValue(match.NextMatch());
+                }
+            }
+            else
+            {
+                return new TimeSpan(0, 0, 0);
+            }
         }
     }
 }
