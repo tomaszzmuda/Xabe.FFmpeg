@@ -3,9 +3,13 @@ name: $(TeamProject)_$(Build.DefinitionName)_$(Build.BuildId)_$(SourceBranchName
 # Cli Version: 1.3.5
 
 trigger:
+  batch: true
   branches:
     include:
-      - master
+    - master
+
+pr:
+  - master
 
 pool:
   name: Default
