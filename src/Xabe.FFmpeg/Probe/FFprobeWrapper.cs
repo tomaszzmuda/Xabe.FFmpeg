@@ -186,6 +186,7 @@ namespace Xabe.FFmpeg
                 SampleRate = model.sample_rate,
                 Language = model.tags?.language,
                 Default = model.disposition?.@default,
+                Title = model.tags?.title,
                 Forced = model.disposition?.forced,
             });
         }

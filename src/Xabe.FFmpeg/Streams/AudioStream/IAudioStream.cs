@@ -33,6 +33,11 @@ namespace Xabe.FFmpeg
         string Language { get; }
 
         /// <summary>
+        /// Title
+        /// </summary>
+        string Title { get; }
+
+        /// <summary>
         /// Default
         /// </summary>
         int? Default { get; }
