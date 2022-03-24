@@ -1,4 +1,4 @@
-name: $(Date:yyyyMMdd)$(Rev:.r)$(Rev:.r)
+name: $(Date:yyyyMMdd).$(Date:MM).$(Date:dd)$(Rev:.r)
 
 # Cli Version: 1.3.5
 
