@@ -129,10 +129,10 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet push'
-            inputs:
-              command: push
-              packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
-              nuGetFeedType: external
-              publishFeedCredentials: 'Xabe.FFmpeg prod'
+          # - task: DotNetCoreCLI@2
+          #   displayName: 'dotnet push'
+          #   inputs:
+          #     command: push
+          #     packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
+          #     nuGetFeedType: external
+          #     publishFeedCredentials: 'Xabe.FFmpeg prod'
