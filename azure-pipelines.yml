@@ -96,8 +96,6 @@ stages:
   - stage: test_release
     displayName: "Deploy to test feed"
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    variables:
-      DeployVersion: ${{ ne(parameters.Tag, '0') }}
     jobs:
       - job:
         displayName: Realease to test feed
