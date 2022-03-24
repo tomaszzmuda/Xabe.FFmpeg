@@ -69,6 +69,7 @@ stages:
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
+              echo ${{ parameters.Tag }}
               dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg
