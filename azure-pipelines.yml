@@ -16,49 +16,50 @@ pool:
 
 parameters:
   - name: Tag
-    default: '1.0.0'
+    default: '0'
 
 variables:  
   BuildConfiguration: 'Release'
   ArtifactStagingDirectory: '$(Build.ArtifactStagingDirectory)'
   ArtifactName: 'drop'
+  DeployVersion: $[ne(parameters['Tag'], '0')]
  
 stages:
   - stage: build
     displayName: Build and test
     jobs:
-      - job: run_tests
-        displayName: Run tests
-        steps:
-          - task: UseDotNet@2
-            displayName: 'Set .NET Core to 3.1'
-            inputs:
-              packageType: sdk
-              version: 3.1.x
-              installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet test'
-            inputs:
-              command: test
-              projects: '**/Xabe.FFmpeg.Test.csproj'
-              arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
-              publishTestResults: true  
-      - job: run_downloader_tests
-        displayName: Run downloader tests
-        steps:
-          - task: UseDotNet@2
-            displayName: 'Set .NET Core to 3.1'
-            inputs:
-              packageType: sdk
-              version: 3.1.x
-              installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet test'
-            inputs:
-              command: test
-              projects: '**/Xabe.FFmpeg.Downloader.Test.csproj'
-              arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
-              publishTestResults: true
+      # - job: run_tests
+      #   displayName: Run tests
+      #   steps:
+      #     - task: UseDotNet@2
+      #       displayName: 'Set .NET Core to 3.1'
+      #       inputs:
+      #         packageType: sdk
+      #         version: 3.1.x
+      #         installationPath: $(Agent.ToolsDirectory)/dotnet
+      #     - task: DotNetCoreCLI@2
+      #       displayName: 'dotnet test'
+      #       inputs:
+      #         command: test
+      #         projects: '**/Xabe.FFmpeg.Test.csproj'
+      #         arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
+      #         publishTestResults: true  
+      # - job: run_downloader_tests
+      #   displayName: Run downloader tests
+      #   steps:
+      #     - task: UseDotNet@2
+      #       displayName: 'Set .NET Core to 3.1'
+      #       inputs:
+      #         packageType: sdk
+      #         version: 3.1.x
+      #         installationPath: $(Agent.ToolsDirectory)/dotnet
+      #     - task: DotNetCoreCLI@2
+      #       displayName: 'dotnet test'
+      #       inputs:
+      #         command: test
+      #         projects: '**/Xabe.FFmpeg.Downloader.Test.csproj'
+      #         arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
+      #         publishTestResults: true
       - job: build_artifacts
         displayName: Build artifacts
         steps:
@@ -70,7 +71,7 @@ stages:
               installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
               dotnet clean -c ${{ variables.BuildConfiguration }}
-              if (${{ parameters.Tag }}) {
+              if (${{ variables.DeployVersion }}) {
                 dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet build /p:GenerateDocumentationFile=true
@@ -80,7 +81,7 @@ stages:
             displayName: 'Dotnet build'
           - powershell: |
               ls
-              if (${{ parameters.Tag }}) {
+              if (${{ variables.DeployVersion }}) {
                 dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet pack --no-build -o ${{ variables.ArtifactStagingDirectory }} /p:GenerateDocumentationFile=true --include-symbols
@@ -90,7 +91,7 @@ stages:
             displayName: 'Dotnet pack'
           - powershell: |
               dotnet clean -c ${{ variables.BuildConfiguration }}
-              if (${{ parameters.Tag }}) {
+              if (${{ variables.DeployVersion }}) {
                 dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet build /p:GenerateDocumentationFile=true
@@ -99,7 +100,7 @@ stages:
             workingDirectory: ./src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet build downloader'
           - powershell: |
-              if (${{ parameters.Tag }}) {
+              if (${{ variables.DeployVersion }}) {
                 dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
               } else {
                 dotnet pack --no-build -o ${{ variables.ArtifactStagingDirectory }} /p:GenerateDocumentationFile=true --include-symbols
@@ -113,7 +114,7 @@ stages:
 
   - stage: test_release
     displayName: "Deploy to test feed"
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    # condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
       - job:
         displayName: Realease to test feed
@@ -145,10 +146,10 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          # - task: DotNetCoreCLI@2
-          #   displayName: 'dotnet push'
-          #   inputs:
-          #     command: push
-          #     packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
-          #     nuGetFeedType: external
-          #     publishFeedCredentials: 'Xabe.FFmpeg prod'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push'
+            inputs:
+              command: push
+              packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
+              nuGetFeedType: external
+              publishFeedCredentials: 'Xabe.FFmpeg prod'
