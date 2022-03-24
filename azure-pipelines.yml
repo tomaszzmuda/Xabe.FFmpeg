@@ -25,8 +25,6 @@ variables:
  
 stages:
   - stage: build
-    variables:
-      DeployVersion: ${{ ne(parameters.Tag, '0') }}
     displayName: Build and test
     jobs:
       # - job: run_tests
@@ -71,41 +69,22 @@ stages:
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
-              dotnet clean -c ${{ variables.BuildConfiguration }}
-              if (${{ variables.DeployVersion }}) {
-                dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet build /p:GenerateDocumentationFile=true
-              }
+              dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg
             displayName: 'Dotnet build'
           - powershell: |
-              ls
-              if (${{ variables.DeployVersion }}) {
-                dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet pack --no-build -o ${{ variables.ArtifactStagingDirectory }} /p:GenerateDocumentationFile=true --include-symbols
-              }
+              dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg
             displayName: 'Dotnet pack'
           - powershell: |
-              dotnet clean -c ${{ variables.BuildConfiguration }}
-              if (${{ variables.DeployVersion }}) {
-                dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet build /p:GenerateDocumentationFile=true
-              }
+              dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet build downloader'
           - powershell: |
-              if (${{ variables.DeployVersion }}) {
-                dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet pack --no-build -o ${{ variables.ArtifactStagingDirectory }} /p:GenerateDocumentationFile=true --include-symbols
-              }
+              dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet pack downloader'
@@ -116,6 +95,8 @@ stages:
   - stage: test_release
     displayName: "Deploy to test feed"
     # condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    variables:
+      DeployVersion: ${{ ne(parameters.Tag, '0') }}
     jobs:
       - job:
         displayName: Realease to test feed
