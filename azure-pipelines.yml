@@ -98,6 +98,8 @@ stages:
     condition: succeeded()
     jobs:
       - job:
+        workspace:
+          clean: all
         displayName: Release to test feed
         steps:
           - download: current
