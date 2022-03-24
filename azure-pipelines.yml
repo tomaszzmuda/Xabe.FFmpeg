@@ -94,7 +94,7 @@ stages:
 
   - stage: test_release
     displayName: "Deploy to test feed"
-    condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne(parameters['Tag'], '1.0.0'))
+    condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne('${{ parameters.Tag }}, '1.0.0'))
     variables:
       DeployVersion: ${{ ne(parameters.Tag, '0') }}
     jobs:
@@ -117,7 +117,7 @@ stages:
             
   - stage: prod_release
     displayName: "Deploy to NuGet"
-    condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne(parameters['Tag'], '1.0.0'))
+    condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne('${{ parameters.Tag }}, '1.0.0'))
     jobs:
       - job:
         steps:
