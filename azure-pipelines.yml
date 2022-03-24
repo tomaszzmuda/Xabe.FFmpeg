@@ -27,38 +27,38 @@ stages:
   - stage: build
     displayName: Build and test
     jobs:
-      # - job: run_tests
-      #   displayName: Run tests
-      #   steps:
-      #     - task: UseDotNet@2
-      #       displayName: 'Set .NET Core to 3.1'
-      #       inputs:
-      #         packageType: sdk
-      #         version: 3.1.x
-      #         installationPath: $(Agent.ToolsDirectory)/dotnet
-      #     - task: DotNetCoreCLI@2
-      #       displayName: 'dotnet test'
-      #       inputs:
-      #         command: test
-      #         projects: '**/Xabe.FFmpeg.Test.csproj'
-      #         arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
-      #         publishTestResults: true  
-      # - job: run_downloader_tests
-      #   displayName: Run downloader tests
-      #   steps:
-      #     - task: UseDotNet@2
-      #       displayName: 'Set .NET Core to 3.1'
-      #       inputs:
-      #         packageType: sdk
-      #         version: 3.1.x
-      #         installationPath: $(Agent.ToolsDirectory)/dotnet
-      #     - task: DotNetCoreCLI@2
-      #       displayName: 'dotnet test'
-      #       inputs:
-      #         command: test
-      #         projects: '**/Xabe.FFmpeg.Downloader.Test.csproj'
-      #         arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
-      #         publishTestResults: true
+      - job: run_tests
+        displayName: Run tests
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Set .NET Core to 3.1'
+            inputs:
+              packageType: sdk
+              version: 3.1.x
+              installationPath: $(Agent.ToolsDirectory)/dotnet
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet test'
+            inputs:
+              command: test
+              projects: '**/Xabe.FFmpeg.Test.csproj'
+              arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
+              publishTestResults: true  
+      - job: run_downloader_tests
+        displayName: Run downloader tests
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Set .NET Core to 3.1'
+            inputs:
+              packageType: sdk
+              version: 3.1.x
+              installationPath: $(Agent.ToolsDirectory)/dotnet
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet test'
+            inputs:
+              command: test
+              projects: '**/Xabe.FFmpeg.Downloader.Test.csproj'
+              arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
+              publishTestResults: true
       - job: build_artifacts
         displayName: Build artifacts
         steps:
