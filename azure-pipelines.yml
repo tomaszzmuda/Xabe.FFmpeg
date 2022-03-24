@@ -118,9 +118,8 @@ stages:
             displayName: 'dotnet push'
             inputs:
               command: push
-              packagesToPush: '**.nupkg'
+              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
               publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
-              workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
             
   - stage: prod_release
     displayName: "Deploy to NuGet"
