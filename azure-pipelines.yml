@@ -103,11 +103,6 @@ stages:
         displayName: Release to test feed
         steps:
           - download: current
-          - bash: |
-              find / -name '*2022.3.24*'
-          - bash: |
-              ls
-            workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
           - task: UseDotNet@2
             displayName: 'Set .NET Core to 3.1'
             inputs:
@@ -127,6 +122,8 @@ stages:
     condition: and(succeeded(), ne('${{ parameters.Tag }}', '$(Build.BuildNumber)'))
     jobs:
       - job:
+        workspace:
+          clean: all
         steps:
           - download: current
           - task: UseDotNet@2
@@ -139,6 +136,6 @@ stages:
           #   displayName: 'dotnet push'
           #   inputs:
           #     command: push
-          #     packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
+          #     packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
           #     nuGetFeedType: external
           #     publishFeedCredentials: 'Xabe.FFmpeg prod'
