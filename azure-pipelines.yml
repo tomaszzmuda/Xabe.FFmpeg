@@ -22,10 +22,11 @@ variables:
   BuildConfiguration: 'Release'
   ArtifactStagingDirectory: '$(Build.ArtifactStagingDirectory)'
   ArtifactName: 'drop'
-  DeployVersion: $[ne(parameters['Tag'], '0')]
  
 stages:
   - stage: build
+    variables:
+      DeployVersion: ${{ ne(parameters.Tag, '0') }}
     displayName: Build and test
     jobs:
       # - job: run_tests
