@@ -27,6 +27,16 @@ stages:
   - stage: build
     displayName: Build and test
     jobs:
+      - job: waitForValidation
+        displayName: Wait for external validation
+        timeoutInMinutes: 4320
+        steps:
+        - task: ManualValidation@0
+          timeoutInMinutes: 4320
+          inputs:
+            notifyUsers: |
+              tomasz.a.zmuda@gmail.com
+            onTimeout: 'reject'
       - job: run_tests
         displayName: Run tests
         steps:
