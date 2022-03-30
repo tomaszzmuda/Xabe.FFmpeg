@@ -1,6 +1,6 @@
-name: $(TeamProject)_$(Build.DefinitionName)_$(Build.BuildId)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
-
 # Cli Version: 1.3.5
+
+name: $(Date:yyyy).$(Date:MM).$(Date:dd)$(Rev:.r)
 
 trigger:
   batch: true
@@ -16,13 +16,13 @@ pool:
 
 parameters:
   - name: Tag
-    default: '1.0.0'
+    default: $(Build.BuildNumber)
 
 variables:  
   BuildConfiguration: 'Release'
   ArtifactStagingDirectory: '$(Build.ArtifactStagingDirectory)'
   ArtifactName: 'drop'
- 
+
 stages:
   - stage: build
     displayName: Build and test
@@ -69,41 +69,23 @@ stages:
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
-              dotnet clean -c ${{ variables.BuildConfiguration }}
-              if (${{ parameters.Tag }}) {
-                dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet build /p:GenerateDocumentationFile=true
-              }
+              echo ${{ parameters.Tag }}
+              dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg
             displayName: 'Dotnet build'
           - powershell: |
-              ls
-              if (${{ parameters.Tag }}) {
-                dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet pack --no-build -o ${{ variables.ArtifactStagingDirectory }} /p:GenerateDocumentationFile=true --include-symbols
-              }
+              dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg
             displayName: 'Dotnet pack'
           - powershell: |
-              dotnet clean -c ${{ variables.BuildConfiguration }}
-              if (${{ parameters.Tag }}) {
-                dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet build /p:GenerateDocumentationFile=true
-              }
+              dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet build downloader'
           - powershell: |
-              if (${{ parameters.Tag }}) {
-                dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
-              } else {
-                dotnet pack --no-build -o ${{ variables.ArtifactStagingDirectory }} /p:GenerateDocumentationFile=true --include-symbols
-              }
+              dotnet pack --no-build -c ${{ variables.BuildConfiguration }} -o ${{ variables.ArtifactStagingDirectory }} /p:PackageVersion=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
             failOnStderr: true
             workingDirectory: ./src/Xabe.FFmpeg.Downloader
             displayName: 'Dotnet pack downloader'
@@ -113,10 +95,12 @@ stages:
 
   - stage: test_release
     displayName: "Deploy to test feed"
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    condition: succeeded()
     jobs:
       - job:
-        displayName: Realease to test feed
+        workspace:
+          clean: all
+        displayName: Release to test feed
         steps:
           - download: current
           - task: UseDotNet@2
@@ -129,14 +113,16 @@ stages:
             displayName: 'dotnet push'
             inputs:
               command: push
-              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/Xabe.FFmpeg.*.nupkg'
+              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
               publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
             
   - stage: prod_release
     displayName: "Deploy to NuGet"
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne('${{ parameters.Tag }}', '$(Build.BuildNumber)'))
     jobs:
       - job:
+        workspace:
+          clean: all
         steps:
           - download: current
           - task: UseDotNet@2
@@ -145,10 +131,10 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          # - task: DotNetCoreCLI@2
-          #   displayName: 'dotnet push'
-          #   inputs:
-          #     command: push
-          #     packagesToPush: '$(System.DefaultWorkingDirectory)/_ffmpeg/drop/*.nupkg'
-          #     nuGetFeedType: external
-          #     publishFeedCredentials: 'Xabe.FFmpeg prod'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet push'
+            inputs:
+              command: push
+              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
+              nuGetFeedType: external
+              publishFeedCredentials: 'Xabe.FFmpeg prod'
