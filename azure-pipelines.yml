@@ -39,6 +39,7 @@ stages:
               tomasz.a.zmuda@gmail.com
             onTimeout: 'reject'
       - job: run_tests
+        dependsOn: waitForValidation
         displayName: Run tests
         steps:
           - task: UseDotNet@2
@@ -55,6 +56,7 @@ stages:
               arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
               publishTestResults: true  
       - job: run_downloader_tests
+        dependsOn: waitForValidation
         displayName: Run downloader tests
         steps:
           - task: UseDotNet@2
@@ -71,6 +73,7 @@ stages:
               arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
               publishTestResults: true
       - job: build_artifacts
+        dependsOn: waitForValidation
         displayName: Build artifacts
         steps:
           - task: UseDotNet@2
