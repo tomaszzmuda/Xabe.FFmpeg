@@ -39,6 +39,7 @@ stages:
               tomasz.a.zmuda@gmail.com
             onTimeout: 'reject'
       - job: run_tests
+        timeoutInMinutes: 60
         dependsOn: waitForValidation
         displayName: Run tests
         steps:
@@ -56,6 +57,7 @@ stages:
               arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
               publishTestResults: true  
       - job: run_downloader_tests
+        timeoutInMinutes: 60
         dependsOn: waitForValidation
         displayName: Run downloader tests
         steps:
@@ -73,6 +75,7 @@ stages:
               arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
               publishTestResults: true
       - job: build_artifacts
+        timeoutInMinutes: 60
         dependsOn: waitForValidation
         displayName: Build artifacts
         steps:
