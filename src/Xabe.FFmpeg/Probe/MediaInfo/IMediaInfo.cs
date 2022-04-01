@@ -24,6 +24,11 @@ namespace Xabe.FFmpeg
         TimeSpan Duration { get; }
 
         /// <summary>
+        ///     Date & Time when the media was created
+        /// </summary>
+        DateTime CreationTime { get; }
+
+        /// <summary>
         ///     Size of file
         /// </summary>
         long Size { get; }

@@ -58,11 +58,11 @@ namespace Xabe.FFmpeg
             return (width / cd) + ":" + (height / cd);
         }
 
-        private async Task<FormatModel.Format> GetFormat(string videoPath, CancellationToken cancellationToken)
+        private async Task<FormatModel.Root> GetInfos(string videoPath, CancellationToken cancellationToken)
         {
-            var stringResult = await Start($"-v panic -print_format json=c=1 -show_entries format=size,duration,bit_rate {videoPath}", cancellationToken);
+            var stringResult = await Start($"-v panic -print_format json=c=1 -show_entries format=size,duration,bit_rate:format_tags=creation_time {videoPath}", cancellationToken);
             var root = JsonConvert.DeserializeObject<FormatModel.Root>(stringResult);
-            return root.format;
+            return root;
         }
 
         private TimeSpan GetAudioDuration(ProbeModel.Stream audio)
@@ -151,13 +151,18 @@ namespace Xabe.FFmpeg
                 throw new ArgumentException($"Invalid file. Cannot load file {path}");
             }
 
-            FormatModel.Format format = await GetFormat(path, cancellationToken);
-            if (format.size != null)
+            var infos = await GetInfos(path, cancellationToken);
+            if (infos.format.size != null)
             {
-                mediaInfo.Size = long.Parse(format.size);
+                mediaInfo.Size = long.Parse(infos.format.size);
             }
 
-            mediaInfo.VideoStreams = PrepareVideoStreams(path, streams.Where(x => x.codec_type == "video"), format);
+            if (infos.format.tags.creation_time != null)
+            {
+                mediaInfo.CreationTime = infos.format.tags.creation_time;
+            }
+
+            mediaInfo.VideoStreams = PrepareVideoStreams(path, streams.Where(x => x.codec_type == "video"), infos.format);
             mediaInfo.AudioStreams = PrepareAudioStreams(path, streams.Where(x => x.codec_type == "audio"));
             mediaInfo.SubtitleStreams = PrepareSubtitleStreams(path, streams.Where(x => x.codec_type == "subtitle"));
 

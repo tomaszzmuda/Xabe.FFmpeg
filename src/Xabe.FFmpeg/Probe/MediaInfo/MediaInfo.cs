@@ -26,6 +26,8 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public long Size { get; internal set; }
 
+        public DateTime CreationTime { get; internal set; }
+
         /// <inheritdoc />
         public IEnumerable<IVideoStream> VideoStreams { get; internal set; }
 
