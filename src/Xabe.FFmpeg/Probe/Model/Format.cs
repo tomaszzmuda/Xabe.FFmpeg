@@ -15,7 +15,7 @@ namespace Xabe.FFmpeg
 
         internal class Tags
         {
-            public System.DateTime creation_time { get; set; }
+            public System.DateTime? creation_time { get; set; }
         }
 
         internal class Format
