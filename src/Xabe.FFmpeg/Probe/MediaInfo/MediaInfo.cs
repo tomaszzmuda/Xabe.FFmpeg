@@ -26,6 +26,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public long Size { get; internal set; }
 
+        /// <inheritdoc />
         public DateTime CreationTime { get; internal set; }
 
         /// <inheritdoc />

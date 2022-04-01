@@ -24,7 +24,7 @@ namespace Xabe.FFmpeg
         TimeSpan Duration { get; }
 
         /// <summary>
-        ///     Date & Time when the media was created
+        ///     Date and Time when the media was created
         /// </summary>
         DateTime CreationTime { get; }
 
