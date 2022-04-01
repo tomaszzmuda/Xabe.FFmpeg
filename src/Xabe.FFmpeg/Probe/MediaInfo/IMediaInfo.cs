@@ -26,7 +26,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Date and Time when the media was created
         /// </summary>
-        DateTime CreationTime { get; }
+        DateTime? CreationTime { get; }
 
         /// <summary>
         ///     Size of file

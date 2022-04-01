@@ -157,7 +157,7 @@ namespace Xabe.FFmpeg
                 mediaInfo.Size = long.Parse(infos.format.size);
             }
 
-            if (infos.format.tags.creation_time != null)
+            if (infos.format.tags?.creation_time != null)
             {
                 mediaInfo.CreationTime = infos.format.tags.creation_time;
             }
