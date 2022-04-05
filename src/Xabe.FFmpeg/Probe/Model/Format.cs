@@ -13,6 +13,11 @@ namespace Xabe.FFmpeg
             public Format format { get; set; }
         }
 
+        internal class Tags
+        {
+            public System.DateTime? creation_time { get; set; }
+        }
+
         internal class Format
         {
             public string size { get; set; }
@@ -20,6 +25,8 @@ namespace Xabe.FFmpeg
             public long bit_Rate { get; set; }
 
             public double duration { get; set; }
+
+            public Tags tags { get; set; }
         }
     }
 }
