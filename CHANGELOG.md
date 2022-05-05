@@ -1,4 +1,10 @@
 # Changelog
+## 5.2.0 - 05.04.2022
+- [Add creation time to MediaInfo](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/411)
+- [Properly calculate TotalTime during conversion](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/400)
+- [Fix problem with wrong timespan](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/405/commits)
+- [Add Title to AudioStream](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/406)
+- [Introduce editor.config and yml pipeline](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/404)
 
 ## 5.1.0 - 17.01.2022
 - [Support for piping video output from FFmpeg](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/365)
