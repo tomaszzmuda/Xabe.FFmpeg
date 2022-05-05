@@ -126,16 +126,17 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: DotNetCoreCLI@2
+          - powershell: |
+              dotnet nuget push "*.nupkg" --api-key key --skip-duplicate --source "ffmpeg"
+            workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
             displayName: 'dotnet push'
-            inputs:
-              command: push
-              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
-              publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
+              
             
   - stage: prod_release
     displayName: "Deploy to NuGet"
     condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne('${{ parameters.Tag }}', '$(Build.BuildNumber)'))
+    variables:
+      -group: NuGet
     jobs:
       - job:
         workspace:
@@ -148,10 +149,7 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: DotNetCoreCLI@2
+          - powershell: |
+              dotnet nuget push "*.nupkg" --api-key $(Xabe.FFmpeg) --skip-duplicate -s https://api.nuget.org/v3/index.json
+            workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
             displayName: 'dotnet push'
-            inputs:
-              command: push
-              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
-              nuGetFeedType: external
-              publishFeedCredentials: 'Xabe.FFmpeg prod'
