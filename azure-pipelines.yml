@@ -148,7 +148,7 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: DotNetCoreCLI@2
+          - task: NuGetCommand@2
             displayName: 'dotnet push'
             inputs:
               command: push
