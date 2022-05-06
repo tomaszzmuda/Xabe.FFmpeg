@@ -127,7 +127,7 @@ stages:
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
-              dotnet nuget push "*.nupkg" --api-key key --skip-duplicate --source "ffmpeg"
+              dotnet nuget push "*.nupkg" --api-key key --skip-duplicate --source https://xabe.pkgs.visualstudio.com/ffmpeg/_packaging/ffmpeg/nuget/v3/index.json
             workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
             displayName: 'dotnet push'
               
