@@ -139,10 +139,10 @@ stages:
   - stage: prod_release
     displayName: "Deploy to NuGet"
     condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne('${{ parameters.Tag }}', '$(Build.BuildNumber)'))
-    variables:
-      -group: NuGet
     jobs:
       - job:
+        variables:
+          - group: NuGet
         workspace:
           clean: all
         steps:
@@ -155,6 +155,6 @@ stages:
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
-              dotnet nuget push "*.nupkg" --api-key $(nuget_org) --skip-duplicate -s https://api.nuget.org/v3/index.json
+              dotnet nuget push "*.nupkg" --api-key $(NUGET_ORG) --skip-duplicate -s https://api.nuget.org/v3/index.json
             workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
             displayName: 'dotnet push'
