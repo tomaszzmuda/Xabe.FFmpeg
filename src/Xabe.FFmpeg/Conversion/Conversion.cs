@@ -400,17 +400,6 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        private string GetStreamsPreInputs()
-        {
-            var builder = new StringBuilder();
-            foreach (IStream stream in _streams)
-            {
-                builder.Append(stream.BuildParameters(ParameterPosition.PreInput));
-            }
-
-            return builder.ToString();
-        }
-
         private string GetFilters()
         {
             var builder = new StringBuilder();
@@ -504,10 +493,13 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             var index = 0;
-            foreach (var source in _streams.SelectMany(x => x.GetSource()).Distinct())
+
+            foreach (var source in _streams)
             {
-                _inputFileMap[source] = index++;
-                builder.Append($"-i {source.Escape()} ");
+                var preInput = source.BuildParameters(ParameterPosition.PreInput);
+                var input = string.Join("", source.GetSource().Distinct());
+                _inputFileMap[input] = index++;
+                builder.Append($"{preInput} -i {input.Escape()} ");
             }
 
             return builder.ToString();
