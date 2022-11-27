@@ -119,6 +119,7 @@ stages:
           clean: all
         displayName: Release to test feed
         steps:
+          - checkout: none
           - download: current
           - task: UseDotNet@2
             displayName: 'Set .NET Core to 3.1'
@@ -126,21 +127,26 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: DotNetCoreCLI@2
-            displayName: 'dotnet push'
+          - task: NuGetAuthenticate@0
             inputs:
-              command: push
-              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
-              publishVstsFeed: 'f3a8b4d1-7ce4-4c40-9082-08c3837e956f/71024cca-1bc3-4497-b7a5-2463315f77c5'
+              nuGetServiceConnections: ''
+          - powershell: |
+              dotnet nuget push "*.nupkg" --api-key az --skip-duplicate --source https://xabe.pkgs.visualstudio.com/ffmpeg/_packaging/ffmpeg/nuget/v3/index.json
+            workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
+            displayName: 'dotnet push'
+              
             
   - stage: prod_release
     displayName: "Deploy to NuGet"
     condition: and(and(succeeded(), ne(variables['Build.Reason'], 'PullRequest')), ne('${{ parameters.Tag }}', '$(Build.BuildNumber)'))
     jobs:
       - job:
+        variables:
+          - group: NuGet
         workspace:
           clean: all
         steps:
+          - checkout: none
           - download: current
           - task: UseDotNet@2
             displayName: 'Set .NET Core to 3.1'
@@ -148,10 +154,7 @@ stages:
               packageType: sdk
               version: 3.1.x
               installationPath: $(Agent.ToolsDirectory)/dotnet
-          - task: NuGetCommand@2
+          - powershell: |
+              dotnet nuget push "*.nupkg" --api-key $(NUGET_ORG) --skip-duplicate -s https://api.nuget.org/v3/index.json
+            workingDirectory: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}'
             displayName: 'dotnet push'
-            inputs:
-              command: push
-              packagesToPush: '$(Pipeline.Workspace)/${{ variables.ArtifactName }}/*.nupkg'
-              nuGetFeedType: external
-              publishFeedCredentials: 'Xabe.FFmpeg prod'
