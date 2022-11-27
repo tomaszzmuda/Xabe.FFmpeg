@@ -113,6 +113,14 @@ namespace Xabe.FFmpeg
         }
 
         /// <inheritdoc />
+        public IVideoStream Pad(int width, int height)
+        {
+            var vfParameter = $"-vf \"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:-1:-1:color=black\"";
+            _parameters.Add(new ConversionParameter(vfParameter));
+            return this;
+        }
+
+        /// <inheritdoc />
         public StreamType StreamType => StreamType.Video;
 
         /// <inheritdoc />

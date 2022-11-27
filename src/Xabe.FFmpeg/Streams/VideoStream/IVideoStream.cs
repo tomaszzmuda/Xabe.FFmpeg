@@ -65,6 +65,14 @@ namespace Xabe.FFmpeg
         IVideoStream Rotate(RotateDegrees rotateDegrees);
 
         /// <summary>
+        ///     Pad the video to a specific height and width with black banners.
+        /// </summary>
+        /// <param name="width">Width</param>
+        /// <param name="height">Height</param>
+        /// <returns>IVideoStream</returns>
+        IVideoStream Pad(int width, int height);
+
+        /// <summary>
         ///     Change speed of video
         /// </summary>
         /// <param name="multiplicator">Speed value. (0.5 - 2.0). To double the speed set this to 2.0</param>
