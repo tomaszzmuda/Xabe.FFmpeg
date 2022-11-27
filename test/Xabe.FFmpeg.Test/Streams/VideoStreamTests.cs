@@ -37,6 +37,26 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task Pad()
+        {
+            var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            var videoStream = inputFile.VideoStreams.First();
+            videoStream.Pad(480, 640);
+
+            _ = await FFmpeg.Conversions.New()
+                .AddStream(videoStream)
+                .SetOutput(outputPath)
+                .Start();
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
+            Assert.Equal(480, mediaInfo.VideoStreams.First().Width);
+            Assert.Equal(640, mediaInfo.VideoStreams.First().Height);
+            Assert.False(mediaInfo.AudioStreams.Any());
+        }
+
+        [Fact]
         public async Task ChangeFramerate()
         {
             var outputPath = _storageFixture.GetTempFileName(FileExtensions.Mp4);

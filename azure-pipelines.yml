@@ -57,7 +57,7 @@ stages:
               arguments: '-c ${{ variables.BuildConfiguration }} -v=normal'
               publishTestResults: true  
       - job: run_downloader_tests
-        timeoutInMinutes: 60
+        timeoutInMinutes: 120
         dependsOn: waitForValidation
         displayName: Run downloader tests
         steps:
