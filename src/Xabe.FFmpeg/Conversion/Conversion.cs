@@ -277,7 +277,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion SetOutput(string outputPath)
         {
-            OutputFilePath = outputPath;
+            OutputFilePath = new FileInfo(outputPath).FullName;
             _output = outputPath.Escape();
             return this;
         }

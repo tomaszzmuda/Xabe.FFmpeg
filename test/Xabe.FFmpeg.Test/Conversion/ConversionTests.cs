@@ -1161,5 +1161,22 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(2, conversionResult.Arguments.Split(" ").Where(x => x == "-ss").Count());
             Assert.Equal(2, conversionResult.Arguments.Split(" ").Where(x => x == "-t").Count());
         }
+
+        [Fact]
+        public async Task Conversion_FileNameWithoutDirectory_NewFileIsCreatedInCurrentDirectory()
+        {
+            var tempPath = _storageFixture.GetTempDirectory();
+            Directory.SetCurrentDirectory(tempPath);
+            var tempName = Guid.NewGuid().ToString();
+
+            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+
+            await FFmpeg.Conversions.New()
+                                    .AddStream(info.VideoStreams)
+                                    .SetOutput($"{tempName}.mp4")
+                                    .Start();
+
+            Assert.True(File.Exists(Path.Combine(tempPath, $"{tempName}.mp4")));
+        }
     }
 }
