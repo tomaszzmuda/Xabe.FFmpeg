@@ -125,7 +125,7 @@ namespace Xabe.FFmpeg.Downloader
 
             using (var client = new HttpClient() { Timeout = Timeout.InfiniteTimeSpan })
             {
-                do
+                while (true)
                 {
                     // Create a file stream to store the downloaded data.
                     // This really can be any type of writeable stream.
@@ -158,10 +158,10 @@ namespace Xabe.FFmpeg.Downloader
                             await Task.Delay(retryDelay);
                             retryDelay = TimeSpan.FromSeconds(Math.Min(_maxDelay.TotalSeconds, retryDelay.TotalSeconds * DELAY_MULTIPLIER));
                         }
+
+                        tryCount++;
                     }
                 }
-
-                while (++tryCount <= retries);
             }
 
             return tempPath;
