@@ -125,12 +125,8 @@ namespace Xabe.FFmpeg.Downloader
 
             using (var client = new HttpClient() { Timeout = Timeout.InfiniteTimeSpan })
             {
-                do
+                while (true)
                 {
-                    // Add an exponential delay between subsequent retries
-                    await Task.Delay(retryDelay);
-                    retryDelay = TimeSpan.FromSeconds(Math.Min(_maxDelay.TotalSeconds, retryDelay.TotalSeconds * DELAY_MULTIPLIER));
-
                     // Create a file stream to store the downloaded data.
                     // This really can be any type of writeable stream.
                     using (var file = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -142,12 +138,30 @@ namespace Xabe.FFmpeg.Downloader
                             await client.DownloadAsync(url, file, progress, CancellationToken.None);
                             break;
                         }
-                        catch (HttpRequestException) { /* continue to next attempt */ }
-                        catch (IOException) { /* continue to next attempt */ }
+                        catch (HttpRequestException)
+                        {
+                            if (tryCount == retries)
+                            {
+                                throw;
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            if (tryCount == retries)
+                            {
+                                throw;
+                            }
+                        }
+                        finally
+                        {
+                            // Add an exponential delay between subsequent retries
+                            await Task.Delay(retryDelay);
+                            retryDelay = TimeSpan.FromSeconds(Math.Min(_maxDelay.TotalSeconds, retryDelay.TotalSeconds * DELAY_MULTIPLIER));
+                        }
+
+                        tryCount++;
                     }
                 }
-
-                while (++tryCount <= retries);
             }
 
             return tempPath;
