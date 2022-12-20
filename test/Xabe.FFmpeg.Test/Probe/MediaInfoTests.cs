@@ -296,7 +296,7 @@ namespace Xabe.FFmpeg.Test
 
             var exception = Record.Exception(() => new FileInfo(info.VideoStreams.First().Path));
 
-            Assert.Null(exception);
+            Assert.False(exception == null, info.VideoStreams.First().Path);
         }
     }
 }
