@@ -275,28 +275,28 @@ namespace Xabe.FFmpeg.Test
         public async Task MediaInfo_EscapedString_BasePathDidNotChanged()
         {
             var tempDir = _storageFixture.GetTempDirectory();
-            var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021.mp4");
-            File.Copy(Resources.BunnyMp4, input);
+            var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021_v1.mp4");
+            new FileInfo(Resources.BunnyMp4).CopyTo(input, true);
 
             IMediaInfo info = await FFmpeg.GetMediaInfo(input);
 
             var exception = Record.Exception(() => new FileInfo(info.Path));
 
-            Assert.Null(exception);
+            Assert.True(exception == null, $"There should not be any exceptions. File: [{info.Path}] does not exist.");
         }
 
         [Fact]
         public async Task MediaInfo_EscapedString_BasePathInStreamsDidNotChanged()
         {
             var tempDir = _storageFixture.GetTempDirectory();
-            var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021.mp4");
-            File.Copy(Resources.BunnyMp4, input);
+            var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021_v2.mp4");
+            new FileInfo(Resources.BunnyMp4).CopyTo(input, true);
 
             IMediaInfo info = await FFmpeg.GetMediaInfo(input);
 
             var exception = Record.Exception(() => new FileInfo(info.VideoStreams.First().Path));
 
-            Assert.False(exception == null, info.VideoStreams.First().Path);
+            Assert.True(exception == null, $"There should not be any exceptions. File: [{info.VideoStreams.First().Path}] does not exist.");
         }
     }
 }
