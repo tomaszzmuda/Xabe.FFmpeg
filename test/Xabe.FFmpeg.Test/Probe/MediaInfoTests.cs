@@ -280,9 +280,7 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo info = await FFmpeg.GetMediaInfo(input);
 
-            var exception = Record.Exception(() => new FileInfo(info.Path));
-
-            Assert.True(exception == null, $"There should not be any exceptions. File: [{info.Path}] does not exist.");
+            Assert.Equal(input, info.Path);
         }
 
         [Fact]
@@ -294,9 +292,7 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo info = await FFmpeg.GetMediaInfo(input);
 
-            var exception = Record.Exception(() => new FileInfo(info.VideoStreams.First().Path));
-
-            Assert.True(exception == null, $"There should not be any exceptions. File: [{info.VideoStreams.First().Path.Replace("\"", "")}] does not exist.");
+            Assert.Equal($"\"{input}\"", info.VideoStreams.First().Path);
         }
     }
 }
