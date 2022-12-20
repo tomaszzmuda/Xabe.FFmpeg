@@ -296,7 +296,7 @@ namespace Xabe.FFmpeg.Test
 
             var exception = Record.Exception(() => new FileInfo(info.VideoStreams.First().Path));
 
-            Assert.True(exception == null, $"There should not be any exceptions. File: [{info.VideoStreams.First().Path}] does not exist.");
+            Assert.True(exception == null, $"There should not be any exceptions. File: [{info.VideoStreams.First().Path.Replace("\"", "")}] does not exist.");
         }
     }
 }
