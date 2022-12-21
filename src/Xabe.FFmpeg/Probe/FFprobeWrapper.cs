@@ -137,7 +137,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Get proporties prom media file
+        ///     Get proporties from media file
         /// </summary>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <param name="mediaInfo">Empty media info</param>
@@ -157,9 +157,9 @@ namespace Xabe.FFmpeg
                 mediaInfo.Size = long.Parse(infos.format.size);
             }
 
-            if (infos.format.tags?.creation_time != null)
+            if (!string.IsNullOrWhiteSpace(infos.format.tags?.creation_time) && DateTime.TryParse(infos.format.tags.creation_time, out var creationdate))
             {
-                mediaInfo.CreationTime = infos.format.tags.creation_time;
+                mediaInfo.CreationTime = creationdate;
             }
 
             mediaInfo.VideoStreams = PrepareVideoStreams(path, streams.Where(x => x.codec_type == "video"), infos.format);

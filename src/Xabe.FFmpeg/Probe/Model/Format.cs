@@ -1,5 +1,6 @@
 ﻿
 #pragma warning disable IDE1006 // Naming Styles
+
 namespace Xabe.FFmpeg
 {
     internal class FormatModel
@@ -15,7 +16,7 @@ namespace Xabe.FFmpeg
 
         internal class Tags
         {
-            public System.DateTime? creation_time { get; set; }
+            public string creation_time { get; set; }
         }
 
         internal class Format
