@@ -1,4 +1,15 @@
 # Changelog
+
+## 5.2.3 - 22.12.2022
+- [Solve problems with chineese dates](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/439)
+- [Remove obsolete tasks](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/438)
+
+## 5.2.2 - 20.12.2022
+- [Rethrow downloader exception instead of silently continue](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/436)
+
+## 5.2.1 - 11.12.2022
+- [Fix exception when only file name was given as a path](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/433)
+
 ## 5.2.0 - 05.04.2022
 - [Add creation time to MediaInfo](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/411)
 - [Properly calculate TotalTime during conversion](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/400)
