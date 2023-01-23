@@ -105,7 +105,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ExtractAudio(string inputPath, string outputPath)
         {
-            return Conversion.ExtractAudio(inputPath, outputPath);
+            return await Conversion.ExtractAudio(inputPath, outputPath);
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> AddAudio(string videoPath, string audioPath, string outputPath)
         {
-            return Conversion.AddAudio(videoPath, audioPath, outputPath);
+            return await Conversion.AddAudio(videoPath, audioPath, outputPath);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ToMp4(string inputPath, string outputPath)
         {
-            return Conversion.ToMp4(inputPath, outputPath);
+            return await Conversion.ToMp4(inputPath, outputPath);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ToTs(string inputPath, string outputPath)
         {
-            return Conversion.ToTs(inputPath, outputPath);
+            return await Conversion.ToTs(inputPath, outputPath);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ToOgv(string inputPath, string outputPath)
         {
-            return Conversion.ToOgv(inputPath, outputPath);
+            return await Conversion.ToOgv(inputPath, outputPath);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ToWebM(string inputPath, string outputPath)
         {
-            return Conversion.ToWebM(inputPath, outputPath);
+            return await Conversion.ToWebM(inputPath, outputPath);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ToGif(string inputPath, string outputPath, int loop, int delay = 0)
         {
-            return Conversion.ToGif(inputPath, outputPath, loop, delay);
+            return await Conversion.ToGif(inputPath, outputPath, loop, delay);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         public async Task<IConversion> ConvertWithHardware(string inputFilePath, string outputFilePath, HardwareAccelerator hardwareAccelerator, VideoCodec decoder, VideoCodec encoder, int device = 0)
         {
-            return Conversion.ConvertWithHardware(inputFilePath, outputFilePath, hardwareAccelerator, decoder, encoder, device);
+            return await Conversion.ConvertWithHardwareAsync(inputFilePath, outputFilePath, hardwareAccelerator, decoder, encoder, device);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> BurnSubtitle(string inputPath, string outputPath, string subtitlesPath)
         {
-            return Conversion.AddSubtitles(inputPath, outputPath, subtitlesPath);
+            return await Conversion.AddSubtitlesAsync(inputPath, outputPath, subtitlesPath);
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, string language = null)
         {
-            return Conversion.AddSubtitle(inputPath, outputPath, subtitlePath, language);
+            return await Conversion.AddSubtitleAsync(inputPath, outputPath, subtitlePath, language);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> AddSubtitle(string inputPath, string outputPath, string subtitlePath, SubtitleCodec subtitleCodec, string language = null)
         {
-            return Conversion.AddSubtitle(inputPath, outputPath, subtitlePath, subtitleCodec, language);
+            return await Conversion.AddSubtitleAsync(inputPath, outputPath, subtitlePath, subtitleCodec, language);
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
         {
-            return Conversion.SetWatermark(inputPath, outputPath, inputImage, position);
+            return await Conversion.SetWatermarkAsync(inputPath, outputPath, inputImage, position);
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ExtractVideo(string inputPath, string outputPath)
         {
-            return Conversion.ExtractVideo(inputPath, outputPath);
+            return await Conversion.ExtractVideoAsync(inputPath, outputPath);
         }
 
         /// <summary>
@@ -266,7 +266,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
         {
-            return Conversion.Snapshot(inputPath, outputPath, captureTime);
+            return await Conversion.SnapshotAsync(inputPath, outputPath, captureTime);
         }
 
         /// <summary>
@@ -279,7 +279,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ChangeSize(string inputPath, string outputPath, int width, int height)
         {
-            return Conversion.ChangeSize(inputPath, outputPath, width, height);
+            return await Conversion.ChangeSizeAsync(inputPath, outputPath, width, height);
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> ChangeSize(string inputPath, string outputPath, VideoSize size)
         {
-            return Conversion.ChangeSize(inputPath, outputPath, size);
+            return await Conversion.ChangeSizeAsync(inputPath, outputPath, size);
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
-            return Conversion.Split(inputPath, outputPath, startTime, duration);
+            return await Conversion.SplitAsync(inputPath, outputPath, startTime, duration);
         }
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace Xabe.FFmpeg
         /// <returns>Conversion result</returns>
         public async Task<IConversion> SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
         {
-            return Conversion.SaveM3U8Stream(uri, outputPath, duration);
+            return await Conversion.SaveM3U8StreamAsync(uri, outputPath, duration);
         }
 
         /// <summary>
@@ -339,7 +339,7 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         public async Task<IConversion> Convert(string inputFilePath, string outputFilePath, bool keepSubtitles = false)
         {
-            return Conversion.Convert(inputFilePath, outputFilePath, keepSubtitles);
+            return await Conversion.ConvertAsync(inputFilePath, outputFilePath, keepSubtitles);
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         public async Task<IConversion> Transcode(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
         {
-            return Conversion.Transcode(inputFilePath, outputFilePath, videoCodec, audioCodec, subtitleCodec, keepSubtitles);
+            return await Conversion.TranscodeAsync(inputFilePath, outputFilePath, videoCodec, audioCodec, subtitleCodec, keepSubtitles);
         }
 
         /// <summary>
@@ -374,7 +374,7 @@ namespace Xabe.FFmpeg
             AmplitudeScale amplitudeScale = AmplitudeScale.lin,
             FrequencyScale frequencyScale = FrequencyScale.log)
         {
-            return Conversion.VisualiseAudio(inputPath, outputPath, size, pixelFormat, mode, amplitudeScale, frequencyScale);
+            return await Conversion.VisualiseAudio(inputPath, outputPath, size, pixelFormat, mode, amplitudeScale, frequencyScale);
         }
 
         /// <summary>
@@ -385,7 +385,7 @@ namespace Xabe.FFmpeg
         /// <returns>IConversion object</returns>
         public async Task<IConversion> SendToRtspServer(string inputFilePath, Uri rtspServerUri)
         {
-            return Conversion.SendToRtspServer(inputFilePath, rtspServerUri);
+            return await Conversion.SendToRtspServer(inputFilePath, rtspServerUri);
         }
 
         /// <summary>

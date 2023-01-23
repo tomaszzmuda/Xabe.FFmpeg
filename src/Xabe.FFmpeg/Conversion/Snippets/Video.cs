@@ -17,9 +17,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputImage">Watermark</param>
         /// <param name="position">Position of watermark</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion SetWatermark(string inputPath, string outputPath, string inputImage, Position position)
+        internal static async Task<IConversion> SetWatermarkAsync(string inputPath, string outputPath, string inputImage, Position position)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetWatermark(inputImage, position);
@@ -36,9 +36,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output audio stream</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion ExtractVideo(string inputPath, string outputPath)
+        internal static async Task<IConversion> ExtractVideoAsync(string inputPath, string outputPath)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault();
 
@@ -54,9 +54,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output file</param>
         /// <param name="captureTime">TimeSpan of snapshot</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion Snapshot(string inputPath, string outputPath, TimeSpan captureTime)
+        internal static async Task<IConversion> SnapshotAsync(string inputPath, string outputPath, TimeSpan captureTime)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetOutputFramesCount(1)
@@ -75,9 +75,9 @@ namespace Xabe.FFmpeg
         /// <param name="width">Expected width</param>
         /// <param name="height">Expected height</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion ChangeSize(string inputPath, string outputPath, int width, int height)
+        internal static async Task<IConversion> ChangeSizeAsync(string inputPath, string outputPath, int width, int height)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetSize(width, height);
@@ -95,9 +95,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output path</param>
         /// <param name="size">Expected size</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion ChangeSize(string inputPath, string outputPath, VideoSize size)
+        internal static async Task<IConversion> ChangeSizeAsync(string inputPath, string outputPath, VideoSize size)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputPath);
 
             IVideoStream videoStream = info.VideoStreams.FirstOrDefault()
                                            .SetSize(size);
@@ -116,9 +116,9 @@ namespace Xabe.FFmpeg
         /// <param name="startTime">Start point</param>
         /// <param name="duration">Duration of new video</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion Split(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
+        internal static async Task<IConversion> SplitAsync(string inputPath, string outputPath, TimeSpan startTime, TimeSpan duration)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputPath);
 
             var streams = new List<IStream>();
             foreach (IVideoStream stream in info.VideoStreams)
@@ -143,9 +143,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputPath">Output path</param>
         /// <param name="duration">Duration of stream</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion SaveM3U8Stream(Uri uri, string outputPath, TimeSpan? duration = null)
+        internal static async Task<IConversion> SaveM3U8StreamAsync(Uri uri, string outputPath, TimeSpan? duration = null)
         {
-            var mediaInfo = FFmpeg.GetMediaInfo(uri.ToString()).GetAwaiter().GetResult();
+            var mediaInfo = await FFmpeg.GetMediaInfo(uri.ToString());
             return New()
                 .AddStream(mediaInfo.Streams)
                 .SetInputTime(duration)
@@ -206,9 +206,9 @@ namespace Xabe.FFmpeg
         /// <param name="outputFilePath">Path to file</param>
         /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
-        internal static IConversion Convert(string inputFilePath, string outputFilePath, bool keepSubtitles = false)
+        internal static async Task<IConversion> ConvertAsync(string inputFilePath, string outputFilePath, bool keepSubtitles = false)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputFilePath);
 
             var conversion = New().SetOutput(outputFilePath);
 
@@ -242,9 +242,9 @@ namespace Xabe.FFmpeg
         /// <param name="videoCodec"> The Subtitle Codec to Transcode the input to</param>
         /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
-        internal static IConversion Transcode(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
+        internal static async Task<IConversion> TranscodeAsync(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputFilePath);
 
             var conversion = New().SetOutput(outputFilePath);
 

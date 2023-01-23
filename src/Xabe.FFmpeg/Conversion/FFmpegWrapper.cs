@@ -61,14 +61,14 @@ namespace Xabe.FFmpeg
                         Task.Run(() => ProcessVideoData(process, cancellationToken), cancellationToken);
                     }
 
-                    var ctr = cancellationToken.Register(() =>
+                    var ctr = cancellationToken.Register(async () =>
                     {
                         if (Environment.OSVersion.Platform != PlatformID.Win32NT)
                         {
                             try
                             {
                                 process.StandardInput.Write("q");
-                                Task.Delay(1000 * 5).GetAwaiter().GetResult();
+                                await Task.Delay(1000 * 5);
 
                                 if (!process.HasExited)
                                 {

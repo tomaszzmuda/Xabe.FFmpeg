@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
@@ -12,9 +13,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputFilePath">Path to file</param>
         /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
         /// <returns>IConversion object</returns>
-        internal static IConversion SendToRtspServer(string inputFilePath, Uri rtspServerUri)
+        internal static async Task<IConversion> SendToRtspServer(string inputFilePath, Uri rtspServerUri)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputFilePath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputFilePath);
 
             var streams = new List<IStream>();
             foreach (var stream in info.VideoStreams)

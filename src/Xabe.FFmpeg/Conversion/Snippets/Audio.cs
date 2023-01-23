@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg
 {
@@ -10,9 +11,9 @@ namespace Xabe.FFmpeg
         /// <param name="inputPath">Input path</param>
         /// <param name="outputPath">Output video stream</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion ExtractAudio(string inputPath, string outputPath)
+        internal static async Task<IConversion> ExtractAudio(string inputPath, string outputPath)
         {
-            IMediaInfo info = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo info = await FFmpeg.GetMediaInfo(inputPath);
 
             IAudioStream audioStream = info.AudioStreams.FirstOrDefault();
 
@@ -29,11 +30,11 @@ namespace Xabe.FFmpeg
         /// <param name="audioPath">Audio</param>
         /// <param name="outputPath">Output file</param>
         /// <returns>Conversion result</returns>
-        internal static IConversion AddAudio(string videoPath, string audioPath, string outputPath)
+        internal static async Task<IConversion> AddAudio(string videoPath, string audioPath, string outputPath)
         {
-            IMediaInfo videoInfo = FFmpeg.GetMediaInfo(videoPath).GetAwaiter().GetResult();
+            IMediaInfo videoInfo = await FFmpeg.GetMediaInfo(videoPath);
 
-            IMediaInfo audioInfo = FFmpeg.GetMediaInfo(audioPath).GetAwaiter().GetResult();
+            IMediaInfo audioInfo = await FFmpeg.GetMediaInfo(audioPath);
 
             return New()
                 .AddStream(videoInfo.VideoStreams.FirstOrDefault())
@@ -53,13 +54,13 @@ namespace Xabe.FFmpeg
         /// <param name="amplitudeScale">The frequency scale (default is lin)</param>
         /// <param name="frequencyScale">The amplitude scale (default is log)</param>
         /// <returns>IConversion object</returns>
-        internal static IConversion VisualiseAudio(string inputPath, string outputPath, VideoSize size,
+        internal static async Task<IConversion> VisualiseAudio(string inputPath, string outputPath, VideoSize size,
             PixelFormat pixelFormat = PixelFormat.yuv420p,
             VisualisationMode mode = VisualisationMode.bar,
             AmplitudeScale amplitudeScale = AmplitudeScale.lin,
             FrequencyScale frequencyScale = FrequencyScale.log)
         {
-            IMediaInfo inputInfo = FFmpeg.GetMediaInfo(inputPath).GetAwaiter().GetResult();
+            IMediaInfo inputInfo = await FFmpeg.GetMediaInfo(inputPath);
             IAudioStream audioStream = inputInfo.AudioStreams.FirstOrDefault();
             IVideoStream videoStream = inputInfo.VideoStreams.FirstOrDefault();
 
