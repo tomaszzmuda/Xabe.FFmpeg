@@ -125,7 +125,7 @@ namespace Xabe.FFmpeg.Test
         public async Task ConversionWithoutSpecificFormat()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-            _ = (await Conversion.ConvertAsync(Resources.MkvWithAudio, output)).Start();
+            _ = await (await Conversion.ConvertAsync(Resources.MkvWithAudio, output)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
