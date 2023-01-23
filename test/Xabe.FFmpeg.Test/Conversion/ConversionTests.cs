@@ -759,7 +759,7 @@ namespace Xabe.FFmpeg.Test
             var output = _storageFixture.GetTempFileName(FileExtensions.WebM);
 
             var cancellationTokenSource = new CancellationTokenSource();
-            var conversion = Conversion.ToWebM(Resources.Mp4WithAudio, output);
+            var conversion = await Conversion.ToWebM(Resources.Mp4WithAudio, output);
             var task = conversion
                     .SetPreset(ConversionPreset.UltraFast)
                     .Start(cancellationTokenSource.Token);
