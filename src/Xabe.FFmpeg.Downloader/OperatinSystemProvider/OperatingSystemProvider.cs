@@ -9,11 +9,19 @@ namespace Xabe.FFmpeg.Downloader
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (RuntimeInformation.OSArchitecture == Architecture.X64)
+                if (RuntimeInformation.OSArchitecture == Architecture.X86)
+                {
+                    return OperatingSystem.Windows32;
+                }
+                else if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
                     return OperatingSystem.Windows64;
                 }
-                else if (RuntimeInformation.OSArchitecture == Architecture.X64)
+                else if (RuntimeInformation.OSArchitecture == Architecture.Arm)
+                {
+                    return OperatingSystem.Windows32;
+                }
+                else if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
                 {
                     return OperatingSystem.Windows64;
                 }
