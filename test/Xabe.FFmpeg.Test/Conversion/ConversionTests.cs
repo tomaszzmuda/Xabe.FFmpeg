@@ -295,6 +295,28 @@ namespace Xabe.FFmpeg.Test
         }
 
         [RunnableInDebugOnly]
+        public async Task GetScreenCaptureTest_CancellIt_EverythingIsCorrect()
+        {
+            var cancellationToken = new CancellationTokenSource(2000).Token;
+            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            try
+            {
+                _ = await FFmpeg.Conversions.New()
+                                                                     .AddDesktopStream(VideoSize.Qcif, 29.833, 10, 10)
+                                                                     .SetOutput(output)
+                                                                     .Start(cancellationToken);
+            }
+            catch (OperationCanceledException) { }
+
+            IMediaInfo resultFile = await FFmpeg.GetMediaInfo(output);
+            Assert.Equal("h264", resultFile.VideoStreams.First().Codec);
+            Assert.Equal(29, (int)resultFile.VideoStreams.First().Framerate);
+            Assert.Equal(2, resultFile.VideoStreams.First().Duration.Seconds);
+            Assert.Equal(176, resultFile.VideoStreams.First().Width);
+            Assert.Equal(144, resultFile.VideoStreams.First().Height);
+        }
+
+        [RunnableInDebugOnly]
         public async Task GetScreenCaptureTest_UseVideoSize_EverythingIsCorrect()
         {
             var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);

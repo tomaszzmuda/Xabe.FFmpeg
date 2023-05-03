@@ -63,23 +63,13 @@ namespace Xabe.FFmpeg
 
                     var ctr = cancellationToken.Register(async () =>
                     {
-                        if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+                        try
                         {
-                            try
-                            {
-                                process.StandardInput.Write("q");
-                                await Task.Delay(1000 * 5);
+                            process.StandardInput.Write("q");
 
-                                if (!process.HasExited)
-                                {
-                                    process.CloseMainWindow();
-                                    process.Kill();
-                                    _wasKilled = true;
-                                }
-                            }
-                            catch (InvalidOperationException)
-                            {
-                            }
+                        }
+                        catch (InvalidOperationException)
+                        {
                         }
                     });
 
@@ -91,14 +81,17 @@ namespace Xabe.FFmpeg
                             var index = WaitHandle.WaitAny(new[] { processEnded, cancellationToken.WaitHandle });
 
                             // If the signal came from the caller cancellation token close the window
-                            if (index == 1
-                                && !process.HasExited)
+                            if (index == 1)
                             {
-                                process.CloseMainWindow();
-                                process.Kill();
-                                _wasKilled = true;
+                                Task.Delay(1000 * 2).GetAwaiter().GetResult();
+                                if (!process.HasExited)
+                                {
+                                    process.CloseMainWindow();
+                                    process.Kill();
+                                    _wasKilled = true;
+                                }
                             }
-                            else if (index == 0 && !process.HasExited)
+                            else if (!process.HasExited)
                             {
                                 // Workaround for linux: https://github.com/dotnet/corefx/issues/35544
                                 process.WaitForExit();
