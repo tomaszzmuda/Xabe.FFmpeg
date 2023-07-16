@@ -8,6 +8,21 @@ using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {
+    public enum FileNameFilterMethod
+    {
+        CONTAINS,
+        EXACT,
+        STARTSWITH
+    }
+
+    public enum UserOperatingSystem
+    {
+        WINDOWS,
+        MAC,
+        ANDROID,
+        LINUX
+    }
+
     /// <summary> 
     ///     Wrapper for FFmpeg
     /// </summary>
@@ -25,6 +40,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Initalize new FFmpeg. Search FFmpeg and FFprobe in PATH
         /// </summary>
+        /// 
         protected FFmpeg()
         {
             FindAndValidateExecutables();
@@ -40,14 +56,83 @@ namespace Xabe.FFmpeg
 
             if (!string.IsNullOrWhiteSpace(ExecutablesPath))
             {
-                FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                          .FirstOrDefault(x => x.Name.ToLower()
-                                                                                .Contains(_ffprobeExecutableName.ToLower()))?
-                                                          .FullName;
-                FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
-                                                         .FirstOrDefault(x => x.Name.ToLower()
-                                                                               .Contains(_ffmpegExecutableName.ToLower()))?
-                                                         .FullName;
+                if (!CaseSensitive)
+                {
+                    switch (FilterMethod)
+                    {
+                        case FileNameFilterMethod.CONTAINS:
+                            FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                              .FirstOrDefault(x => x.Name.ToLower()
+                                                                    .Contains(_ffprobeExecutableName.ToLower()) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                                                    .FirstOrDefault(x => x.Name.ToLower()
+                                                                    .Contains(_ffmpegExecutableName.ToLower()) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            break;
+                        case FileNameFilterMethod.EXACT:
+                            FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                              .FirstOrDefault(x => x.Name.ToLower()
+                                                                    .Equals(_ffprobeExecutableName.ToLower()) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                                                    .FirstOrDefault(x => x.Name.ToLower()
+                                                                    .Equals(_ffmpegExecutableName.ToLower()) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            break;
+                        case FileNameFilterMethod.STARTSWITH:
+                            FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                             .FirstOrDefault(x => x.Name.ToLower()
+                                                                    .StartsWith(_ffprobeExecutableName.ToLower()) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                                                    .FirstOrDefault(x => x.Name.ToLower()
+                                                                    .StartsWith(_ffmpegExecutableName.ToLower()) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (FilterMethod)
+                    {
+                        case FileNameFilterMethod.CONTAINS:
+                            FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                              .FirstOrDefault(x => x.Name
+                                                                    .Contains(_ffprobeExecutableName) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                                                    .FirstOrDefault(x => x.Name
+                                                                    .Contains(_ffmpegExecutableName) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            break;
+                        case FileNameFilterMethod.EXACT:
+                            FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                              .FirstOrDefault(x => x.Name
+                                                                    .Equals(_ffprobeExecutableName) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                                                    .FirstOrDefault(x => x.Name
+                                                                    .Equals(_ffmpegExecutableName) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            break;
+                        case FileNameFilterMethod.STARTSWITH:
+                            FFprobePath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                             .FirstOrDefault(x => x.Name
+                                                                    .StartsWith(_ffprobeExecutableName) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            FFmpegPath = new DirectoryInfo(ExecutablesPath).GetFiles()
+                                                                    .FirstOrDefault(x => x.Name
+                                                                    .StartsWith(_ffmpegExecutableName) && IsExecutable(x.FullName))?
+                                                                    .FullName;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
                 ValidateExecutables();
                 _lastExecutablePath = ExecutablesPath;
                 return;
@@ -141,6 +226,45 @@ namespace Xabe.FFmpeg
             var exceptionMessage =
                 $"Cannot find FFmpeg in {ffmpegDir}PATH. This package needs installed FFmpeg. Please add it to your PATH variable or specify path to DIRECTORY with FFmpeg executables in {nameof(FFmpeg)}.{nameof(ExecutablesPath)}";
             throw new FFmpegNotFoundException(exceptionMessage);
+        }
+
+        private bool IsExecutable(string file)
+        {
+            try
+            {
+                using (var fileStream = File.OpenRead(file))
+                {
+                    var magicNumber = new byte[4];
+                    fileStream.Read(magicNumber, 0, 4);
+
+                    switch (OperatingSystem)
+                    {
+                        case UserOperatingSystem.WINDOWS:
+                            return magicNumber[0] == 0x4D && magicNumber[1] == 0x5A;
+
+                        case UserOperatingSystem.MAC:
+
+                            return magicNumber[0] == 0xCE && magicNumber[1] == 0xFA && magicNumber[2] == 0xED && magicNumber[3] == 0xFE;
+                        case UserOperatingSystem.ANDROID:
+                            var appMagicNumber = new byte[4];
+                            fileStream.Seek(0x30, SeekOrigin.Begin);
+                            fileStream.Read(appMagicNumber, 0, 4);
+                            return appMagicNumber[0] == 0x50 && appMagicNumber[1] == 0x4B && appMagicNumber[2] == 0x03 && appMagicNumber[3] == 0x04;
+
+                        case UserOperatingSystem.LINUX:
+                            return magicNumber[0] == 0x7F && magicNumber[1] == 0x45 && magicNumber[2] == 0x4C && magicNumber[3] == 0x46;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //??
+            }
+
+            return false;
         }
 
         private void FindProgramsFromPath(string path)
