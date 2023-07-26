@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,14 +23,10 @@ namespace Xabe.FFmpeg
         public static FileNameFilterMethod FilterMethod { get; private set; }
 
         /// <summary>
-        ///     Defines operating system
-        /// </summary>
-        public static UserOperatingSystem OperatingSystem { get; private set; }
-
-        /// <summary>
         ///     Select if filtering method shuld be case sensitive
+        ///     This will be used to compare file names
         /// </summary>
-        public static bool CaseSensitive { get; private set; }
+        public static IFormatProvider FormatProvider { get; private set; }
 
         /// <summary>
         ///     Get new instance of Conversion
@@ -67,12 +64,11 @@ namespace Xabe.FFmpeg
         /// <param name="ffprobeExecutableName">Name of FFprobe executable name</param>
         /// <param name="filteringMethod">Select method to compare file names</param>
         /// <param name="filteringMethodCaseSensitive">Select if filter shuld be Case Sensitive</param>
-        public static void SetExecutablesPath(string directoryWithFFmpegAndFFprobe, string ffmpegExeutableName = "ffmpeg", string ffprobeExecutableName = "ffprobe", FileNameFilterMethod filteringMethod = FileNameFilterMethod.CONTAINS, bool filteringMethodCaseSensitive = false, UserOperatingSystem operatingSystem = UserOperatingSystem.WINDOWS)
+        public static void SetExecutablesPath(string directoryWithFFmpegAndFFprobe, string ffmpegExeutableName = "ffmpeg", string ffprobeExecutableName = "ffprobe", FileNameFilterMethod filteringMethod = FileNameFilterMethod.Contains, IFormatProvider formatprovider = null)
         {
             ExecutablesPath = directoryWithFFmpegAndFFprobe == null ? null : new DirectoryInfo(directoryWithFFmpegAndFFprobe).FullName;
             FilterMethod = filteringMethod;
-            OperatingSystem = operatingSystem;
-            CaseSensitive = filteringMethodCaseSensitive;
+            FormatProvider = formatprovider ?? CultureInfo.CurrentCulture;
             _ffmpegExecutableName = ffmpegExeutableName;
             _ffprobeExecutableName = ffprobeExecutableName;
         }
