@@ -15,14 +15,6 @@ namespace Xabe.FFmpeg
         StartWith
     }
 
-    public enum UserOperatingSystem
-    {
-        WINDOWS,
-        MAC,
-        ANDROID,
-        LINUX
-    }
-
     /// <summary> 
     ///     Wrapper for FFmpeg
     /// </summary>
