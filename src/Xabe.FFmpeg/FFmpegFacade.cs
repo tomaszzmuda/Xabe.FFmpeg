@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,17 @@ namespace Xabe.FFmpeg
         ///     Directory containing FFmpeg and FFprobe
         /// </summary>
         public static string ExecutablesPath { get; private set; }
+
+        /// <summary>
+        ///     Filtering method for FFmpeg and FFprobe file lookup
+        /// </summary>
+        public static FileNameFilterMethod FilterMethod { get; private set; }
+
+        /// <summary>
+        ///     Select if filtering method shuld be case sensitive
+        ///     This will be used to compare file names
+        /// </summary>
+        public static IFormatProvider FormatProvider { get; private set; }
 
         /// <summary>
         ///     Get new instance of Conversion
@@ -48,11 +60,15 @@ namespace Xabe.FFmpeg
         ///     Set path to irectory containing FFmpeg and FFprobe
         /// </summary>
         /// <param name="directoryWithFFmpegAndFFprobe"></param>
-        /// <param name="ffmpegExeutableName">Name of FFmpeg executable name (Case insensitive)</param>
-        /// <param name="ffprobeExecutableName">Name of FFprobe executable name (Case insensitive)</param>
-        public static void SetExecutablesPath(string directoryWithFFmpegAndFFprobe, string ffmpegExeutableName = "ffmpeg", string ffprobeExecutableName = "ffprobe")
+        /// <param name="ffmpegExeutableName">Name of FFmpeg executable name</param>
+        /// <param name="ffprobeExecutableName">Name of FFprobe executable name</param>
+        /// <param name="filteringMethod">Select method to compare file names</param>
+        /// <param name="filteringMethodCaseSensitive">Select if filter shuld be Case Sensitive</param>
+        public static void SetExecutablesPath(string directoryWithFFmpegAndFFprobe, string ffmpegExeutableName = "ffmpeg", string ffprobeExecutableName = "ffprobe", FileNameFilterMethod filteringMethod = FileNameFilterMethod.Contains, IFormatProvider formatprovider = null)
         {
             ExecutablesPath = directoryWithFFmpegAndFFprobe == null ? null : new DirectoryInfo(directoryWithFFmpegAndFFprobe).FullName;
+            FilterMethod = filteringMethod;
+            FormatProvider = formatprovider ?? CultureInfo.CurrentCulture;
             _ffmpegExecutableName = ffmpegExeutableName;
             _ffprobeExecutableName = ffprobeExecutableName;
         }
