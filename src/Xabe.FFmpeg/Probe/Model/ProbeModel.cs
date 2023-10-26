@@ -24,6 +24,8 @@
 
             public int Channels { get; set; }
 
+            public string ChannelLayout { get; set; }
+
             public int SampleRate { get; set; }
 
             public string PixFmt { get; set; }
