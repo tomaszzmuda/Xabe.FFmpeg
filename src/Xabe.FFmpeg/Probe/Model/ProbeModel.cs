@@ -28,6 +28,8 @@ namespace Xabe.FFmpeg
 
             public int channels { get; set; }
 
+            public string channel_layout { get; set; }
+
             public int sample_rate { get; set; }
 
             public string pix_fmt { get; set; }
