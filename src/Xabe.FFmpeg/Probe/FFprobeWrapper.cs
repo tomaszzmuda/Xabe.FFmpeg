@@ -188,6 +188,7 @@ namespace Xabe.FFmpeg
                 Index = model.index,
                 Bitrate = Math.Abs(model.bit_rate),
                 Channels = model.channels,
+                ChannelLayout = model.channel_layout,
                 SampleRate = model.sample_rate,
                 Language = model.tags?.language,
                 Default = model.disposition?.@default,
