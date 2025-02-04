@@ -156,7 +156,7 @@ namespace Xabe.FFmpeg
             {
                 mediaInfo.Size = long.Parse(infos.format.size);
             }
-            
+
             if (!string.IsNullOrWhiteSpace(infos.format.tags?.creation_time) && DateTimeOffset.TryParse(infos.format.tags.creation_time, out var creationdate))
             {
                 mediaInfo.CreationTime = creationdate.UtcDateTime;
