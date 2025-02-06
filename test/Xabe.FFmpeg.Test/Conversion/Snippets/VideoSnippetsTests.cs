@@ -133,6 +133,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", videoStream.Codec);
         }
 
+        // Docker container needs to be run with some m3u8 stream
         //[Fact]
         //public async Task SaveM3U8Stream_Https_EverythingWorks()
         //{
