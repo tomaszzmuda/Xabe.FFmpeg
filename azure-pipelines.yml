@@ -43,12 +43,6 @@ stages:
         dependsOn: waitForValidation
         displayName: Run tests
         steps:
-          - task: UseDotNet@2
-            displayName: 'Set .NET Core to 3.1'
-            inputs:
-              packageType: sdk
-              version: 3.1.x
-              installationPath: $(Agent.ToolsDirectory)/dotnet
           - task: DotNetCoreCLI@2
             displayName: 'dotnet test'
             inputs:
@@ -61,12 +55,6 @@ stages:
         dependsOn: waitForValidation
         displayName: Run downloader tests
         steps:
-          - task: UseDotNet@2
-            displayName: 'Set .NET Core to 3.1'
-            inputs:
-              packageType: sdk
-              version: 3.1.x
-              installationPath: $(Agent.ToolsDirectory)/dotnet
           - task: DotNetCoreCLI@2
             displayName: 'dotnet test'
             inputs:
@@ -79,12 +67,6 @@ stages:
         dependsOn: waitForValidation
         displayName: Build artifacts
         steps:
-          - task: UseDotNet@2
-            displayName: 'Set .NET Core to 3.1'
-            inputs:
-              packageType: sdk
-              version: 3.1.x
-              installationPath: $(Agent.ToolsDirectory)/dotnet
           - powershell: |
               echo ${{ parameters.Tag }}
               dotnet build -c ${{ variables.BuildConfiguration }} -p:Version=${{ parameters.Tag }} /p:GenerateDocumentationFile=true
@@ -121,12 +103,6 @@ stages:
         steps:
           - checkout: none
           - download: current
-          - task: UseDotNet@2
-            displayName: 'Set .NET Core to 3.1'
-            inputs:
-              packageType: sdk
-              version: 3.1.x
-              installationPath: $(Agent.ToolsDirectory)/dotnet
           - task: NuGetAuthenticate@0
             inputs:
               nuGetServiceConnections: ''
