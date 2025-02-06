@@ -936,7 +936,7 @@ namespace Xabe.FFmpeg.Test
             // Assert
             Assert.Equal(2, devices.Length);
             Assert.Single(devices.Where(x => x.Name == "Logitech HD Webcam C270"));
-        } 
+        }
 
         [RunnableInDebugOnly]
         public async Task SendDesktopToRtspServer_MinimumConfiguration_DesktopIsBeingStreamed()
