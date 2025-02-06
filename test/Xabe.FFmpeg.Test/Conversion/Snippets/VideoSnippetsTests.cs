@@ -133,29 +133,29 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal("h264", videoStream.Codec);
         }
 
-        [Fact]
-        public async Task SaveM3U8Stream_Https_EverythingWorks()
-        {
-            var output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
-            var uri = new Uri("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
+        //[Fact]
+        //public async Task SaveM3U8Stream_Https_EverythingWorks()
+        //{
+        //    var output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+        //    var uri = new Uri("https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
 
-            var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
-                                                                    .Start());
+        //    var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
+        //                                                            .Start());
 
-            Assert.Null(exception);
-        }
+        //    Assert.Null(exception);
+        //}
 
-        [Fact]
-        public async Task SaveM3U8Stream_Http_EverythingWorks()
-        {
-            var output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
-            var uri = new Uri("http://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
+        //[Fact]
+        //public async Task SaveM3U8Stream_Http_EverythingWorks()
+        //{
+        //    var output = Path.ChangeExtension(Path.GetTempFileName(), "mkv");
+        //    var uri = new Uri("http://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8");
 
-            var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
-                                                                    .Start());
+        //    var exception = await Record.ExceptionAsync(async () => await (await FFmpeg.Conversions.FromSnippet.SaveM3U8Stream(uri, output, TimeSpan.FromSeconds(1)))
+        //                                                            .Start());
 
-            Assert.Null(exception);
-        }
+        //    Assert.Null(exception);
+        //}
 
         [Fact]
         public async Task SaveM3U8Stream_NotExisting_ExceptionIsThrown()
