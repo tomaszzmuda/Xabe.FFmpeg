@@ -47,12 +47,12 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
             {
                 Image = "aler9/rtsp-simple-server",
                 ExposedPorts = new Dictionary<string, EmptyStruct>() { { "8554", default } },
-                Env = new List<string>() { "RTSP_PROTOCOLS=tcp" },
+                Env = ["RTSP_PROTOCOLS=tcp"],
                 HostConfig = new HostConfig()
                 {
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                         {
-                            {"8554", new List<PortBinding> {new PortBinding {HostPort = "8554" } }}
+                            {"8554", new List<PortBinding> {new() { HostPort = "8554" } }}
                         },
                     PublishAllPorts = true,
                     AutoRemove = true,

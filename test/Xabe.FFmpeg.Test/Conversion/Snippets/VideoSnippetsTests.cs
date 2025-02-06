@@ -9,23 +9,17 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class VideoSnippetsTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
+    public class VideoSnippetsTests(StorageFixture storageFixture, RtspServerFixture rtspServer) : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
-        private readonly StorageFixture _storageFixture;
-        private readonly RtspServerFixture _rtspServer;
+        private readonly StorageFixture _storageFixture = storageFixture;
+        private readonly RtspServerFixture _rtspServer = rtspServer;
 
-        public VideoSnippetsTests(StorageFixture storageFixture, RtspServerFixture rtspServer)
-        {
-            _storageFixture = storageFixture;
-            _rtspServer = rtspServer;
-        }
-
-        public static IEnumerable<object[]> JoinFiles => new[]
-        {
-            new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720, "16:9"},
-            new object[] {Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240, "4:3"},
-            new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720, "16:9" }
-        };
+        public static IEnumerable<object[]> JoinFiles =>
+        [
+            [Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720, "16:9"],
+            [Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240, "4:3"],
+            [Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720, "16:9"]
+        ];
 
         [Theory]
         [MemberData(nameof(JoinFiles))]
