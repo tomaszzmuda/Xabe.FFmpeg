@@ -45,6 +45,8 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
                     Thread.Sleep(500 * i * i);
                 }
             }
+
+            GC.SuppressFinalize(this);
         }
     }
 }

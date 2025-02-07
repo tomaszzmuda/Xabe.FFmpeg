@@ -9,14 +9,9 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class ConversionTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
+    public class ConversionTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
-        private readonly StorageFixture _storageFixture;
-
-        public ConversionTests(StorageFixture storageFixture)
-        {
-            _storageFixture = storageFixture;
-        }
+        private readonly StorageFixture _storageFixture = storageFixture;
 
         [Theory]
         [InlineData(Position.UpperRight)]
@@ -939,7 +934,7 @@ namespace Xabe.FFmpeg.Test
             var devices = await FFmpeg.GetAvailableDevices();
 
             // Assert
-            Assert.Equal(2, devices.Count());
+            Assert.Equal(2, devices.Length);
             Assert.Single(devices.Where(x => x.Name == "Logitech HD Webcam C270"));
         }
 
