@@ -47,7 +47,7 @@ namespace Xabe.FFmpeg.Downloader
             using (var wc = new WebClient())
             {
                 var json = wc.DownloadString("http://ffbinaries.com/api/v1/version/latest");
-                return JsonSerializer.Deserialize<FFbinariesVersionInfo>(json);
+                return JsonSerializer.Deserialize<FFbinariesVersionInfo>(json, _defaultSerializerOptions);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Xabe.FFmpeg.Downloader
                 return true;
             }
 
-            FFbinariesVersionInfo currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(File.ReadAllText(versionPath));
+            FFbinariesVersionInfo currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(File.ReadAllText(versionPath), _defaultSerializerOptions);
             if (currentVersion != null)
             {
                 if (new Version(latestVersion) > new Version(currentVersion.Version))
