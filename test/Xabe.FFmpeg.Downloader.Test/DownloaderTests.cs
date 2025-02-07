@@ -12,7 +12,7 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Downloader.Test
 {
-    public class DownloaderTests : IClassFixture<StorageFixture>
+    public class DownloaderTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
         private readonly StorageFixture _storageFixture;
 
@@ -23,10 +23,7 @@ namespace Xabe.FFmpeg.Downloader.Test
             WriteIndented = true
         };
 
-        public DownloaderTests(StorageFixture storageFixture)
-        {
-            _storageFixture = storageFixture;
-        }
+        private readonly StorageFixture _storageFixture = storageFixture;
 
         [Fact]
         internal async Task FullProcessPassed()

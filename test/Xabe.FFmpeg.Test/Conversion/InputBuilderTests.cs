@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,9 +12,8 @@ namespace Xabe.FFmpeg.Test
         {
             var files = Directory.EnumerateFiles(Resources.Images).ToList();
             var builder = new InputBuilder();
-            var directory = string.Empty;
 
-            Func<string, string> inputBuilder = builder.PrepareInputFiles(files, out directory);
+            builder.PrepareInputFiles(files, out var directory);
             var preparedFiles = Directory.EnumerateFiles(directory).ToList();
 
             Assert.Equal(12, builder.FileList.Count);
