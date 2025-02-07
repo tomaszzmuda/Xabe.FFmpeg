@@ -29,6 +29,7 @@ namespace Xabe.FFmpeg
             {
                 return Array.Empty<ProbeModel.Stream>();
             }
+
             var probe = JsonSerializer.Deserialize<ProbeModel>(stringResult, _defaultSerializerOptions);
             return probe.Streams ?? Array.Empty<ProbeModel.Stream>();
         }
