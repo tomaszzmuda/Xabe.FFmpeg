@@ -1,4 +1,17 @@
 # Changelog
+## 6.0.0 - 10.02.2025
+- [Use internal System.Text.Json > 9.0.0](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/485)
+- [Eol Repair](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/467)
+- [Fix for Issue #456](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/459)
+
+## 5.2.6 - 14.03.2023
+- [Default to Win32 and Win64 for Arm and Arm64 Respectively on Windows Systems](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/450)
+
+## 5.2.5 - 09.02.2022
+- [Fix of date time offset that was using the local time zone of the computer](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/443)
+
+## 5.2.4 - 25.01.2023
+- [Remove get awaiter everywhere](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/441)
 
 ## 5.2.3 - 22.12.2022
 - [Solve problems with chineese dates](https://github.com/tomaszzmuda/Xabe.FFmpeg/pull/439)
