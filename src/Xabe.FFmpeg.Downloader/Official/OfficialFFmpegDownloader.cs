@@ -46,7 +46,7 @@ namespace Xabe.FFmpeg.Downloader
         {
             using (var wc = new WebClient())
             {
-                var json = wc.DownloadString("http://ffbinaries.com/api/v1/version/latest");
+                var json = wc.DownloadString("https://ffbinaries.com/api/v1/version/latest");
                 return JsonSerializer.Deserialize<FFbinariesVersionInfo>(json, _defaultSerializerOptions);
             }
         }
