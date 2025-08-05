@@ -16,7 +16,7 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
 
         public RtspServerFixture()
         {
-            _dockerClient = new DockerClientConfiguration(new Uri("tcp://localhost:2375")).CreateClient();
+            _dockerClient = new DockerClientConfiguration().CreateClient();
         }
 
         public async Task DisposeAsync()
