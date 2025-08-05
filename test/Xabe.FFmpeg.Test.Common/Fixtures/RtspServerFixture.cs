@@ -37,7 +37,7 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
             await _dockerClient.Images.CreateImageAsync(
                     new ImagesCreateParameters
                     {
-                        FromImage = "aler9/rtsp-simple-server:latest"
+                        FromImage = "aler9/rtsp-simple-server:v1.12.2"
                     },
                     null,
                     new Progress<JSONMessage>((m) => { }),
