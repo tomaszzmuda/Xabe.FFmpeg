@@ -103,7 +103,7 @@ stages:
         steps:
           - checkout: none
           - download: current
-          - task: NuGetAuthenticate@0
+          - task: NuGetAuthenticate@1
             inputs:
               nuGetServiceConnections: ''
           - powershell: |
