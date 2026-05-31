@@ -493,12 +493,28 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             var index = 0;
 
-            foreach (var source in _streams)
+            foreach (var stream in _streams)
             {
-                var preInput = source.BuildParameters(ParameterPosition.PreInput);
-                var input = string.Join("", source.GetSource().Distinct());
-                _inputFileMap[input] = index++;
-                builder.Append($"{preInput} -i {input.Escape()} ");
+                var preInput = stream.BuildParameters(ParameterPosition.PreInput);
+                var sources = stream.GetSource().Distinct().ToList();
+
+                for (var i = 0; i < sources.Count; i++)
+                {
+                    var source = sources[i];
+                    if (!_inputFileMap.ContainsKey(source))
+                    {
+                        _inputFileMap[source] = index++;
+                        // Only apply preInput parameters to the first source of the stream
+                        if (i == 0)
+                        {
+                            builder.Append($"{preInput} -i {source.Escape()} ");
+                        }
+                        else
+                        {
+                            builder.Append($"-i {source.Escape()} ");
+                        }
+                    }
+                }
             }
 
             return builder.ToString();
