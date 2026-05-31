@@ -49,7 +49,6 @@ namespace Xabe.FFmpeg
 
                 builder.Append(string.Join(" ", _userDefinedParameters[ParameterPosition.PreInput].Select(x => x.Trim())) + " ");
                 builder.Append(GetParameters(ParameterPosition.PreInput));
-                builder.Append(GetStreamsPreInputs());
 
                 if (_buildInputFileName == null)
                 {
