@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Xabe.FFmpeg.Downloader
 {
     internal class BaseBinaries
     {
-        [JsonProperty(PropertyName = "ffmpeg")]
+        [JsonPropertyName("ffmpeg")]
         public string Ffmpeg { get; set; }
 
-        [JsonProperty(PropertyName = "ffplay")]
+        [JsonPropertyName("ffplay")]
         public string Ffplay { get; set; }
 
-        [JsonProperty(PropertyName = "ffprobe")]
+        [JsonPropertyName("ffprobe")]
         public string Ffprobe { get; set; }
     }
 
@@ -44,38 +44,38 @@ namespace Xabe.FFmpeg.Downloader
 
     internal class Osx64
     {
-        [JsonProperty(PropertyName = "ffmpeg")]
+        [JsonPropertyName("ffmpeg")]
         public string Ffmpeg { get; set; }
-        [JsonProperty(PropertyName = "ffplay")]
+        [JsonPropertyName("ffplay")]
         public string Ffplay { get; set; }
-        [JsonProperty(PropertyName = "ffprobe")]
+        [JsonPropertyName("ffprobe")]
         public string Ffprobe { get; set; }
     }
 
     internal class Bin
     {
-        [JsonProperty(PropertyName = "windows-32")]
+        [JsonPropertyName("windows-32")]
         public Windows32 Windows32 { get; set; }
 
-        [JsonProperty(PropertyName = "windows-64")]
+        [JsonPropertyName("windows-64")]
         public Windows64 Windows64 { get; set; }
 
-        [JsonProperty(PropertyName = "linux-32")]
+        [JsonPropertyName("linux-32")]
         public Linux32 Linux32 { get; set; }
 
-        [JsonProperty(PropertyName = "linux-64")]
+        [JsonPropertyName("linux-64")]
         public Linux64 Linux64 { get; set; }
 
-        [JsonProperty(PropertyName = "linux-armhf")]
+        [JsonPropertyName("linux-armhf")]
         public LinuxArmhf LinuxArmhf { get; set; }
 
-        [JsonProperty(PropertyName = "linux-armel")]
+        [JsonPropertyName("linux-armel")]
         public LinuxArmel LinuxArmel { get; set; }
 
-        [JsonProperty(PropertyName = "linux-arm64")]
+        [JsonPropertyName("linux-arm64")]
         public LinuxArm64 LinuxArm64 { get; set; }
 
-        [JsonProperty(PropertyName = "osx-64")]
+        [JsonPropertyName("osx-64")]
         public Osx64 Osx64 { get; set; }
     }
 
@@ -87,16 +87,14 @@ namespace Xabe.FFmpeg.Downloader
 
     internal class DownloadedVersion
     {
-        [JsonProperty(PropertyName = "version")]
         public string Version { get; set; }
     }
 
     internal class FFbinariesVersionInfo
     {
-        [JsonProperty(PropertyName = "version")]
         public string Version { get; set; }
 
-        [JsonProperty(PropertyName = "bin")]
+        [JsonPropertyName("bin")]
         public Bin BinariesUrl { get; set; }
     }
 }

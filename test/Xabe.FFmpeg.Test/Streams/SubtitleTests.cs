@@ -5,22 +5,15 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class SubtitleTests : IClassFixture<StorageFixture>
+    public class SubtitleTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
-        private readonly StorageFixture _storageFixture;
-
-        public SubtitleTests(StorageFixture storageFixture)
-        {
-            _storageFixture = storageFixture;
-        }
-
         [Theory]
         [InlineData(Format.ass, ".ass", "ass")]
         [InlineData(Format.webvtt, ".vtt", "webvtt")]
         [InlineData(Format.srt, ".srt", "subrip")]
         public async Task ConvertTest(Format format, string extension, string expectedFormat)
         {
-            var outputPath = _storageFixture.GetTempFileName(extension);
+            var outputPath = storageFixture.GetTempFileName(extension);
 
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SubtitleSrt);
 
@@ -34,7 +27,7 @@ namespace Xabe.FFmpeg.Test
             IMediaInfo resultInfo = await FFmpeg.GetMediaInfo(outputPath);
             Assert.Single(resultInfo.SubtitleStreams);
             ISubtitleStream resultSteam = resultInfo.SubtitleStreams.First();
-            Assert.Equal(expectedFormat, resultSteam.Codec.ToLower());
+            Assert.Equal(expectedFormat, resultSteam.Codec.ToLowerInvariant());
         }
 
         [Theory]
@@ -43,7 +36,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData(".srt", "subrip", false)]
         public async Task ExtractSubtitles(string extension, string expectedFormat, bool checkOutputLanguage)
         {
-            var outputPath = _storageFixture.GetTempFileName(extension);
+            var outputPath = storageFixture.GetTempFileName(extension);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MultipleStream);
 
             ISubtitleStream subtitleStream = info.SubtitleStreams.FirstOrDefault(x => x.Language == "spa");

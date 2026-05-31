@@ -6,19 +6,12 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class HardwareAcceleration : IClassFixture<StorageFixture>
+    public class HardwareAcceleration(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
-        private readonly StorageFixture _storageFixture;
-
-        public HardwareAcceleration(StorageFixture storageFixture)
-        {
-            _storageFixture = storageFixture;
-        }
-
         [RunnableInDebugOnly]
         public async Task ConversionWithHardware()
         {
-            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = storageFixture.GetTempFileName(FileExtensions.Mp4);
             _ = await (await FFmpeg.Conversions.FromSnippet.ConvertWithHardware(Resources.MkvWithAudio, output, HardwareAccelerator.cuvid, VideoCodec.h264_cuvid, VideoCodec.h264_nvenc)).Start();
 
             var mediaInfo = await FFmpeg.GetMediaInfo(output);

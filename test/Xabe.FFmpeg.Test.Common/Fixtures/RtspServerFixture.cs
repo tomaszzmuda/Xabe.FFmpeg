@@ -10,6 +10,7 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
 {
     public class RtspServerFixture : IAsyncLifetime
     {
+        private const string RTSP_DOCKER_IMAGE = "aler9/rtsp-simple-server:v1.12.2";
         private readonly DockerClient _dockerClient;
         private string _containerId;
 
@@ -37,7 +38,7 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
             await _dockerClient.Images.CreateImageAsync(
                     new ImagesCreateParameters
                     {
-                        FromImage = "aler9/rtsp-simple-server:latest"
+                        FromImage = RTSP_DOCKER_IMAGE
                     },
                     null,
                     new Progress<JSONMessage>((m) => { }),
@@ -45,14 +46,14 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
 
             var response = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters()
             {
-                Image = "aler9/rtsp-simple-server",
+                Image = RTSP_DOCKER_IMAGE,
                 ExposedPorts = new Dictionary<string, EmptyStruct>() { { "8554", default } },
-                Env = new List<string>() { "RTSP_PROTOCOLS=tcp" },
+                Env = ["RTSP_PROTOCOLS=tcp"],
                 HostConfig = new HostConfig()
                 {
                     PortBindings = new Dictionary<string, IList<PortBinding>>
                         {
-                            {"8554", new List<PortBinding> {new PortBinding {HostPort = "8554" } }}
+                            {"8554", new List<PortBinding> {new() { HostPort = "8554" } }}
                         },
                     PublishAllPorts = true,
                     AutoRemove = true,

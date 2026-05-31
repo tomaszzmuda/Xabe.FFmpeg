@@ -6,14 +6,9 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class ConversionToFormatTests : IClassFixture<StorageFixture>
+    public class ConversionToFormatTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
-        private readonly StorageFixture _storageFixture;
-
-        public ConversionToFormatTests(StorageFixture storageFixture)
-        {
-            _storageFixture = storageFixture;
-        }
+        private readonly StorageFixture _storageFixture = storageFixture;
 
         [Theory]
         [InlineData(1, 0, 25)]
@@ -37,12 +32,12 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(720, videoStream.Height);
         }
 
-        public static IEnumerable<object[]> JoinFiles => new[]
-        {
-            new object[] {Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720, "16:9"},
-            new object[] {Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240, "4:3"},
-            new object[] {Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720, "16:9" }
-        };
+        public static IEnumerable<object[]> JoinFiles =>
+        [
+            [Resources.MkvWithAudio, Resources.Mp4WithAudio, 23, 1280, 720, "16:9"],
+            [Resources.MkvWithAudio, Resources.MkvWithAudio, 19, 320, 240, "4:3"],
+            [Resources.MkvWithAudio, Resources.Mp4, 23, 1280, 720, "16:9"]
+        ];
 
         [Fact]
         public async Task ToMp4Test()

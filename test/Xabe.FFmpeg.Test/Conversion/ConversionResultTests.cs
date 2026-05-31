@@ -21,7 +21,6 @@ namespace Xabe.FFmpeg.Test
                                              .SetPriority(priority)
                                              .Start();
 
-
             var mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
             Assert.NotNull(mediaInfo);
             Assert.True(result.StartTime != DateTime.MinValue);

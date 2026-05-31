@@ -7,15 +7,8 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class SubtitleSnippetsTests : IClassFixture<StorageFixture>
+    public class SubtitleSnippetsTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
-        private readonly StorageFixture _storageFixture;
-
-        public SubtitleSnippetsTests(StorageFixture storageFixture)
-        {
-            _storageFixture = storageFixture;
-        }
-
         [Fact]
         public async Task AddSubtitleTest()
         {
@@ -137,7 +130,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task BasicConversion_InputFileWithSubtitles_SkipSubtitles()
         {
-            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = storageFixture.GetTempFileName(FileExtensions.Mp4);
             _ = await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithSubtitles, output)).Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);

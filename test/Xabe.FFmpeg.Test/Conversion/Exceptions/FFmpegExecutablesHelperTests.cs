@@ -5,15 +5,8 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class FFmpegExecutablesHelperTests : IClassFixture<StorageFixture>
+    public class FFmpegExecutablesHelperTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
-        private readonly StorageFixture _storageFixture;
-
-        public FFmpegExecutablesHelperTests(StorageFixture storageFixture)
-        {
-            _storageFixture = storageFixture;
-        }
-
         [Fact]
         public void TestSelectFFmpegPathForWindows()
         {
@@ -64,7 +57,7 @@ namespace Xabe.FFmpeg.Test
 
         private IEnumerable<FileInfo> GetWindowsPathMocks()
         {
-            var tmpDir = _storageFixture.GetTempDirectory();
+            var tmpDir = storageFixture.GetTempDirectory();
 
             File.Create(Path.Combine(tmpDir, "ffmpeg.exe"));
             File.Create(Path.Combine(tmpDir, "FFmpeg.AutoGen.dll"));
@@ -74,7 +67,7 @@ namespace Xabe.FFmpeg.Test
 
         private IEnumerable<FileInfo> GetLinuxPathMocks()
         {
-            var tmpDir = _storageFixture.GetTempDirectory();
+            var tmpDir = storageFixture.GetTempDirectory();
 
             File.Create(Path.Combine(tmpDir, "ffmpeg"));
             File.Create(Path.Combine(tmpDir, "FFmpeg.AutoGen.dll"));

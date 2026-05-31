@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <AssemblyName>Xabe.FFmpeg.Test</AssemblyName>
     <RootNamespace>Xabe.FFmpeg.Test</RootNamespace>
@@ -19,5 +19,4 @@
     <ProjectReference Include="..\..\src\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
     <ProjectReference Include="..\Xabe.FFmpeg.Test.Common\Xabe.FFmpeg.Test.Common.csproj" />
   </ItemGroup>
-
 </Project>

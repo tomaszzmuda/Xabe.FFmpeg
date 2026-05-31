@@ -1,41 +1,37 @@
-﻿using Newtonsoft.Json;
-
-#pragma warning disable IDE1006 // Naming Styles
-
-namespace Xabe.FFmpeg
+﻿namespace Xabe.FFmpeg
 {
     internal class ProbeModel
     {
-        public Stream[] streams { get; set; }
+        public Stream[] Streams { get; set; }
 
         public class Stream
         {
-            public string codec_name { get; set; }
+            public string CodecName { get; set; }
 
-            public int height { get; set; }
+            public int Height { get; set; }
 
-            public int width { get; set; }
+            public int Width { get; set; }
 
-            public string codec_type { get; set; }
+            public string CodecType { get; set; }
 
-            public string r_frame_rate { get; set; }
+            public string RFrameRate { get; set; }
 
-            public double duration { get; set; }
+            public double Duration { get; set; }
 
-            public long bit_rate { get; set; }
+            public long BitRate { get; set; }
 
-            public int index { get; set; }
+            public int Index { get; set; }
 
-            public int channels { get; set; }
+            public int Channels { get; set; }
 
-            public int sample_rate { get; set; }
+            public int SampleRate { get; set; }
 
-            public string pix_fmt { get; set; }
+            public string PixFmt { get; set; }
 
-            public Tags tags { get; set; }
-            public string nb_frames { get; set; }
+            public Tags Tags { get; set; }
+            public string NbFrames { get; set; }
 
-            public Disposition disposition { get; set; }
+            public Disposition Disposition { get; set; }
 
             //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
             //            public string codec_long_name { get; set; }
@@ -62,16 +58,15 @@ namespace Xabe.FFmpeg
 
         internal class Tags
         {
-            public string language { get; set; }
-            public string title { get; set; }
-            public int? rotate { get; set; }
+            public string Language { get; set; }
+            public string Title { get; set; }
+            public int? Rotate { get; set; }
         }
 
         internal class Disposition
         {
-            [JsonProperty("default")]
-            public int @default { get; set; }
-            public int forced { get; set; }
+            public int Default { get; set; }
+            public int Forced { get; set; }
 
             //            NOT USED NOW BUT THIS VALUES IS STILL RETURNED IN FFPROBE OUTPUT
             //            public int dub { get; set; }
@@ -87,5 +82,3 @@ namespace Xabe.FFmpeg
         }
     }
 }
-
-#pragma warning restore IDE1006 // Naming Styles

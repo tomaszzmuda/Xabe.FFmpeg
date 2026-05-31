@@ -1,0 +1,5 @@
+# Handle line endings automatically for files detected as text
+# and leave all files detected as binary untouched.
+*.cs text eol=crlf
+*.txt text eol=crlf
+*.json text eol=crlf

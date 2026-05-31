@@ -8,17 +8,8 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class MediaInfoTests : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
+    public class MediaInfoTests(StorageFixture storageFixture, RtspServerFixture rtspServer) : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
     {
-        private readonly StorageFixture _storageFixture;
-        private readonly RtspServerFixture _rtspServer;
-
-        public MediaInfoTests(StorageFixture storageFixture, RtspServerFixture rtspServer)
-        {
-            _storageFixture = storageFixture;
-            _rtspServer = rtspServer;
-        }
-
         [Fact]
         public async Task AudioPopertiesTest()
         {
@@ -141,7 +132,7 @@ namespace Xabe.FFmpeg.Test
         [InlineData("アセチルサリチル酸")]
         public async Task GetMediaInfo_NonUTF8CharactersInPath(string path)
         {
-            var output = _storageFixture.GetTempFileName($"{path}{FileExtensions.Mp4}");
+            var output = storageFixture.GetTempFileName($"{path}{FileExtensions.Mp4}");
             File.Copy(Resources.Mp4WithAudio, output, true);
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
@@ -153,7 +144,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task RTSP_NotExistingStream_CancelledAfter30Seconds()
         {
-            var output = _storageFixture.GetTempFileName(FileExtensions.WebM);
+            var output = storageFixture.GetTempFileName(FileExtensions.WebM);
 
             var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/"));
 
@@ -164,7 +155,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task RTSP_NotExistingStream_CancelledAfter2Seconds()
         {
-            var output = _storageFixture.GetTempFileName(FileExtensions.WebM);
+            var output = storageFixture.GetTempFileName(FileExtensions.WebM);
             var cancellationTokenSource = new CancellationTokenSource(2000);
             var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/", cancellationTokenSource.Token));
 
@@ -186,7 +177,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_SpecialCharactersInName_WorksCorrectly()
         {
-            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = storageFixture.GetTempFileName(FileExtensions.Mp4);
             var nameWithSpaces = new FileInfo(output).Name;
             output = output.Replace(nameWithSpaces, "Crime d'Amour" + ".mp4");
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
@@ -205,7 +196,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_NameWithSpaces_WorksCorrectly()
         {
-            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = storageFixture.GetTempFileName(FileExtensions.Mp4);
             var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
             output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
@@ -222,7 +213,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_EscapedString_WorksCorrectly()
         {
-            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
+            var output = storageFixture.GetTempFileName(FileExtensions.Mp4);
             var nameWithSpaces = new FileInfo(output).Name.Replace("-", " ");
             output = output.Replace(nameWithSpaces.Replace(" ", "-"), nameWithSpaces);
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
@@ -239,7 +230,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task GetMediaInfo_RTSP_CorrectDataIsShown()
         {
-            await _rtspServer.Publish(Resources.BunnyMp4, "bunny2");
+            await rtspServer.Publish(Resources.BunnyMp4, "bunny2");
 
             var result = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny2");
 
@@ -274,7 +265,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_EscapedString_BasePathDidNotChanged()
         {
-            var tempDir = _storageFixture.GetTempDirectory();
+            var tempDir = storageFixture.GetTempDirectory();
             var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021_v1.mp4");
             new FileInfo(Resources.BunnyMp4).CopyTo(input, true);
 
@@ -286,7 +277,7 @@ namespace Xabe.FFmpeg.Test
         [Fact]
         public async Task MediaInfo_EscapedString_BasePathInStreamsDidNotChanged()
         {
-            var tempDir = _storageFixture.GetTempDirectory();
+            var tempDir = storageFixture.GetTempDirectory();
             var input = Path.Combine(tempDir, "AMD is NOT Ripping Off Intel - WAN Show April 30, 2021_v2.mp4");
             new FileInfo(Resources.BunnyMp4).CopyTo(input, true);
 
