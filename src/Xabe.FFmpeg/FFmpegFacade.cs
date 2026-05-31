@@ -409,9 +409,9 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
         /// <returns>IConversion object</returns>
-        public async Task<IConversion> SendDesktopToRtspServer(Uri rtspServerUri)
+        public Task<IConversion> SendDesktopToRtspServer(Uri rtspServerUri)
         {
-            return Conversion.SendDesktopToRtspServer(rtspServerUri);
+            return Task.FromResult(Conversion.SendDesktopToRtspServer(rtspServerUri));
         }
     }
 }

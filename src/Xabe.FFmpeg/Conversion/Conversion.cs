@@ -49,7 +49,6 @@ namespace Xabe.FFmpeg
 
                 builder.Append(string.Join(" ", _userDefinedParameters[ParameterPosition.PreInput].Select(x => x.Trim())) + " ");
                 builder.Append(GetParameters(ParameterPosition.PreInput));
-                builder.Append(GetStreamsPreInputs());
 
                 if (_buildInputFileName == null)
                 {
@@ -400,17 +399,6 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        private string GetStreamsPreInputs()
-        {
-            var builder = new StringBuilder();
-            foreach (IStream stream in _streams)
-            {
-                builder.Append(stream.BuildParameters(ParameterPosition.PreInput));
-            }
-
-            return builder.ToString();
-        }
-
         private string GetFilters()
         {
             var builder = new StringBuilder();
@@ -504,10 +492,29 @@ namespace Xabe.FFmpeg
         {
             var builder = new StringBuilder();
             var index = 0;
-            foreach (var source in _streams.SelectMany(x => x.GetSource()).Distinct())
+
+            foreach (var stream in _streams)
             {
-                _inputFileMap[source] = index++;
-                builder.Append($"-i {source.Escape()} ");
+                var preInput = stream.BuildParameters(ParameterPosition.PreInput);
+                var sources = stream.GetSource().Distinct().ToList();
+
+                for (var i = 0; i < sources.Count; i++)
+                {
+                    var source = sources[i];
+                    if (!_inputFileMap.ContainsKey(source))
+                    {
+                        _inputFileMap[source] = index++;
+                        // Only apply preInput parameters to the first source of the stream
+                        if (i == 0)
+                        {
+                            builder.Append($"{preInput} -i {source.Escape()} ");
+                        }
+                        else
+                        {
+                            builder.Append($"-i {source.Escape()} ");
+                        }
+                    }
+                }
             }
 
             return builder.ToString();
