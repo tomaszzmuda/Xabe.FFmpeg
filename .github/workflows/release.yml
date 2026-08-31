@@ -30,6 +30,8 @@ jobs:
       - name: Test core
         run: dotnet test test/Xabe.FFmpeg.Test -c Release --no-build
 
+      - name: Test downloader
+        run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release --no-build
   release:
     runs-on: ubuntu-24.04
     permissions:
