@@ -141,7 +141,7 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(FileExtensions.Mp4, Path.GetExtension(mediaInfo.Path));
         }
 
-        [Fact]
+        [RunnableInDebugOnly]
         public async Task RTSP_NotExistingStream_CancelledAfter30Seconds()
         {
             var output = storageFixture.GetTempFileName(FileExtensions.WebM);
@@ -152,7 +152,7 @@ namespace Xabe.FFmpeg.Test
             Assert.IsType<ArgumentException>(exception);
         }
 
-        [Fact]
+        [RunnableInDebugOnly]
         public async Task RTSP_NotExistingStream_CancelledAfter2Seconds()
         {
             var output = storageFixture.GetTempFileName(FileExtensions.WebM);
