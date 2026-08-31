@@ -432,7 +432,7 @@ namespace Xabe.FFmpeg
                         builder.Append(";");
                     }
 
-                    builder.Append(BuildFilterNodes(configuration));
+                    builder.Append(BuildFilterNodes((FilterConfiguration)configuration));
                     first = false;
                 }
 
@@ -442,7 +442,7 @@ namespace Xabe.FFmpeg
             return builder.ToString();
         }
 
-        private string BuildFilterNodes(IFilterConfiguration configuration)
+        private string BuildFilterNodes(FilterConfiguration configuration)
         {
             var filters = configuration.Filters.ToList();
 
@@ -522,6 +522,7 @@ namespace Xabe.FFmpeg
                 }
 
                 var filterOutputLabels = GetFilterConfigs(stream)
+                                         .OfType<FilterConfiguration>()
                                          .Where(config => !string.IsNullOrEmpty(config.OutputLabel))
                                          .Select(config => config.OutputLabel)
                                          .ToList();

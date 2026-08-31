@@ -14,13 +14,19 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Source file feeding the main input pad. Resolved to an input index at build time
+        /// </summary>
         public string MainInputSource { get; set; }
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Additional input sources (for example a watermark image) consumed by a multi-pad filter
+        /// </summary>
         public IEnumerable<string> ExtraInputs { get; set; }
 
-        /// <inheritdoc />
+        /// <summary>
+        ///     Label assigned to the filter graph output. When set the output is mapped by this label
+        /// </summary>
         public string OutputLabel { get; set; }
     }
 }
