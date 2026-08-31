@@ -1,5 +1,6 @@
 # Xabe.FFmpeg  
 [![Build](https://github.com/tomaszzmuda/Xabe.FFmpeg/actions/workflows/ci.yml/badge.svg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/v/release/tomaszzmuda/Xabe.FFmpeg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/releases)
 [![NuGet version](https://badge.fury.io/nu/Xabe.FFmpeg.svg)](https://badge.fury.io/nu/Xabe.FFmpeg)
 [![GitHub stars](https://img.shields.io/github/stars/tomaszzmuda/Xabe.FFmpeg.svg)](https://github.com/tomaszzmuda/Xabe.FFmpeg/stargazers)
 [![Join the chat at https://gitter.im/Xabe-FFmpeg/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Xabe-FFmpeg/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
