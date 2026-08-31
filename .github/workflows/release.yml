@@ -8,8 +8,32 @@ permissions:
   contents: write
 
 jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Build
+        run: dotnet build Xabe.FFmpeg.sln -c Release
+
+      - name: Test core
+        run: dotnet test test/Xabe.FFmpeg.Test -c Release --no-build
+
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    needs: [test]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,8 +48,8 @@ jobs:
       - name: Pack
         run: |
           PACK_VERSION="${GITHUB_REF_NAME#v}"
-          dotnet pack src/Xabe.FFmpeg -c Release -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
-          dotnet pack src/Xabe.FFmpeg.Downloader -c Release -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
+          dotnet pack src/Xabe.FFmpeg -c Release -warnaserror -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
+          dotnet pack src/Xabe.FFmpeg.Downloader -c Release -warnaserror -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
           mkdir -p dist
           cp src/Xabe.FFmpeg/bin/Release/*.nupkg dist/
           cp src/Xabe.FFmpeg.Downloader/bin/Release/*.nupkg dist/
@@ -44,15 +68,14 @@ jobs:
             fi
           } > notes.md
 
-      - name: GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --target "${GITHUB_SHA}" --notes-file notes.md dist/*.nupkg
-
       - name: Publish
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
-          for f in dist/*.nupkg; do
-            dotnet nuget push "$f" --api-key "${NUGET_API_KEY}" --source https://api.nuget.org/v3/index.json --skip-duplicate
-          done
+          [ -n "${NUGET_API_KEY}" ] || { echo "::error::NUGET_API_KEY secret is not set"; exit 1; }
+          dotnet nuget push dist/*.nupkg --api-key "${NUGET_API_KEY}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --target "${GITHUB_SHA}" --notes-file notes.md dist/*.nupkg
