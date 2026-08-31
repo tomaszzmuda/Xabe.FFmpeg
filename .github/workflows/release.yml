@@ -23,8 +23,9 @@ jobs:
 
       - name: Pack
         run: |
-          dotnet pack src/Xabe.FFmpeg -c Release -p:GenerateDocumentationFile=true
-          dotnet pack src/Xabe.FFmpeg.Downloader -c Release -p:GenerateDocumentationFile=true
+          PACK_VERSION="${GITHUB_REF_NAME#v}"
+          dotnet pack src/Xabe.FFmpeg -c Release -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
+          dotnet pack src/Xabe.FFmpeg.Downloader -c Release -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
           mkdir -p dist
           cp src/Xabe.FFmpeg/bin/Release/*.nupkg dist/
           cp src/Xabe.FFmpeg.Downloader/bin/Release/*.nupkg dist/
