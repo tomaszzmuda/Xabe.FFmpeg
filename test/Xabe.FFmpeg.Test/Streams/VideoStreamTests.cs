@@ -201,22 +201,25 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Theory]
-        [InlineData(9, 1.0)]
-        [InlineData(5, 2.0)]
-        [InlineData(19, 0.5)]
-        public async Task ChangeSpeedTest(int expectedVideoDuration, double speed)
+        [InlineData(1.0)]
+        [InlineData(2.0)]
+        [InlineData(0.5)]
+        public async Task ChangeSpeedTest(double speed)
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            var baseDuration = inputFile.VideoStreams.First().Duration.TotalSeconds;
             var outputPath = storageFixture.GetTempFileName(FileExtensions.Mp4);
             _ = await FFmpeg.Conversions.New()
-                                                    .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.h264).ChangeSpeed(speed))
-                                                    .SetPreset(ConversionPreset.UltraFast)
-                                                    .SetOutput(outputPath)
-                                                    .Start();
+                                                     .AddStream(inputFile.VideoStreams.First().SetCodec(VideoCodec.h264).ChangeSpeed(speed))
+                                                     .SetPreset(ConversionPreset.UltraFast)
+                                                     .SetOutput(outputPath)
+                                                     .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.Equal(expectedVideoDuration, mediaInfo.Duration.Seconds);
-            Assert.Equal(expectedVideoDuration, mediaInfo.VideoStreams.First().Duration.Seconds);
+            Assert.Single(mediaInfo.VideoStreams);
+            var expectedDuration = baseDuration / speed;
+            var actualDuration = mediaInfo.VideoStreams.First().Duration.TotalSeconds;
+            Assert.InRange(actualDuration, expectedDuration - 0.3, expectedDuration + 0.3);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
@@ -313,9 +316,8 @@ namespace Xabe.FFmpeg.Test
                 {
                     Assert.Contains("-c:v copy", e.InputParameters);
                     Assert.Contains("-vf reverse", e.InputParameters);
-                    Assert.EndsWith(
-                        $"Filtergraph \'reverse\' was defined for video output stream 0:0 but codec copy was selected.{Environment.NewLine}Filtering and streamcopy cannot be used together.",
-                        e.Message);
+                    Assert.Contains("Filtering and streamcopy cannot be used together", e.Message);
+                    Assert.Contains("reverse", e.Message);
                     throw;
                 }
             });

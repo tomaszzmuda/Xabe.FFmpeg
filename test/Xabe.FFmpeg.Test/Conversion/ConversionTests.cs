@@ -38,8 +38,13 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Contains("overlay", conversionResult.Arguments);
             Assert.Contains(Resources.PngSample, conversionResult.Arguments);
+            Assert.Contains("[0:v][1:v]overlay=", conversionResult.Arguments);
+            Assert.Contains("-map [vout0]", conversionResult.Arguments);
+            Assert.DoesNotContain("-map 1:", conversionResult.Arguments);
+
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
+            Assert.Single(mediaInfo.VideoStreams);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
@@ -719,7 +724,7 @@ namespace Xabe.FFmpeg.Test
 
             var exception = await Record.ExceptionAsync(async () =>
             {
-                await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output)).UseHardwareAcceleration(hardwareAccelerator, "h264_cuvid", "h264_nvenc").Start();
+                await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output)).UseHardwareAcceleration(hardwareAccelerator, "h264", "h264").Start();
             });
 
             Assert.NotNull(exception);
