@@ -13,5 +13,14 @@ namespace Xabe.FFmpeg
 
         /// <inheritdoc />
         public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
+
+        /// <inheritdoc />
+        public string MainInputSource { get; set; }
+
+        /// <inheritdoc />
+        public IEnumerable<string> ExtraInputs { get; set; }
+
+        /// <inheritdoc />
+        public string OutputLabel { get; set; }
     }
 }
