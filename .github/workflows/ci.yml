@@ -10,27 +10,53 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
+  core-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
       - name: Build
         run: dotnet build Xabe.FFmpeg.sln -c Release
 
       - name: Test core
         run: dotnet test test/Xabe.FFmpeg.Test -c Release -v normal --no-build
+
+  downloader-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    needs: [core-tests]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Build
+        run: dotnet build Xabe.FFmpeg.sln -c Release
 
       - name: Test downloader
         run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release -v normal --no-build
