@@ -31,8 +31,8 @@ runs:
         FFMPEG_ARCH: amd64
         FFMPEG_VARIANT: static
         EXPECTED_TARBALL_SHA256: abda8d77ce8309141f83ab8edf0596834087c52467f6badf376a6a2a4c87cf67
-        EXPECTED_FFMPEG_MD5: d5c698e0e98e5cf7de03fe14bd1cda6a
-        EXPECTED_FFPROBE_MD5: b04bf8756964499d02c9cd37247eb0d2
+        EXPECTED_FFMPEG_SHA256: e7e7fb30477f717e6f55f9180a70386c62677ef8a4d4d1a5d948f4098aa3eb99
+        EXPECTED_FFPROBE_SHA256: 4f231a1960d83e403d08f7971e271707bec278a9ae18e21b8b5b03186668450d
       run: |
         set -euo pipefail
         fail() { echo "::error::$1"; exit 1; }
@@ -49,19 +49,19 @@ runs:
           [ "$ACTUAL_SHA256" = "$EXPECTED_TARBALL_SHA256" ] || fail "tarball sha256 mismatch: expected ${EXPECTED_TARBALL_SHA256}, got ${ACTUAL_SHA256}"
           tar -xf "$TAR_FILE" -C "$WORK_DIR"
           SOURCE_DIR="${WORK_DIR}/${TAR_NAME%.tar.xz}"
-          ACTUAL_FFMPEG_MD5="$(md5sum "${SOURCE_DIR}/ffmpeg" | cut -d' ' -f1)"
-          [ "$ACTUAL_FFMPEG_MD5" = "$EXPECTED_FFMPEG_MD5" ] || fail "ffmpeg md5 mismatch: expected ${EXPECTED_FFMPEG_MD5}, got ${ACTUAL_FFMPEG_MD5}"
-          ACTUAL_FFPROBE_MD5="$(md5sum "${SOURCE_DIR}/ffprobe" | cut -d' ' -f1)"
-          [ "$ACTUAL_FFPROBE_MD5" = "$EXPECTED_FFPROBE_MD5" ] || fail "ffprobe md5 mismatch: expected ${EXPECTED_FFPROBE_MD5}, got ${ACTUAL_FFPROBE_MD5}"
+          ACTUAL_FFMPEG_SHA256="$(sha256sum "${SOURCE_DIR}/ffmpeg" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFMPEG_SHA256" = "$EXPECTED_FFMPEG_SHA256" ] || fail "ffmpeg sha256 mismatch: expected ${EXPECTED_FFMPEG_SHA256}, got ${ACTUAL_FFMPEG_SHA256}"
+          ACTUAL_FFPROBE_SHA256="$(sha256sum "${SOURCE_DIR}/ffprobe" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFPROBE_SHA256" = "$EXPECTED_FFPROBE_SHA256" ] || fail "ffprobe sha256 mismatch: expected ${EXPECTED_FFPROBE_SHA256}, got ${ACTUAL_FFPROBE_SHA256}"
           rm -rf "$BIN_DIR"
           mkdir -p "$BIN_DIR"
           cp "${SOURCE_DIR}/ffmpeg" "${SOURCE_DIR}/ffprobe" "$BIN_DIR/"
         fi
 
-        ACTUAL_FFMPEG_MD5="$(md5sum "${BIN_DIR}/ffmpeg" | cut -d' ' -f1)"
-        [ "$ACTUAL_FFMPEG_MD5" = "$EXPECTED_FFMPEG_MD5" ] || fail "binary in place does not match expected ffmpeg md5 ${EXPECTED_FFMPEG_MD5}: got ${ACTUAL_FFMPEG_MD5}"
-        ACTUAL_FFPROBE_MD5="$(md5sum "${BIN_DIR}/ffprobe" | cut -d' ' -f1)"
-        [ "$ACTUAL_FFPROBE_MD5" = "$EXPECTED_FFPROBE_MD5" ] || fail "binary in place does not match expected ffprobe md5 ${EXPECTED_FFPROBE_MD5}: got ${ACTUAL_FFPROBE_MD5}"
+          ACTUAL_FFMPEG_SHA256="$(sha256sum "${BIN_DIR}/ffmpeg" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFMPEG_SHA256" = "$EXPECTED_FFMPEG_SHA256" ] || fail "binary in place does not match expected ffmpeg sha256 ${EXPECTED_FFMPEG_SHA256}: got ${ACTUAL_FFMPEG_SHA256}"
+          ACTUAL_FFPROBE_SHA256="$(sha256sum "${BIN_DIR}/ffprobe" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFPROBE_SHA256" = "$EXPECTED_FFPROBE_SHA256" ] || fail "binary in place does not match expected ffprobe sha256 ${EXPECTED_FFPROBE_SHA256}: got ${ACTUAL_FFPROBE_SHA256}"
         chmod +x "${BIN_DIR}/ffmpeg" "${BIN_DIR}/ffprobe"
         echo "Using: $("${BIN_DIR}/ffmpeg" -version | head -1)"
         echo "${BIN_DIR}" >> "$GITHUB_PATH"
