@@ -44,7 +44,7 @@ runs:
           TAR_FILE="${WORK_DIR}/${TAR_NAME}"
           rm -rf "$WORK_DIR"
           mkdir -p "$WORK_DIR"
-          curl -fL --retry 3 --continue-at - -o "$TAR_FILE" "https://johnvansickle.com/ffmpeg/releases/${TAR_NAME}" || fail "download of ${TAR_NAME} failed"
+          curl -fL --retry 3 --continue-at - --proto =https --proto-redir =https -o "$TAR_FILE" "https://johnvansickle.com/ffmpeg/releases/${TAR_NAME}" || fail "download of ${TAR_NAME} failed"
           ACTUAL_SHA256="$(sha256sum "$TAR_FILE" | cut -d' ' -f1)"
           [ "$ACTUAL_SHA256" = "$EXPECTED_TARBALL_SHA256" ] || fail "tarball sha256 mismatch: expected ${EXPECTED_TARBALL_SHA256}, got ${ACTUAL_SHA256}"
           tar -xf "$TAR_FILE" -C "$WORK_DIR"
