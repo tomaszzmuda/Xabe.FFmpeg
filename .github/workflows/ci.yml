@@ -28,8 +28,8 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Install FFmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install FFmpeg (pinned 7.0.2)
+        uses: ./.github/actions/ffmpeg-static
 
       - name: Build
         run: dotnet build Xabe.FFmpeg.sln -c Release
@@ -52,8 +52,8 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Install FFmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install FFmpeg (pinned 7.0.2)
+        uses: ./.github/actions/ffmpeg-static
 
       - name: Build
         run: dotnet build Xabe.FFmpeg.sln -c Release

@@ -1,0 +1,67 @@
+name: Pinned FFmpeg
+
+description: Installs the pinned johnvansickle FFmpeg static build into a shared bin dir on PATH (no sudo)
+
+runs:
+  using: composite
+  steps:
+    - id: bin-exists
+      shell: bash
+      env:
+        FFMPEG_STATIC_BIN_DIR: ${{ runner.temp }}/ffmpeg-static/bin
+      run: |
+        if [ -x "${FFMPEG_STATIC_BIN_DIR}/ffmpeg" ] && [ -x "${FFMPEG_STATIC_BIN_DIR}/ffprobe" ]; then
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - if: steps.bin-exists.outputs.installed != 'true'
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/ffmpeg-static/bin
+        key: ffmpeg-static-7.0.2-amd64-static
+
+    - name: Ensure pinned FFmpeg
+      shell: bash
+      env:
+        FFMPEG_STATIC_BIN_DIR: ${{ runner.temp }}/ffmpeg-static/bin
+        FFMPEG_STATIC_WORK_DIR: ${{ runner.temp }}/ffmpeg-static/work
+        FFMPEG_VERSION: 7.0.2
+        FFMPEG_ARCH: amd64
+        FFMPEG_VARIANT: static
+        EXPECTED_TARBALL_SHA256: abda8d77ce8309141f83ab8edf0596834087c52467f6badf376a6a2a4c87cf67
+        EXPECTED_FFMPEG_MD5: d5c698e0e98e5cf7de03fe14bd1cda6a
+        EXPECTED_FFPROBE_MD5: b04bf8756964499d02c9cd37247eb0d2
+      run: |
+        set -euo pipefail
+        fail() { echo "::error::$1"; exit 1; }
+        BIN_DIR="$FFMPEG_STATIC_BIN_DIR"
+        WORK_DIR="$FFMPEG_STATIC_WORK_DIR"
+
+        if [ ! -f "${BIN_DIR}/ffmpeg" ] || [ ! -f "${BIN_DIR}/ffprobe" ]; then
+          TAR_NAME="ffmpeg-${FFMPEG_VERSION}-${FFMPEG_ARCH}-${FFMPEG_VARIANT}.tar.xz"
+          TAR_FILE="${WORK_DIR}/${TAR_NAME}"
+          rm -rf "$WORK_DIR"
+          mkdir -p "$WORK_DIR"
+          curl -fL --retry 3 --continue-at - -o "$TAR_FILE" "https://johnvansickle.com/ffmpeg/releases/${TAR_NAME}" || fail "download of ${TAR_NAME} failed"
+          ACTUAL_SHA256="$(sha256sum "$TAR_FILE" | cut -d' ' -f1)"
+          [ "$ACTUAL_SHA256" = "$EXPECTED_TARBALL_SHA256" ] || fail "tarball sha256 mismatch: expected ${EXPECTED_TARBALL_SHA256}, got ${ACTUAL_SHA256}"
+          tar -xf "$TAR_FILE" -C "$WORK_DIR"
+          SOURCE_DIR="${WORK_DIR}/${TAR_NAME%.tar.xz}"
+          ACTUAL_FFMPEG_MD5="$(md5sum "${SOURCE_DIR}/ffmpeg" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFMPEG_MD5" = "$EXPECTED_FFMPEG_MD5" ] || fail "ffmpeg md5 mismatch: expected ${EXPECTED_FFMPEG_MD5}, got ${ACTUAL_FFMPEG_MD5}"
+          ACTUAL_FFPROBE_MD5="$(md5sum "${SOURCE_DIR}/ffprobe" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFPROBE_MD5" = "$EXPECTED_FFPROBE_MD5" ] || fail "ffprobe md5 mismatch: expected ${EXPECTED_FFPROBE_MD5}, got ${ACTUAL_FFPROBE_MD5}"
+          rm -rf "$BIN_DIR"
+          mkdir -p "$BIN_DIR"
+          cp "${SOURCE_DIR}/ffmpeg" "${SOURCE_DIR}/ffprobe" "$BIN_DIR/"
+        fi
+
+        ACTUAL_FFMPEG_MD5="$(md5sum "${BIN_DIR}/ffmpeg" | cut -d' ' -f1)"
+        [ "$ACTUAL_FFMPEG_MD5" = "$EXPECTED_FFMPEG_MD5" ] || fail "binary in place does not match expected ffmpeg md5 ${EXPECTED_FFMPEG_MD5}: got ${ACTUAL_FFMPEG_MD5}"
+        ACTUAL_FFPROBE_MD5="$(md5sum "${BIN_DIR}/ffprobe" | cut -d' ' -f1)"
+        [ "$ACTUAL_FFPROBE_MD5" = "$EXPECTED_FFPROBE_MD5" ] || fail "binary in place does not match expected ffprobe md5 ${EXPECTED_FFPROBE_MD5}: got ${ACTUAL_FFPROBE_MD5}"
+        chmod +x "${BIN_DIR}/ffmpeg" "${BIN_DIR}/ffprobe"
+        echo "Using: $("${BIN_DIR}/ffmpeg" -version | head -1)"
+        echo "${BIN_DIR}" >> "$GITHUB_PATH"
