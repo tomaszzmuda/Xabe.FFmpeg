@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build
+        run: dotnet build Xabe.FFmpeg.sln -c Release
+
+      - name: Test core
+        run: dotnet test test/Xabe.FFmpeg.Test -c Release -v normal --no-build
+
+      - name: Test downloader
+        run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release -v normal --no-build
