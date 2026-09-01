@@ -1,0 +1,74 @@
+<Project>
+
+  <!--
+    Shared build and package metadata for Xabe.FFmpeg and Xabe.FFmpeg.Downloader.
+    Per-package values (ID, title, description, tags, readme) stay in each csproj.
+  -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Shared package metadata">
+    <Authors>Xabe</Authors>
+    <Company>Xabe Tomasz Żmuda</Company>
+    <Copyright>Copyright 2017-2026 (c) Xabe Tomasz Zmuda.</Copyright>
+    <PackageProjectUrl>https://ffmpeg.xabe.net/index.html</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageIcon>xabe_icon.png</PackageIcon>
+    <PackageLicenseFile>Xabe-License.txt</PackageLicenseFile>
+  </PropertyGroup>
+
+  <!-- Evaluated at pack time so the URL carries the real MinVer/explicit version. -->
+  <Target Name="SetPackageReleaseNotes" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <PackageReleaseNotes>https://github.com/tomaszzmuda/Xabe.FFmpeg/releases/tag/v$(PackageVersion)</PackageReleaseNotes>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Deliberate determinism/Source Link on CI (incl. tag) builds. -->
+  <PropertyGroup Condition="'$(CI)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- Package validation against the last published stable baseline.
+       PermitUnnecessarySuppressions: the CP0003 suppression below is REQUIRED for
+       untagged pre-release packs (6.0.0-alpha.*) but inert for tag builds; allowing
+       the dormant entry keeps one small, reviewed file for both cases. -->
+  <PropertyGroup>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <EnablePackageValidationInPackageBuild>true</EnablePackageValidationInPackageBuild>
+    <PackageValidationBaselineVersion>6.0.2</PackageValidationBaselineVersion>
+    <ApiCompatPermitUnnecessarySuppressions>true</ApiCompatPermitUnnecessarySuppressions>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)\CompatibilitySuppressions.xml')">
+    <ApiCompatSuppressionFile Include="$(MSBuildProjectDirectory)\CompatibilitySuppressions.xml" />
+  </ItemGroup>
+
+  <!-- MinVer (hidden build-only dependency: never flows to consumers). -->
+  <PropertyGroup>
+    <MinVerMinimumMajorMinor>6.0</MinVerMinimumMajorMinor>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="7.0.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="[9.0.0,)">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <None Include="..\..\Assets\xabe_icon.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\license\Xabe-License.txt" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
