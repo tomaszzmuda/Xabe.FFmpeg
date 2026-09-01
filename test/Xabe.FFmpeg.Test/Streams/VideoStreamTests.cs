@@ -101,15 +101,17 @@ namespace Xabe.FFmpeg.Test
             var originalBitrate = videoStream.Bitrate;
             Assert.Equal(860233, originalBitrate);
             videoStream.SetBitrate(6000, 6000, 6000);
-            _ = await FFmpeg.Conversions.New()
+            IConversionResult result = await FFmpeg.Conversions.New()
                                                     .AddStream(videoStream)
                                                     .SetOutput(outputPath)
                                                     .Start();
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
-            Assert.InRange(mediaInfo.VideoStreams.First().Bitrate, 7000, 8000);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
+            Assert.Contains("-b:v 6000", result.Arguments);
+            Assert.Contains("-maxrate 6000", result.Arguments);
+            Assert.Contains("-bufsize 6000", result.Arguments);
         }
 
         // Check if Filter Flags do work. FFProbe does not support checking for Interlaced or Progressive,
