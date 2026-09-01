@@ -943,6 +943,19 @@ namespace Xabe.FFmpeg.Test
             Assert.Single(devices.Where(x => x.Name == "Logitech HD Webcam C270"));
         }
 
+        [Fact]
+        public async Task SendDesktopToRtspServer_BuildCommand_IsCorrect()
+        {
+            // Act
+            IConversion conversion = await FFmpeg.Conversions.FromSnippet.SendDesktopToRtspServer(new Uri("rtsp://127.0.0.1:8554/desktop"));
+            string arguments = conversion.Build();
+
+            // Assert
+            Assert.Contains("-framerate 30", arguments);
+            Assert.Contains("-tune zerolatency", arguments);
+            Assert.Contains("rtsp://127.0.0.1:8554/desktop", arguments);
+        }
+
         [RunnableInDebugOnly]
         public async Task SendDesktopToRtspServer_MinimumConfiguration_DesktopIsBeingStreamed()
         {
