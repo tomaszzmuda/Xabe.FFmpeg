@@ -22,12 +22,21 @@ namespace Xabe.FFmpeg
         {
             if (_videoFilters.Any())
             {
-                yield return new FilterConfiguration
+                var configuration = new FilterConfiguration
                 {
                     FilterType = "-filter_complex",
                     StreamNumber = Index,
+                    MainInputSource = Path,
+                    OutputLabel = $"vout{Index}",
                     Filters = _videoFilters
                 };
+
+                if (!string.IsNullOrWhiteSpace(_watermarkSource))
+                {
+                    configuration.ExtraInputs = new[] { _watermarkSource };
+                }
+
+                yield return configuration;
             }
         }
 

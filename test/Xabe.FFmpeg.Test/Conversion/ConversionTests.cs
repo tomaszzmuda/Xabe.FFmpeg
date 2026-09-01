@@ -38,8 +38,13 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Contains("overlay", conversionResult.Arguments);
             Assert.Contains(Resources.PngSample, conversionResult.Arguments);
+            Assert.Contains("[0:v][1:v]overlay=", conversionResult.Arguments);
+            Assert.Contains("-map [vout0]", conversionResult.Arguments);
+            Assert.DoesNotContain("-map 1:", conversionResult.Arguments);
+
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
             Assert.Equal(9, mediaInfo.Duration.Seconds);
+            Assert.Single(mediaInfo.VideoStreams);
             Assert.Equal("h264", mediaInfo.VideoStreams.First().Codec);
             Assert.False(mediaInfo.AudioStreams.Any());
         }
@@ -719,7 +724,7 @@ namespace Xabe.FFmpeg.Test
 
             var exception = await Record.ExceptionAsync(async () =>
             {
-                await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output)).UseHardwareAcceleration(hardwareAccelerator, "h264_cuvid", "h264_nvenc").Start();
+                await (await FFmpeg.Conversions.FromSnippet.Convert(Resources.MkvWithAudio, output)).UseHardwareAcceleration(hardwareAccelerator, "h264", "h264").Start();
             });
 
             Assert.NotNull(exception);
@@ -936,6 +941,19 @@ namespace Xabe.FFmpeg.Test
             // Assert
             Assert.Equal(2, devices.Length);
             Assert.Single(devices.Where(x => x.Name == "Logitech HD Webcam C270"));
+        }
+
+        [Fact]
+        public async Task SendDesktopToRtspServer_BuildCommand_IsCorrect()
+        {
+            // Act
+            IConversion conversion = await FFmpeg.Conversions.FromSnippet.SendDesktopToRtspServer(new Uri("rtsp://127.0.0.1:8554/desktop"));
+            string arguments = conversion.Build();
+
+            // Assert
+            Assert.Contains("-framerate 30", arguments);
+            Assert.Contains("-tune zerolatency", arguments);
+            Assert.Contains("rtsp://127.0.0.1:8554/desktop", arguments);
         }
 
         [RunnableInDebugOnly]

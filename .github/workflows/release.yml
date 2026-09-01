@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install FFmpeg (pinned 7.0.2)
+        uses: ./.github/actions/ffmpeg-static
+
+      - name: Build
+        run: dotnet build Xabe.FFmpeg.sln -c Release
+
+      - name: Test core
+        run: dotnet test test/Xabe.FFmpeg.Test -c Release --no-build
+
+      - name: Test downloader
+        run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release --no-build
+  release:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    needs: [test]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Pack
+        run: |
+          PACK_VERSION="${GITHUB_REF_NAME#v}"
+          dotnet pack src/Xabe.FFmpeg -c Release -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
+          dotnet pack src/Xabe.FFmpeg.Downloader -c Release -p:GenerateDocumentationFile=true -p:MinVerSkip=true -p:Version="${PACK_VERSION}" -p:PackageVersion="${PACK_VERSION}"
+          mkdir -p dist
+          cp src/Xabe.FFmpeg/bin/Release/*.nupkg dist/
+          cp src/Xabe.FFmpeg.Downloader/bin/Release/*.nupkg dist/
+
+      - name: Notes
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PREV="$(git describe --tags --match 'v[0-9]*' --abbrev=0 HEAD^ 2>/dev/null || true)"
+          {
+            echo "## ${TAG}"
+            echo ""
+            if [ -n "${PREV}" ]; then
+              git log --pretty='- %s' "${PREV}..${TAG}"
+            else
+              git log --pretty='- %s' -30
+            fi
+          } > notes.md
+
+      - name: Publish
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          [ -n "${NUGET_API_KEY}" ] || { echo "::error::NUGET_API_KEY secret is not set"; exit 1; }
+          dotnet nuget push dist/*.nupkg --api-key "${NUGET_API_KEY}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --target "${GITHUB_SHA}" --notes-file notes.md dist/*.nupkg

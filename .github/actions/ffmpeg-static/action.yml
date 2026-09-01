@@ -1,0 +1,67 @@
+name: Pinned FFmpeg
+
+description: Installs the pinned BtbN FFmpeg GPL build into a shared bin dir on PATH (no sudo)
+
+runs:
+  using: composite
+  steps:
+    - id: bin-exists
+      shell: bash
+      env:
+        FFMPEG_STATIC_BIN_DIR: ${{ runner.temp }}/ffmpeg-static/bin
+      run: |
+        if [ -x "${FFMPEG_STATIC_BIN_DIR}/ffmpeg" ] && [ -x "${FFMPEG_STATIC_BIN_DIR}/ffprobe" ]; then
+          echo "installed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "installed=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - if: steps.bin-exists.outputs.installed != 'true'
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.temp }}/ffmpeg-static/bin
+        key: ffmpeg-static-btbn-n7.1.1-57-g1b48158a23-linux64-gpl-7.1
+
+    - name: Ensure pinned FFmpeg
+      shell: bash
+      env:
+        FFMPEG_STATIC_BIN_DIR: ${{ runner.temp }}/ffmpeg-static/bin
+        FFMPEG_STATIC_WORK_DIR: ${{ runner.temp }}/ffmpeg-static/work
+        FFMPEG_RELEASE_TAG: autobuild-2025-08-31-13-00
+        FFMPEG_ARCHIVE: ffmpeg-n7.1.1-57-g1b48158a23-linux64-gpl-7.1
+        EXPECTED_TARBALL_SHA256: 7a4dcf07bc7c89a33970c5c0f524fc1662ea4e2f342c9d10a6a9f307cdc03f6c
+        EXPECTED_FFMPEG_SHA256: 5fbbfe2496b1a751d12ae9a95755078cc3d1e539125cbdacfb55b368d105816d
+        EXPECTED_FFPROBE_SHA256: 6a07fd09ceabed3cc2255d5af6493d3d9e068e4f54fa68d0aa7e504757ecec1b
+      run: |
+        set -euo pipefail
+        fail() { echo "::error::$1"; exit 1; }
+        BIN_DIR="$FFMPEG_STATIC_BIN_DIR"
+        WORK_DIR="$FFMPEG_STATIC_WORK_DIR"
+        ARCHIVE="${FFMPEG_ARCHIVE}.tar.xz"
+        DOWNLOAD_URL="https://github.com/BtbN/FFmpeg-Builds/releases/download/${FFMPEG_RELEASE_TAG}/${ARCHIVE}"
+
+        if [ ! -f "${BIN_DIR}/ffmpeg" ] || [ ! -f "${BIN_DIR}/ffprobe" ]; then
+          TAR_FILE="${WORK_DIR}/${ARCHIVE}"
+          rm -rf "$WORK_DIR"
+          mkdir -p "$WORK_DIR"
+          curl -fL --retry 3 --continue-at - --proto =https --proto-redir =https -o "$TAR_FILE" "$DOWNLOAD_URL" || fail "download of ${ARCHIVE} failed"
+          ACTUAL_SHA256="$(sha256sum "$TAR_FILE" | cut -d' ' -f1)"
+          [ "$ACTUAL_SHA256" = "$EXPECTED_TARBALL_SHA256" ] || fail "tarball sha256 mismatch: expected ${EXPECTED_TARBALL_SHA256}, got ${ACTUAL_SHA256}"
+          tar -xf "$TAR_FILE" -C "$WORK_DIR"
+          SOURCE_DIR="${WORK_DIR}/${FFMPEG_ARCHIVE}/bin"
+          ACTUAL_FFMPEG_SHA256="$(sha256sum "${SOURCE_DIR}/ffmpeg" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFMPEG_SHA256" = "$EXPECTED_FFMPEG_SHA256" ] || fail "ffmpeg sha256 mismatch: expected ${EXPECTED_FFMPEG_SHA256}, got ${ACTUAL_FFMPEG_SHA256}"
+          ACTUAL_FFPROBE_SHA256="$(sha256sum "${SOURCE_DIR}/ffprobe" | cut -d' ' -f1)"
+          [ "$ACTUAL_FFPROBE_SHA256" = "$EXPECTED_FFPROBE_SHA256" ] || fail "ffprobe sha256 mismatch: expected ${EXPECTED_FFPROBE_SHA256}, got ${ACTUAL_FFPROBE_SHA256}"
+          rm -rf "$BIN_DIR"
+          mkdir -p "$BIN_DIR"
+          cp "${SOURCE_DIR}/ffmpeg" "${SOURCE_DIR}/ffprobe" "$BIN_DIR/"
+        fi
+
+        ACTUAL_FFMPEG_SHA256="$(sha256sum "${BIN_DIR}/ffmpeg" | cut -d' ' -f1)"
+        [ "$ACTUAL_FFMPEG_SHA256" = "$EXPECTED_FFMPEG_SHA256" ] || fail "binary in place does not match expected ffmpeg sha256 ${EXPECTED_FFMPEG_SHA256}: got ${ACTUAL_FFMPEG_SHA256}"
+        ACTUAL_FFPROBE_SHA256="$(sha256sum "${BIN_DIR}/ffprobe" | cut -d' ' -f1)"
+        [ "$ACTUAL_FFPROBE_SHA256" = "$EXPECTED_FFPROBE_SHA256" ] || fail "binary in place does not match expected ffprobe sha256 ${EXPECTED_FFPROBE_SHA256}: got ${ACTUAL_FFPROBE_SHA256}"
+        chmod +x "${BIN_DIR}/ffmpeg" "${BIN_DIR}/ffprobe"
+        echo "Using: $("${BIN_DIR}/ffmpeg" -version | head -1)"
+        echo "${BIN_DIR}" >> "$GITHUB_PATH"
