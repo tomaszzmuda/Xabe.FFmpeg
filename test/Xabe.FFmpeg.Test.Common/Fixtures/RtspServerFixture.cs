@@ -57,6 +57,7 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
 
         public async Task InitializeAsync()
         {
+            EnsureUsableWorkingDirectory();
             EnsureNativeX64();
 
             var image = new DockerImage(ImageRepository, ImageRegistry, ImageTag, ImageDigest, ImagePlatform);
@@ -403,6 +404,29 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
             }
 
             builder.Append(Environment.NewLine).Append("--- ").Append(title).Append(" ---").Append(Environment.NewLine).Append(trimmed);
+        }
+
+        private static void EnsureUsableWorkingDirectory()
+        {
+            string cwd = null;
+            try
+            {
+                cwd = Directory.GetCurrentDirectory();
+            }
+            catch (IOException)
+            {
+                cwd = null;
+            }
+
+            if (cwd == null || !Directory.Exists(cwd))
+            {
+                // Testcontainers 4.14 snapshots the CWD inside a one-shot type initializer
+                // (TestcontainersClient.OSRootDirectory); a getcwd failure there permanently
+                // latches TypeInitializationException into every RTSP test. A parallel
+                // collection that parked the CWD in a temp dir and had it removed would do
+                // exactly that, so pin a CWD that lives as long as the process.
+                Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+            }
         }
 
         private static void EnsureNativeX64()

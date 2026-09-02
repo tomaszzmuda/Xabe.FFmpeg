@@ -1163,17 +1163,28 @@ namespace Xabe.FFmpeg.Test
         public async Task Conversion_FileNameWithoutDirectory_NewFileIsCreatedInCurrentDirectory()
         {
             var tempPath = _storageFixture.GetTempDirectory();
+            var previousCwd = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(tempPath);
             var tempName = Guid.NewGuid().ToString();
 
-            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            try
+            {
+                IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
 
-            await FFmpeg.Conversions.New()
-                                    .AddStream(info.VideoStreams)
-                                    .SetOutput($"{tempName}.mp4")
-                                    .Start();
+                await FFmpeg.Conversions.New()
+                                        .AddStream(info.VideoStreams)
+                                        .SetOutput($"{tempName}.mp4")
+                                        .Start();
 
-            Assert.True(File.Exists(Path.Combine(tempPath, $"{tempName}.mp4")));
+                Assert.True(File.Exists(Path.Combine(tempPath, $"{tempName}.mp4")));
+            }
+            finally
+            {
+                // Leaving the CWD inside the fixture's temp tree poisons the test host: once
+                // StorageFixture.Dispose removes it, getcwd throws for every test in the
+                // process (which took down the RTSP collection in CI).
+                Directory.SetCurrentDirectory(previousCwd);
+            }
         }
     }
 }
