@@ -59,3 +59,35 @@ jobs:
 
       - name: Test downloader
         run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release -v normal --no-build
+
+  package-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install FFmpeg (pinned)
+        uses: ./.github/actions/ffmpeg-static
+
+      - name: Package contract + fresh-consumer smoke
+        env:
+          XABE_SMOKE_ENABLE: "true"
+          XABE_SMOKE_SCRATCH: ${{ runner.temp }}/xab-package-contract
+          XABE_FFMPEG_BIN_DIR: ${{ runner.temp }}/ffmpeg-static/bin
+        run: dotnet test test/Xabe.FFmpeg.PackageContract.Test -c Release -v normal
+
+      - name: Upload smoke scratch (failure diagnostics)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-contract-scratch
+          path: ${{ runner.temp }}/xab-package-contract
+          retention-days: 7

@@ -32,11 +32,52 @@ jobs:
 
       - name: Test downloader
         run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release --no-build
+
+  package-contract:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install FFmpeg (pinned)
+        uses: ./.github/actions/ffmpeg-static
+
+      - name: Package contract + fresh-consumer smoke
+        # Release flavor: the packed version must equal the release tag, and the SourceLink
+        # targets must point at the canonical upstream org (releases are tagged on upstream,
+        # so the pack origin here is the upstream repo itself).
+        env:
+          XABE_SMOKE_ENABLE: "true"
+          XABE_SMOKE_SCRATCH: ${{ runner.temp }}/xab-package-contract
+          XABE_FFMPEG_BIN_DIR: ${{ runner.temp }}/ffmpeg-static/bin
+        run: |
+          export XABE_EXPECTED_PACKAGE_VERSION="${GITHUB_REF_NAME#v}"
+          export XABE_SOURCELINK_EXPECTED_ORG="tomaszzmuda"
+          dotnet test test/Xabe.FFmpeg.PackageContract.Test -c Release -v normal
+
+      - name: Upload smoke scratch (failure diagnostics)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-contract-scratch
+          path: ${{ runner.temp }}/xab-package-contract
+          retention-days: 7
+
   release:
     runs-on: ubuntu-24.04
     permissions:
       contents: write
-    needs: [test]
+    needs: [test, package-contract]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,6 +97,8 @@ jobs:
           mkdir -p dist
           cp src/Xabe.FFmpeg/bin/Release/*.nupkg dist/
           cp src/Xabe.FFmpeg.Downloader/bin/Release/*.nupkg dist/
+          cp src/Xabe.FFmpeg/bin/Release/*.snupkg dist/
+          cp src/Xabe.FFmpeg.Downloader/bin/Release/*.snupkg dist/
 
       - name: Notes
         run: |
@@ -77,8 +120,9 @@ jobs:
         run: |
           [ -n "${NUGET_API_KEY}" ] || { echo "::error::NUGET_API_KEY secret is not set"; exit 1; }
           dotnet nuget push dist/*.nupkg --api-key "${NUGET_API_KEY}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push dist/*.snupkg --api-key "${NUGET_API_KEY}" --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       - name: GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --target "${GITHUB_SHA}" --notes-file notes.md dist/*.nupkg
+        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --target "${GITHUB_SHA}" --notes-file notes.md dist/*.nupkg dist/*.snupkg
