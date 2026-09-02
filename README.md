@@ -12,6 +12,13 @@
 
 [Xabe.FFmpeg Documentation](https://ffmpeg.xabe.net/docs.html)
 
+## Testing ##
+
+- Run all tests (including the RTSP integration tests) with `dotnet test test/Xabe.FFmpeg.Test`.
+- The tests need `ffmpeg` and `ffprobe` on `PATH`.
+- The RTSP integration tests start a pinned `aler9/rtsp-simple-server` container through [Testcontainers](https://dotnet.testcontainers.org), so they additionally require a running Docker daemon on an x64 machine. No fixed ports or pre-created containers are needed: each test run picks a random free host port.
+- If Docker is unavailable, skip only that group with `dotnet test test/Xabe.FFmpeg.Test --filter "FullyQualifiedName!~Rtsp"`.
+
 ## License ##
 
 Xabe.FFmpeg is licensed under [Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)](https://creativecommons.org/licenses/by-nc-sa/3.0/) for non commercial use. If you want use Xabe.FFmpeg in commercial project visit our website - [Xabe.FFmpeg](https://ffmpeg.xabe.net/license.html)
