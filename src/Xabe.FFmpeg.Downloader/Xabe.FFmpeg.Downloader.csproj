@@ -1,42 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Xabe.FFmpeg.Downloader</PackageId>
     <AssemblyName>Xabe.FFmpeg.Downloader</AssemblyName>
     <RootNamespace>Xabe.FFmpeg.Downloader</RootNamespace>
-    <Authors>Xabe</Authors>
-    <Company>Xabe Tomasz Żmuda</Company>
-    <Description>FFmpeg assemly downloader. Download ffmpeg binary data on Windows, Mac or Linux.</Description>
-    <Copyright>Copyright 2017-2020 (c) Xabe Tomasz Zmuda.</Copyright>
-    <PackageLicenseUrl>https://ffmpeg.xabe.net/license.html</PackageLicenseUrl>
-    <PackageProjectUrl>https://ffmpeg.xabe.net/index.html</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/tomaszzmuda/Xabe.FFmpeg</RepositoryUrl>
-    <RepositoryType>Dependency</RepositoryType>
-    <PackageTags>media converter audio ffmpeg wrapper core video encode decode downloader assemblies executables</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <SignAssembly>false</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageIconUrl>https://xabe.net/assets/new_xabe_logo-100x100.png</PackageIconUrl>
-    <MinVerMinimumMajorMinor>6.0</MinVerMinimumMajorMinor>
-    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <Title>Xabe.FFmpeg.Downloader</Title>
+    <Description>Downloads the latest FFmpeg and FFprobe binaries for Windows, macOS, Linux or Android, so your .NET application can locate a working media toolkit at runtime.</Description>
+    <PackageTags>ffmpeg ffprobe media video audio conversion probe downloader executables</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MinVer" Version="7.0.0">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-  </PropertyGroup>
-  
 </Project>
