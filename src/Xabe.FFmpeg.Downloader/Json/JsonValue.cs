@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Xabe.FFmpeg
+namespace Xabe.FFmpeg.Downloader
 {
     /// <summary>
     ///     An immutable parsed JSON value. Objects keep their document order; unknown members are kept

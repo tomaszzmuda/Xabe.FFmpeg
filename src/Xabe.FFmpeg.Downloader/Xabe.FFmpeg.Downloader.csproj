@@ -26,9 +26,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="[9.0.0,)">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="MinVer" Version="7.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

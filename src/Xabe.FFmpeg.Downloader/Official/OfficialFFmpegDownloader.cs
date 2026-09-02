@@ -1,21 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Xabe.FFmpeg.Downloader
 {
     internal class OfficialFFmpegDownloader : FFmpegDownloaderBase
     {
-        private readonly JsonSerializerOptions _defaultSerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString,
-            WriteIndented = true
-        };
-
         private readonly LinkProvider _linkProvider;
 
         internal OfficialFFmpegDownloader() : base()
@@ -47,7 +38,7 @@ namespace Xabe.FFmpeg.Downloader
             using (var wc = new WebClient())
             {
                 var json = wc.DownloadString("https://ffbinaries.com/api/v1/version/latest");
-                return JsonSerializer.Deserialize<FFbinariesVersionInfo>(json, _defaultSerializerOptions);
+                return JsonDocument.Map(json, "ffbinaries manifest", FFbinariesVersionInfo.FromManifest);
             }
         }
 
@@ -76,24 +67,20 @@ namespace Xabe.FFmpeg.Downloader
                 return true;
             }
 
-            FFbinariesVersionInfo currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(File.ReadAllText(versionPath), _defaultSerializerOptions);
-            if (currentVersion != null)
+            var savedVersion = JsonDocument.Map(File.ReadAllText(versionPath), "version.json", FFbinariesVersionInfo.ReadSavedVersion);
+            if (savedVersion != null && new Version(latestVersion) <= new Version(savedVersion))
             {
-                if (new Version(latestVersion) > new Version(currentVersion.Version))
-                {
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         internal void SaveVersion(FFbinariesVersionInfo latestVersion, string path)
         {
             var versionPath = Path.Combine(path ?? ".", "version.json");
-            var downloadedVersion = new DownloadedVersion { Version = latestVersion.Version };
 
-            File.WriteAllText(versionPath, JsonSerializer.Serialize(downloadedVersion, _defaultSerializerOptions));
+            File.WriteAllText(versionPath, FFbinariesVersionInfo.RenderSavedVersion(latestVersion.Version));
         }
     }
 }
