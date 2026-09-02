@@ -7,7 +7,7 @@ Please do **not** open a public issue for security problems. Report them private
 - Preferred: use the **Security** tab of this repository ("Report a vulnerability") if it is enabled at the time of your report.
 - Alternatively, write to [support@xabe.net](mailto:support@xabe.net) with a short reproduction and the affected package version(s).
 
-We aim to acknowledge reports promptly and to ship a fix (with a corresponding NuGet release and changelog entry) before any public disclosure.
+We aim to acknowledge reports promptly and to ship a fix as a new tagged NuGet release before any public disclosure.
 
 ## Scope
 

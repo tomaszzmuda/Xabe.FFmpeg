@@ -22,7 +22,7 @@ The test suites use xUnit. Some tests (screen capture, hardware acceleration) sk
 - **Tests are expected.** The maintainer merges tested changes; please extend an existing test suite or add a focused one alongside the behaviour you change.
 - Keep changes focused; do not mix refactors with behaviour changes.
 - Follow the existing code style (the repository ships an `.editorconfig` that the build enforces).
-- Public API changes deserve an entry in `CHANGELOG.md`.
+- Call out public API changes in your PR description — release notes are generated from the commit log.
 - Documentation in `README.md` must stay truthful to the code: the examples there are byte-compared against test sources and executed by the test suite — update them together with any API change they use.
 - For anything user-facing, prefer fixing the example over adding a workaround in the wrapper.
 

@@ -43,7 +43,7 @@ When you create a conversion, the library locates the executables in this order:
 2. The directory containing your application's entry assembly.
 3. The directories listed in the `PATH` environment variable.
 
-Lookup is by executable name (`ffmpeg`, `ffprobe`, plus `.exe` on Windows) and is case-insensitive. If neither executable is found, an `FFmpegNotFoundException` is thrown with the searched locations.
+Lookup is by executable name (`ffmpeg`, `ffprobe`, plus `.exe` on Windows) and is case-insensitive. If neither executable is found, an `FFmpegNotFoundException` is thrown with a message pointing at the locations it searched (the configured directory, if any, and `PATH`).
 
 ## Quick start
 
@@ -81,7 +81,7 @@ Note the `-n`: the snippet does not overwrite an existing output file, so runnin
 
 What the core package offers today:
 
-- Common conversion snippets (to MP4/TS/WebM/OGV/GIF, extract/add audio, snapshots, split, concatenate, watermarks, M3U8 capture, RTSP loops).
+- Common conversion snippets (to MP4/TS/WebM/OGV/GIF, extract/add audio, snapshots, split, concatenate, watermarks, M3U8 capture, send files to an RTSP server).
 - Stream-level control: select, copy, or reconfigure individual video, audio, and subtitle streams (codec, bitrate, size, rotation, filters).
 - Probing with `FFmpeg.GetMediaInfo(...)` (`ffprobe`-backed) and raw `Probe` access for custom ffprobe arguments.
 - Progress and raw-output events: `OnProgress`, `OnDataReceived`, and `OnVideoDataReceived` (with `PipeOutput`).
@@ -169,7 +169,7 @@ Downloader providers available today:
 | `FFmpegVersion` | Source | Platforms |
 |---|---|---|
 | `Official` | [ffbinaries](https://ffbinaries.com) builds, queried through their API (recommended) | Windows (32/64-bit), macOS, Linux (incl. 32-bit and ARM) |
-| `Full` / `Shared` | Static/shared builds served from [xabe.net](https://xabe.net) (end of life, no longer updated) | Windows, macOS |
+| `Full` / `Shared` | Static (Full) and shared (Shared) Zenaroe builds served from [xabe.net](https://xabe.net); Full reached end of life and is no longer updated | Windows, macOS |
 | `Android` | Android builds (Mobile-FFmpeg family) served from [xabe.net](https://xabe.net) | Android (ARM/ARM64/x86/x86_64) |
 
 The downloader always fetches the provider's *latest* build; there is no API to pin an arbitrary FFmpeg version.
@@ -188,7 +188,7 @@ The downloader always fetches the provider's *latest* build; there is no API to 
 
 - **"Cannot find FFmpeg"** (`FFmpegNotFoundException`): make sure **both** `ffmpeg` and `ffprobe` exist, are executable, and match your architecture; then check the discovery order above — configured directory first, then the application directory, then `PATH`.
 - **A conversion fails:** when you have a result, inspect `IConversionResult.Arguments` to see exactly what was run; attach the conversion's raw output (captured through the `OnDataReceived` event) or the exception details to any report. The API does not retain the full FFmpeg log after `Start()` completes.
-- **Unexpected custom-option behaviour:** re-check `ParameterPosition` and the string returned by `Build()` — FFmpeg rejects misplaced options silently from this library's point of view.
+- **Unexpected custom-option behaviour:** re-check `ParameterPosition` and the string returned by `Build()` — the library does not validate option placement, so a misplaced option surfaces as a baffling FFmpeg error.
 - **Codec or hardware-acceleration errors:** your build may simply lack it — inspect the installed FFmpeg with `ffmpeg -encoders`, `ffmpeg -decoders`, and `ffmpeg -hwaccels` before suspecting the wrapper.
 
 Where to go:
@@ -203,7 +203,6 @@ Where to go:
 - [Online documentation guide](https://ffmpeg.xabe.net/docs.html) — snippets, streams, raw arguments, RTSP, hardware acceleration.
 - [First-conversion tutorial](https://ffmpeg.xabe.net/tutorial.html) — a worked end-to-end example.
 - [FAQ](https://ffmpeg.xabe.net/faq.html)
-- [Generated code reference](https://ffmpeg.xabe.net/docs/System.html)
 - [GitHub Releases](https://github.com/tomaszzmuda/Xabe.FFmpeg/releases) · [changelog](https://github.com/tomaszzmuda/Xabe.FFmpeg/blob/master/CHANGELOG.md)
 - [Issue tracker](https://github.com/tomaszzmuda/Xabe.FFmpeg/issues) · [Contributing](https://github.com/tomaszzmuda/Xabe.FFmpeg/blob/master/CONTRIBUTING.md) · [Security policy](https://github.com/tomaszzmuda/Xabe.FFmpeg/blob/master/SECURITY.md)
 - [NuGet: Xabe.FFmpeg](https://www.nuget.org/packages/Xabe.FFmpeg) · [NuGet: Xabe.FFmpeg.Downloader](https://www.nuget.org/packages/Xabe.FFmpeg.Downloader)
