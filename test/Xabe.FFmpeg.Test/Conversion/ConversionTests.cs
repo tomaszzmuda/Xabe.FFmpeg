@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class ConversionTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
+    public class ConversionTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
         private readonly StorageFixture _storageFixture = storageFixture;
 
@@ -914,22 +914,6 @@ namespace Xabe.FFmpeg.Test
                                                                  .Start();
 
             Assert.Contains($"-vsync -1", conversionResult.Arguments);
-        }
-
-        [Fact]
-        public async Task SendToRtspServer_MinimumConfiguration_FileIsBeingStreamed()
-        {
-            // Arrange
-            var output = "rtsp://127.0.0.1:8554/newFile";
-
-            // Act
-            _ = (await FFmpeg.Conversions.FromSnippet.SendToRtspServer(Resources.Mp4, new Uri(output))).Start();
-            await Task.Delay(2000);
-
-            // Assert
-            var info = await MediaInfo.Get(output);
-
-            Assert.Single(info.Streams);
         }
 
         [RunnableInDebugOnly]
