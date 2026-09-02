@@ -64,9 +64,10 @@
     <PackageReference Include="MinVer" Version="7.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Text.Json" Version="[9.0.0,)">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <!-- Flows to consumers on purpose: the shipped assemblies reference System.Text.Json, and hiding it
+         (privateassets) leaves a dangling reference that breaks consumer load (consumer smoke demonstrates).
+         XAB-1375 removes the STJ use entirely, and then this line goes with it. -->
+    <PackageReference Include="System.Text.Json" Version="[9.0.0,)" />
     <None Include="..\..\Assets\xabe_icon.png" Pack="true" PackagePath="\" />
     <None Include="..\..\license\Xabe-License.txt" Pack="true" PackagePath="\" />
   </ItemGroup>

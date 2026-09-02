@@ -4,7 +4,7 @@
     <PackageId>Xabe.FFmpeg.Downloader</PackageId>
     <AssemblyName>Xabe.FFmpeg.Downloader</AssemblyName>
     <RootNamespace>Xabe.FFmpeg.Downloader</RootNamespace>
-    <PackageTitle>Xabe.FFmpeg.Downloader</PackageTitle>
+    <Title>Xabe.FFmpeg.Downloader</Title>
     <Description>Downloads the latest FFmpeg and FFprobe binaries for Windows, macOS, Linux or Android, so your .NET application can locate a working media toolkit at runtime.</Description>
     <PackageTags>ffmpeg ffprobe media video audio conversion probe downloader executables</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>

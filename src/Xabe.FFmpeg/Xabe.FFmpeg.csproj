@@ -4,7 +4,7 @@
     <PackageId>Xabe.FFmpeg</PackageId>
     <AssemblyName>Xabe.FFmpeg</AssemblyName>
     <RootNamespace>Xabe.FFmpeg</RootNamespace>
-    <PackageTitle>Xabe.FFmpeg</PackageTitle>
+    <Title>Xabe.FFmpeg</Title>
     <Description>Fluent .NET Standard wrapper around the FFmpeg and FFprobe command-line tools for media conversion, probing and stream manipulation - no FFmpeg expertise required.</Description>
     <PackageTags>ffmpeg ffprobe media video audio conversion probe</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
