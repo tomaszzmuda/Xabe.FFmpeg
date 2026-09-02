@@ -201,6 +201,6 @@ Where to go:
 - [Online documentation guide](https://ffmpeg.xabe.net/docs.html) — snippets, streams, raw arguments, RTSP, hardware acceleration.
 - [First-conversion tutorial](https://ffmpeg.xabe.net/tutorial.html) — a worked end-to-end example.
 - [FAQ](https://ffmpeg.xabe.net/faq.html)
-- [GitHub Releases](https://github.com/tomaszzmuda/Xabe.FFmpeg/releases) · [changelog](https://github.com/tomaszzmuda/Xabe.FFmpeg/blob/master/CHANGELOG.md)
+- [GitHub Releases](https://github.com/tomaszzmuda/Xabe.FFmpeg/releases) — version history and release notes
 - [Issue tracker](https://github.com/tomaszzmuda/Xabe.FFmpeg/issues) · [Contributing](https://github.com/tomaszzmuda/Xabe.FFmpeg/blob/master/CONTRIBUTING.md) · [Security policy](https://github.com/tomaszzmuda/Xabe.FFmpeg/blob/master/SECURITY.md)
 - [NuGet: Xabe.FFmpeg](https://www.nuget.org/packages/Xabe.FFmpeg) · [NuGet: Xabe.FFmpeg.Downloader](https://www.nuget.org/packages/Xabe.FFmpeg.Downloader)
