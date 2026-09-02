@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,13 +13,6 @@ namespace Xabe.FFmpeg
     // ReSharper disable once InheritdocConsiderUsage
     internal sealed class FFprobeWrapper : FFmpeg
     {
-        private readonly JsonSerializerOptions _defaultSerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString,
-            WriteIndented = true
-        };
-
         private async Task<ProbeModel.Stream[]> GetStreams(string videoPath, CancellationToken cancellationToken)
         {
             var stringResult = await Start($"-v panic -print_format json=c=1 -show_streams {videoPath}", cancellationToken);
@@ -30,8 +21,7 @@ namespace Xabe.FFmpeg
                 return Array.Empty<ProbeModel.Stream>();
             }
 
-            var probe = JsonSerializer.Deserialize<ProbeModel>(stringResult, _defaultSerializerOptions);
-            return probe.Streams ?? Array.Empty<ProbeModel.Stream>();
+            return JsonDocument.Map(stringResult, "ffprobe streams payload", ProbeModel.GetStreams);
         }
 
         private double GetVideoFramerate(ProbeModel.Stream vid)
@@ -70,7 +60,7 @@ namespace Xabe.FFmpeg
         {
             var stringResult = await Start($"-v panic -print_format json=c=1 -show_entries format=size,duration,bit_rate:format_tags=creation_time {videoPath}", cancellationToken);
 
-            return JsonSerializer.Deserialize<FormatModel.Root>(stringResult, _defaultSerializerOptions);
+            return JsonDocument.Map(stringResult, "ffprobe format payload", FormatModel.Root.FromJson);
         }
 
         private TimeSpan GetAudioDuration(ProbeModel.Stream audio)
