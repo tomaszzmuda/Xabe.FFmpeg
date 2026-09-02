@@ -43,7 +43,7 @@ dotnet CLI:
 
 ## Licensing
 
-Xabe.FFmpeg.Downloader (this library) is licensed under the **Xabe License**: CC BY-NC-SA 3.0 for non-commercial projects, and the full Xabe License Agreement for commercial use — see `Xabe-License.txt` inside this package and <https://ffmpeg.xabe.net/license.html>.
+Xabe.FFmpeg.Downloader (this library) is licensed under the **Xabe License**: CC BY-NC-SA 3.0 for non-commercial projects, and the full Xabe License Agreement for commercial use — see `LICENSE.md` inside this package and <https://ffmpeg.xabe.net/license.html>.
 
 ## Links
 

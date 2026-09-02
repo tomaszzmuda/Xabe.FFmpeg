@@ -55,7 +55,7 @@ More operations are available as ready-made snippets (`ExtractAudio`, `Snapshot`
 
 ## Licensing
 
-Xabe.FFmpeg (this library) is licensed under the **Xabe License**: CC BY-NC-SA 3.0 for non-commercial projects, and the full Xabe License Agreement for commercial use — see `Xabe-License.txt` inside this package and <https://ffmpeg.xabe.net/license.html>.
+Xabe.FFmpeg (this library) is licensed under the **Xabe License**: CC BY-NC-SA 3.0 for non-commercial projects, and the full Xabe License Agreement for commercial use — see `LICENSE.md` inside this package and <https://ffmpeg.xabe.net/license.html>.
 
 The `ffmpeg`/`ffprobe` executables you provide are **licensed separately** (GPL/LGPL depending on the build) and remain subject to their own terms, which are independent of this package's license.
 
