@@ -70,8 +70,6 @@ The snippet probes the input, selects the first video and audio streams, and ret
 
 Note the `-n`: the snippet does not overwrite an existing output file, so running the snippet twice fails with a `ConversionException` until you delete or rename `movie.mp4`.
 
-(the exact argument string depends on the streams in your file; the quick start itself is executed and asserted by the test suite in `test/Xabe.FFmpeg.Test/Docs` against the pinned CI FFmpeg build, so the copied example is never hand-maintained).
-
 ## Packages and capabilities
 
 | Package | Purpose |
