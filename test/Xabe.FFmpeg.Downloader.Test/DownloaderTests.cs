@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using NSubstitute;
 using Xabe.FFmpeg.Downloader.Android;
@@ -14,14 +12,6 @@ namespace Xabe.FFmpeg.Downloader.Test
 {
     public class DownloaderTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
-
-        private readonly JsonSerializerOptions _defaultSerializerOptions = new()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString,
-            WriteIndented = true
-        };
-
         [Fact]
         internal async Task FullProcessPassed()
         {
@@ -326,7 +316,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath);
@@ -358,7 +348,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 await downloader.DownloadLatestVersion(currentVersion, FFmpeg.ExecutablesPath, null, 3);
@@ -390,7 +380,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
@@ -423,7 +413,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new OfficialFFmpegDownloader(operatingSystemProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
@@ -452,7 +442,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath);
@@ -480,7 +470,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 await downloader.GetLatestVersion(FFmpeg.ExecutablesPath, null, 3);
@@ -508,7 +498,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
@@ -537,7 +527,7 @@ namespace Xabe.FFmpeg.Downloader.Test
 
             try
             {
-                var currentVersion = JsonSerializer.Deserialize<FFbinariesVersionInfo>(await File.ReadAllTextAsync(Resources.FFbinariesInfo), _defaultSerializerOptions);
+                var currentVersion = FFbinariesVersionInfo.FromManifest(JsonDocument.Parse(await File.ReadAllTextAsync(Resources.FFbinariesInfo), "test fixture"));
                 FFmpeg.SetExecutablesPath(storageFixture.GetTempDirectory());
                 var downloader = new AndroidFFmpegDownloader(operatingSystemArchProvider);
                 IProgress<ProgressInfo> progress = new Progress<ProgressInfo>();
