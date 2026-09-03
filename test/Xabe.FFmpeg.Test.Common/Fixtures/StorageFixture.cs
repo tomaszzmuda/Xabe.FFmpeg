@@ -33,6 +33,13 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
 
         public void Dispose()
         {
+            if (GetCurrentDirectoryOrNull() is { } cwd && cwd.StartsWith(TempDirPath, StringComparison.OrdinalIgnoreCase))
+            {
+                // Deleting out from under the process CWD makes getcwd fail for the whole test host,
+                // which latches a TypeInitializationException into Testcontainers for the rest of the run.
+                return;
+            }
+
             for (var i = 0; i < 10; i++)
             {
                 try
@@ -47,6 +54,18 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
             }
 
             GC.SuppressFinalize(this);
+        }
+
+        private static string GetCurrentDirectoryOrNull()
+        {
+            try
+            {
+                return Directory.GetCurrentDirectory();
+            }
+            catch (IOException)
+            {
+                return null;
+            }
         }
     }
 }
