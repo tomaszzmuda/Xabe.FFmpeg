@@ -132,16 +132,19 @@ namespace Xabe.FFmpeg.Test.Common.Fixtures
                     _ = await FFmpeg.GetMediaInfo(streamUri.OriginalString, probe.Token);
                     return;
                 }
-                catch (ArgumentException)
-                {
-                    // The server knows no such stream yet; the publisher is still warming up.
-                }
                 catch (OperationCanceledException)
                 {
-                    if (deadline.IsCancellationRequested)
-                    {
-                        throw new TimeoutException($"The RTSP stream '{streamUri}' was not readable within {budget.Value.TotalSeconds:0} seconds.");
-                    }
+                    // Per-probe timeout or the overall deadline; decided below.
+                }
+                catch (Exception)
+                {
+                    // A probe with no usable output (empty, unparsable) means the publisher is
+                    // not mounted yet; ffprobe shapes the failure differently per version.
+                }
+
+                if (deadline.IsCancellationRequested)
+                {
+                    throw new TimeoutException($"The RTSP stream '{streamUri}' was not readable within {budget.Value.TotalSeconds:0} seconds.");
                 }
 
                 await Task.Delay(TimeSpan.FromMilliseconds(500));
