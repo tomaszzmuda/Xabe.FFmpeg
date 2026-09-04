@@ -182,7 +182,9 @@ namespace Xabe.FFmpeg
                         case OperatingSystem.Windows:
                             return magicNumber[0] == 0x4D && magicNumber[1] == 0x5A;
                         case OperatingSystem.Osx:
-                            return magicNumber[0] == 0xCE && magicNumber[1] == 0xFA && magicNumber[2] == 0xED && magicNumber[3] == 0xFE;
+                            return (magicNumber[0] == 0xCE && magicNumber[1] == 0xFA && magicNumber[2] == 0xED && magicNumber[3] == 0xFE) || // 32-bit Mach-O
+                                (magicNumber[0]    == 0xCF && magicNumber[1] == 0xFA && magicNumber[2] == 0xED && magicNumber[3] == 0xFE) || // 64-bit Mach-O
+                                (magicNumber[0]    == 0xCA && magicNumber[1] == 0xFE && magicNumber[2] == 0xBA && magicNumber[3] == 0xBE); // Universal Binary
                         case OperatingSystem.Linux:
                             if (architecture == OperatingSystemArchitecture.X86 || architecture == OperatingSystemArchitecture.X64)
                             {
