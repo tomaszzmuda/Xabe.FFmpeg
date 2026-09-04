@@ -31,6 +31,7 @@ namespace Xabe.FFmpeg.Exceptions
         {
             _checks.Add(new ExceptionCheck("Invalid NAL unit size"), (output, args) => throw new ConversionException(output, args));
             _checks.Add(new ExceptionCheck("Packet mismatch", true), (output, args) => throw new ConversionException(output, args));
+            _checks.Add(new ExceptionCheck("already exists"), (output, args) => throw new ConversionException(output, args));
 
             _checks.Add(new ExceptionCheck("asf_read_pts failed", true), (output, args) => throw new UnknownDecoderException(output, args));
             _checks.Add(new ExceptionCheck("Missing key frame while searching for timestamp", true), (output, args) => throw new UnknownDecoderException(output, args));

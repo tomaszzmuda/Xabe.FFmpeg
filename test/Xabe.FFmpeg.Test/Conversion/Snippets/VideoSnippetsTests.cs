@@ -122,6 +122,9 @@ namespace Xabe.FFmpeg.Test
 
             Assert.Contains("overlay=", result.Arguments);
             Assert.Contains(Resources.Mp4WithAudio, result.Arguments);
+            Assert.Contains("[0:v][1:v]overlay=", result.Arguments);
+            Assert.Contains("-map [vout0]", result.Arguments);
+            Assert.DoesNotContain("-map 1:", result.Arguments);
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(output);
             Assert.Single(mediaInfo.VideoStreams);
             Assert.Single(mediaInfo.AudioStreams);

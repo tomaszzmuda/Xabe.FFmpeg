@@ -146,7 +146,7 @@ namespace Xabe.FFmpeg.Test
         {
             var output = storageFixture.GetTempFileName(FileExtensions.WebM);
 
-            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/"));
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting"));
 
             Assert.NotNull(exception);
             Assert.IsType<ArgumentException>(exception);
@@ -157,7 +157,7 @@ namespace Xabe.FFmpeg.Test
         {
             var output = storageFixture.GetTempFileName(FileExtensions.WebM);
             var cancellationTokenSource = new CancellationTokenSource(2000);
-            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo(@"rtsp://192.168.1.123:554/", cancellationTokenSource.Token));
+            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting", cancellationTokenSource.Token));
 
             Assert.NotNull(exception);
             Assert.IsType<ArgumentException>(exception);

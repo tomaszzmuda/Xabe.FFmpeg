@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install FFmpeg (pinned 7.0.2)
+        uses: ./.github/actions/ffmpeg-static
+
+      - name: Build
+        run: dotnet build Xabe.FFmpeg.sln -c Release
+
+      - name: Test core
+        run: dotnet test test/Xabe.FFmpeg.Test -c Release -v normal --no-build
+
+  downloader-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install FFmpeg (pinned 7.0.2)
+        uses: ./.github/actions/ffmpeg-static
+
+      - name: Build
+        run: dotnet build Xabe.FFmpeg.sln -c Release
+
+      - name: Test downloader
+        run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release -v normal --no-build

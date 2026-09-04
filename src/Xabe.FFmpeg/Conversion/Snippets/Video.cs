@@ -186,7 +186,7 @@ namespace Xabe.FFmpeg
             for (var i = 0; i < mediaInfos.Count; i++)
             {
                 conversion.AddParameter(
-                    $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar=dar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
+                    $"[{i}:v]scale={maxResolutionMedia.Width}:{maxResolutionMedia.Height},setdar={maxResolutionMedia.Ratio},setpts=PTS-STARTPTS[v{i}]; ");
             }
 
             for (var i = 0; i < mediaInfos.Count; i++)

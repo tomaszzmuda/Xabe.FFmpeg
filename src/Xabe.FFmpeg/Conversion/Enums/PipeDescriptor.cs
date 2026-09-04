@@ -2,8 +2,8 @@
 {
     public enum PipeDescriptor
     {
-        stdin,
-        stdout,
-        stderr
+        stdin = 0,
+        stdout = 1,
+        stderr = 2
     }
 }

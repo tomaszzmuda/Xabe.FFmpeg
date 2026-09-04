@@ -285,7 +285,7 @@ namespace Xabe.FFmpeg
         /// <inheritdoc />
         public IConversion PipeOutput(PipeDescriptor descriptor = PipeDescriptor.stdout)
         {
-            SetOutput($"pipe:{descriptor}");
+            SetOutput($"pipe:{(int)descriptor}");
             OutputPipeDescriptor = descriptor;
             return this;
         }
@@ -417,33 +417,94 @@ namespace Xabe.FFmpeg
             var configurations = new List<IFilterConfiguration>();
             foreach (IStream stream in _streams)
             {
-                if (stream is IFilterable filterable)
-                {
-                    configurations.AddRange(filterable.GetFilters());
-                }
+                configurations.AddRange(GetFilterConfigs(stream));
             }
 
             IEnumerable<IGrouping<string, IFilterConfiguration>> filterGroups = configurations.GroupBy(configuration => configuration.FilterType);
             foreach (IGrouping<string, IFilterConfiguration> filterGroup in filterGroups)
             {
                 builder.Append($"{filterGroup.Key} \"");
+                var first = true;
                 foreach (IFilterConfiguration configuration in configurations.Where(x => x.FilterType == filterGroup.Key))
                 {
-                    var values = new List<string>();
-                    foreach (KeyValuePair<string, string> filter in configuration.Filters)
+                    if (!first)
                     {
-                        var map = $"[{configuration.StreamNumber}]";
-                        var value = string.IsNullOrEmpty(filter.Value) ? $"{filter.Key} " : $"{filter.Key}={filter.Value}";
-                        values.Add($"{map} {value} ");
+                        builder.Append(";");
                     }
 
-                    builder.Append(string.Join(";", values));
+                    builder.Append(BuildFilterNodes((FilterConfiguration)configuration));
+                    first = false;
                 }
 
                 builder.Append("\" ");
             }
 
             return builder.ToString();
+        }
+
+        private string BuildFilterNodes(FilterConfiguration configuration)
+        {
+            var filters = configuration.Filters.ToList();
+
+            if (string.IsNullOrEmpty(configuration.OutputLabel))
+            {
+                var values = new List<string>();
+                foreach (KeyValuePair<string, string> filter in filters)
+                {
+                    var value = string.IsNullOrEmpty(filter.Value) ? filter.Key : $"{filter.Key}={filter.Value.Trim()}";
+                    values.Add($"[{configuration.StreamNumber}] {value}");
+                }
+
+                return string.Join(";", values);
+            }
+
+            var mainIndex = GetInputIndex(configuration.MainInputSource, configuration.StreamNumber);
+            var extraIndexes = (configuration.ExtraInputs ?? Enumerable.Empty<string>())
+                                .Select(source => GetInputIndex(source, configuration.StreamNumber))
+                                .ToList();
+
+            var graph = new StringBuilder();
+            var incoming = $"[{mainIndex}:v]";
+            var interimLabel = 0;
+            for (var i = 0; i < filters.Count; i++)
+            {
+                var filter = filters[i];
+                var pads = new List<string> { incoming };
+                if (filter.Key == "overlay")
+                {
+                    pads.AddRange(extraIndexes.Select(index => $"[{index}:v]"));
+                }
+
+                var value = string.IsNullOrEmpty(filter.Value) ? filter.Key : $"{filter.Key}={filter.Value.Trim()}";
+                var outputLabel = i == filters.Count - 1 ? configuration.OutputLabel : $"{configuration.OutputLabel}_{interimLabel++}";
+                graph.Append(string.Concat(pads));
+                graph.Append(value);
+                graph.Append($"[{outputLabel}]");
+
+                if (i != filters.Count - 1)
+                {
+                    graph.Append(";");
+                }
+
+                incoming = $"[{outputLabel}]";
+            }
+
+            return graph.ToString();
+        }
+
+        private int GetInputIndex(string source, int fallback)
+        {
+            return !string.IsNullOrEmpty(source) && _inputFileMap.TryGetValue(source, out var index) ? index : fallback;
+        }
+
+        private static IEnumerable<IFilterConfiguration> GetFilterConfigs(IStream stream)
+        {
+            if (stream is IFilterable filterable)
+            {
+                return filterable.GetFilters();
+            }
+
+            return Enumerable.Empty<IFilterConfiguration>();
         }
 
         /// <summary>
@@ -458,6 +519,23 @@ namespace Xabe.FFmpeg
                 if (_hasInputBuilder) // If we have an input builder we always want to map the first video stream as it will be created by our input builder
                 {
                     builder.Append($"-map 0:0 ");
+                }
+
+                var filterOutputLabels = GetFilterConfigs(stream)
+                                         .OfType<FilterConfiguration>()
+                                         .Where(config => !string.IsNullOrEmpty(config.OutputLabel))
+                                         .Select(config => config.OutputLabel)
+                                         .ToList();
+                if (filterOutputLabels.Any())
+                {
+                    // A filter graph rebinds the stream to a labelled output; map that output and
+                    // leave auxiliary inputs (e.g. a watermark image) unmapped.
+                    foreach (var label in filterOutputLabels)
+                    {
+                        builder.Append($"-map [{label}] ");
+                    }
+
+                    continue;
                 }
 
                 foreach (var source in stream.GetSource())
