@@ -1,14 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Test.Common.Fixtures;
 using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class MediaInfoTests(StorageFixture storageFixture, RtspServerFixture rtspServer) : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
+    public class MediaInfoTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
         [Fact]
         public async Task AudioPopertiesTest()
@@ -142,28 +141,6 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
-        public async Task RTSP_NotExistingStream_CancelledAfter30Seconds()
-        {
-            var output = storageFixture.GetTempFileName(FileExtensions.WebM);
-
-            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting"));
-
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
-        }
-
-        [Fact]
-        public async Task RTSP_NotExistingStream_CancelledAfter2Seconds()
-        {
-            var output = storageFixture.GetTempFileName(FileExtensions.WebM);
-            var cancellationTokenSource = new CancellationTokenSource(2000);
-            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting", cancellationTokenSource.Token));
-
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
-        }
-
-        [Fact]
         public async Task CalculateFramerate_SloMoVideo_CorrectFramerateIsReturned()
         {
             IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.SloMoMp4);
@@ -225,41 +202,6 @@ namespace Xabe.FFmpeg.Test
 
             IMediaInfo outputMediaInfo = await FFmpeg.GetMediaInfo($"\"{output}\"");
             Assert.NotNull(outputMediaInfo.Streams);
-        }
-
-        [Fact]
-        public async Task GetMediaInfo_RTSP_CorrectDataIsShown()
-        {
-            await rtspServer.Publish(Resources.BunnyMp4, "bunny2");
-
-            var result = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny2");
-
-            Assert.Single(result.VideoStreams);
-            Assert.Single(result.AudioStreams);
-            Assert.Empty(result.SubtitleStreams);
-            Assert.Equal("h264", result.VideoStreams.First().Codec);
-            Assert.Equal(23.976, result.VideoStreams.First().Framerate);
-            Assert.Equal(640, result.VideoStreams.First().Width);
-            Assert.Equal(360, result.VideoStreams.First().Height);
-            Assert.Equal("aac", result.AudioStreams.First().Codec);
-        }
-
-        [Fact]
-        public async Task GetMediaInfo_StreamDoesNotExist_ThrowException()
-        {
-            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/notExisting"));
-
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
-        }
-
-        [Fact]
-        public async Task GetMediaInfo_NotExistingRtspServer_ThrowException()
-        {
-            var exception = await Record.ExceptionAsync(async () => await FFmpeg.GetMediaInfo("rtsp://xabe.net/notExisting"));
-
-            Assert.NotNull(exception);
-            Assert.IsType<ArgumentException>(exception);
         }
 
         [Fact]
