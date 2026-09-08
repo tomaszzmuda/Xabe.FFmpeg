@@ -95,6 +95,26 @@ namespace Xabe.FFmpeg.Test
         }
 
         [Fact]
+        public async Task ChannelLayoutTest()
+        {
+            IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp3);
+            var outputPath = storageFixture.GetTempFileName(FileExtensions.Mp3);
+
+            var audioStream = inputFile.AudioStreams.First();
+            Assert.Equal(2, audioStream.Channels);
+            Assert.Equal("stereo", audioStream.ChannelLayout);
+            audioStream.SetChannels(1);
+            _ = await FFmpeg.Conversions.New()
+                                                     .AddStream(audioStream)
+                                                     .SetOutput(outputPath)
+                                                     .Start();
+
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(outputPath);
+            Assert.Equal(1, mediaInfo.AudioStreams.First().Channels);
+            Assert.Equal("mono", mediaInfo.AudioStreams.First().ChannelLayout);
+        }
+
+        [Fact]
         public async Task ChangeSamplerate()
         {
             IMediaInfo inputFile = await FFmpeg.GetMediaInfo(Resources.Mp3);
