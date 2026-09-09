@@ -114,7 +114,11 @@ namespace Xabe.FFmpeg.Test.Integration
             Assert.Single(result.AudioStreams);
             Assert.Empty(result.SubtitleStreams);
             Assert.Equal("h264", result.VideoStreams.First().Codec);
-            Assert.Equal(23, (int)result.VideoStreams.First().Framerate);
+            // The 3 second clip yields only ~72 frames, so the average rate ffprobe
+            // infers from the RTSP timestamps is pacing sensitive. Under runner load
+            // the source pacing can stretch the window (21 fps measured against the
+            // 23.976 fps source in CI), hence a bounded band instead of equality.
+            Assert.InRange(result.VideoStreams.First().Framerate, 20, 25);
             Assert.Equal(640, result.VideoStreams.First().Width);
             Assert.Equal(360, result.VideoStreams.First().Height);
             Assert.Equal("aac", result.AudioStreams.First().Codec);
