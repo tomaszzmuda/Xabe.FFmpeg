@@ -963,8 +963,8 @@ namespace Xabe.FFmpeg.Test
                                   .SetOutput(output)
                                   .Build();
 
-            var firstInput = arguments.IndexOf("-i first.mp4", StringComparison.Ordinal);
-            var secondInput = arguments.IndexOf("-i second.mp4", StringComparison.Ordinal);
+            var firstInput = arguments.IndexOf("-i \"first.mp4\"", StringComparison.Ordinal);
+            var secondInput = arguments.IndexOf("-i \"second.mp4\"", StringComparison.Ordinal);
             var seek = arguments.IndexOf("-ss 0:00:10.000", StringComparison.Ordinal);
 
             // The pre-input parameter must sit before its own -i, not hoisted in front of every input.
