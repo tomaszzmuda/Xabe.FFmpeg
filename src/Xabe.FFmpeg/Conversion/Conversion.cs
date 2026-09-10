@@ -571,9 +571,11 @@ namespace Xabe.FFmpeg
             var builder = new StringBuilder();
             var index = 0;
 
+            _inputFileMap.Clear();
+
             foreach (var stream in _streams)
             {
-                var preInput = stream.BuildParameters(ParameterPosition.PreInput);
+                var preInput = stream.BuildParameters(ParameterPosition.PreInput).TrimEnd();
                 var sources = stream.GetSource().Distinct().ToList();
 
                 for (var i = 0; i < sources.Count; i++)
