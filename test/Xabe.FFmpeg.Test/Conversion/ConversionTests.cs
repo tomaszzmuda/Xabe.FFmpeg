@@ -940,6 +940,38 @@ namespace Xabe.FFmpeg.Test
             Assert.Contains("rtsp://127.0.0.1:8554/desktop", arguments);
         }
 
+        [Fact]
+        public void PreInputStreamParameters_BuildCommand_PlacedWithOwnInput()
+        {
+            var firstStream = new VideoStream()
+            {
+                Index = 0,
+                Path = "first.mp4"
+            };
+
+            var secondStream = new VideoStream()
+            {
+                Index = 1,
+                Path = "second.mp4",
+                Duration = TimeSpan.FromSeconds(60)
+            }.SetSeek(TimeSpan.FromSeconds(10));
+
+            var output = _storageFixture.GetTempFileName(FileExtensions.Ts);
+            var arguments = FFmpeg.Conversions.New()
+                                  .AddStream(firstStream)
+                                  .AddStream(secondStream)
+                                  .SetOutput(output)
+                                  .Build();
+
+            var firstInput = arguments.IndexOf("-i first.mp4", StringComparison.Ordinal);
+            var secondInput = arguments.IndexOf("-i second.mp4", StringComparison.Ordinal);
+            var seek = arguments.IndexOf("-ss 0:00:10.000", StringComparison.Ordinal);
+
+            // The pre-input parameter must sit before its own -i, not hoisted in front of every input.
+            Assert.True(firstInput < seek);
+            Assert.True(seek < secondInput);
+        }
+
         [RunnableInDebugOnly]
         public async Task SendDesktopToRtspServer_MinimumConfiguration_DesktopIsBeingStreamed()
         {
