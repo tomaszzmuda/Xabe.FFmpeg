@@ -158,6 +158,9 @@ namespace Xabe.FFmpeg
         public int Channels { get; internal set; }
 
         /// <inheritdoc />
+        public string ChannelLayout { get; internal set; }
+
+        /// <inheritdoc />
         public int SampleRate { get; internal set; }
 
         /// <inheritdoc />

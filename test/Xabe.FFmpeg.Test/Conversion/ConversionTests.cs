@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class ConversionTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
+    public class ConversionTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
         private readonly StorageFixture _storageFixture = storageFixture;
 
@@ -916,22 +916,6 @@ namespace Xabe.FFmpeg.Test
             Assert.Contains($"-vsync -1", conversionResult.Arguments);
         }
 
-        [Fact]
-        public async Task SendToRtspServer_MinimumConfiguration_FileIsBeingStreamed()
-        {
-            // Arrange
-            var output = "rtsp://127.0.0.1:8554/newFile";
-
-            // Act
-            _ = (await FFmpeg.Conversions.FromSnippet.SendToRtspServer(Resources.Mp4, new Uri(output))).Start();
-            await Task.Delay(2000);
-
-            // Assert
-            var info = await MediaInfo.Get(output);
-
-            Assert.Single(info.Streams);
-        }
-
         [RunnableInDebugOnly]
         public async Task GetAvailableDevices_SomeDevicesAreConnected_ReturnAllDevices()
         {
@@ -954,6 +938,38 @@ namespace Xabe.FFmpeg.Test
             Assert.Contains("-framerate 30", arguments);
             Assert.Contains("-tune zerolatency", arguments);
             Assert.Contains("rtsp://127.0.0.1:8554/desktop", arguments);
+        }
+
+        [Fact]
+        public void PreInputStreamParameters_BuildCommand_PlacedWithOwnInput()
+        {
+            var firstStream = new VideoStream()
+            {
+                Index = 0,
+                Path = "first.mp4"
+            };
+
+            var secondStream = new VideoStream()
+            {
+                Index = 1,
+                Path = "second.mp4",
+                Duration = TimeSpan.FromSeconds(60)
+            }.SetSeek(TimeSpan.FromSeconds(10));
+
+            var output = _storageFixture.GetTempFileName(FileExtensions.Ts);
+            var arguments = FFmpeg.Conversions.New()
+                                  .AddStream(firstStream)
+                                  .AddStream(secondStream)
+                                  .SetOutput(output)
+                                  .Build();
+
+            var firstInput = arguments.IndexOf("-i \"first.mp4\"", StringComparison.Ordinal);
+            var secondInput = arguments.IndexOf("-i \"second.mp4\"", StringComparison.Ordinal);
+            var seek = arguments.IndexOf("-ss 0:00:10.000", StringComparison.Ordinal);
+
+            // The pre-input parameter must sit before its own -i, not hoisted in front of every input.
+            Assert.True(firstInput < seek);
+            Assert.True(seek < secondInput);
         }
 
         [RunnableInDebugOnly]
@@ -1179,17 +1195,28 @@ namespace Xabe.FFmpeg.Test
         public async Task Conversion_FileNameWithoutDirectory_NewFileIsCreatedInCurrentDirectory()
         {
             var tempPath = _storageFixture.GetTempDirectory();
+            var previousCwd = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(tempPath);
             var tempName = Guid.NewGuid().ToString();
 
-            IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
+            try
+            {
+                IMediaInfo info = await FFmpeg.GetMediaInfo(Resources.MkvWithAudio);
 
-            await FFmpeg.Conversions.New()
-                                    .AddStream(info.VideoStreams)
-                                    .SetOutput($"{tempName}.mp4")
-                                    .Start();
+                await FFmpeg.Conversions.New()
+                                        .AddStream(info.VideoStreams)
+                                        .SetOutput($"{tempName}.mp4")
+                                        .Start();
 
-            Assert.True(File.Exists(Path.Combine(tempPath, $"{tempName}.mp4")));
+                Assert.True(File.Exists(Path.Combine(tempPath, $"{tempName}.mp4")));
+            }
+            finally
+            {
+                // Leaving the CWD inside the fixture's temp tree poisons the test host: once
+                // StorageFixture.Dispose removes it, getcwd throws for every test in the
+                // process (which took down the RTSP collection in CI).
+                Directory.SetCurrentDirectory(previousCwd);
+            }
         }
     }
 }

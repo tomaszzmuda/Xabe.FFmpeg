@@ -28,6 +28,11 @@ namespace Xabe.FFmpeg
         int Channels { get; }
 
         /// <summary>
+        /// Channel Layout
+        /// </summary>
+        string ChannelLayout { get; }
+
+        /// <summary>
         /// Language 
         /// </summary>
         string Language { get; }

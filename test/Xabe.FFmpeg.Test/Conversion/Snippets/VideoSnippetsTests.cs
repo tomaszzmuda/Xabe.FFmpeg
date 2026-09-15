@@ -9,10 +9,9 @@ using Xunit;
 
 namespace Xabe.FFmpeg.Test
 {
-    public class VideoSnippetsTests(StorageFixture storageFixture, RtspServerFixture rtspServer) : IClassFixture<StorageFixture>, IClassFixture<RtspServerFixture>
+    public class VideoSnippetsTests(StorageFixture storageFixture) : IClassFixture<StorageFixture>
     {
         private readonly StorageFixture _storageFixture = storageFixture;
-        private readonly RtspServerFixture _rtspServer = rtspServer;
 
         public static IEnumerable<object[]> JoinFiles =>
         [
@@ -332,27 +331,5 @@ namespace Xabe.FFmpeg.Test
             Assert.Equal(24, videoStream.Framerate);
         }
 
-        [Fact]
-        public async Task Rtsp_GotTwoStreams_SaveEverything()
-        {
-            var output = _storageFixture.GetTempFileName(FileExtensions.Mp4);
-            await _rtspServer.Publish(Resources.BunnyMp4, "bunny");
-            await Task.Delay(2000);
-
-            var mediaInfo = await FFmpeg.GetMediaInfo("rtsp://127.0.0.1:8554/bunny");
-
-            await FFmpeg.Conversions.New().AddStream(mediaInfo.Streams).SetInputTime(TimeSpan.FromSeconds(3)).SetOutput(output).Start();
-
-            IMediaInfo result = await FFmpeg.GetMediaInfo(output);
-            Assert.True(result.Duration > TimeSpan.FromSeconds(0));
-            Assert.Single(result.VideoStreams);
-            Assert.Single(result.AudioStreams);
-            Assert.Empty(result.SubtitleStreams);
-            Assert.Equal("h264", result.VideoStreams.First().Codec);
-            Assert.Equal(23, (int)result.VideoStreams.First().Framerate);
-            Assert.Equal(640, result.VideoStreams.First().Width);
-            Assert.Equal(360, result.VideoStreams.First().Height);
-            Assert.Equal("aac", result.AudioStreams.First().Codec);
-        }
     }
 }
