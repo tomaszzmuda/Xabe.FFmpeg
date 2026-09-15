@@ -101,3 +101,13 @@ jobs:
             rm -f "$nuspec_file"
           done
           echo "Pack validation passed"
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            src/Xabe.FFmpeg/bin/Release/*.nupkg
+            src/Xabe.FFmpeg/bin/Release/*.snupkg
+            src/Xabe.FFmpeg.Downloader/bin/Release/*.nupkg
+            src/Xabe.FFmpeg.Downloader/bin/Release/*.snupkg
