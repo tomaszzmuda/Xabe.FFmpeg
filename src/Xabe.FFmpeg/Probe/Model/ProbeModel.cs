@@ -1,8 +1,135 @@
-﻿namespace Xabe.FFmpeg
+﻿using System;
+using System.Globalization;
+
+namespace Xabe.FFmpeg
 {
     internal class ProbeModel
     {
         public Stream[] Streams { get; set; }
+
+        public static Stream[] GetStreams(JsonValue document)
+        {
+            if (document.Type != JsonValueType.Object)
+            {
+                ThrowWrongShape(document);
+            }
+
+            var streams = document.Member("streams");
+            if (streams == null || streams.Type == JsonValueType.Null)
+            {
+                return Array.Empty<Stream>();
+            }
+
+            if (streams.Type != JsonValueType.Array)
+            {
+                throw new JsonFormatException(string.Format(CultureInfo.InvariantCulture, "Member \"streams\" has incompatible type {0}", streams.Type));
+            }
+
+            var result = new Stream[streams.Elements.Count];
+            for (var i = 0; i < streams.Elements.Count; i++)
+            {
+                result[i] = ReadStream(streams.Elements[i]);
+            }
+
+            return result;
+        }
+
+        private static Stream ReadStream(JsonValue element)
+        {
+            if (element.Type != JsonValueType.Object)
+            {
+                throw new JsonFormatException("Expected an object in the \"streams\" array");
+            }
+
+            return new Stream
+            {
+                CodecName = element.GetString("codec_name"),
+                Height = RequireInt(element, "height"),
+                Width = RequireInt(element, "width"),
+                CodecType = element.GetString("codec_type"),
+                RFrameRate = element.GetString("r_frame_rate"),
+                Duration = RequireDouble(element, "duration"),
+                BitRate = RequireLong(element, "bit_rate"),
+                Index = RequireInt(element, "index"),
+                Channels = RequireInt(element, "channels"),
+                SampleRate = RequireInt(element, "sample_rate"),
+                PixFmt = element.GetString("pix_fmt"),
+                NbFrames = element.GetString("nb_frames"),
+                Tags = ReadTags(element.Member("tags")),
+                Disposition = ReadDisposition(element.Member("disposition"))
+            };
+        }
+
+        private static int RequireInt(JsonValue element, string name)
+        {
+            RequirePresentOrNull(element, name);
+            return element.GetInt(name) ?? 0;
+        }
+
+        private static long RequireLong(JsonValue element, string name)
+        {
+            RequirePresentOrNull(element, name);
+            return element.GetLong(name) ?? 0;
+        }
+
+        private static double RequireDouble(JsonValue element, string name)
+        {
+            RequirePresentOrNull(element, name);
+            return element.GetDouble(name) ?? 0.0;
+        }
+
+        private static void RequirePresentOrNull(JsonValue element, string name)
+        {
+            var value = element.Member(name);
+            if (value != null && value.Type == JsonValueType.Null)
+            {
+                throw new JsonFormatException(string.Format(CultureInfo.InvariantCulture, "Member \"{0}\" has incompatible type {1}", name, value.Type));
+            }
+        }
+
+        private static Tags ReadTags(JsonValue value)
+        {
+            if (value == null || value.Type == JsonValueType.Null)
+            {
+                return null;
+            }
+
+            if (value.Type != JsonValueType.Object)
+            {
+                throw new JsonFormatException(string.Format(CultureInfo.InvariantCulture, "Member \"tags\" has incompatible type {0}", value.Type));
+            }
+
+            return new Tags
+            {
+                Language = value.GetString("language"),
+                Title = value.GetString("title"),
+                Rotate = value.GetInt("rotate")
+            };
+        }
+
+        private static Disposition ReadDisposition(JsonValue value)
+        {
+            if (value == null || value.Type == JsonValueType.Null)
+            {
+                return null;
+            }
+
+            if (value.Type != JsonValueType.Object)
+            {
+                throw new JsonFormatException(string.Format(CultureInfo.InvariantCulture, "Member \"disposition\" has incompatible type {0}", value.Type));
+            }
+
+            return new Disposition
+            {
+                Default = RequireInt(value, "default"),
+                Forced = RequireInt(value, "forced")
+            };
+        }
+
+        private static void ThrowWrongShape(JsonValue document)
+        {
+            throw new JsonFormatException(string.Format(CultureInfo.InvariantCulture, "Expected a JSON object, found {0}", document.Type));
+        }
 
         public class Stream
         {
