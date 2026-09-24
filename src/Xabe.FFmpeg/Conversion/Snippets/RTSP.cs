@@ -49,7 +49,7 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Send your dekstop to rtsp server with some default parameters like: -re, -preset ultrafast
+        ///     Send the desktop (800x600 at 30 fps) to an rtsp server with -tune zerolatency
         /// </summary>
         /// <param name="rtspServerUri">Uri of RTSP Server in format: rtsp://127.0.0.1:8554/name</param>
         /// <returns>IConversion object</returns>

@@ -237,8 +237,8 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputFilePath">Path to file</param>
         /// <param name="outputFilePath">Path to file</param>
-        /// <param name="audioCodec"> The Audio Codec to Transcode the input to</param>
         /// <param name="videoCodec"> The Video Codec to Transcode the input to</param>
+        /// <param name="audioCodec"> The Audio Codec to Transcode the input to</param>
         /// <param name="subtitleCodec"> The Subtitle Codec to Transcode the input to</param>
         /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
