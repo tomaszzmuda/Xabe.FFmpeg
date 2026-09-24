@@ -12,7 +12,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Xabe.FFmpeg\Xabe.FFmpeg.csproj" />
-    <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md">
+      <Pack>true</Pack>
+      <PackagePath>README.md</PackagePath>
+      <Visible>false</Visible>
+    </None>
   </ItemGroup>
 
 </Project>

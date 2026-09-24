@@ -83,8 +83,8 @@ jobs:
         run: |
           set -euo pipefail
           for pkg in src/Xabe.FFmpeg src/Xabe.FFmpeg.Downloader; do
-            # Untagged builds must be 6.0.x-alpha.* (MinVer is pinned against the legacy 3.x tags)
-            nupkg="$(ls "$pkg"/bin/Release/*6.0.*-alpha.*.nupkg)"
+            # Untagged builds must resolve to an -alpha preview (MinVer floors 6.0; the exact version floats with the newest tag)
+            nupkg="$(ls "$pkg"/bin/Release/*-alpha.*.nupkg)"
             snupkg="$(ls "$pkg"/bin/Release/*.snupkg)"
             nuspec_file="$(mktemp)"
             unzip -p "$nupkg" "$(basename "$pkg").nuspec" > "$nuspec_file"
