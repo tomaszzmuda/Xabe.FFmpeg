@@ -239,7 +239,7 @@ namespace Xabe.FFmpeg
         /// <param name="outputFilePath">Path to file</param>
         /// <param name="audioCodec"> The Audio Codec to Transcode the input to</param>
         /// <param name="videoCodec"> The Video Codec to Transcode the input to</param>
-        /// <param name="videoCodec"> The Subtitle Codec to Transcode the input to</param>
+        /// <param name="subtitleCodec"> The Subtitle Codec to Transcode the input to</param>
         /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
         internal static async Task<IConversion> TranscodeAsync(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
