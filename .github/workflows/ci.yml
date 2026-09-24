@@ -26,7 +26,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.401
 
       - name: Install FFmpeg (pinned 7.0.2)
         uses: ./.github/actions/ffmpeg-static
@@ -49,7 +49,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.401
 
       - name: Install FFmpeg (pinned 7.0.2)
         uses: ./.github/actions/ffmpeg-static
@@ -59,3 +59,55 @@ jobs:
 
       - name: Test downloader
         run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release -v normal --no-build
+
+  package-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.401
+
+      - name: Pack
+        run: |
+          dotnet pack src/Xabe.FFmpeg -c Release -p:GenerateDocumentationFile=true
+          dotnet pack src/Xabe.FFmpeg.Downloader -c Release -p:GenerateDocumentationFile=true
+
+      - name: Validate packages
+        run: |
+          set -euo pipefail
+          for pkg in src/Xabe.FFmpeg src/Xabe.FFmpeg.Downloader; do
+            # Untagged builds must resolve to an -alpha preview (MinVer floors 6.0; the exact version floats with the newest tag)
+            nupkg="$(ls "$pkg"/bin/Release/*-alpha.*.nupkg)"
+            snupkg="$(ls "$pkg"/bin/Release/*.snupkg)"
+            nuspec_file="$(mktemp)"
+            unzip -p "$nupkg" "$(basename "$pkg").nuspec" > "$nuspec_file"
+            # Pack can succeed with a silently broken nuspec; assert the contract the published package relies on
+            grep -q '<dependency id="System.Text.Json"' "$nuspec_file"
+            if grep -q 'MinVer' "$nuspec_file"; then
+              echo "MinVer leaked into $(basename "$pkg").nuspec" >&2
+              exit 1
+            fi
+            grep -q '<title>' "$nuspec_file"
+            grep -q 'LICENSE.md' "$nuspec_file"
+            grep -q 'README.md' "$nuspec_file"
+            grep -q 'xabe_icon.png' "$nuspec_file"
+            rm -f "$nuspec_file"
+          done
+          echo "Pack validation passed"
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            src/Xabe.FFmpeg/bin/Release/*.nupkg
+            src/Xabe.FFmpeg/bin/Release/*.snupkg
+            src/Xabe.FFmpeg.Downloader/bin/Release/*.nupkg
+            src/Xabe.FFmpeg.Downloader/bin/Release/*.snupkg

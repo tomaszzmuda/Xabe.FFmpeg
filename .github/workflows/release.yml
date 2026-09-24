@@ -19,7 +19,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.401
 
       - name: Install FFmpeg (pinned 7.0.2)
         uses: ./.github/actions/ffmpeg-static
@@ -32,6 +32,7 @@ jobs:
 
       - name: Test downloader
         run: dotnet test test/Xabe.FFmpeg.Downloader.Test -c Release --no-build
+
   release:
     runs-on: ubuntu-24.04
     permissions:
@@ -47,7 +48,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.401
 
       - name: Pack
         run: |
@@ -57,6 +58,8 @@ jobs:
           mkdir -p dist
           cp src/Xabe.FFmpeg/bin/Release/*.nupkg dist/
           cp src/Xabe.FFmpeg.Downloader/bin/Release/*.nupkg dist/
+          cp src/Xabe.FFmpeg/bin/Release/*.snupkg dist/
+          cp src/Xabe.FFmpeg.Downloader/bin/Release/*.snupkg dist/
 
       - name: Notes
         run: |
@@ -81,8 +84,9 @@ jobs:
       - name: Publish
         run: |
           dotnet nuget push dist/*.nupkg --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push dist/*.snupkg --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
 
       - name: GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --target "${GITHUB_SHA}" --notes-file notes.md dist/*.nupkg
+        run: gh release create "${GITHUB_REF_NAME}" --title "${GITHUB_REF_NAME}" --target "${GITHUB_SHA}" --notes-file notes.md dist/*.nupkg dist/*.snupkg
