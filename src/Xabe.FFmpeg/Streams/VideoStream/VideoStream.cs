@@ -202,6 +202,12 @@ namespace Xabe.FFmpeg
             return this;
         }
 
+        /// <summary>
+        ///     Sets a variable bitrate range for the video stream (-b:v, -maxrate, -bufsize)
+        /// </summary>
+        /// <param name="minBitrate">Bitrate in bits</param>
+        /// <param name="maxBitrate">Bitrate in bits</param>
+        /// <param name="bufferSize">Buffersize (see -bufsize)</param>
         public IVideoStream SetBitrate(long minBitrate, long maxBitrate, long bufferSize)
         {
             _parameters.Add(new ConversionParameter($"-b:v {minBitrate}"));

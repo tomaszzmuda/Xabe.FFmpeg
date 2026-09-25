@@ -23,8 +23,7 @@ namespace Xabe.FFmpeg
         public static FileNameFilterMethod FilterMethod { get; private set; }
 
         /// <summary>
-        ///     Select if filtering method shuld be case sensitive
-        ///     This will be used to compare file names
+        ///     Culture used to compare file names when locating FFmpeg and FFprobe
         /// </summary>
         public static IFormatProvider FormatProvider { get; private set; }
 
@@ -37,7 +36,7 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
-        /// <param name="filePath">FullPath to file</param>
+        /// <param name="fileName">Full path to file</param>
         /// <exception cref="ArgumentException">File does not exist</exception>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName)
         {
@@ -47,8 +46,8 @@ namespace Xabe.FFmpeg
         /// <summary>
         ///     Get MediaInfo from file
         /// </summary>
-        /// <param name="filePath">FullPath to file</param>
-        /// <param name="cancellationToken">Cancellation token</param>
+        /// <param name="fileName">Full path to file</param>
+        /// <param name="token">Cancellation token</param>
         /// <exception cref="ArgumentException">File does not exist</exception>
         /// <exception cref="TaskCanceledException">Operation takes too long</exception>
         public static async Task<IMediaInfo> GetMediaInfo(string fileName, CancellationToken token)
@@ -57,13 +56,13 @@ namespace Xabe.FFmpeg
         }
 
         /// <summary>
-        ///     Set path to irectory containing FFmpeg and FFprobe
+        ///     Set path to directory containing FFmpeg and FFprobe
         /// </summary>
         /// <param name="directoryWithFFmpegAndFFprobe"></param>
         /// <param name="ffmpegExeutableName">Name of FFmpeg executable name</param>
         /// <param name="ffprobeExecutableName">Name of FFprobe executable name</param>
         /// <param name="filteringMethod">Select method to compare file names</param>
-        /// <param name="filteringMethodCaseSensitive">Select if filter shuld be Case Sensitive</param>
+        /// <param name="formatprovider">Culture used to compare file names</param>
         public static void SetExecutablesPath(string directoryWithFFmpegAndFFprobe, string ffmpegExeutableName = "ffmpeg", string ffprobeExecutableName = "ffprobe", FileNameFilterMethod filteringMethod = FileNameFilterMethod.Contains, IFormatProvider formatprovider = null)
         {
             ExecutablesPath = directoryWithFFmpegAndFFprobe == null ? null : new DirectoryInfo(directoryWithFFmpegAndFFprobe).FullName;
@@ -83,6 +82,9 @@ namespace Xabe.FFmpeg
         }
     }
 
+    /// <summary>
+    ///     Entry point to create new conversions
+    /// </summary>
     public class Conversions
     {
         /// <summary>
@@ -106,6 +108,9 @@ namespace Xabe.FFmpeg
         }
     }
 
+    /// <summary>
+    ///     Predefined conversion recipes
+    /// </summary>
     public class Snippets
     {
         internal Snippets()
@@ -363,9 +368,9 @@ namespace Xabe.FFmpeg
         /// </summary>
         /// <param name="inputFilePath">Path to file</param>
         /// <param name="outputFilePath">Path to file</param>
-        /// <param name="audioCodec"> The Audio Codec to Transcode the input to</param>
-        /// <param name="videoCodec"> The Video Codec to Transcode the input to</param>
-        /// <param name="videoCodec"> The Subtitle Codec to Transcode the input to</param>
+        /// <param name="videoCodec">The Video Codec to Transcode the input to</param>
+        /// <param name="audioCodec">The Audio Codec to Transcode the input to</param>
+        /// <param name="subtitleCodec">The Subtitle Codec to Transcode the input to</param>
         /// <param name="keepSubtitles">Whether to Keep Subtitles in the output video</param>
         /// <returns>IConversion object</returns>
         public async Task<IConversion> Transcode(string inputFilePath, string outputFilePath, VideoCodec videoCodec, AudioCodec audioCodec, SubtitleCodec subtitleCodec, bool keepSubtitles = false)
@@ -381,8 +386,8 @@ namespace Xabe.FFmpeg
         /// <param name="size">The Size of the outputted video stream</param>
         /// <param name="pixelFormat">The output pixel format (default is yuv420p)</param>
         /// <param name="mode">The visualisation mode (default is bar)</param>
-        /// <param name="amplitudeScale">The frequency scale (default is lin)</param>
-        /// <param name="frequencyScale">The amplitude scale (default is log)</param>
+        /// <param name="amplitudeScale">The amplitude scale (default is lin)</param>
+        /// <param name="frequencyScale">The frequency scale (default is log)</param>
         /// <returns>IConversion object</returns>
         public async Task<IConversion> VisualiseAudio(string inputPath, string outputPath, VideoSize size,
             PixelFormat pixelFormat = PixelFormat.yuv420p,

@@ -8,10 +8,24 @@ using Xabe.FFmpeg.Exceptions;
 
 namespace Xabe.FFmpeg
 {
+    /// <summary>
+    ///     How file names are compared when locating FFmpeg and FFprobe
+    /// </summary>
     public enum FileNameFilterMethod
     {
+        /// <summary>
+        ///     File name contains the executable name
+        /// </summary>
         Contains,
+
+        /// <summary>
+        ///     File name equals the executable name
+        /// </summary>
         Exact,
+
+        /// <summary>
+        ///     File name starts with the executable name
+        /// </summary>
         StartWith
     }
 
