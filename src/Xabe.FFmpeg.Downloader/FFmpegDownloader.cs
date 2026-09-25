@@ -4,6 +4,9 @@ using Xabe.FFmpeg.Downloader.Android;
 
 namespace Xabe.FFmpeg.Downloader
 {
+    /// <summary>
+    ///     Downloads FFmpeg and FFprobe executables for the current platform
+    /// </summary>
     public abstract class FFmpegDownloader
     {
         /// <summary>

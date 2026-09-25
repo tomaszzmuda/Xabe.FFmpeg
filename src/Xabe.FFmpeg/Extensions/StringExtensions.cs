@@ -2,8 +2,14 @@
 
 namespace System
 {
+    /// <summary>
+    ///     Quoting helpers for values on the FFmpeg command line
+    /// </summary>
     public static class StringExtensions
     {
+        /// <summary>
+        ///     Wraps the value in double quotes, stripping a matching pair of outer quotes
+        /// </summary>
         public static string Escape(this string output)
         {
             if (output == null)
@@ -20,6 +26,9 @@ namespace System
             return output;
         }
 
+        /// <summary>
+        ///     Strips a matching pair of surrounding single or double quotes
+        /// </summary>
         public static string Unescape(this string output)
         {
             if (output == null || output.Length < 2)

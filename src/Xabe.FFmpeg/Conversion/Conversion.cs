@@ -29,6 +29,9 @@ namespace Xabe.FFmpeg
         private Func<string, string> _buildInputFileName = null;
         private Func<string, string> _buildOutputFileName = null;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Conversion"/> class.
+        /// </summary>
         public Conversion()
         {
             _userDefinedParameters[ParameterPosition.PostInput] = new List<string>();
