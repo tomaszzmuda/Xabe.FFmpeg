@@ -51,8 +51,8 @@ namespace Xabe.FFmpeg
         /// <param name="size">The Size of the outputted video stream</param>
         /// <param name="pixelFormat">The output pixel format (default is yuv420p)</param>
         /// <param name="mode">The visualisation mode (default is bar)</param>
-        /// <param name="amplitudeScale">The frequency scale (default is lin)</param>
-        /// <param name="frequencyScale">The amplitude scale (default is log)</param>
+        /// <param name="amplitudeScale">The amplitude scale (default is lin)</param>
+        /// <param name="frequencyScale">The frequency scale (default is log)</param>
         /// <returns>IConversion object</returns>
         internal static async Task<IConversion> VisualiseAudio(string inputPath, string outputPath, VideoSize size,
             PixelFormat pixelFormat = PixelFormat.yuv420p,
